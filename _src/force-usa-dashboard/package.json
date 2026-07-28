@@ -1,0 +1,26 @@
+{
+  "name": "[live]-force-usa-dashboard",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build --base=/force-usa-dashboard/",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.14.0",
+    "papaparse": "^5.5.3",
+    "react": "^19.2.1",
+    "react-dom": "^19.2.1",
+    "recharts": "^3.5.1",
+    "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}

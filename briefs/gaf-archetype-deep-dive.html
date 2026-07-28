@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>The Home Gym Builder — JTBD Snapshot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #000000;
+    --white: #ffffff;
+    --grey-700: #424242;
+    --grey-500: #6e6e6e;
+    --grey-300: #b8b8b8;
+    --grey-100: #f0f0f0;
+    --grey-50: #f8f8f8;
+    --orange: #f26422;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Open Sans', Arial, sans-serif;
+    color: var(--black);
+    background: var(--white);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-size: 15px;
+  }
+  h1, h2, h3, h4, h5 { font-family: 'Montserrat', 'Arial Black', sans-serif; font-weight: 800; letter-spacing: -0.01em; line-height: 1.05; }
+
+  /* ─── Top bar ─── */
+  header.topbar {
+    background: var(--white); color: var(--black);
+    padding: 14px 36px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 2px solid var(--orange);
+  }
+  header.topbar img.logo { height: 28px; }
+  header.topbar .meta { font-family: 'Montserrat', sans-serif; font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--grey-500); }
+
+  /* ─── Hero ─── */
+  .hero {
+    background: var(--black); color: var(--white);
+    padding: 64px 60px 64px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 180px; height: 180px;
+    background: var(--orange);
+    clip-path: polygon(100% 0, 100% 100%, 0 0);
+  }
+  .hero .eyebrow {
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--orange); margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-size: clamp(38px, 5vw, 68px);
+    font-weight: 900;
+    max-width: 900px;
+  }
+  .hero h1 .accent { color: var(--orange); }
+  .hero .lede {
+    margin-top: 16px; max-width: 720px;
+    font-size: 16px; color: var(--grey-300); font-weight: 300;
+  }
+  .hero .stats {
+    margin-top: 36px;
+    display: grid; grid-template-columns: repeat(4, max-content);
+    gap: 48px;
+    border-top: 1px solid rgba(255,255,255,0.15);
+    padding-top: 22px;
+  }
+  .hero .stat .v {
+    font-family: 'Montserrat', sans-serif; font-weight: 800;
+    font-size: 28px; line-height: 1;
+  }
+  .hero .stat .v.accent { color: var(--orange); }
+  .hero .stat .k {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--grey-500); margin-top: 6px; font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+  }
+
+  /* ─── Three job grid ─── */
+  .jobs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .job {
+    padding: 48px 40px;
+    border-right: 1px solid var(--grey-100);
+    position: relative;
+  }
+  .job:last-child { border-right: none; }
+  .job.featured {
+    background: var(--grey-50);
+  }
+  .job .num {
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 64px; line-height: 1;
+    color: var(--orange);
+  }
+  .job .label {
+    margin-top: 4px;
+    font-family: 'Montserrat', sans-serif; font-weight: 700;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--grey-500);
+  }
+  .job h2 {
+    margin-top: 8px;
+    font-size: 28px;
+  }
+  .job .arrow {
+    margin-top: 18px;
+    padding: 14px 18px;
+    background: var(--black); color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px; line-height: 1.35;
+    font-weight: 600;
+    border-left: 4px solid var(--orange);
+  }
+  .job .arrow .small {
+    display: block;
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--orange); font-weight: 800;
+    margin-bottom: 4px;
+  }
+
+  /* ─── Sub-themes ─── */
+  .sub-themes {
+    margin-top: 28px;
+  }
+  .sub-themes h4 {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--grey-500); margin-bottom: 14px; font-weight: 800;
+  }
+  .bar-row { margin-bottom: 13px; }
+  .bar-row .lbl {
+    display: flex; justify-content: space-between;
+    font-size: 13px; margin-bottom: 4px; font-weight: 600; gap: 12px;
+  }
+  .bar-row .lbl .name { flex: 1; line-height: 1.3; }
+  .bar-row .lbl .pct {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800; font-size: 12px;
+    color: var(--orange); white-space: nowrap;
+  }
+  .bar-row .track {
+    width: 100%; height: 6px;
+    background: var(--grey-100);
+  }
+  .job.featured .bar-row .track { background: var(--white); }
+  .bar-row .fill { height: 100%; background: var(--black); }
+  .bar-row .fill.accent { background: var(--orange); }
+
+  /* ─── Quote ─── */
+  .quote {
+    margin-top: 26px;
+    padding: 18px 22px;
+    background: var(--orange);
+    color: var(--white);
+    position: relative;
+  }
+  .quote .qmark {
+    position: absolute; top: 0; left: 12px;
+    font-family: 'Montserrat', sans-serif; font-weight: 900;
+    font-size: 64px; line-height: 1;
+    opacity: 0.3;
+  }
+  .quote blockquote {
+    padding-left: 36px;
+    font-family: 'Montserrat', sans-serif;
+    font-style: italic; font-weight: 600;
+    font-size: 15px; line-height: 1.4;
+  }
+
+  /* ─── Bottom strip ─── */
+  .bottom-strip {
+    background: var(--black); color: var(--white);
+    padding: 36px 60px;
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 28px; flex-wrap: wrap;
+  }
+  .bottom-strip .insight {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 19px;
+    line-height: 1.3;
+    max-width: 760px;
+  }
+  .bottom-strip .insight .accent { color: var(--orange); }
+  .bottom-strip .source {
+    font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--grey-500); font-weight: 600;
+    font-family: 'Montserrat', sans-serif;
+    text-align: right;
+  }
+  .bottom-strip .source .v {
+    color: var(--white); font-size: 13px; letter-spacing: 0.04em;
+    text-transform: none; font-weight: 700; margin-top: 4px;
+    display: block;
+  }
+
+  @media (max-width: 1024px) {
+    .jobs { grid-template-columns: 1fr; }
+    .job { border-right: none; border-bottom: 1px solid var(--grey-100); }
+    .job:last-child { border-bottom: none; }
+    .hero { padding: 48px 28px; }
+    .hero::before { display: none; }
+    .hero .stats { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+    header.topbar, .bottom-strip { padding-left: 28px; padding-right: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ─── TOP BAR ─── -->
+<header class="topbar">
+  <img class="logo" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness" />
+  <div class="meta">JTBD Snapshot · April 2026</div>
+</header>
+
+<!-- ─── HERO ─── -->
+<div class="hero">
+  <div class="eyebrow">Customer Archetype · Best-Customer Profile</div>
+  <h1>The Home Gym <span class="accent">Builder.</span></h1>
+  <p class="lede">Three jobs they hire us to do. Built from 678 sales-call transcripts where convenience was the dominant functional theme.</p>
+  <div class="stats">
+    <div class="stat"><div class="v accent">678</div><div class="k">Calls in cohort</div></div>
+    <div class="stat"><div class="v accent">$4,031</div><div class="k">Avg order value</div></div>
+    <div class="stat"><div class="v">47%</div><div class="k">Garage-based</div></div>
+    <div class="stat"><div class="v">All-in-one trainer</div><div class="k">Anchor product</div></div>
+  </div>
+</div>
+
+<!-- ─── THREE JOBS ─── -->
+<div class="jobs">
+
+  <!-- JOB 1 -->
+  <div class="job featured">
+    <div class="num">01</div>
+    <div class="label">Functional Job</div>
+    <h2>Convenience<br>/ Efficiency</h2>
+    <div class="arrow">
+      <span class="small">Desired Outcome</span>
+      Save time vs my old gym — get the most out of the time I do have to train.
+    </div>
+
+    <div class="sub-themes">
+      <h4>What this means in their words</h4>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Fit training around the family</span><span class="pct">10.6%</span></div>
+        <div class="track"><div class="fill accent" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Most out of every session (efficiency)</span><span class="pct">3.8%</span></div>
+        <div class="track"><div class="fill" style="width:36%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Eliminate the gym commute</span><span class="pct">3.1%</span></div>
+        <div class="track"><div class="fill" style="width:29%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Replicate gym capability at home</span><span class="pct">2.7%</span></div>
+        <div class="track"><div class="fill" style="width:25%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Train when I want — 24/7 access</span><span class="pct">0.7%</span></div>
+        <div class="track"><div class="fill" style="width:7%"></div></div>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="qmark">"</div>
+      <blockquote>It's better to get a home gym. It's the amount of time you spend going to the gym and actually not going — because it just takes too much time.</blockquote>
+    </div>
+  </div>
+
+  <!-- JOB 2 -->
+  <div class="job">
+    <div class="num">02</div>
+    <div class="label">Emotional Job</div>
+    <h2>Achievement<br>/ Progress</h2>
+    <div class="arrow">
+      <span class="small">Desired Outcome</span>
+      Visible signs of improved strength, fitness, and body composition.
+    </div>
+
+    <div class="sub-themes">
+      <h4>What this means in their words</h4>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Lose weight / improve health</span><span class="pct">28.6%</span></div>
+        <div class="track"><div class="fill accent" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Long-term investment in self</span><span class="pct">6.5%</span></div>
+        <div class="track"><div class="fill" style="width:23%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">See measurable progress / results</span><span class="pct">5.9%</span></div>
+        <div class="track"><div class="fill" style="width:21%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Build muscle / transform body</span><span class="pct">3.8%</span></div>
+        <div class="track"><div class="fill" style="width:13%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Build strength — lift heavier</span><span class="pct">1.6%</span></div>
+        <div class="track"><div class="fill" style="width:6%"></div></div>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="qmark">"</div>
+      <blockquote>I'm getting back into it. This is more a long-term investment because I've got a bunch of health conditions — if I don't get fit, I'm in trouble.</blockquote>
+    </div>
+  </div>
+
+  <!-- JOB 3 -->
+  <div class="job featured">
+    <div class="num">03</div>
+    <div class="label">Emotional Job</div>
+    <h2>Control<br>/ Discipline</h2>
+    <div class="arrow">
+      <span class="small">Desired Outcome</span>
+      Control my time and routine — train on my terms, not someone else's.
+    </div>
+
+    <div class="sub-themes">
+      <h4>What this means in their words</h4>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Own my schedule (no fixed gym hours)</span><span class="pct">9.7%</span></div>
+        <div class="track"><div class="fill accent" style="width:100%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Train without waiting / queueing</span><span class="pct">4.7%</span></div>
+        <div class="track"><div class="fill" style="width:48%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Privacy / control of environment</span><span class="pct">3.8%</span></div>
+        <div class="track"><div class="fill" style="width:39%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Independence from gym contracts</span><span class="pct">1.9%</span></div>
+        <div class="track"><div class="fill" style="width:20%"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="lbl"><span class="name">Build the daily habit / discipline</span><span class="pct">1.3%</span></div>
+        <div class="track"><div class="fill" style="width:13%"></div></div>
+      </div>
+    </div>
+
+    <div class="quote">
+      <div class="qmark">"</div>
+      <blockquote>I spend more time waiting than I do actually training there. I want to set it up at home so I can just go when I want.</blockquote>
+    </div>
+  </div>
+
+</div>
+
+<!-- ─── BOTTOM STRIP ─── -->
+<div class="bottom-strip">
+  <div class="insight">
+    They're not buying equipment. They're buying back <span class="accent">time</span>, <span class="accent">progress</span> and <span class="accent">control</span> — the three things their old gym was taking from them.
+  </div>
+  <div class="source">
+    Source<span class="v">678 calls · Nov 2025 — Apr 2026</span>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revel Ads Performance</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --brand: #25B34B;
+      --brand-light: #e8f5e9;
+      --brand-dark: #1a8a38;
+      --sage: #ABB99C;
+      --forest: #485D4D;
+      --bg: #F4F6F3;
+      --white: #FFFFFF;
+      --black: #000000;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg);
+      color: var(--black);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    ::selection { background: rgba(37,179,75,0.15); color: var(--brand-dark); }
+
+    /* Header */
+    .header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      padding: 16px 24px;
+    }
+    .header-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .header-icon {
+      width: 40px; height: 40px;
+      background: var(--brand);
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 12px rgba(37,179,75,0.25);
+    }
+    .header-icon svg { width: 22px; height: 22px; color: white; }
+    .header-title { font-size: 18px; font-weight: 700; letter-spacing: -0.3px; }
+    .header-sub { font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.35); letter-spacing: 2px; text-transform: uppercase; }
+    .live-badge {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 14px;
+      background: rgba(0,0,0,0.04);
+      border-radius: 100px;
+    }
+    .live-dot {
+      width: 8px; height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.6; transform: scale(0.85); }
+    }
+    .live-text { font-size: 11px; font-weight: 700; color: rgba(0,0,0,0.5); letter-spacing: 1.5px; text-transform: uppercase; }
+    .refresh-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 8px; border-radius: 50%;
+      transition: background 0.2s;
+    }
+    .refresh-btn:hover { background: rgba(0,0,0,0.05); }
+    .refresh-btn svg { width: 20px; height: 20px; color: rgba(0,0,0,0.35); }
+
+    /* Main */
+    .main { max-width: 1200px; margin: 0 auto; padding: 32px 24px; }
+
+    /* Section Header */
+    .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .section-title { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
+    .section-right { display: flex; align-items: center; gap: 16px; }
+    .total-revenue-label { font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.35); letter-spacing: 1.5px; text-transform: uppercase; }
+    .total-revenue-value { font-size: 18px; font-weight: 700; color: var(--brand); }
+    .date-range { font-size: 14px; color: rgba(0,0,0,0.35); font-weight: 500; }
+    .divider-v { width: 1px; height: 32px; background: rgba(0,0,0,0.05); }
+
+    /* KPI Cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    @media (max-width: 1024px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .kpi-card {
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      transition: all 0.3s;
+    }
+    .kpi-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-1px); }
+    .kpi-card.highlight {
+      background: var(--brand);
+      border-color: var(--brand);
+      color: white;
+      box-shadow: 0 8px 24px rgba(37,179,75,0.3);
+    }
+    .kpi-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(0,0,0,0.04);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 20px;
+    }
+    .kpi-card.highlight .kpi-icon { background: rgba(255,255,255,0.2); }
+    .kpi-icon svg { width: 18px; height: 18px; color: rgba(0,0,0,0.5); }
+    .kpi-card.highlight .kpi-icon svg { color: white; }
+    .kpi-label {
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: rgba(0,0,0,0.35);
+      margin-bottom: 4px;
+    }
+    .kpi-card.highlight .kpi-label { color: rgba(255,255,255,0.6); }
+    .kpi-value { font-size: 28px; font-weight: 700; letter-spacing: -1px; line-height: 1; }
+
+    /* Content Grid */
+    .content-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 16px;
+    }
+    @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
+
+    /* Top Performing Ads */
+    .top-ads {
+      background: white;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .top-ads-header {
+      padding: 24px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+    .top-ads-title { font-size: 20px; font-weight: 700; }
+    .top-ads-sub { font-size: 14px; color: rgba(0,0,0,0.35); margin-top: 4px; }
+
+    /* Category Tabs */
+    .cat-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      background: rgba(0,0,0,0.01);
+    }
+    .cat-tab {
+      flex: 1;
+      padding: 16px 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 8px;
+      border: none; background: none; cursor: pointer;
+      border-right: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.2s;
+      color: rgba(0,0,0,0.35);
+    }
+    .cat-tab:last-child { border-right: none; }
+    .cat-tab:hover { color: rgba(0,0,0,0.6); }
+    .cat-tab.active { background: white; color: var(--black); }
+    .cat-tab.active svg { color: var(--brand); }
+    .cat-tab svg { width: 20px; height: 20px; }
+    .cat-tab span { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    /* Featured Ad */
+    .featured-ad {
+      display: flex;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      animation: fadeIn 0.3s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+    @media (max-width: 768px) { .featured-ad { flex-direction: column; } }
+
+    .featured-image {
+      width: 50%; aspect-ratio: 4/5;
+      overflow: hidden; position: relative;
+      background: rgba(0,0,0,0.04);
+    }
+    @media (max-width: 768px) { .featured-image { width: 100%; } }
+    .featured-image img {
+      width: 100%; height: 100%; object-fit: cover;
+      transition: transform 0.5s;
+    }
+    .featured-ad:hover .featured-image img { transform: scale(1.03); }
+    .winner-badge {
+      position: absolute; top: 16px; left: 16px;
+      background: var(--brand);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1px;
+      box-shadow: 0 4px 12px rgba(37,179,75,0.3);
+      display: flex; align-items: center; gap: 6px;
+    }
+    .winner-badge svg { width: 12px; height: 12px; }
+
+    .featured-details {
+      width: 50%; padding: 24px;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    @media (max-width: 768px) { .featured-details { width: 100%; } }
+    .featured-metric-label {
+      font-size: 10px; font-weight: 700;
+      color: rgba(0,0,0,0.35);
+      text-transform: uppercase; letter-spacing: 1.5px;
+      margin-bottom: 4px;
+    }
+    .featured-metric-value {
+      font-size: 48px; font-weight: 900;
+      color: var(--brand);
+      letter-spacing: -2px;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+    .featured-name {
+      font-size: 18px; font-weight: 700;
+      line-height: 1.3; margin-bottom: 4px;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .featured-campaign { font-size: 12px; color: rgba(0,0,0,0.35); font-weight: 500; margin-bottom: 20px; }
+
+    .featured-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+      margin-bottom: 20px;
+    }
+    .stat-item { opacity: 0.6; }
+    .stat-item.active { opacity: 1; }
+    .stat-label { font-size: 9px; font-weight: 700; color: rgba(0,0,0,0.35); text-transform: uppercase; letter-spacing: 1px; }
+    .stat-value { font-size: 14px; font-weight: 700; }
+    .stat-value.brand { color: var(--brand); }
+
+    .view-creative {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--black); color: white;
+      padding: 10px 18px; border-radius: 12px;
+      font-size: 12px; font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+    .view-creative:hover { background: rgba(0,0,0,0.8); }
+    .view-creative svg { width: 12px; height: 12px; }
+
+    /* Runner-up Rows */
+    .runner-item { border-radius: 12px; transition: all 0.2s; border: 1px solid transparent; }
+    .runner-item.open { background: rgba(0,0,0,0.015); border-color: rgba(0,0,0,0.06); }
+    .runner-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 16px;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: left;
+      background: none;
+      width: 100%;
+      border: none;
+    }
+    .runner-item:hover { background: rgba(0,0,0,0.01); border-color: rgba(0,0,0,0.05); }
+    .runner-left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .runner-rank {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.04);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: rgba(0,0,0,0.35);
+      flex-shrink: 0;
+    }
+    .runner-info { min-width: 0; }
+    .runner-name {
+      font-size: 12px; font-weight: 700;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      max-width: 400px;
+      transition: color 0.2s;
+    }
+    .runner-row:hover .runner-name { color: var(--brand); }
+    .runner-meta { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+    .runner-meta span {
+      font-size: 9px; font-weight: 700;
+      color: rgba(0,0,0,0.2);
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .runner-meta .dot { width: 3px; height: 3px; background: rgba(0,0,0,0.1); border-radius: 50%; }
+    .runner-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; margin-left: 16px; }
+    .runner-count { font-size: 14px; font-weight: 700; color: var(--brand); }
+    .runner-chevron {
+      width: 16px; height: 16px; color: rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    .runner-item.open .runner-chevron { transform: rotate(180deg); }
+    .runner-detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease, padding 0.35s ease;
+      padding: 0 16px;
+    }
+    .runner-item.open .runner-detail {
+      max-height: 500px;
+      padding: 0 16px 16px;
+    }
+    .runner-detail-inner {
+      display: flex;
+      gap: 16px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    .runner-thumb {
+      width: 200px; aspect-ratio: 4/5;
+      border-radius: 10px;
+      overflow: hidden;
+      background: rgba(0,0,0,0.04);
+      flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .runner-thumb img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .runner-thumb-placeholder {
+      color: rgba(0,0,0,0.15);
+    }
+    .runner-thumb-placeholder svg { width: 32px; height: 32px; }
+    .runner-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4px 20px;
+      flex: 1;
+    }
+    .runner-stats-grid .stat-item { padding: 4px 0; }
+    .runner-stats-grid .stat-label { font-size: 9px; }
+    .runner-stats-grid .stat-value { font-size: 13px; }
+    .runner-detail-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 6px;
+      padding: 8px 14px;
+      background: var(--black); color: var(--white);
+      border-radius: 8px;
+      font-size: 11px; font-weight: 700;
+      text-decoration: none;
+      transition: background 0.2s;
+      grid-column: 1 / -1;
+      width: fit-content;
+    }
+    .runner-detail-link:hover { background: rgba(0,0,0,0.8); }
+    .runner-detail-link svg { width: 11px; height: 11px; }
+    .runners-list { padding: 8px 12px; display: flex; flex-direction: column; gap: 4px; }
+
+    /* Sidebar */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Quick Stats */
+    .quick-stats {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(0,0,0,0.05);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .qs-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .qs-title { font-size: 18px; font-weight: 700; }
+    .qs-live {
+      display: flex; align-items: center; gap: 6px;
+      padding: 4px 10px;
+      background: #ecfdf5;
+      border: 1px solid #d1fae5;
+      border-radius: 100px;
+    }
+    .qs-live-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+    .qs-live-text { font-size: 8px; font-weight: 700; color: #16a34a; text-transform: uppercase; letter-spacing: 1px; }
+    .qs-divider { height: 1px; background: rgba(0,0,0,0.05); margin: 4px 0; }
+    .qs-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+    .qs-label { font-size: 14px; color: rgba(0,0,0,0.4); }
+    .qs-value { font-size: 14px; font-weight: 700; }
+
+    /* Performance Tip */
+    .perf-tip {
+      background: var(--brand-light);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid rgba(37,179,75,0.1);
+    }
+    .perf-tip-title { font-size: 16px; font-weight: 700; color: var(--brand); margin-bottom: 8px; }
+    .perf-tip-text { font-size: 14px; color: rgba(37,179,75,0.7); line-height: 1.6; }
+    .perf-tip-text strong { color: var(--brand-dark); }
+
+    /* Footer */
+    .footer {
+      max-width: 1200px; margin: 0 auto;
+      padding: 48px 24px;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      margin-top: 48px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 14px; color: rgba(0,0,0,0.35); font-weight: 500; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      font-size: 12px; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 1.5px;
+      color: rgba(0,0,0,0.35);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--black); }
+
+    /* Loading */
+    .loading {
+      display: flex; align-items: center; justify-content: center;
+      padding: 80px; font-size: 14px; color: rgba(0,0,0,0.4);
+    }
+    .spinner {
+      width: 24px; height: 24px;
+      border: 3px solid rgba(0,0,0,0.1);
+      border-top-color: var(--brand);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-right: 12px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (max-width: 640px) {
+      .section-header { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .kpi-value { font-size: 22px; }
+      .featured-metric-value { font-size: 36px; }
+      .footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="header-left">
+        <div class="header-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+          </svg>
+        </div>
+        <div>
+          <div class="header-title">Revel Ads Performance</div>
+          <div class="header-sub">Performance Insights</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div class="live-badge">
+          <div class="live-dot"></div>
+          <span class="live-text">Live Data</span>
+        </div>
+        <button class="refresh-btn" onclick="loadData()" title="Refresh Data">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/>
+            <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main" id="app">
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+      Loading live data...
+    </div>
+  </main>
+
+  <script>
+    const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQQo8ZrXA588ZGX-E-b7kXHhZHCO9VctFzpoDzrXZM1PkcnqTZNESutnXBSykjPPbcLxmoy-CMxcp2o/pub?gid=962231994&single=true&output=csv';
+
+    let currentCategory = 'purchases';
+    let adsData = [];
+
+    function parseCSV(text) {
+      const lines = text.trim().split('\n');
+      const headers = parseCSVLine(lines[0]);
+      return lines.slice(1).map(line => {
+        const vals = parseCSVLine(line);
+        const obj = {};
+        headers.forEach((h, i) => obj[h.trim()] = (vals[i] || '').trim());
+        return obj;
+      });
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQuotes = !inQuotes; }
+        else if (ch === ',' && !inQuotes) { result.push(current); current = ''; }
+        else { current += ch; }
+      }
+      result.push(current);
+      return result;
+    }
+
+    function num(val) {
+      if (!val) return 0;
+      return parseFloat(val.replace(/[$,%]/g, '').replace(/,/g, '')) || 0;
+    }
+
+    function fmt(n, prefix = '', suffix = '') {
+      if (n >= 1000000) return prefix + (n / 1000000).toFixed(1) + 'M' + suffix;
+      if (n >= 1000) return prefix + n.toLocaleString('en-US', { maximumFractionDigits: 2 }) + suffix;
+      if (n % 1 !== 0) return prefix + n.toFixed(2) + suffix;
+      return prefix + n.toLocaleString('en-US') + suffix;
+    }
+
+    function fmtCurrency(n) { return '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+
+    function getSortKey(cat) {
+      const map = {
+        'purchases': 'Purchases',
+        'roas': 'Purchase ROAS',
+        'clicks': 'Outbound Clicks',
+        'cpa': 'Cost per Result'
+      };
+      return map[cat];
+    }
+
+    function sortAds(data, cat) {
+      const key = getSortKey(cat);
+      const sorted = [...data].sort((a, b) => {
+        const av = num(a[key]);
+        const bv = num(b[key]);
+        if (cat === 'cpa') return av - bv; // lower is better
+        return bv - av;
+      });
+      // For CPA, filter out zero-spend or zero-result ads
+      if (cat === 'cpa') return sorted.filter(d => num(d['Cost per Result']) > 0);
+      return sorted.filter(d => num(d[key]) > 0);
+    }
+
+    function computeTotals(data) {
+      let reach = 0, clicks = 0, impressions = 0, spend = 0, purchases = 0, convValue = 0, atc = 0, results = 0;
+      data.forEach(d => {
+        reach += num(d['Reach']);
+        clicks += num(d['Outbound Clicks']);
+        impressions += num(d['Impressions']);
+        spend += num(d['Amount Spent']);
+        purchases += num(d['Purchases']);
+        convValue += num(d['Purchase Conversion Value']);
+        atc += num(d['Adds to Cart']);
+        results += num(d['Results']);
+      });
+      const ctr = impressions > 0 ? (clicks / impressions * 100) : 0;
+      const cpr = results > 0 ? spend / results : 0;
+      const roas = spend > 0 ? convValue / spend : 0;
+      const cpm = impressions > 0 ? (spend / impressions * 1000) : 0;
+      const cpc = clicks > 0 ? spend / clicks : 0;
+      const cpAtc = atc > 0 ? spend / atc : 0;
+      const aov = purchases > 0 ? convValue / purchases : 0;
+      return { reach, clicks, impressions, spend, purchases, convValue, atc, results, ctr, cpr, roas, cpm, cpc, cpAtc, aov, count: data.length };
+    }
+
+    function render(data) {
+      adsData = data;
+      const t = computeTotals(data);
+      const sorted = sortAds(data, currentCategory);
+      const top = sorted[0];
+      const runners = sorted.slice(1, 5);
+
+      const catLabels = { purchases: 'Top Purchases', roas: 'Highest ROAS', clicks: 'Most Clicks', cpa: 'Lowest CPA' };
+      const topMetricVal = top ? (currentCategory === 'purchases' ? num(top['Purchases']) :
+        currentCategory === 'roas' ? num(top['Purchase ROAS']).toFixed(2) + 'x' :
+        currentCategory === 'clicks' ? num(top['Outbound Clicks']) :
+        fmtCurrency(num(top['Cost per Result']))) : '—';
+
+      // Find best ROAS ad for tip
+      const bestRoas = sortAds(data, 'roas')[0];
+
+      const app = document.getElementById('app');
+      app.innerHTML = `
+        <div style="opacity:1;">
+          <!-- Section Header -->
+          <section>
+            <div class="section-header">
+              <h2 class="section-title">Campaign Overview</h2>
+              <div class="section-right">
+                <div style="text-align:right">
+                  <p class="total-revenue-label">Total Revenue</p>
+                  <p class="total-revenue-value">${fmtCurrency(t.convValue)}</p>
+                </div>
+                <div class="divider-v"></div>
+                <p class="date-range">Last 30 Days</p>
+              </div>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M16 3.128a4 4 0 0 1 0 7.744"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><circle cx="9" cy="7" r="4"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">Reach</p>
+                <h3 class="kpi-value">${fmt(t.reach)}</h3>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 4.1 12 6"/><path d="m5.1 8-2.9-.8"/><path d="m6 12-1.9 2"/><path d="M7.2 2.2 8 5.1"/>
+                    <path d="M9.037 9.69a.498.498 0 0 1 .653-.653l11 4.5a.5.5 0 0 1-.074.949l-4.349 1.041a1 1 0 0 0-.74.739l-1.04 4.35a.5.5 0 0 1-.95.074z"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">Outbound Clicks</p>
+                <h3 class="kpi-value">${fmt(t.clicks)}</h3>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">Outbound CTR</p>
+                <h3 class="kpi-value">${t.ctr.toFixed(2)}%</h3>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 10a4 4 0 0 1-8 0"/><path d="M3.103 6.034h17.794"/>
+                    <path d="M3.4 5.467a2 2 0 0 0-.4 1.2V20a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6.667a2 2 0 0 0-.4-1.2l-2-2.667A2 2 0 0 0 17 2H7a2 2 0 0 0-1.6.8z"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">Purchases</p>
+                <h3 class="kpi-value">${fmt(t.purchases)}</h3>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">Cost Per Result</p>
+                <h3 class="kpi-value">${fmtCurrency(t.cpr)}</h3>
+              </div>
+              <div class="kpi-card highlight">
+                <div class="kpi-icon">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>
+                  </svg>
+                </div>
+                <p class="kpi-label">ROAS</p>
+                <h3 class="kpi-value">${t.roas.toFixed(2)}x</h3>
+              </div>
+            </div>
+          </section>
+
+          <!-- Content Grid -->
+          <div class="content-grid">
+            <!-- Top Performing Ads -->
+            <div class="top-ads">
+              <div class="top-ads-header">
+                <h2 class="top-ads-title">Top Performing Ads</h2>
+                <p class="top-ads-sub">Breakdown by performance category</p>
+              </div>
+              <div class="cat-tabs">
+                <button class="cat-tab ${currentCategory === 'purchases' ? 'active' : ''}" onclick="switchCategory('purchases')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/>
+                    <path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>
+                  </svg>
+                  <span>Purchases</span>
+                </button>
+                <button class="cat-tab ${currentCategory === 'roas' ? 'active' : ''}" onclick="switchCategory('roas')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M16 7h6v6"/><path d="m22 7-8.5 8.5-5-5L2 17"/>
+                  </svg>
+                  <span>ROAS</span>
+                </button>
+                <button class="cat-tab ${currentCategory === 'clicks' ? 'active' : ''}" onclick="switchCategory('clicks')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.037 4.688a.495.495 0 0 1 .651-.651l16 6.5a.5.5 0 0 1-.063.947l-6.124 1.58a2 2 0 0 0-1.438 1.435l-1.579 6.126a.5.5 0 0 1-.947.063z"/>
+                  </svg>
+                  <span>Outbound Clicks</span>
+                </button>
+                <button class="cat-tab ${currentCategory === 'cpa' ? 'active' : ''}" onclick="switchCategory('cpa')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                  </svg>
+                  <span>Cost per Purchase</span>
+                </button>
+              </div>
+
+              ${top ? `
+              <div class="featured-ad">
+                <div class="featured-image">
+                  ${top['Media Preview URL'] ? `<img src="${top['Media Preview URL']}" alt="${top['Ad Name'] || ''}" referrerpolicy="no-referrer" onerror="this.style.display='none'">` : ''}
+                  <div class="winner-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M10 14.66v1.626a2 2 0 0 1-.976 1.696A5 5 0 0 0 7 21.978"/><path d="M14 14.66v1.626a2 2 0 0 0 .976 1.696A5 5 0 0 1 17 21.978"/>
+                      <path d="M18 9h1.5a1 1 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M6 9a6 6 0 0 0 12 0V3a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1z"/><path d="M6 9H4.5a1 1 0 0 1 0-5H6"/>
+                    </svg>
+                    Category Winner
+                  </div>
+                </div>
+                <div class="featured-details">
+                  <div>
+                    <p class="featured-metric-label">${catLabels[currentCategory]}</p>
+                    <p class="featured-metric-value">${topMetricVal}</p>
+                    <h3 class="featured-name">${top['Ad Name'] || '—'}</h3>
+                    <p class="featured-campaign">${top['Campaign Name'] || ''}</p>
+                    <div class="featured-stats">
+                      <div class="stat-item"><p class="stat-label">Reach</p><p class="stat-value">${fmt(num(top['Reach']))}</p></div>
+                      <div class="stat-item"><p class="stat-label">Amount Spent</p><p class="stat-value">${fmtCurrency(num(top['Amount Spent']))}</p></div>
+                      <div class="stat-item"><p class="stat-label">Outbound Clicks</p><p class="stat-value">${fmt(num(top['Outbound Clicks']))}</p></div>
+                      <div class="stat-item"><p class="stat-label">Outbound CTR</p><p class="stat-value">${top['Outbound CTR'] || '—'}</p></div>
+                      <div class="stat-item"><p class="stat-label">Adds to Cart</p><p class="stat-value">${fmt(num(top['Adds to Cart']))}</p></div>
+                      <div class="stat-item ${currentCategory === 'purchases' ? 'active' : ''}"><p class="stat-label">Purchases</p><p class="stat-value ${currentCategory === 'purchases' ? 'brand' : ''}">${fmt(num(top['Purchases']))}</p></div>
+                      <div class="stat-item"><p class="stat-label">ROAS</p><p class="stat-value">${num(top['Purchase ROAS']).toFixed(2)}x</p></div>
+                      <div class="stat-item"><p class="stat-label">CPA</p><p class="stat-value">${fmtCurrency(num(top['Cost per Result']))}</p></div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style="height:1px;background:rgba(0,0,0,0.05);margin-bottom:12px;"></div>
+                    ${top['Ad ID'] ? `<a href="https://www.facebook.com/ads/library/?id=${top['Ad ID']}" target="_blank" rel="noopener noreferrer" class="view-creative">View Ad Creative <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>` : ''}
+                  </div>
+                </div>
+              </div>
+              ` : '<div class="loading">No ads with data in this category</div>'}
+
+              <div class="runners-list">
+                ${runners.map((ad, i) => {
+                  const metricVal = currentCategory === 'purchases' ? num(ad['Purchases']) :
+                    currentCategory === 'roas' ? num(ad['Purchase ROAS']).toFixed(1) + 'x' :
+                    currentCategory === 'clicks' ? num(ad['Outbound Clicks']) :
+                    fmtCurrency(num(ad['Cost per Result']));
+                  return `
+                  <div class="runner-item" onclick="toggleRunner(this)">
+                    <div class="runner-row">
+                      <div class="runner-left">
+                        <div class="runner-rank">${i + 2}</div>
+                        <div class="runner-info">
+                          <div class="runner-name">${ad['Ad Name'] || '—'}</div>
+                          <div class="runner-meta">
+                            <span>Spend: ${fmtCurrency(num(ad['Amount Spent']))}</span>
+                            <div class="dot"></div>
+                            <span>ROAS: ${num(ad['Purchase ROAS']).toFixed(1)}x</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="runner-right">
+                        <div class="runner-count">${metricVal}</div>
+                        <svg class="runner-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+                      </div>
+                    </div>
+                    <div class="runner-detail">
+                      <div class="runner-detail-inner">
+                        <div class="runner-thumb">
+                          ${ad['Media Preview URL'] ? `<img src="${ad['Media Preview URL']}" alt="${ad['Ad Name'] || ''}" referrerpolicy="no-referrer" onerror="this.parentElement.innerHTML='<div class=\\'runner-thumb-placeholder\\'><svg viewBox=\\'0 0 24 24\\' fill=\\'none\\' stroke=\\'currentColor\\' stroke-width=\\'1.5\\'><rect x=\\'3\\' y=\\'3\\' width=\\'18\\' height=\\'18\\' rx=\\'2\\'/><circle cx=\\'8.5\\' cy=\\'8.5\\' r=\\'1.5\\'/><path d=\\'m21 15-5-5L5 21\\'/></svg></div>'">` : `<div class="runner-thumb-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg></div>`}
+                        </div>
+                        <div class="runner-stats-grid">
+                          <div class="stat-item"><p class="stat-label">Reach</p><p class="stat-value">${fmt(num(ad['Reach']))}</p></div>
+                          <div class="stat-item"><p class="stat-label">Amount Spent</p><p class="stat-value">${fmtCurrency(num(ad['Amount Spent']))}</p></div>
+                          <div class="stat-item"><p class="stat-label">Outbound Clicks</p><p class="stat-value">${fmt(num(ad['Outbound Clicks']))}</p></div>
+                          <div class="stat-item"><p class="stat-label">Outbound CTR</p><p class="stat-value">${ad['Outbound CTR'] || '—'}</p></div>
+                          <div class="stat-item"><p class="stat-label">Adds to Cart</p><p class="stat-value">${fmt(num(ad['Adds to Cart']))}</p></div>
+                          <div class="stat-item"><p class="stat-label">Purchases</p><p class="stat-value">${fmt(num(ad['Purchases']))}</p></div>
+                          <div class="stat-item"><p class="stat-label">ROAS</p><p class="stat-value">${num(ad['Purchase ROAS']).toFixed(2)}x</p></div>
+                          <div class="stat-item"><p class="stat-label">CPA</p><p class="stat-value">${fmtCurrency(num(ad['Cost per Result']))}</p></div>
+                          ${ad['Ad ID'] ? `<a href="https://www.facebook.com/ads/library/?id=${ad['Ad ID']}" target="_blank" rel="noopener noreferrer" class="runner-detail-link" onclick="event.stopPropagation()">View Ad Creative <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></a>` : ''}
+                        </div>
+                      </div>
+                    </div>
+                  </div>`;
+                }).join('')}
+              </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+              <div class="quick-stats">
+                <div class="qs-header">
+                  <h3 class="qs-title">Quick Stats</h3>
+                  <div class="qs-live"><div class="qs-live-dot"></div><span class="qs-live-text">Live Data</span></div>
+                </div>
+                <div style="height:1px;background:rgba(0,0,0,0.05);margin-bottom:16px;"></div>
+                <div class="qs-row"><span class="qs-label">Total Ads Tracked</span><span class="qs-value">${t.count}</span></div>
+                <div class="qs-row"><span class="qs-label">Outbound Clicks</span><span class="qs-value">${fmt(t.clicks)}</span></div>
+                <div class="qs-row"><span class="qs-label">Cost per Outbound Click</span><span class="qs-value">${fmtCurrency(t.cpc)}</span></div>
+                <div class="qs-row"><span class="qs-label">Add to Cart</span><span class="qs-value">${fmt(t.atc)}</span></div>
+                <div class="qs-row"><span class="qs-label">Cost per Add to Cart</span><span class="qs-value">${fmtCurrency(t.cpAtc)}</span></div>
+                <div class="qs-divider"></div>
+                <div class="qs-row"><span class="qs-label">Purchases</span><span class="qs-value">${fmt(t.purchases)}</span></div>
+                <div class="qs-row"><span class="qs-label">Cost per Result</span><span class="qs-value">${fmtCurrency(t.cpr)}</span></div>
+                <div class="qs-divider"></div>
+                <div class="qs-row"><span class="qs-label">Amount Spent</span><span class="qs-value">${fmtCurrency(t.spend)}</span></div>
+                <div class="qs-row"><span class="qs-label">Purchase Conversion Value</span><span class="qs-value">${fmtCurrency(t.convValue)}</span></div>
+                <div class="qs-row"><span class="qs-label">Average Order Value</span><span class="qs-value">${fmtCurrency(t.aov)}</span></div>
+                <div class="qs-row"><span class="qs-label">CPM</span><span class="qs-value">${fmtCurrency(t.cpm)}</span></div>
+              </div>
+
+              ${bestRoas ? `
+              <div class="perf-tip">
+                <h3 class="perf-tip-title">Performance Tip</h3>
+                <p class="perf-tip-text">Your top performing ad by ROAS is currently <strong>${bestRoas['Ad Name'] || '—'}</strong>. Consider increasing budget for this creative to maximize return.</p>
+              </div>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <footer class="footer">
+          <p class="footer-copy">&copy; 2026 Revel Ads Performance Dashboard. All rights reserved.</p>
+          <div class="footer-links">
+            <a href="https://docs.google.com/spreadsheets/d/1yc_X64J--6oXFkD4zNS7JWk-IvaTrC9rXlbd0UdXkrI/edit?gid=962231994#gid=962231994" target="_blank" rel="noopener noreferrer">Source Spreadsheet</a>
+            <a href="#">Documentation</a>
+            <a href="#">Support</a>
+          </div>
+        </footer>
+      `;
+    }
+
+    function switchCategory(cat) {
+      currentCategory = cat;
+      render(adsData);
+    }
+
+    function toggleRunner(el) {
+      el.classList.toggle('open');
+    }
+
+    async function loadData() {
+      try {
+        document.getElementById('app').innerHTML = '<div class="loading"><div class="spinner"></div>Loading live data...</div>';
+        const resp = await fetch(CSV_URL);
+        if (!resp.ok) throw new Error('Failed to fetch CSV');
+        const text = await resp.text();
+        const data = parseCSV(text);
+        render(data);
+      } catch (err) {
+        document.getElementById('app').innerHTML = '<div class="loading">Error loading data. Please try again.</div>';
+        console.error(err);
+      }
+    }
+
+    loadData();
+  </script>
+
+</body>
+</html>

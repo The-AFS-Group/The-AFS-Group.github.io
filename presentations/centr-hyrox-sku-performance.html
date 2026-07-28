@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Centr x Hyrox — Product Sales Performance</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: { orange: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt: { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body: ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.grain-dark::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:9999}
+.slide-enter{animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.stagger>*{opacity:0;animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}.stagger>*:nth-child(2){animation-delay:.12s}
+.stagger>*:nth-child(3){animation-delay:.19s}.stagger>*:nth-child(4){animation-delay:.26s}
+.stagger>*:nth-child(5){animation-delay:.33s}.stagger>*:nth-child(6){animation-delay:.4s}
+.bar-grow{animation:barGrow .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.fill-anim{animation:fillWidth 1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes fillWidth{from{width:0}to{width:var(--target-w)}}
+.donut-animate{animation:donutDraw 1.2s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes donutDraw{from{stroke-dashoffset:var(--circumference)}to{stroke-dashoffset:var(--dash-offset)}}
+::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
+.slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+.rowfade{animation:slideIn .35s cubic-bezier(.16,1,.3,1) forwards}
+input:focus{outline:none}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, useMemo, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== DATA =====
+const DATA = {
+ "meta": {
+  "total_rev": 2052165,
+  "total_units": 6491,
+  "n_skus": 56,
+  "months": 25,
+  "first": "2024-06",
+  "last": "2026-06",
+  "peak": {
+   "m": "2026-06",
+   "rev": 261557
+  }
+ },
+ "skus": [
+  {
+   "sku": "HPS",
+   "desc": "CENTR X HYROX Competition Sled",
+   "type": "Hyrox",
+   "units": 688,
+   "rev": 371716,
+   "pct": 18.1,
+   "aov": 540
+  },
+  {
+   "sku": "HBR",
+   "desc": "CENTR X HYROX Competition Power Rope",
+   "type": "Hyrox",
+   "units": 784,
+   "rev": 301093,
+   "pct": 14.7,
+   "aov": 384
+  },
+  {
+   "sku": "NMT.1",
+   "desc": "CENTR x HYROX Perform Tread",
+   "type": "Hyrox",
+   "units": 30,
+   "rev": 242332,
+   "pct": 11.8,
+   "aov": 8078
+  },
+  {
+   "sku": "HUBP25",
+   "desc": "CENTR X HYROX 25kg Competition Interlocking Plate",
+   "type": "Hyrox",
+   "units": 344,
+   "rev": 106355,
+   "pct": 5.2,
+   "aov": 309
+  },
+  {
+   "sku": "HBT",
+   "desc": "CENTR X HYROX Competition Rig Target",
+   "type": "Hyrox",
+   "units": 643,
+   "rev": 99504,
+   "pct": 4.8,
+   "aov": 155
+  },
+  {
+   "sku": "HSB20",
+   "desc": "CENTR X HYROX 20kg Competition Sand Bag + 4 Inserts",
+   "type": "Hyrox",
+   "units": 534,
+   "rev": 91967,
+   "pct": 4.5,
+   "aov": 172
+  },
+  {
+   "sku": "HSB30",
+   "desc": "CENTR X HYROX 30kg Competition Sand Bag + 6 Inserts",
+   "type": "Hyrox",
+   "units": 450,
+   "rev": 84274,
+   "pct": 4.1,
+   "aov": 187
+  },
+  {
+   "sku": "HWB6",
+   "desc": "CENTR X HYROX 6kg Competition Wall ball",
+   "type": "Hyrox",
+   "units": 587,
+   "rev": 76625,
+   "pct": 3.7,
+   "aov": 131
+  },
+  {
+   "sku": "HUOKB32",
+   "desc": "CENTR X HYROX 32kg Competition Octo Kettlebell",
+   "type": "Hyrox",
+   "units": 242,
+   "rev": 73818,
+   "pct": 3.6,
+   "aov": 305
+  },
+  {
+   "sku": "HUOKB24",
+   "desc": "CENTR X HYROX 24kg Competition Octo Kettlebell",
+   "type": "Hyrox",
+   "units": 299,
+   "rev": 70915,
+   "pct": 3.5,
+   "aov": 237
+  },
+  {
+   "sku": "HSB10",
+   "desc": "CENTR X HYROX 10kg Competition Sandbag + 2  Inserts",
+   "type": "Hyrox",
+   "units": 424,
+   "rev": 67196,
+   "pct": 3.3,
+   "aov": 158
+  },
+  {
+   "sku": "HTURF4",
+   "desc": "Centr x Hyrox Official Competition Perform Turf - 2 Full Lanes with Logo",
+   "type": "Turf",
+   "units": 11,
+   "rev": 65446,
+   "pct": 3.2,
+   "aov": 5950
+  },
+  {
+   "sku": "HWB9",
+   "desc": "CENTR X HYROX 9kg Competition Wall ball",
+   "type": "Hyrox",
+   "units": 443,
+   "rev": 61390,
+   "pct": 3.0,
+   "aov": 139
+  },
+  {
+   "sku": "HTURF3",
+   "desc": "Centr x Hyrox Official Competition Perform Turf - 2 Full Lanes with no logo",
+   "type": "Turf",
+   "units": 9,
+   "rev": 61355,
+   "pct": 3.0,
+   "aov": 6817
+  },
+  {
+   "sku": "HWB4",
+   "desc": "CENTR X HYROX 4kg Competition Wall Ball",
+   "type": "Hyrox",
+   "units": 447,
+   "rev": 53129,
+   "pct": 2.6,
+   "aov": 119
+  },
+  {
+   "sku": "2-HTURF7",
+   "desc": "CENTR x HYROX Perform Turf - Middle 2 Lanes",
+   "type": "Turf",
+   "units": 21,
+   "rev": 48673,
+   "pct": 2.4,
+   "aov": 2318
+  },
+  {
+   "sku": "HUOKB16",
+   "desc": "CENTR X HYROX 16kg Competition Octo Kettlebell",
+   "type": "Hyrox",
+   "units": 238,
+   "rev": 45976,
+   "pct": 2.2,
+   "aov": 193
+  },
+  {
+   "sku": "2-HTURF9",
+   "desc": "CENTR x HYROX Perform Turf - Middle End Zone with Logo",
+   "type": "Turf",
+   "units": 30,
+   "rev": 23520,
+   "pct": 1.1,
+   "aov": 784
+  },
+  {
+   "sku": "2-HTURF8",
+   "desc": "CENTR x HYROX Perform Turf - Outer 2 Lanes",
+   "type": "Turf",
+   "units": 10,
+   "rev": 20240,
+   "pct": 1.0,
+   "aov": 2024
+  },
+  {
+   "sku": "NMT.3",
+   "desc": "Centr x Hyrox Perform Tread",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 16249,
+   "pct": 0.8,
+   "aov": 8124
+  },
+  {
+   "sku": "HTURF1",
+   "desc": "CENTR x HYROX Perform Turf - Plain Black",
+   "type": "Turf",
+   "units": 4,
+   "rev": 9678,
+   "pct": 0.5,
+   "aov": 2419
+  },
+  {
+   "sku": "2-HTURF10",
+   "desc": "CENTR x HYROX Perform Turf - Outer End Zone with Logo",
+   "type": "Turf",
+   "units": 12,
+   "rev": 8425,
+   "pct": 0.4,
+   "aov": 702
+  },
+  {
+   "sku": "HPR-6T",
+   "desc": "CENTR x HYROX Perform Rig - 6 Targets",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 8182,
+   "pct": 0.4,
+   "aov": 8182
+  },
+  {
+   "sku": "HTURF7",
+   "desc": "Centr x Hyrox Official Competition Perform Turf - 2 Lanes without End Zones (12.5m)",
+   "type": "Turf",
+   "units": 2,
+   "rev": 4607,
+   "pct": 0.2,
+   "aov": 2304
+  },
+  {
+   "sku": "HKT2025",
+   "desc": "CENTR x HYROX 2025 Collectible Kettlebell",
+   "type": "Hyrox",
+   "units": 59,
+   "rev": 4197,
+   "pct": 0.2,
+   "aov": 71
+  },
+  {
+   "sku": "HR2C",
+   "desc": "Centr x HYROX Perform Series HR2 Half Rack Complete",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 3635,
+   "pct": 0.2,
+   "aov": 3635
+  },
+  {
+   "sku": "2-HTURF11",
+   "desc": "CENTR x HYROX Perform Turf - Middle End Zone without Logo",
+   "type": "Turf",
+   "units": 4,
+   "rev": 3015,
+   "pct": 0.1,
+   "aov": 754
+  },
+  {
+   "sku": "2-HTURF12",
+   "desc": "CENTR x HYROX Perform Turf - Outer End Zone without Logo",
+   "type": "Turf",
+   "units": 4,
+   "rev": 2857,
+   "pct": 0.1,
+   "aov": 714
+  },
+  {
+   "sku": "HEBP25",
+   "desc": "Elite 15 Hyrox Weight Plate - White 25kg",
+   "type": "Hyrox",
+   "units": 6,
+   "rev": 2449,
+   "pct": 0.1,
+   "aov": 408
+  },
+  {
+   "sku": "HWB12",
+   "desc": "CENTR x HYROX Wall Ball 12kg",
+   "type": "Hyrox",
+   "units": 18,
+   "rev": 2368,
+   "pct": 0.1,
+   "aov": 132
+  },
+  {
+   "sku": "HYSSB7.5",
+   "desc": "Centr x Hyrox Youngstars Sandbag 7.5kg",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1709,
+   "pct": 0.1,
+   "aov": 155
+  },
+  {
+   "sku": "HYSKB6",
+   "desc": "Centr x Hyrox Youngstars Octo-Kettlebell 6kg",
+   "type": "Hyrox",
+   "units": 13,
+   "rev": 1659,
+   "pct": 0.1,
+   "aov": 128
+  },
+  {
+   "sku": "HYSPR",
+   "desc": "Centr x Hyrox Youngstars Battle Rope (25mm x 10m)",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1613,
+   "pct": 0.1,
+   "aov": 147
+  },
+  {
+   "sku": "HEUKB32",
+   "desc": "Elite 15 Hyrox Octo-Kettlebell 32kg",
+   "type": "Hyrox",
+   "units": 4,
+   "rev": 1596,
+   "pct": 0.1,
+   "aov": 399
+  },
+  {
+   "sku": "HYSPRL",
+   "desc": "Centr x Hyrox Youngstars Pull Rope with Loop",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1422,
+   "pct": 0.1,
+   "aov": 129
+  },
+  {
+   "sku": "HUOKB12",
+   "desc": "CENTR x HYROX Competition Octo Kettlebell 12kg",
+   "type": "Hyrox",
+   "units": 8,
+   "rev": 1375,
+   "pct": 0.1,
+   "aov": 172
+  },
+  {
+   "sku": "HEUKB24",
+   "desc": "Elite 15 Hyrox Octo-Kettlebell 24kg",
+   "type": "Hyrox",
+   "units": 4,
+   "rev": 1305,
+   "pct": 0.1,
+   "aov": 326
+  },
+  {
+   "sku": "HYSWB3",
+   "desc": "Centr x Hyrox Youngstars Wall Ball 3kg",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1241,
+   "pct": 0.1,
+   "aov": 113
+  },
+  {
+   "sku": "HYSKB4",
+   "desc": "Centr x Hyrox Youngstars Octo-Kettlebell 4kg",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1241,
+   "pct": 0.1,
+   "aov": 113
+  },
+  {
+   "sku": "HYSWB2",
+   "desc": "Centr x Hyrox Youngstars Wall Ball 2kg",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1145,
+   "pct": 0.1,
+   "aov": 104
+  },
+  {
+   "sku": "HYSCH",
+   "desc": "Centr x Hyrox Youngstars Power Sled Frame Bar",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1136,
+   "pct": 0.1,
+   "aov": 103
+  },
+  {
+   "sku": "HYSWB1",
+   "desc": "Centr x Hyrox Youngstars Wall Ball 1kg",
+   "type": "Hyrox",
+   "units": 11,
+   "rev": 1098,
+   "pct": 0.1,
+   "aov": 100
+  },
+  {
+   "sku": "HEBR",
+   "desc": "Elite 15 Hyrox Battle Rope - White",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 1089,
+   "pct": 0.1,
+   "aov": 545
+  },
+  {
+   "sku": "HEPS",
+   "desc": "Elite 15 Hyrox Power Sled",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 763,
+   "pct": 0.0,
+   "aov": 763
+  },
+  {
+   "sku": "HWB2",
+   "desc": "CENTR x HYROX Wall Ball 2kg",
+   "type": "Hyrox",
+   "units": 6,
+   "rev": 618,
+   "pct": 0.0,
+   "aov": 103
+  },
+  {
+   "sku": "HUOKB28",
+   "desc": "CENTR x HYROX Competition Octo Kettlebell 28kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 528,
+   "pct": 0.0,
+   "aov": 264
+  },
+  {
+   "sku": "HEWB6",
+   "desc": "Elite 15 Hyrox Wall Ball 6kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 325,
+   "pct": 0.0,
+   "aov": 163
+  },
+  {
+   "sku": "HESB20",
+   "desc": "Elite 15 Hyrox Sandbag 20kg",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 226,
+   "pct": 0.0,
+   "aov": 226
+  },
+  {
+   "sku": "HUOKB20",
+   "desc": "CENTR x HYROX Competition Octo Kettlebell 20kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 209,
+   "pct": 0.0,
+   "aov": 105
+  },
+  {
+   "sku": "HEWB9",
+   "desc": "Elite 15 Hyrox Wall Ball 9kg",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 181,
+   "pct": 0.0,
+   "aov": 181
+  },
+  {
+   "sku": "HUBP15",
+   "desc": "CENTR x HYROX Interlocking Bumper Plate 15kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 172,
+   "pct": 0.0,
+   "aov": 86
+  },
+  {
+   "sku": "HETP3",
+   "desc": "Elite 15 Hyrox Top Plate 3kg",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 126,
+   "pct": 0.0,
+   "aov": 126
+  },
+  {
+   "sku": "HETP2",
+   "desc": "Elite 15 Hyrox Top Plate 2kg",
+   "type": "Hyrox",
+   "units": 1,
+   "rev": 99,
+   "pct": 0.0,
+   "aov": 99
+  },
+  {
+   "sku": "HUBP10",
+   "desc": "CENTR x HYROX Interlocking Bumper Plate 10kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 54,
+   "pct": 0.0,
+   "aov": 27
+  },
+  {
+   "sku": "HUBP5",
+   "desc": "CENTR x HYROX Interlocking Bumper Plate 5kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 27,
+   "pct": 0.0,
+   "aov": 14
+  },
+  {
+   "sku": "HUBP2.5",
+   "desc": "CENTR x HYROX Interlocking Bumper Plate 2.5kg",
+   "type": "Hyrox",
+   "units": 2,
+   "rev": 18,
+   "pct": 0.0,
+   "aov": 9
+  }
+ ],
+ "types": [
+  {
+   "name": "Hyrox",
+   "rev": 1804348,
+   "units": 6384,
+   "pct": 87.9
+  },
+  {
+   "name": "Turf",
+   "rev": 247817,
+   "units": 107,
+   "pct": 12.1
+  }
+ ],
+ "channels": [
+  {
+   "name": "Retail",
+   "rev": 966528,
+   "pct": 47.1
+  },
+  {
+   "name": "Commercial",
+   "rev": 537855,
+   "pct": 26.2
+  },
+  {
+   "name": "Online (D2C)",
+   "rev": 512066,
+   "pct": 25.0
+  },
+  {
+   "name": "Wholesale",
+   "rev": 35716,
+   "pct": 1.7
+  }
+ ],
+ "monthly": [
+  {
+   "m": "2024-06",
+   "rev": 2819
+  },
+  {
+   "m": "2024-07",
+   "rev": 6029
+  },
+  {
+   "m": "2024-08",
+   "rev": 29335
+  },
+  {
+   "m": "2024-09",
+   "rev": 38912
+  },
+  {
+   "m": "2024-10",
+   "rev": 25049
+  },
+  {
+   "m": "2024-11",
+   "rev": 12677
+  },
+  {
+   "m": "2024-12",
+   "rev": 119269
+  },
+  {
+   "m": "2025-01",
+   "rev": 61002
+  },
+  {
+   "m": "2025-02",
+   "rev": 38646
+  },
+  {
+   "m": "2025-03",
+   "rev": 86128
+  },
+  {
+   "m": "2025-04",
+   "rev": 46005
+  },
+  {
+   "m": "2025-05",
+   "rev": 222380
+  },
+  {
+   "m": "2025-06",
+   "rev": 21597
+  },
+  {
+   "m": "2025-07",
+   "rev": 61694
+  },
+  {
+   "m": "2025-08",
+   "rev": 88991
+  },
+  {
+   "m": "2025-09",
+   "rev": 59966
+  },
+  {
+   "m": "2025-10",
+   "rev": 94863
+  },
+  {
+   "m": "2025-11",
+   "rev": 56697
+  },
+  {
+   "m": "2025-12",
+   "rev": 107483
+  },
+  {
+   "m": "2026-01",
+   "rev": 152884
+  },
+  {
+   "m": "2026-02",
+   "rev": 83582
+  },
+  {
+   "m": "2026-03",
+   "rev": 95428
+  },
+  {
+   "m": "2026-04",
+   "rev": 204447
+  },
+  {
+   "m": "2026-05",
+   "rev": 74724
+  },
+  {
+   "m": "2026-06",
+   "rev": 261557
+  }
+ ],
+ "fy": [
+  {
+   "fy": "FY2024",
+   "rev": 2819
+  },
+  {
+   "fy": "FY2025",
+   "rev": 707030
+  },
+  {
+   "fy": "FY2026",
+   "rev": 1342316
+  }
+ ],
+ "families": [
+  {
+   "name": "Competition Sled",
+   "rev": 373614,
+   "units": 700,
+   "skus": 3,
+   "pct": 18.2
+  },
+  {
+   "name": "Power Rope",
+   "rev": 303795,
+   "units": 797,
+   "skus": 3,
+   "pct": 14.8
+  },
+  {
+   "name": "Perform Tread",
+   "rev": 258580,
+   "units": 32,
+   "skus": 2,
+   "pct": 12.6
+  },
+  {
+   "name": "Perform Turf",
+   "rev": 247817,
+   "units": 107,
+   "skus": 10,
+   "pct": 12.1
+  },
+  {
+   "name": "Sandbag",
+   "rev": 245372,
+   "units": 1420,
+   "skus": 5,
+   "pct": 12.0
+  },
+  {
+   "name": "Octo Kettlebell",
+   "rev": 202820,
+   "units": 882,
+   "skus": 11,
+   "pct": 9.9
+  },
+  {
+   "name": "Wall Ball",
+   "rev": 198120,
+   "units": 1537,
+   "skus": 10,
+   "pct": 9.7
+  },
+  {
+   "name": "Competition Plates",
+   "rev": 109302,
+   "units": 360,
+   "skus": 8,
+   "pct": 5.3
+  },
+  {
+   "name": "Rig Target",
+   "rev": 99504,
+   "units": 643,
+   "skus": 1,
+   "pct": 4.8
+  },
+  {
+   "name": "Perform Rig",
+   "rev": 8182,
+   "units": 1,
+   "skus": 1,
+   "pct": 0.4
+  },
+  {
+   "name": "Other Accessories",
+   "rev": 5058,
+   "units": 12,
+   "skus": 2,
+   "pct": 0.2
+  }
+ ]
+};
+const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
+const fmt = n => '$' + Math.round(n).toLocaleString();
+const fmtK = n => n>=1000000 ? '$'+(n/1000000).toFixed(2)+'M' : '$' + (n/1000).toFixed(n>=100000?0:1) + 'K';
+const monthLabel = m => { const [y,mo]=m.split('-'); const names=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return names[+mo] + (mo==='01'||m===DATA.monthly[0].m?` '${y.slice(2)}`:''); };
+const monthYear = m => { const [y,mo]=m.split('-'); const names=['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']; return names[+mo]+" '"+y.slice(2); };
+
+// derive product family client-side (mirrors build script)
+const family = (desc) => {
+  const d = desc.toLowerCase();
+  if (d.includes('turf')) return 'Perform Turf';
+  if (d.includes('sled')) return 'Competition Sled';
+  if (d.includes('power rope')||d.includes('battle rope')) return 'Power Rope';
+  if (d.includes('tread')) return 'Perform Tread';
+  if (d.includes('wall ball')) return 'Wall Ball';
+  if (d.includes('sand bag')||d.includes('sandbag')) return 'Sandbag';
+  if (d.includes('kettlebell')) return 'Octo Kettlebell';
+  if (d.includes('plate')) return 'Competition Plates';
+  if (d.includes('rig target')) return 'Rig Target';
+  if (d.includes('perform rig')||d.includes('rig -')||d.includes('half rack')) return 'Rig & Rack';
+  return 'Accessories';
+};
+
+// ===== THEME =====
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+const themes = {
+  light: {
+    bg:'bg-white', bg2:'bg-lt-card', bg3:'bg-lt-card2', border:'border-lt-border', borderAccent:'border-gaf-orange/20',
+    text:'text-lt-text', sub:'text-lt-sub', muted:'text-lt-muted', cardBg:'bg-lt-card', cardBorder:'border-lt-border',
+    slashColor:'rgba(242,100,34,0.06)', grainClass:'', bodyBg:'#f0f0f0', logoFilter:'', titleText:'text-lt-text',
+    donutTrack:'#eeeef0', kpiAccentBg:'bg-gaf-orange/5', navBg:'bg-black/5', navBorder:'border-black/10', navText:'text-lt-text',
+    navHover:'hover:bg-gaf-orange hover:border-gaf-orange hover:text-white', navDisabled:'bg-black/5 text-lt-muted cursor-not-allowed',
+    green:'text-emerald-600', inputBg:'bg-white', rowHover:'hover:bg-gaf-orange/5', thBg:'bg-lt-card2', tblBorder:'border-lt-border',
+  },
+  dark: {
+    bg:'bg-gaf-black', bg2:'bg-gaf-dark', bg3:'bg-gaf-mid', border:'border-gaf-steel/20', borderAccent:'border-gaf-orange/20',
+    text:'text-white', sub:'text-gaf-ash', muted:'text-gaf-steel', cardBg:'bg-gaf-dark', cardBorder:'border-gaf-steel/20',
+    slashColor:'rgba(242,100,34,0.15)', grainClass:'grain-dark', bodyBg:'#0a0a0a', logoFilter:'brightness-0 invert', titleText:'text-white',
+    donutTrack:'#1e1e1e', kpiAccentBg:'bg-gaf-orange/5', navBg:'bg-white/5', navBorder:'border-white/10', navText:'text-white',
+    navHover:'hover:bg-gaf-orange hover:border-gaf-orange', navDisabled:'bg-gaf-steel/20 text-gaf-steel cursor-not-allowed',
+    green:'text-emerald-400', inputBg:'bg-gaf-mid', rowHover:'hover:bg-gaf-orange/10', thBg:'bg-gaf-mid', tblBorder:'border-gaf-steel/20',
+  }
+};
+
+// ===== ICONS =====
+const I = ({ d, size=18, className='', sw=1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((p,i)=><path key={i} d={p}/>) : <path d={d}/>}
+  </svg>
+);
+const ChevL=p=><I {...p} d="M15 18l-6-6 6-6"/>;
+const ChevR=p=><I {...p} d="M9 18l6-6-6-6"/>;
+const Sun=p=><I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]}/>;
+const Moon=p=><I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>;
+const Search=p=><I {...p} d={["M11 19a8 8 0 100-16 8 8 0 000 16z","M21 21l-4.35-4.35"]}/>;
+const SortIcon=({dir,active})=> active ? <I d={dir==='asc'?"M18 15l-6-6-6 6":"M6 9l6 6 6-6"} size={13}/> : <I d={["M8 9l4-4 4 4","M16 15l-4 4-4-4"]} size={13} className="opacity-40"/>;
+
+// ===== DONUT =====
+const Donut = ({ data, size=200, thickness=24 }) => {
+  const th = useTheme();
+  const r=(size-thickness)/2, c=2*Math.PI*r, total=data.reduce((s,d)=>s+d.value,0);
+  let cum=0;
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{transform:'rotate(-90deg)'}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={th.donutTrack} strokeWidth={thickness}/>
+      {data.map((d,i)=>{const pct=d.value/total, offset=c*(1-pct), rot=cum*360; cum+=pct;
+        return <circle key={i} cx={size/2} cy={size/2} r={r} fill="none" stroke={d.color} strokeWidth={thickness}
+          strokeDasharray={c} style={{'--circumference':c,'--dash-offset':offset}} className="donut-animate" strokeDashoffset={c}
+          transform={`rotate(${rot} ${size/2} ${size/2})`}/>;})}
+    </svg>
+  );
+};
+
+const Logo = () => { const th=useTheme(); return <img src={GAF_LOGO} alt="GAF" className={`h-8 w-auto object-contain opacity-60 ${th.logoFilter}`}/>; };
+
+const Slide = ({ children, num, total, noPad }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} ${th.text} flex flex-col relative overflow-hidden`}>
+    <div className="slash" style={{top:'30%',left:'-50%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <div className="slash" style={{top:'60%',left:'-30%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <header className="flex justify-between items-center px-10 pt-5 pb-3 z-10 shrink-0">
+      <Logo/>
+      <div className="flex items-center gap-3">
+        <span className={`text-[14px] font-heading font-light tracking-[.3em] ${th.sub} uppercase`}>Centr x Hyrox</span>
+        <div className={`w-px h-4 ${th.bg3}`}></div>
+        <span className={`text-[14px] font-body ${th.sub}`}>{num}<span className={`${th.muted} mx-1`}>/</span>{total}</span>
+      </div>
+    </header>
+    <main className={`flex-1 flex flex-col z-10 overflow-hidden ${noPad?'':'px-10 pb-7'}`}>{children}</main>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:`${(num/total)*100}%`}}></footer>
+  </div>
+  );
+};
+
+const Kpi = ({ label, value, sub, accent }) => {
+  const th = useTheme();
+  return (
+  <div className={`p-4 rounded-lg border ${accent?`${th.kpiAccentBg} ${th.borderAccent}`:`${th.cardBg} ${th.cardBorder}`}`}>
+    <p className={`text-[13px] font-heading font-medium tracking-[.25em] uppercase mb-3 ${accent?'text-gaf-orange':th.sub}`}>{label}</p>
+    <p className={`text-3xl font-heading font-bold ${accent?'text-gaf-orange':th.text}`}>{value}</p>
+    {sub && <p className={`text-[14px] ${th.sub} mt-1.5 font-body`}>{sub}</p>}
+  </div>);
+};
+
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+  <div className="mb-4 shrink-0 stagger">
+    {pre && <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">{pre}</p>}
+    <h1 className={`font-display text-5xl md:text-7xl ${th.text} leading-[0.9] tracking-wide`}>{title}</h1>
+    {sub && <p className={`text-[15px] ${th.sub} mt-3 font-body max-w-3xl leading-relaxed`}>{sub}</p>}
+  </div>);
+};
+
+// ===== SLIDE 1: TITLE =====
+const TitleSlide = () => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex flex-col justify-end overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className="absolute -right-[25%] top-[15%] w-[60%] h-[130%] border border-gaf-orange/10 transform rotate-[-18deg]"></div>
+    <div className="flex-1 flex items-center px-16 z-10">
+      <div className="stagger">
+        <div className="flex items-center gap-5 mb-10">
+          <img src={GAF_LOGO} alt="Gym and Fitness" className={`h-14 w-auto object-contain ${th.logoFilter}`}/>
+          <div className={`w-px h-10 ${th.bg3}`}></div>
+          <span className={`text-[14px] font-heading tracking-[.4em] ${th.sub} uppercase`}>Product Sales Performance</span>
+        </div>
+        <h1 className={`font-display text-[8rem] md:text-[11rem] leading-[0.85] tracking-wider ${th.titleText}`}>
+          Centr x<br/><span className="text-gaf-orange">HYROX</span>
+        </h1>
+        <div className="flex items-center gap-6 mt-10">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>Revenue by SKU · {monthYear(DATA.monthly[0].m)} to {monthYear(DATA.monthly[DATA.monthly.length-1].m)} · {DATA.meta.months} months</p>
+        </div>
+      </div>
+    </div>
+    <div className="px-16 pb-8 z-10">
+      <p className={`text-[14px] font-heading tracking-[.5em] ${th.muted} uppercase`}>Confidential Internal Use</p>
+    </div>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:'10%'}}></footer>
+  </div>);
+};
+
+// ===== SLIDE 2: PERFORMANCE =====
+const PerfSlide = ({ n, t }) => {
+  const th = useTheme();
+  const md = DATA.monthly;
+  const max = Math.max(...md.map(d=>d.rev));
+  const fy25 = DATA.fy.find(f=>f.fy==='FY2025').rev, fy26 = DATA.fy.find(f=>f.fy==='FY2026').rev;
+  const yoy = Math.round((fy26/fy25-1)*100);
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Performance" title="TOP-LINE SALES" sub={`Centr x Hyrox revenue across the full trading history, ${monthYear(md[0].m)} to ${monthYear(md[md.length-1].m)}`}/>
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
+        <Kpi label="Total Revenue" value={fmt(DATA.meta.total_rev)} sub={`${DATA.meta.months} months trading`}/>
+        <Kpi label="Units Sold" value={DATA.meta.total_units.toLocaleString()} sub={`across ${DATA.meta.n_skus} active SKUs`}/>
+        <Kpi label="Peak Month" value={fmtK(DATA.meta.peak.rev)} sub={monthYear(DATA.meta.peak.m)}/>
+        <Kpi label="YoY Growth" value={`+${yoy}%`} sub={`FY25 ${fmtK(fy25)} → FY26 ${fmtK(fy26)}`} accent/>
+      </div>
+      <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0`}>
+        <div className="flex items-center justify-between mb-3">
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Monthly Revenue</p>
+          <p className={`text-[14px] ${th.sub} font-body`}>Peak: <span className="text-gaf-orange font-semibold">{fmtK(DATA.meta.peak.rev)}</span> ({monthYear(DATA.meta.peak.m)})</p>
+        </div>
+        <div className="flex items-end gap-[3px] h-[calc(100%-36px)]">
+          {md.map((d,i)=>(
+            <div key={i} className="flex-1 flex flex-col items-center justify-end h-full group">
+              <span className={`text-[9px] font-body font-semibold ${th.sub} mb-1`}>{(d.rev/1000).toFixed(0)}</span>
+              <div className="w-full rounded-sm bar-grow origin-bottom" style={{
+                height:`${(d.rev/max)*90}%`, minHeight:'3px',
+                background:`linear-gradient(to top, #f26422, ${d.rev===max?'#ff8a50':'#c03008'})`, animationDelay:`${i*0.04}s`}}></div>
+              <span className={`text-[8px] ${th.muted} mt-1.5 font-body -rotate-45 origin-center whitespace-nowrap`}>{monthLabel(d.m)}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>);
+};
+
+// ===== SLIDE 3: CATEGORY & CHANNEL =====
+const MixSlide = ({ n, t }) => {
+  const th = useTheme();
+  const fams = DATA.families.filter(f=>f.rev>4000);
+  const maxRev = fams[0].rev;
+  const chColors = ['#f26422','#e8520d','#d4410a','#8a8a8a'];
+  const chDonut = DATA.channels.map((c,i)=>({...c, value:c.rev, color:chColors[i]}));
+  const fy = DATA.fy.filter(f=>f.rev>10000);
+  const maxFy = Math.max(...fy.map(f=>f.rev));
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Revenue Mix" title="RANGE & CHANNEL" sub="Contribution by product family and sales channel"/>
+    <div className="flex flex-1 gap-6 min-h-0">
+      <div className="flex-1 flex flex-col gap-2 stagger min-w-0">
+        {fams.map((c,i)=>(
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-4 py-2 flex items-center gap-4`}>
+            <div className="w-1 h-9 rounded-full" style={{backgroundColor:i<3?'#f26422':(i<6?'#c03008':'#8a8a8a')}}></div>
+            <div className="flex-1 min-w-0">
+              <div className="flex justify-between items-baseline mb-1.5">
+                <span className={`text-[14px] font-heading font-semibold ${th.text}`}>{c.name} <span className={`text-[11px] font-body ${th.muted}`}>· {c.skus} SKU{c.skus>1?'s':''}</span></span>
+                <div className="flex items-baseline gap-3">
+                  <span className={`text-[13px] font-body ${th.sub}`}>{c.units.toLocaleString()} u</span>
+                  <span className={`text-[15px] font-heading font-bold ${th.text} w-16 text-right`}>{fmtK(c.rev)}</span>
+                  <span className="text-[12px] font-heading font-semibold text-gaf-orange w-10 text-right">{c.pct}%</span>
+                </div>
+              </div>
+              <div className={`w-full ${th.bg3} rounded-full h-1.5`}>
+                <div className="h-full rounded-full fill-anim" style={{'--target-w':`${(c.rev/maxRev)*100}%`, backgroundColor:i<3?'#f26422':(i<6?'#c03008':'#8a8a8a')}}></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-[330px] shrink-0 flex flex-col gap-3">
+        <div className={`${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col items-center`}>
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-3 self-start`}>Revenue by Channel</p>
+          <div className="relative">
+            <Donut data={chDonut} size={168} thickness={22}/>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className={`text-2xl font-heading font-bold ${th.text}`}>{DATA.channels[0].pct}%</span>
+              <span className={`text-[12px] ${th.sub} font-body`}>{DATA.channels[0].name}</span>
+            </div>
+          </div>
+          <div className="w-full space-y-1.5 mt-3">
+            {chDonut.map((d,i)=>(
+              <div key={i} className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-sm" style={{backgroundColor:d.color}}></div>
+                <span className={`text-[13px] font-body ${th.sub} flex-1`}>{d.name}</span>
+                <span className={`text-[14px] font-heading font-semibold ${th.text}`}>{fmtK(d.rev)}</span>
+                <span className="text-[12px] font-heading text-gaf-orange w-9 text-right">{d.pct}%</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex-1`}>
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-3`}>Financial Year Growth</p>
+          <div className="flex items-end justify-around gap-4 h-[calc(100%-32px)]">
+            {fy.map((f,i)=>(
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                <span className={`text-[14px] font-heading font-bold ${i===fy.length-1?'text-gaf-orange':th.text} mb-1`}>{fmtK(f.rev)}</span>
+                <div className="w-full rounded-t-sm bar-grow origin-bottom" style={{height:`${(f.rev/maxFy)*80}%`, background:i===fy.length-1?'linear-gradient(to top,#f26422,#ff8a50)':'linear-gradient(to top,#c03008,#f26422)', animationDelay:`${i*0.1}s`}}></div>
+                <span className={`text-[12px] ${th.sub} mt-2 font-heading font-semibold`}>{f.fy}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </Slide>);
+};
+
+// ===== SLIDE 4: SKU EXPLORER (searchable / sortable / paginated) =====
+const PER_PAGE = 11;
+const SkuSlide = ({ n, t }) => {
+  const th = useTheme();
+  const [q, setQ] = useState('');
+  const [sortKey, setSortKey] = useState('rev');
+  const [sortDir, setSortDir] = useState('desc');
+  const [page, setPage] = useState(0);
+
+  const enriched = useMemo(()=> DATA.skus.map(s=>({...s, fam:family(s.desc)})), []);
+  const filtered = useMemo(()=>{
+    const term = q.trim().toLowerCase();
+    let r = term ? enriched.filter(s => s.sku.toLowerCase().includes(term) || s.desc.toLowerCase().includes(term) || s.fam.toLowerCase().includes(term)) : enriched;
+    r = [...r].sort((a,b)=>{
+      let av=a[sortKey], bv=b[sortKey];
+      if(typeof av==='string'){av=av.toLowerCase();bv=bv.toLowerCase();return sortDir==='asc'?av.localeCompare(bv):bv.localeCompare(av);}
+      return sortDir==='asc'?av-bv:bv-av;
+    });
+    return r;
+  }, [q, sortKey, sortDir, enriched]);
+
+  useEffect(()=>{ setPage(0); }, [q, sortKey, sortDir]);
+  const pages = Math.max(1, Math.ceil(filtered.length/PER_PAGE));
+  const cur = Math.min(page, pages-1);
+  const slice = filtered.slice(cur*PER_PAGE, cur*PER_PAGE+PER_PAGE);
+  const fRev = filtered.reduce((s,x)=>s+x.rev,0);
+  const fUnits = filtered.reduce((s,x)=>s+x.units,0);
+
+  const sort = k => { if(sortKey===k){setSortDir(d=>d==='asc'?'desc':'asc');} else {setSortKey(k);setSortDir(k==='sku'||k==='desc'?'asc':'desc');} };
+  const Th = ({k, label, cls, num}) => (
+    <th className={`px-3 py-2 ${num?'text-right':'text-left'} ${cls||''} cursor-pointer select-none group`} onClick={()=>sort(k)}>
+      <span className={`inline-flex items-center gap-1 ${num?'flex-row-reverse':''} ${sortKey===k?'text-gaf-orange':th.sub}`}>
+        {label}<SortIcon dir={sortDir} active={sortKey===k}/>
+      </span>
+    </th>
+  );
+
+  return (
+  <Slide num={n} total={t}>
+    <div className="flex items-end justify-between mb-3 shrink-0">
+      <div>
+        <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-1.5">Detailed Data</p>
+        <h1 className={`font-display text-4xl md:text-6xl ${th.text} leading-[0.9] tracking-wide`}>SKU EXPLORER</h1>
+      </div>
+      <div className={`flex items-center gap-2 ${th.inputBg} border ${th.cardBorder} rounded-lg px-3 py-2 w-[300px]`}>
+        <Search size={16} className={th.muted}/>
+        <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Search SKU, product or family…"
+          className={`bg-transparent flex-1 text-[14px] font-body ${th.text} placeholder:${th.muted}`}/>
+        {q && <button onClick={()=>setQ('')} className={`text-[13px] ${th.muted} hover:text-gaf-orange`}>✕</button>}
+      </div>
+    </div>
+
+    <div className={`flex-1 min-h-0 ${th.cardBg} border ${th.cardBorder} rounded-lg overflow-hidden flex flex-col`}>
+      <table className="w-full border-collapse table-fixed">
+        <thead>
+          <tr className={`${th.thBg} text-[12px] font-heading tracking-[.12em] uppercase border-b ${th.tblBorder}`}>
+            <th className={`px-3 py-2 text-left w-[52px] ${th.sub}`}>#</th>
+            <Th k="sku" label="SKU" cls="w-[120px]"/>
+            <Th k="desc" label="Product"/>
+            <Th k="fam" label="Family" cls="w-[150px]"/>
+            <Th k="units" label="Units" cls="w-[92px]" num/>
+            <Th k="aov" label="Avg $" cls="w-[92px]" num/>
+            <Th k="rev" label="Revenue" cls="w-[120px]" num/>
+            <Th k="pct" label="% Tot" cls="w-[78px]" num/>
+          </tr>
+        </thead>
+        <tbody>
+          {slice.map((s,i)=>{
+            const rank = filtered.indexOf(s)+1;
+            return (
+            <tr key={s.sku} className={`text-[13px] font-body border-b ${th.tblBorder} ${th.rowHover} transition-colors rowfade`} style={{animationDelay:`${i*0.02}s`}}>
+              <td className={`px-3 py-2 font-heading font-bold ${rank<=3?'text-gaf-orange':th.muted}`}>{rank}</td>
+              <td className={`px-3 py-2 font-mono text-[12px] ${th.text} font-semibold`}>{s.sku}</td>
+              <td className={`px-3 py-2 ${th.sub} truncate`} title={s.desc}>{s.desc}</td>
+              <td className="px-3 py-2"><span className={`text-[11px] font-heading tracking-wide px-2 py-0.5 rounded ${th.bg3} ${th.sub}`}>{s.fam}</span></td>
+              <td className={`px-3 py-2 text-right ${th.text}`}>{s.units.toLocaleString()}</td>
+              <td className={`px-3 py-2 text-right ${th.sub}`}>${s.aov.toLocaleString()}</td>
+              <td className={`px-3 py-2 text-right font-heading font-bold ${th.text}`}>{fmt(s.rev)}</td>
+              <td className="px-3 py-2 text-right">
+                <span className="inline-flex items-center gap-1.5 justify-end">
+                  <span className={`w-8 ${th.bg3} rounded-full h-1 hidden`}></span>
+                  <span className="font-heading font-semibold text-gaf-orange">{s.pct}%</span>
+                </span>
+              </td>
+            </tr>);
+          })}
+          {slice.length===0 && (
+            <tr><td colSpan="8" className={`px-3 py-10 text-center ${th.muted} font-body text-[14px]`}>No SKUs match “{q}”.</td></tr>
+          )}
+        </tbody>
+      </table>
+    </div>
+
+    <div className="flex items-center justify-between mt-3 shrink-0">
+      <p className={`text-[13px] font-body ${th.sub}`}>
+        Showing <span className={`font-semibold ${th.text}`}>{filtered.length}</span> of {DATA.meta.n_skus} SKUs
+        {q && <span> · filtered</span>} · <span className="text-gaf-orange font-semibold">{fmt(fRev)}</span> · {fUnits.toLocaleString()} units
+      </p>
+      <div className="flex items-center gap-3" style={{marginRight:'150px'}}>
+        <span className={`text-[13px] font-body ${th.sub}`}>Page <span className={`font-semibold ${th.text}`}>{cur+1}</span> / {pages}</span>
+        <div className="flex gap-1.5">
+          <button onClick={()=>setPage(p=>Math.max(0,p-1))} disabled={cur===0}
+            className={`w-8 h-8 rounded-md flex items-center justify-center border transition-all ${cur===0?th.navDisabled:`${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevL size={15}/></button>
+          {Array.from({length:pages}).map((_,i)=>(
+            <button key={i} onClick={()=>setPage(i)}
+              className={`w-8 h-8 rounded-md text-[13px] font-heading font-semibold border transition-all ${i===cur?'bg-gaf-orange border-gaf-orange text-white':`${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>{i+1}</button>
+          ))}
+          <button onClick={()=>setPage(p=>Math.min(pages-1,p+1))} disabled={cur===pages-1}
+            className={`w-8 h-8 rounded-md flex items-center justify-center border transition-all ${cur===pages-1?th.navDisabled:`${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevR size={15}/></button>
+        </div>
+      </div>
+    </div>
+  </Slide>);
+};
+
+// ===== SLIDE 5: METHOD / CLOSE =====
+const CloseSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Reference" title="ABOUT THIS DATA" sub="Scope, method and definitions"/>
+    <div className="flex flex-1 gap-6 min-h-0">
+      <div className="flex-1 grid grid-cols-2 gap-4 stagger">
+        {[
+          { h:'Scope', b:`All Centr x Hyrox branded SKUs: every product with "Hyrox" in the product name. Non-Hyrox Centr lines (home gyms, treadmills, functional trainers) are excluded.` },
+          { h:'Period', b:`${monthYear(DATA.monthly[0].m)} to ${monthYear(DATA.monthly[DATA.monthly.length-1].m)}. ${DATA.meta.months} months of trading, the full history of the range.` },
+          { h:'Metric', b:`Top-line revenue (AUD, ex-GST) and units, aggregated per SKU across all four channels: Retail, Commercial, Online and Wholesale.` },
+          { h:'Source', b:`GAF product sales performance export. Figures reflect billed sales; a small number of export orders (US, NZ, India) are included at AUD value.` },
+        ].map((c,i)=>(
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col`}>
+            <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-2">{c.h}</p>
+            <p className={`text-[15px] font-body ${th.sub} leading-relaxed`}>{c.b}</p>
+          </div>
+        ))}
+      </div>
+      <div className={`w-[300px] shrink-0 ${th.cardBg} border-l-2 border-gaf-orange rounded-lg p-5 flex flex-col justify-center`}>
+        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-4">At a Glance</p>
+        <div className="space-y-4">
+          <div><p className={`text-3xl font-heading font-bold ${th.text}`}>{fmt(DATA.meta.total_rev)}</p><p className={`text-[13px] ${th.sub} font-body`}>total revenue</p></div>
+          <div className={`border-t ${th.cardBorder} pt-4`}><p className={`text-3xl font-heading font-bold ${th.text}`}>{DATA.meta.n_skus}</p><p className={`text-[13px] ${th.sub} font-body`}>active SKUs</p></div>
+          <div className={`border-t ${th.cardBorder} pt-4`}><p className={`text-3xl font-heading font-bold text-gaf-orange`}>{DATA.meta.total_units.toLocaleString()}</p><p className={`text-[13px] ${th.sub} font-body`}>units sold</p></div>
+        </div>
+      </div>
+    </div>
+  </Slide>);
+};
+
+// ===== APP =====
+const SLIDES = [TitleSlide, PerfSlide, MixSlide, SkuSlide, CloseSlide];
+function App() {
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(()=>Math.min(window.innerWidth/1600, window.innerHeight/900, 1));
+  const th = dark ? themes.dark : themes.light;
+  const go = useCallback(dir=>{const next=idx+dir; if(next>=0&&next<SLIDES.length){setIdx(next);setKey(k=>k+1);}},[idx]);
+  useEffect(()=>{const calc=()=>setZoom(Math.min(window.innerWidth/1600,window.innerHeight/900,1));window.addEventListener('resize',calc);return()=>window.removeEventListener('resize',calc);},[]);
+  useEffect(()=>{const h=e=>{
+    const typing = e.target && (e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA');
+    if(e.key==='ArrowRight'){e.preventDefault();go(1);} else if(e.key==='ArrowLeft'){go(-1);}
+    else if((e.key==='d'||e.key==='D')&&!typing) setDark(d=>!d);
+  };window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h);},[go]);
+  useEffect(()=>{document.body.style.background=th.bodyBg;document.body.className=th.grainClass;},[dark]);
+  const C = SLIDES[idx];
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen overflow-hidden flex items-center justify-center" style={{background:th.bodyBg}}>
+        <div key={key} className="overflow-hidden slide-enter rounded-lg shrink-0 relative" style={{width:1600,height:900,zoom,boxShadow:dark?'0 0 80px rgba(0,0,0,.6)':'0 4px 60px rgba(0,0,0,.12)'}}>
+          <C n={idx+1} t={SLIDES.length}/>
+          <div className="absolute bottom-6 right-8 flex gap-2 z-50">
+            <button onClick={()=>setDark(d=>!d)} title="Toggle theme (D)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+              {dark?<Sun size={14}/>:<Moon size={14}/>}
+            </button>
+            <div className="w-px h-9 bg-gaf-orange/20"></div>
+            <button onClick={()=>go(-1)} disabled={idx===0}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===0?th.navDisabled:`${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevL size={16}/></button>
+            <button onClick={()=>go(1)} disabled={idx===SLIDES.length-1}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===SLIDES.length-1?th.navDisabled:`${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevR size={16}/></button>
+          </div>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+const root = createRoot(document.getElementById('root'));
+root.render(<App/>);
+</script>
+</body>
+</html>

@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Sales Team Briefing — July 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: { orange: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt: { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body: ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.font-heading{font-family:'Montserrat',sans-serif}
+
+.grain-dark::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:9999}
+
+.slide-enter{animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.stagger>*{opacity:0;animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}
+.stagger>*:nth-child(2){animation-delay:.12s}
+.stagger>*:nth-child(3){animation-delay:.19s}
+.stagger>*:nth-child(4){animation-delay:.26s}
+.stagger>*:nth-child(5){animation-delay:.33s}
+.stagger>*:nth-child(6){animation-delay:.4s}
+.stagger>*:nth-child(7){animation-delay:.47s}
+.stagger>*:nth-child(8){animation-delay:.54s}
+
+.bar-grow{animation:barGrow .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
+
+.slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, useRef, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== THEME =====
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-gaf-orange/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted',
+    textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    slashColor: 'rgba(242,100,34,0.06)', grainClass: '',
+    bodyBg: '#f0f0f0', logoFilter: '', titleText: 'text-lt-text',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-lt-text',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-600', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    imgBg: 'bg-white',
+    footerText: 'text-lt-muted',
+  },
+  dark: {
+    bg: 'bg-gaf-black', bg2: 'bg-gaf-dark', bg3: 'bg-gaf-mid',
+    border: 'border-gaf-steel/20', borderAccent: 'border-gaf-orange/20',
+    text: 'text-white', sub: 'text-gaf-ash', muted: 'text-gaf-steel',
+    textInv: 'text-gaf-black',
+    cardBg: 'bg-gaf-dark', cardBorder: 'border-gaf-steel/20',
+    slashColor: 'rgba(242,100,34,0.15)', grainClass: 'grain-dark',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert', titleText: 'text-white',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-gaf-dark',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange',
+    navDisabled: 'bg-gaf-steel/20 text-gaf-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-400', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    imgBg: 'bg-white',
+    footerText: 'text-gaf-steel',
+  }
+};
+
+// ===== ICONS =====
+const I = ({ d, size = 18, className = '', sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+  </svg>
+);
+const ChevL = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Bolt = p => <I {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />;
+const Eye = p => <I {...p} d={["M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"]} />;
+const Users = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Check = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>;
+const Warn = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Target = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const Trophy = p => <I {...p} d={["M6 9H4.5a2.5 2.5 0 010-5H6","M18 9h1.5a2.5 2.5 0 000-5H18","M4 22h16","M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22","M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22","M18 2H6v7a6 6 0 0012 0V2z"]} />;
+const Cal = p => <I {...p} d={["M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z","M16 2v4","M8 2v4","M3 10h18"]} />;
+const Card = p => <I {...p} d={["M21 4H3a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2z","M1 10h22"]} />;
+const Megaphone = p => <I {...p} d={["M3 11l18-5v12L3 13v-2z","M11.6 16.8a3 3 0 11-5.8-1.6"]} />;
+const Tv = p => <I {...p} d={["M2 7h20v13H2z","M7 4l5 3 5-3"]} />;
+const Pkg = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const HomeIcon = p => <I {...p} d={["M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z","M9 22V12h6v10"]} />;
+const Film = p => <I {...p} d={["M19.82 2H4.18A2.18 2.18 0 002 4.18v15.64A2.18 2.18 0 004.18 22h15.64A2.18 2.18 0 0022 19.82V4.18A2.18 2.18 0 0019.82 2z","M7 2v20","M17 2v20","M2 12h20","M2 7h5","M2 17h5","M17 17h5","M17 7h5"]} />;
+const Activity = p => <I {...p} d="M22 12h-4l-3 9L9 3l-3 9H2" />;
+const Sun = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Flame = p => <I {...p} d={["M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"]} />;
+
+const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
+
+// ===== PRODUCT IMAGES (live Shopify CDN) =====
+const IMG = {
+  bumper: "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_20KG.jpg?v=1780988980",
+  barbell: "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_ENDCAP.jpg?v=1781673013",
+  vpr: "https://cdn.shopify.com/s/files/1/1950/1891/files/BinonicVPRfrontange2.webp?v=1765508911",
+  pr5000: "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_1_45038f44-5a9e-43cc-b952-669ccd8f3540.jpg?v=1726183575",
+  pr4000: "https://cdn.shopify.com/s/files/1/1950/1891/products/01_HERO_131addf7-71dd-4de4-8326-8c4c3128f3b8.jpg?v=1687225803",
+  g20: "https://cdn.shopify.com/s/files/1/1950/1891/files/0017_4_5d87452f-55d7-42ba-9b15-f8069828d19e.jpg?v=1759448433",
+  g15: "https://cdn.shopify.com/s/files/1/1950/1891/products/3_f19c680a-6458-4aeb-84f5-f7bcb2f64d29.jpg?v=1759448368",
+  glide: "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_9b91017f-2c18-4b7e-a133-b6648129f34d.jpg?v=1761527306",
+  ftr: "https://cdn.shopify.com/s/files/1/1950/1891/files/C17F80D8-BBEC-4503-858A-A3FFED91E2E0.jpg?v=1758847850",
+  tt: "https://cdn.shopify.com/s/files/1/1950/1891/files/24378973-6BD1-4CD4-A9D3-B28A3F0A8B0E.jpg?v=1759475309",
+};
+
+// ===== LOGO =====
+const Logo = () => {
+  const th = useTheme();
+  return <img src={GAF_LOGO} alt="GAF" className={`h-8 w-auto object-contain opacity-60 ${th.logoFilter}`} />;
+};
+
+// ===== SLIDE WRAPPER =====
+const Slide = ({ children, num, total, noPad }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} ${th.text} flex flex-col relative overflow-hidden`}>
+    <div className="slash" style={{top:'30%',left:'-50%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <div className="slash" style={{top:'60%',left:'-30%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <header className="flex justify-between items-center px-10 pt-5 pb-3 z-10 shrink-0">
+      <Logo />
+      <div className="flex items-center gap-3">
+        <span className={`text-[14px] font-heading font-light tracking-[.3em] ${th.sub} uppercase`}>July · Sales Team Briefing</span>
+        <div className={`w-px h-4 ${th.bg3}`}></div>
+        <span className={`text-[14px] font-body ${th.sub}`}>{num}<span className={`${th.muted} mx-1`}>/</span>{total}</span>
+      </div>
+    </header>
+    <main className={`flex-1 flex flex-col z-10 overflow-hidden ${noPad ? '' : 'px-10 pb-8'}`}>
+      {children}
+    </main>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width: `${(num/total)*100}%`}}></footer>
+  </div>
+  );
+};
+
+// ===== KPI CARD =====
+const Kpi = ({ label, value, sub, accent }) => {
+  const th = useTheme();
+  return (
+  <div className={`p-4 rounded-lg border ${accent ? `${th.kpiAccentBg} ${th.borderAccent}` : `${th.cardBg} ${th.cardBorder}`}`}>
+    <p className={`text-[13px] font-heading font-medium tracking-[.25em] uppercase mb-3 ${accent ? 'text-gaf-orange' : th.sub}`}>{label}</p>
+    <p className={`text-3xl font-heading font-bold ${accent ? 'text-gaf-orange' : th.text}`}>{value}</p>
+    {sub && <p className={`text-[15px] ${th.sub} mt-1.5 font-body`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== SECTION TITLE =====
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+  <div className="mb-4 shrink-0 stagger">
+    {pre && <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">{pre}</p>}
+    <h1 className={`font-display text-5xl md:text-7xl ${th.text} leading-[0.9] tracking-wide`}>{title}</h1>
+    {sub && <p className={`text-[15px] ${th.sub} mt-3 font-body max-w-4xl leading-snug`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== PRODUCT THUMB =====
+const ProdImg = ({ src, alt, className }) => (
+  <div className={`bg-white rounded-md overflow-hidden flex items-center justify-center ${className}`}>
+    <img src={src} alt={alt} className="w-full h-full object-contain" loading="lazy" />
+  </div>
+);
+
+// ===== INSTAGRAM EMBED =====
+const InstagramEmbed = ({ permalink }) => {
+  useEffect(() => {
+    const run = () => { if (window.instgrm && window.instgrm.Embeds) window.instgrm.Embeds.process(); };
+    let s = document.getElementById('ig-embed-js');
+    if (!s) {
+      s = document.createElement('script');
+      s.id = 'ig-embed-js'; s.async = true; s.src = 'https://www.instagram.com/embed.js';
+      s.onload = run; document.body.appendChild(s);
+    } else { run(); }
+    const tmr = setTimeout(run, 900);
+    return () => clearTimeout(tmr);
+  }, [permalink]);
+  return (
+    <blockquote className="instagram-media" data-instgrm-permalink={permalink} data-instgrm-version="14"
+      style={{ background:'#FFF', border:0, borderRadius:'3px', margin:'0 auto', maxWidth:'340px', minWidth:'260px', width:'100%' }}>
+    </blockquote>
+  );
+};
+
+// ===== DATA =====
+const saleLineup = [
+  { name: "Force USA G20 Pro", cat: "All-In-One", price: "$5,999", was: "$8,499", img: IMG.g20, tag: "Sharpest cut" },
+  { name: "Force USA G15", cat: "All-In-One", price: "$5,299", was: "$6,299", img: IMG.g15 },
+  { name: "REP PR-5000 / PR-4000", cat: "Power Rack", price: "from $1,362", was: "", img: IMG.pr5000 },
+  { name: "Functional Trainer Rack", cat: "Rack", price: "$3,799", was: "$4,499", img: IMG.ftr },
+  { name: "Force USA Tandem Tower", cat: "Functional", price: "$2,999", was: "$3,199", img: IMG.tt },
+  { name: "Glide Treadmill", cat: "Cardio", price: "$1,899", was: "$2,499", img: IMG.glide },
+  { name: "STEPR VPR Range", cat: "Cardio", price: "from $2,159", was: "$2,699", img: IMG.vpr, tag: "20% Off" },
+  { name: "Nike Strength", cat: "Hardware", price: "Further cuts", was: "", img: null, tag: "TBC" },
+];
+
+const vprCallouts = ["Built Like A Tank","100 Micro Gears","Feels Like Outdoors","Strength Meets Cardio","HYROX Ready","Performance For Everyone"];
+
+// ===== SLIDE 1: TITLE =====
+const TitleSlide = () => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex flex-col justify-end overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className="absolute -right-[25%] top-[15%] w-[60%] h-[130%] border border-gaf-orange/10 transform rotate-[-18deg]"></div>
+    <div className="flex-1 flex items-center px-16 z-10">
+      <div className="stagger">
+        <div className="flex items-center gap-5 mb-10">
+          <img src={GAF_LOGO} alt="Gym and Fitness" className={`h-14 w-auto object-contain ${th.logoFilter}`} />
+          <div className={`w-px h-10 ${th.bg3}`}></div>
+          <span className={`text-[14px] font-heading tracking-[.4em] ${th.sub} uppercase`}>Sales Team Briefing</span>
+        </div>
+        <h1 className={`font-display text-[8rem] md:text-[11rem] leading-[0.85] tracking-wider ${th.titleText}`}>
+          JULY<br/><span className="text-gaf-orange">2026</span>
+        </h1>
+        <div className="flex items-center gap-6 mt-10">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>Portfolio Defence · State of Origin III · Hyrox Sydney · STEPR VPR</p>
+        </div>
+      </div>
+    </div>
+    <div className="px-16 pb-8 z-10">
+      <p className={`text-[14px] font-heading tracking-[.5em] ${th.muted} uppercase`}>Confidential Internal Use · For Sales Meeting, Thu 3 July</p>
+    </div>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:'12.5%'}}></footer>
+  </div>
+  );
+};
+
+// ===== SLIDE 2: JULY TARGETS =====
+const TargetsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const financial = [
+    { label: "GP Created (Budget)", value: "TBA", IconComp: Dollar, sub: "Total GP target across July" },
+    { label: "GP Fulfilled (Budget)", value: "TBA", IconComp: Check, sub: "GP delivered through invoicing" },
+  ];
+  const operational = [
+    { label: "Website Sessions", value: "TBA", IconComp: Users, sub: "Total store traffic" },
+    { label: "Abandoned Carts", value: "TBA", IconComp: Pkg, sub: "Recovery opportunity" },
+    { label: "Inbound Phone Calls", value: "TBA", IconComp: Megaphone, sub: "Sales-qualified leads" },
+  ];
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="The Month Ahead" title="JULY TARGETS" sub="The financial and volume baselines for July. Budgets are still being finalised post-EOFY — figures to be confirmed at Thursday's sales meeting." />
+    <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+      <div className="grid grid-cols-2 gap-5 stagger">
+        {financial.map((m, i) => (
+          <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-7 flex flex-col gap-3`}>
+            <div className="flex items-center justify-between">
+              <p className={`text-[14px] font-heading font-medium tracking-[.3em] uppercase text-gaf-orange`}>{m.label}</p>
+              <div className="w-11 h-11 rounded-lg bg-gaf-orange/10 flex items-center justify-center"><m.IconComp size={22} className="text-gaf-orange" /></div>
+            </div>
+            <p className={`font-display text-8xl tracking-wide leading-[0.9] text-gaf-orange/40`}>{m.value}</p>
+            <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{m.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-4 stagger">
+        {operational.map((m, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+            <div className="flex items-center justify-between">
+              <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+              <m.IconComp size={16} className="text-gaf-orange" />
+            </div>
+            <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.muted}`}>{m.value}</p>
+            <p className={`text-[13px] font-body ${th.muted} leading-snug`}>{m.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3.5 flex items-start gap-3">
+        <Target size={18} className="text-gaf-orange shrink-0 mt-0.5" />
+        <p className={`text-[14px] font-body ${th.sub} leading-snug`}>The headline this month is protecting GP through a stock gap and the post-EOFY dip — the play on the next slide is how we hold the number while All-in-One inventory is short.</p>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 3: THE JULY PLAY =====
+const PlaySlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Nick's Brief — The Objective" title="THE JULY PLAY" sub="The challenge: we're short on All-in-Ones and EOFY demand has just dropped off. The play: redirect spend onto in-stock heroes carrying sale pricing — and keep the homepage working hard." />
+    <div className="flex gap-5 flex-1 min-h-0">
+      <div className="w-[300px] shrink-0 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white relative overflow-hidden shrink-0">
+          <div className="absolute -right-4 -top-4 opacity-10"><Target size={130} /></div>
+          <p className="text-[13px] font-heading tracking-[.3em] uppercase opacity-90 mb-2 relative z-10">The Problem</p>
+          <h3 className="font-display text-3xl tracking-wide leading-[0.98] relative z-10">NO HERO AIOs<br/>+ POST-EOFY DIP</h3>
+          <p className="text-[14px] font-body opacity-95 leading-snug relative z-10 mt-3">Redirect ad spend to what's in stock and on sale.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex-1 flex flex-col min-h-0 gap-3`}>
+          <div className="shrink-0">
+            <p className={`text-[11px] font-heading tracking-[.25em] text-gaf-orange uppercase mb-2`}>Homepage Hero · Jul 1</p>
+            <div className={`${th.bg3} rounded-lg p-3`}>
+              <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>STEPR VPR Banner</p>
+              <p className={`text-[13px] ${th.sub} font-body mt-0.5 leading-snug`}>The one homepage placement this month</p>
+            </div>
+          </div>
+          <div className="min-h-0">
+            <p className={`text-[11px] font-heading tracking-[.25em] ${th.sub} uppercase mb-2`}>Main Channel Ad Spend</p>
+            <div className="space-y-2 stagger">
+              {[["REP Focus","strength load while AIOs are short"],["Evergreen Cardio","keep cardio converting"]].map(([a,b],i)=>(
+                <div key={i} className={`${th.bg3} rounded-lg p-3`}>
+                  <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>{a}</p>
+                  <p className={`text-[13px] ${th.sub} font-body mt-0.5 leading-snug`}>{b}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <Flame size={16} className="text-gaf-orange" />
+          <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>On Sale — Redirect the Spend</p>
+        </div>
+        <div className="grid grid-cols-4 gap-3 flex-1 stagger min-h-0">
+          {saleLineup.map((p, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex flex-col`}>
+              <div className="flex items-center justify-between mb-2">
+                <span className={`text-[10px] font-heading tracking-[.2em] uppercase ${th.muted}`}>{p.cat}</span>
+                {p.tag && <span className="text-[10px] font-heading font-bold tracking-[.1em] uppercase text-gaf-orange bg-gaf-orange/10 px-1.5 py-0.5 rounded">{p.tag}</span>}
+              </div>
+              {p.img
+                ? <ProdImg src={p.img} alt={p.name} className="h-[88px] mb-2" />
+                : <div className="h-[88px] mb-2 rounded-md flex items-center justify-center bg-gaf-orange/5"><Bolt size={34} className="text-gaf-orange/40" /></div>}
+              <p className={`text-[13px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</p>
+              <div className="mt-auto pt-1 flex items-baseline gap-2">
+                <span className="text-[17px] font-heading font-bold text-gaf-orange">{p.price}</span>
+                {p.was && <span className={`text-[12px] font-body line-through ${th.muted}`}>{p.was}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3 shrink-0 flex items-start gap-3">
+          <Warn size={16} className="text-gaf-orange shrink-0 mt-0.5" />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={`font-semibold ${th.text}`}>Note:</span> C20 and C10 (V1) revert to RRP — we're out of V1 stock and getting V2 up as soon as imagery is ready. Nike receives further price cuts across hardware (racks etc).</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 4: STATE OF ORIGIN III =====
+const QRLSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Peak Moment — Official Supplier of the Queensland Maroons" title="STATE OF ORIGIN III" sub="Game III decider — Wed 8 July, Suncorp Stadium, Brisbane (home). Our Maroons moment runs two tracks: the winner-experience content shoot, and the limited-edition Force USA Maroons range." />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white shrink-0 relative overflow-hidden">
+          <div className="absolute -right-4 -top-4 opacity-10"><Trophy size={140} /></div>
+          <p className="text-[14px] font-heading tracking-[.3em] uppercase opacity-90 mb-2 relative z-10">Hero Content — "Money Can't Buy"</p>
+          <h3 className="font-display text-4xl tracking-wide leading-[0.95] relative z-10">MAROONS ORIGIN EXPERIENCE</h3>
+          <div className="w-14 h-[2px] bg-white mt-3 mb-3 relative z-10"></div>
+          <p className="text-[15px] font-body opacity-95 leading-snug relative z-10 max-w-2xl">Our Gleam competition winners on the sideline at Camp 3 — the payoff to the giveaway, captured on camera and rolled out around the decider.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex-1 flex flex-col min-h-0`}>
+          <div className="flex items-center gap-2 mb-3 shrink-0">
+            <Cal size={16} className="text-gaf-orange" />
+            <p className={`text-[15px] font-heading tracking-[.3em] ${th.sub} uppercase`}>The Run of Play</p>
+          </div>
+          <div className="space-y-3 flex-1 stagger">
+            {[
+              { d: "Thu 2 Jul", w: "Camp 3 Winner Shoot — Sunshine Coast", note: "Lachy interviews the competition winners. QRL's videographer films (external cameras are restricted), raw footage comes back to Lionel to edit." },
+              { d: "Wed 8 Jul", w: "Game III Decider — Suncorp, Brisbane", note: "Home-state final. Peak Maroons sentiment and the window the content and product range are timed to." },
+            ].map((p, i) => (
+              <div key={i} className="flex gap-3 items-start">
+                <div className="w-[78px] shrink-0">
+                  <span className="text-[13px] font-heading font-bold text-gaf-orange tracking-wide">{p.d}</span>
+                </div>
+                <div className="flex-1">
+                  <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>{p.w}</p>
+                  <p className={`text-[14px] ${th.sub} font-body leading-snug mt-0.5`}>{p.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="w-[360px] shrink-0 flex flex-col gap-3 min-h-0">
+        <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase shrink-0`}>Limited-Edition Range · 10% Off</p>
+        {[
+          { name: "Maroons Bumper Plates", price: "$70", was: "$78", note: "Sold individually · stamped & numbered", img: IMG.bumper },
+          { name: "Force USA Maroons Barbell", price: "$599", was: "$666", note: "Cerakote, limited edition", img: IMG.barbell },
+        ].map((p, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex gap-3 items-center flex-1 min-h-0`}>
+            <ProdImg src={p.img} alt={p.name} className="w-[42%] h-full shrink-0" />
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] font-heading font-bold tracking-[.1em] uppercase text-gaf-orange bg-gaf-orange/10 px-1.5 py-0.5 rounded">10% Off</span>
+              <p className={`text-[16px] font-heading font-semibold ${th.text} leading-tight mt-1.5`}>{p.name}</p>
+              <p className={`text-[13px] ${th.sub} font-body mt-1 leading-snug`}>{p.note}</p>
+              <div className="mt-2 flex items-baseline gap-2">
+                <span className="text-[22px] font-heading font-bold text-gaf-orange">{p.price}</span>
+                <span className={`text-[13px] font-body line-through ${th.muted}`}>{p.was}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3 shrink-0 flex items-start gap-2">
+          <Eye size={15} className="text-gaf-orange shrink-0 mt-0.5" />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}>Pre-sale landing page is live. Sale pricing is standing, not a coded promo — frame it as collector scarcity.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 5: HYROX SYDNEY =====
+const HyroxSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="On the Ground — Race Weekend Fri 3 July" title="HYROX SYDNEY" sub="The finale of our '90 Days to Sub 60' series with athlete Indigo Carthew. We're manning the Centr × Hyrox booth as the Australian distributor." />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className="w-[380px] shrink-0 flex flex-col min-h-0">
+        <div className={`bg-white border ${th.cardBorder} rounded-lg p-3 flex-1 min-h-0 overflow-auto flex items-start justify-center`}>
+          <InstagramEmbed permalink={"https://www.instagram.com/reel/DZZas6ExkxP/?utm_source=ig_embed&utm_campaign=loading"} />
+        </div>
+        <p className={`text-[12px] ${th.muted} font-body mt-2 text-center`}>@gymandfitness · the series in motion</p>
+      </div>
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white relative overflow-hidden shrink-0">
+          <div className="absolute -right-6 -top-6 opacity-10"><Activity size={150} /></div>
+          <p className="text-[13px] font-heading tracking-[.4em] uppercase opacity-90 mb-2 relative z-10">The Series Finale</p>
+          <h3 className="font-display text-5xl tracking-wide leading-[0.92] relative z-10">90 DAYS TO SUB 60</h3>
+          <p className="text-[15px] font-body opacity-95 leading-snug relative z-10 mt-2 max-w-xl">We followed Indigo Carthew's 90-day build to a sub-60 Hyrox. Race day is the payoff, and we're there filming it.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col min-h-0 flex-1`}>
+          <div className="flex items-center gap-2 mb-3 shrink-0">
+            <Film size={16} className="text-gaf-orange" />
+            <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Content — 3 Beats</p>
+          </div>
+          <div className="grid grid-cols-3 gap-2 stagger">
+            {[["Build-Up","atmosphere & nerves"],["Race Day","the sub-60 attempt"],["Recap","the result & reflection"]].map(([a,b],i)=>(
+              <div key={i} className={`${th.bg3} rounded-lg p-3`}>
+                <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{a}</p>
+                <p className={`text-[12px] ${th.sub} font-body mt-1 leading-snug`}>{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col min-h-0 flex-1`}>
+          <div className="flex items-center gap-2 mb-3 shrink-0">
+            <Users size={16} className="text-gaf-orange" />
+            <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Booth & Lead Capture</p>
+          </div>
+          <div className="space-y-2.5 stagger">
+            {[
+              { w: "Centr × Hyrox Booth", note: "We man it as AU distributor — given permission for a handout to attendees" },
+              { w: "Discount-Code Cards", note: "GAF business cards with a code — turn footfall into trackable sales" },
+              { w: "Lead-Capture Form", note: "On-stand contact form to build the list for follow-up" },
+            ].map((p, i) => (
+              <div key={i} className="flex gap-3 items-start">
+                <div className={`w-5 h-5 rounded-full ${th.greenBg} flex items-center justify-center shrink-0 mt-0.5`}>
+                  <Check size={11} className={th.green} />
+                </div>
+                <div>
+                  <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>{p.w}</p>
+                  <p className={`text-[13px] ${th.sub} font-body leading-snug mt-0.5`}>{p.note}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 6: REP + CARDIO PUSH =====
+const RepSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Main Channel Ad Spend" title="REP + CARDIO PUSH" sub="The two main-channel ad-spend priorities for July (the STEPR VPR banner is the homepage piece). With All-in-Ones short, REP power racks carry the strength load and the Evergreen Cardio piece keeps cardio converting." />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <Bolt size={16} className="text-gaf-orange" />
+          <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>REP Focus — Strength</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 shrink-0">
+          {[
+            { name: "REP PR-5000 Power Rack", price: "$1,362", img: IMG.pr5000 },
+            { name: "REP PR-4000 Power Rack", price: "$1,529", img: IMG.pr4000 },
+          ].map((p,i)=>(
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex flex-col`}>
+              <ProdImg src={p.img} alt={p.name} className="h-[150px] mb-2" />
+              <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</p>
+              <p className="text-[18px] font-heading font-bold text-gaf-orange mt-1">{p.price}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3 flex items-start gap-3 shrink-0">
+          <Eye size={16} className="text-gaf-orange shrink-0 mt-0.5" />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={`font-semibold ${th.text}`}>Why now:</span> we're light on Ai1 and heavy on REP stock with an obligation to move it. Plan: a listing revamp in the M10 mould plus a content piece (experience-centre shoot being explored).</p>
+        </div>
+      </div>
+      <div className="w-[400px] shrink-0 flex flex-col gap-3 min-h-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <Activity size={16} className="text-gaf-orange" />
+          <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Evergreen Cardio</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex-1 flex flex-col min-h-0`}>
+          <p className={`text-[15px] font-body ${th.sub} leading-snug mb-3`}>An always-on cardio content piece to keep the category converting through the AIO gap — pointing demand at in-stock, on-sale cardio.</p>
+          <div className={`${th.bg3} rounded-lg p-3 flex gap-3 items-center mt-auto`}>
+            <ProdImg src={IMG.glide} alt="Force USA Glide Treadmill" className="w-[40%] h-[110px] shrink-0" />
+            <div>
+              <span className="text-[10px] font-heading font-bold tracking-[.1em] uppercase text-gaf-orange bg-gaf-orange/10 px-1.5 py-0.5 rounded">On Sale</span>
+              <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight mt-1.5`}>Force USA Glide Treadmill</p>
+              <div className="flex items-baseline gap-2 mt-1">
+                <span className="text-[20px] font-heading font-bold text-gaf-orange">$1,899</span>
+                <span className={`text-[13px] font-body line-through ${th.muted}`}>$2,499</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 7: STEPR VPR HOMEPAGE =====
+const VprSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Homepage Focus — Jul 1 Hero" title="STEPR VPR" sub="The July 1 homepage hero. The STEPR Bionic Bike XL VPR leads, with the full VPR range on sale. Requested by Soren at STEPR to give the VPR a push alongside the Stairs and Quickpace Treads." />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className={`w-[44%] shrink-0 ${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col min-h-0`}>
+        <ProdImg src={IMG.vpr} alt="STEPR Bionic Bike XL VPR" className="flex-1 min-h-0 mb-3" />
+        <div className="flex items-end justify-between shrink-0">
+          <div>
+            <p className={`text-[16px] font-heading font-semibold ${th.text} leading-tight`}>STEPR Bionic Bike XL VPR</p>
+            <p className={`text-[13px] ${th.sub} font-body mt-0.5`}>VPR range on sale this month</p>
+          </div>
+          <span className="text-[24px] font-heading font-bold text-gaf-orange">$2,699</span>
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <Megaphone size={16} className="text-gaf-orange" />
+          <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Banner Callouts — Layman Friendly</p>
+        </div>
+        <div className="grid grid-cols-2 gap-3 flex-1 stagger min-h-0">
+          {vprCallouts.map((c, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex items-center gap-3`}>
+              <div className="w-9 h-9 rounded-lg bg-gaf-orange/10 flex items-center justify-center shrink-0">
+                <span className="text-[15px] font-heading font-bold text-gaf-orange">{i+1}</span>
+              </div>
+              <p className={`text-[18px] font-heading font-semibold ${th.text} leading-tight`}>{c}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 8: Q&A =====
+const QSlide = () => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex items-center justify-center overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className={`absolute -left-[20%] bottom-[10%] w-[50%] h-[120%] border ${th.cardBorder} opacity-30 transform rotate-[-18deg]`}></div>
+    <div className="z-10 text-center stagger">
+      <p className="text-[14px] font-heading tracking-[.5em] text-gaf-orange uppercase mb-6">Over to you · Sales Meeting Thursday</p>
+      <h1 className={`font-display text-[10rem] md:text-[14rem] ${th.text} leading-[0.85] tracking-wider`}>Q&A</h1>
+      <div className="w-16 h-[2px] bg-gaf-orange mx-auto mt-8"></div>
+    </div>
+    <footer className="absolute bottom-0 left-0 h-1 bg-gaf-orange z-10 w-full"></footer>
+  </div>
+  );
+};
+
+// ===== APP =====
+const SLIDES = [TitleSlide, TargetsSlide, PlaySlide, QRLSlide, HyroxSlide, RepSlide, VprSlide, QSlide];
+
+function App() {
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    const next = idx + dir;
+    if (next >= 0 && next < SLIDES.length) { setIdx(next); setKey(k => k + 1); }
+  }, [idx]);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const h = e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'd' || e.key === 'D') setDark(d => !d);
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [go]);
+
+  useEffect(() => {
+    document.body.style.background = th.bodyBg;
+    document.body.className = th.grainClass;
+  }, [dark]);
+
+  const C = SLIDES[idx];
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen overflow-hidden flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div key={key} className="overflow-hidden slide-enter rounded-lg shrink-0 relative" style={{width: 1600, height: 900, zoom, boxShadow: dark ? '0 0 80px rgba(0,0,0,.6)' : '0 4px 60px rgba(0,0,0,.12)'}}>
+          <C n={idx + 1} t={SLIDES.length} />
+          <div className="absolute bottom-6 right-8 flex gap-2 z-50">
+            <button onClick={() => setDark(d => !d)} title="Toggle theme (D)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+              {dark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+            <div className="w-px h-9 bg-gaf-orange/20"></div>
+            <button onClick={() => go(-1)} disabled={idx===0}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===0 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevL size={16} />
+            </button>
+            <button onClick={() => go(1)} disabled={idx===SLIDES.length-1}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===SLIDES.length-1 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevR size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

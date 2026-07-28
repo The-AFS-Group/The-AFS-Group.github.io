@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revel Aura Sauna - Quote</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --revel-green: #25B34B;
+      --revel-green-soft: #E8F5EC;
+      --revel-green-700: #1A8A38;
+      --revel-sage: #ABB99C;
+      --revel-forest: #485D4D;
+      --black: #000000;
+      --white: #FFFFFF;
+      --grey-50: #FAFAFA;
+      --grey-100: #F0F0F0;
+      --grey-200: #E2E2E2;
+      --grey-300: #C9C9C9;
+      --grey-400: #A0A0A0;
+      --grey-500: #717171;
+      --grey-600: #555555;
+      --grey-700: #424242;
+      --grey-800: #2B2B2B;
+      --grey-900: #1A1A1A;
+      --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --font-sans: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+      --shadow-sm: 0 2px 4px rgba(21,21,19,.06), 0 1px 2px rgba(21,21,19,.04);
+      --shadow-md: 0 6px 14px rgba(21,21,19,.08), 0 2px 4px rgba(21,21,19,.04);
+      --shadow-lg: 0 12px 28px rgba(21,21,19,.12), 0 4px 8px rgba(21,21,19,.06);
+      --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+      --dur-base: 200ms;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font: 400 16px/1.55 var(--font-sans); background: var(--grey-50); color: var(--black); -webkit-font-smoothing: antialiased; }
+
+    .header {
+      background: var(--black);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .header img { height: 32px; width: auto; }
+    .header-tag {
+      font: 600 11px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--revel-green);
+      background: rgba(37,179,75,.12);
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px 60px; }
+
+    .page-title {
+      font: 800 36px/1.1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      margin-bottom: 6px;
+    }
+    .page-subtitle {
+      font: 400 15px/1.5 var(--font-sans);
+      color: var(--grey-600);
+      margin-bottom: 40px;
+    }
+
+    .product {
+      background: var(--white);
+      border: 1px solid var(--grey-200);
+      border-radius: 10px;
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 28px;
+      transition: box-shadow var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+    }
+    .product:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+
+    .product-hero {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      background: var(--grey-100);
+      display: block;
+    }
+
+    .product-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+    .product-gallery img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+    }
+
+    .product-body { padding: 24px; }
+
+    .product-name {
+      font: 700 20px/1.25 var(--font-display);
+      color: var(--black);
+      margin-bottom: 4px;
+    }
+    .product-sku {
+      font: 600 11px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--grey-400);
+      margin-bottom: 20px;
+    }
+
+    .price-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+    .price-block {}
+    .price-label {
+      font: 600 10px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--grey-400);
+      margin-bottom: 6px;
+    }
+    .price-value {
+      font: 700 22px/1.1 var(--font-display);
+      font-variant-numeric: tabular-nums;
+      color: var(--black);
+    }
+    .price-value.rrp {
+      color: var(--grey-500);
+      text-decoration: line-through;
+      text-decoration-color: var(--grey-300);
+    }
+    .price-value.cost { color: var(--grey-600); font-size: 18px; }
+    .price-value.your-price { color: var(--revel-green); }
+
+    .savings-bar {
+      background: var(--revel-green-soft);
+      border: 1px solid rgba(37,179,75,.2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .savings-text {
+      font: 600 13px/1.3 var(--font-display);
+      color: var(--revel-green-700);
+    }
+    .savings-pct {
+      font: 800 18px/1 var(--font-display);
+      color: var(--revel-green);
+    }
+
+    .btn-view {
+      display: inline-block;
+      font: 700 12px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      background: var(--revel-green);
+      border: none;
+      border-radius: 6px;
+      padding: 12px 24px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background var(--dur-base) var(--ease-out);
+      margin-top: 16px;
+    }
+    .btn-view:hover { background: var(--revel-green-700); }
+
+    .note-bar {
+      background: var(--white);
+      border: 1px solid var(--grey-200);
+      border-radius: 8px;
+      padding: 16px 20px;
+      margin-top: 12px;
+    }
+    .note-bar p {
+      font: 400 13px/1.6 var(--font-sans);
+      color: var(--grey-500);
+    }
+    .note-bar strong { color: var(--grey-700); }
+
+    .footer {
+      text-align: center;
+      padding: 40px 20px;
+      font: 400 12px/1.4 var(--font-sans);
+      color: var(--grey-400);
+    }
+
+    @media (max-width: 600px) {
+      .container { padding: 24px 16px 40px; }
+      .page-title { font-size: 26px; }
+      .product-body { padding: 20px 16px; }
+      .product-name { font-size: 17px; }
+      .price-row { grid-template-columns: 1fr; gap: 14px; }
+      .price-block {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--grey-100);
+      }
+      .price-block:last-child { border-bottom: none; padding-bottom: 0; }
+      .price-label { margin-bottom: 0; }
+      .price-value { font-size: 20px; }
+      .price-value.cost { font-size: 18px; }
+      .savings-bar { flex-direction: column; gap: 4px; text-align: center; }
+      .header { padding: 12px 16px; }
+      .header img { height: 26px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102" alt="Revel">
+    <div class="header-tag">Quote</div>
+  </div>
+
+  <div class="container">
+    <h1 class="page-title">Aura Sauna<br>Next Gen Range</h1>
+    <p class="page-subtitle">Full Spectrum Infrared Saunas - 2 &amp; 3 Person Models</p>
+
+    <!-- 2 Person Next Gen -->
+    <div class="product">
+      <img class="product-hero" src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/Aura-2P-G2-01.png?v=1769789942" alt="Revel Aura 2 Person Next Gen">
+      <div class="product-gallery">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura2P-24.jpg?v=1769789361" alt="Aura 2P lifestyle">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura2P-23.jpg?v=1769789364" alt="Aura 2P detail">
+      </div>
+      <div class="product-body">
+        <div class="product-name">Revel Aura 2 Person Full Spectrum Infrared Sauna</div>
+        <div class="product-sku">SKU: R-FS-2P-V2 &middot; Next Gen</div>
+
+        <div class="price-row">
+          <div class="price-block">
+            <div class="price-label">RRP</div>
+            <div class="price-value rrp">$5,999</div>
+          </div>
+          <div class="price-block">
+            <div class="price-label">AU Item Defined Cost</div>
+            <div class="price-value cost">$2,363</div>
+          </div>
+          <div class="price-block">
+            <div class="price-label">Your Price</div>
+            <div class="price-value your-price">$3,119</div>
+          </div>
+        </div>
+
+        <div class="savings-bar">
+          <span class="savings-text">Saving off RRP</span>
+          <span class="savings-pct">$2,880 (48%)</span>
+        </div>
+
+        <a href="https://revelsaunas.com.au/products/revel-aura-2-person-full-spectrum-infrared-sauna-v2" target="_blank" class="btn-view">View on Site</a>
+      </div>
+    </div>
+
+    <!-- 3 Person Next Gen -->
+    <div class="product">
+      <img class="product-hero" src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura3P-00.png?v=1764230992" alt="Revel Aura 3 Person Next Gen">
+      <div class="product-gallery">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura3P-06.png?v=1769789986" alt="Aura 3P lifestyle">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/Aura-2P-G2-15.jpg?v=1769789350" alt="Aura interior detail">
+      </div>
+      <div class="product-body">
+        <div class="product-name">Revel Aura 3 Person Full Spectrum Infrared Sauna</div>
+        <div class="product-sku">SKU: R-FS-3P-V2 &middot; Next Gen</div>
+
+        <div class="price-row">
+          <div class="price-block">
+            <div class="price-label">RRP</div>
+            <div class="price-value rrp">$6,999</div>
+          </div>
+          <div class="price-block">
+            <div class="price-label">AU Item Defined Cost</div>
+            <div class="price-value cost">$2,604</div>
+          </div>
+          <div class="price-block">
+            <div class="price-label">Your Price</div>
+            <div class="price-value your-price">$3,437</div>
+          </div>
+        </div>
+
+        <div class="savings-bar">
+          <span class="savings-text">Saving off RRP</span>
+          <span class="savings-pct">$3,562 (51%)</span>
+        </div>
+
+        <a href="https://revelsaunas.com.au/products/revel-aura-3-person-full-spectrum-infrared-sauna" target="_blank" class="btn-view">View on Site</a>
+      </div>
+    </div>
+
+    <div class="note-bar">
+      <p><strong>Pricing notes:</strong> Your Price is AU Item Defined Cost + 32% markup. All prices in AUD including GST. RRP is current website retail price.</p>
+      <p style="margin-top:8px;"><strong>Shipping:</strong> Approx. $500 per unit (freight to door).</p>
+    </div>
+  </div>
+
+  <div class="footer">
+    Revel Saunas &middot; 18 May 2026
+  </div>
+</body>
+</html>

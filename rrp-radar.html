@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AFS RRP Radar | The AFS Group</title>
+<link rel="icon" type="image/png" href="images/afs-group-icon-orange.png">
+<link rel="apple-touch-icon" href="images/afs-group-icon-orange.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2a44; --off-white:#edeae3; --orange:#f26422;
+    --mgrey:#424242; --dgrey:#232323; --white:#fff;
+    --line:#dcd8cf; --muted:#6f6a61;
+    --good-soft:#e7f1ea; --warn-soft:#fdeee4; --info-soft:#e7edf3;
+    --code-bg:#0e2a44; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--off-white);color:var(--dgrey);
+    font-family:'Lato',Tahoma,sans-serif;line-height:1.62;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',Tahoma,sans-serif;color:var(--navy);margin:0}
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px 60px}
+  .topbar{background:var(--white);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+  .topbar img{height:34px;display:block}
+  .topbar .tag{font-family:'Archivo';font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+  header.hero{position:relative;background:var(--navy);color:#fff;padding:52px 0 44px;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-60px;bottom:-70px;width:240px;height:240px;
+    background:var(--orange);opacity:.13;clip-path:polygon(100% 0,0 100%,100% 100%)}
+  .hero .wrap{padding-bottom:0;position:relative;z-index:1}
+  .eyebrow{font-family:'Archivo';text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:700;color:var(--orange);margin:0 0 12px}
+  .hero h1{color:#fff;font-size:31px;line-height:1.18;font-weight:800;margin:0 0 12px}
+  .hero p{margin:0 0 22px;color:#cdd6e0;font-size:16.5px;max-width:62ch}
+  .jump{display:flex;flex-wrap:wrap;gap:10px}
+  .jump a{font-family:'Archivo';font-size:13px;font-weight:700;text-decoration:none;color:#fff;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px}
+  .jump a:hover{background:var(--orange);border-color:var(--orange)}
+  .part{margin:40px 0 4px;padding:0}
+  .part .wrap{padding-bottom:0}
+  .part-label{font-family:'Archivo';font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:0 0 4px}
+  .part h2.part-title{font-size:25px;font-weight:800;margin:0;padding-bottom:10px;border-bottom:3px solid var(--orange);display:inline-block}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 28px;margin:20px 0;box-shadow:0 1px 3px rgba(14,42,68,.05)}
+  h2{font-size:20px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .n{width:27px;height:27px;border-radius:7px;background:var(--orange);color:#fff;font-size:14px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-family:'Archivo'}
+  h3{font-size:14.5px;margin:20px 0 6px;font-weight:700;color:var(--mgrey)}
+  p{margin:0 0 12px}
+  .lead{font-size:16px;color:var(--mgrey)}
+  ul,ol{margin:0 0 6px;padding-left:22px}
+  li{margin:7px 0}
+  code{background:#f1eee8;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--navy)}
+  pre{background:var(--code-bg);color:#e7eefc;border-radius:10px;padding:15px 16px;overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.8px;line-height:1.55;margin:10px 0}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:8px 0 0}
+  .steps li{counter-increment:step;position:relative;padding:0 0 16px 46px;margin:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:-2px;width:30px;height:30px;
+    border-radius:50%;background:var(--orange);color:#fff;font-family:'Archivo';font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center}
+  .steps li:not(:last-child)::after{content:"";position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--line)}
+  .note{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:14.5px;border:1px solid}
+  .note.good{background:var(--good-soft);border-color:#bfddcc;color:#155c40}
+  .note.warn{background:var(--warn-soft);border-color:#f6cbb0;color:#a8430f}
+  .note.info{background:var(--info-soft);border-color:#c5d2df;color:#1d3b59}
+  .note strong{font-weight:700}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:'Archivo';color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td code{font-size:12.5px}
+  details{border:1px solid var(--line);border-radius:10px;padding:4px 16px;margin:12px 0;background:#faf9f5}
+  summary{cursor:pointer;font-weight:700;padding:10px 0;color:var(--mgrey)}
+  .diagram{margin:6px 0 2px}
+  .row{display:flex;align-items:center;gap:14px}
+  .box{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;background:#faf9f5}
+  .box .t{font-family:'Archivo';font-weight:700;font-size:14.5px;margin-bottom:2px;color:var(--navy)}
+  .box .s{font-size:12.5px;color:var(--muted)}
+  .box.client{border-color:#c5d2df;background:var(--info-soft)}
+  .box.worker{border-color:#f6cbb0;background:var(--warn-soft)}
+  .box.shop{border-color:#cfe0d6;background:var(--good-soft)}
+  .arrow{display:flex;flex-direction:column;align-items:center;color:var(--muted);font-size:12px;flex:0 0 auto}
+  .arrow .line{font-size:20px;line-height:1;color:var(--orange)}
+  .tagchip{background:#f1eee8;border:1px solid var(--line);color:var(--navy);border-radius:999px;padding:3px 11px;font-family:'Archivo';font-size:12px;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  .dl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;
+    font-family:'Archivo';font-weight:700;font-size:15px;text-decoration:none;
+    padding:12px 24px;border-radius:10px;margin:12px 0 4px;transition:background .15s}
+  .dl-btn:hover{background:#d9571b}
+  .dl-btn svg{width:20px;height:20px;fill:currentColor}
+  .kbd{font-size:13px;color:var(--muted)}
+  /* live badge demo */
+  .demo-line{display:flex;align-items:center;gap:0;flex-wrap:wrap;background:#faf9f5;border:1px solid var(--line);
+    border-radius:10px;padding:12px 15px;margin:10px 0;font-size:14.5px}
+  .demo-line .prod{font-weight:700;color:var(--navy)}
+  .rrp-badge{display:inline-flex;align-items:center;gap:5px;margin-left:8px;padding:2px 9px;border-radius:999px;
+    font-size:11.5px;font-weight:600;line-height:1.5;font-family:'Lato',sans-serif}
+  .rrp-badge strong{font-weight:800}
+  .rrp-badge.sale{background:var(--orange);color:#fff}
+  .rrp-badge.full{background:#e9edf1;color:#5a6b7b}
+  footer{background:var(--navy);color:#c3ccd6;font-size:13px;text-align:center;padding:26px 20px;margin-top:40px;line-height:1.7}
+  footer a{color:#fff}
+  @media(max-width:560px){.row{flex-direction:column}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
+  <span class="tag">Internal Tool</span>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">The AFS Group</p>
+    <h1>AFS RRP Radar</h1>
+    <p>See the saving on every draft order. As a rep builds a quote in Shopify, RRP Radar flags which lines are on sale &mdash; RRP vs promo price and the dollar saving &mdash; so you can sell the value, not just the price.</p>
+    <nav class="jump">
+      <a href="#install">Install &amp; use</a>
+      <a href="#stores">Set up your stores</a>
+      <a href="#tech">How it works</a>
+      <a href="#download-section">Download</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ PART 1 ============ -->
+<section class="part" id="install"><div class="wrap">
+  <p class="part-label">Part 1</p>
+  <h2 class="part-title">Install &amp; use</h2>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>What this is</h2>
+    <p class="lead">A Chrome extension for the AFS sales team that runs inside the Shopify admin draft-order (quote) builder. As you add products to a draft order, it quietly looks up each product's live pricing and drops a small badge on the line showing whether it's on sale, the RRP (compare-at) it's discounted from, and the dollar saving. A tidy panel in the corner tallies the total saving across the whole quote &mdash; the number worth saying out loud to the customer.</p>
+    <div class="demo-line">
+      <span class="prod">Force USA G20 Pro&trade; All-In-One Trainer</span>
+      <span class="rrp-badge sale"><strong>ON SALE</strong> was $8,499.00 &middot; save $2,500.00 (29%)</span>
+    </div>
+    <div class="demo-line">
+      <span class="prod">Rubber Hex Dumbbell &middot; 5kg</span>
+      <span class="rrp-badge full">not on sale</span>
+    </div>
+    <table>
+      <tr><th>Does</th><th>Detail</th></tr>
+      <tr><td>Flags sale lines</td><td>Each draft-order line gets a badge: <strong>ON SALE &mdash; was $X, save $Y (Z%)</strong>, or a quiet <strong>not on sale</strong>.</td></tr>
+      <tr><td>Totals the saving</td><td>A corner panel adds up total RRP, total now, and the customer's total saving across the quote.</td></tr>
+      <tr><td>Live pricing</td><td>Reads the current compare-at and promo price straight from the brand's storefront, so it always matches what the customer sees.</td></tr>
+      <tr><td>Read-only</td><td>It never edits, saves, or changes anything in Shopify. It only reads and displays.</td></tr>
+      <tr><td>Multi-brand</td><td>Works across GAF, Revel and Force USA &mdash; it detects which store you're in and reads that brand's pricing.</td></tr>
+      <tr><td>Cost</td><td>Zero. No servers, no accounts, no API keys, no subscriptions.</td></tr>
+    </table>
+  </div>
+
+  <div class="card" id="download-section">
+    <h2>Download</h2>
+    <p>Grab the extension zip below, then follow the install steps.</p>
+    <a class="dl-btn" href="afs-rrp-radar-extension.zip" download>
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Download AFS RRP Radar
+    </a>
+    <p class="kbd" style="margin-top:8px">afs-rrp-radar-extension.zip</p>
+    <div class="note info" style="margin-top:12px"><strong>What's new in v0.3.2.</strong> The per-line <strong>save</strong> figure and the <strong>Customer saves</strong> total multiply by the line quantity and update live as you change it. v0.3.2 fixes a bug where the saving briefly showed the correct multiplied amount then reverted to the single-unit figure. If you're upgrading, download the new zip, then hit <strong>Reload</strong> on the RRP Radar tile in <code>chrome://extensions</code>.</div>
+  </div>
+
+  <div class="card">
+    <h2>Install on Chrome / Chromebook</h2>
+    <ol class="steps">
+      <li>Download the zip above and unzip it. You should get a folder with <code>manifest.json</code>, a <code>src/</code> folder, and an <code>icons/</code> folder directly inside (no nested subfolder). On ChromeOS, open <strong>Files</strong>, find the zip, right-click and choose <strong>Extract</strong>.</li>
+      <li><strong>Move the unzipped folder somewhere permanent</strong> before loading it into Chrome. Chrome reads the extension files directly from the folder you point it at &mdash; it does not copy them. If that folder is later deleted or cleaned up, the extension breaks. On a Chromebook, put it in <code>My Files &rsaquo; Extensions</code>; on Mac, your home folder; on Windows, <code>Documents</code>.</li>
+      <li>Open Chrome and go to <strong><code>chrome://extensions</code></strong>.</li>
+      <li>Turn on <strong>Developer mode</strong> using the toggle in the top-right corner.</li>
+      <li>Click <strong>Load unpacked</strong> (top-left) and select the unzipped folder &mdash; the one containing <code>manifest.json</code>.</li>
+      <li>The <strong>AFS RRP Radar</strong> tile appears. Click the puzzle-piece icon in the toolbar and pin it so it's always handy.</li>
+    </ol>
+    <div class="note info"><strong>Already set for GAF and Revel.</strong> Gym and Fitness and Revel storefronts are pre-configured out of the box. If you also quote on Force USA (or any other store), add it once in Options &mdash; see <a href="#stores">Set up your stores</a> below.</div>
+  </div>
+
+  <div class="card">
+    <h2>How to use it</h2>
+    <ol class="steps">
+      <li>Open a Shopify admin draft order &mdash; either a new one or an existing quote (<code>admin.shopify.com/store/&hellip;/draft_orders/&hellip;</code>).</li>
+      <li>Add products to the order as you normally would.</li>
+      <li>Each line picks up a badge within a second or two: <strong>ON SALE &mdash; was $X, save $Y</strong> on discounted lines, or <strong>not on sale</strong> otherwise.</li>
+      <li>Glance at the <strong>RRP Radar</strong> panel in the bottom-right corner for the running total &mdash; total RRP, total now, and <strong>Customer saves</strong> across the whole quote.</li>
+      <li>If a line doesn't update after editing, click <strong>Rescan</strong> on the panel (or the <strong>Rescan</strong> button in the extension popup).</li>
+    </ol>
+    <div class="note good"><strong>The number that closes.</strong> "This build lists at $12,400, but with what's on sale today you're paying $9,900 &mdash; that's $2,500 back in your pocket." RRP Radar puts that figure in front of the rep automatically.</div>
+  </div>
+
+  <div class="card" id="stores">
+    <h2>Set up your stores</h2>
+    <p>RRP Radar reads live pricing from each brand's public storefront. It already knows GAF and Revel. To add another store (e.g. Force USA), or to change a mapping:</p>
+    <ol class="steps">
+      <li>Right-click the <strong>AFS RRP Radar</strong> toolbar icon &rarr; <strong>Options</strong> (or open the popup and click <strong>Options &amp; store mapping</strong>).</li>
+      <li>Under <strong>Store &rarr; storefront mapping</strong>, add a row. The <strong>store handle</strong> is the bit in the admin URL: <code>admin.shopify.com/store/<b>gymandfitness-au</b>/&hellip;</code>. Map it to that brand's storefront web address (e.g. <code>https://www.forceusa.com</code>).</li>
+      <li>Set the <strong>currency</strong> if it isn't AUD, then click <strong>Save settings</strong>.</li>
+    </ol>
+    <table>
+      <tr><th>Brand</th><th>Store handle</th><th>Storefront</th></tr>
+      <tr><td>Gym and Fitness</td><td><code>gymandfitness-au</code></td><td><code>www.gymandfitness.com.au</code> &nbsp;<em>(pre-set)</em></td></tr>
+      <tr><td>Revel Saunas</td><td><code>revel-saunas</code></td><td><code>revelsaunas.com.au</code> &nbsp;<em>(pre-set)</em></td></tr>
+      <tr><td>Force USA</td><td><em>from the admin URL</em></td><td>add in Options</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Troubleshooting</h2>
+    <h3>The panel says "No line items detected yet"</h3>
+    <p>Make sure you're on the draft-order editor with at least one product added, then click <strong>Rescan</strong>. RRP Radar reads the product links in the line list &mdash; including Shopify's newer web-component admin, which nests them in Shadow DOM. If badges still don't attach after a reload, ping Gary or Josh with a screenshot.</p>
+    <h3>A line shows "no live price"</h3>
+    <p>That line couldn't be matched to a storefront product &mdash; usually a custom/one-off item, a product not published to the online store, or an unusual title. On-catalogue products match automatically. Hover the badge to see why.</p>
+    <h3>Nothing appears at all</h3>
+    <p>Check the extension is enabled (click the icon &rarr; the <strong>Enabled</strong> toggle), that the store is mapped in Options, and reload the draft order once after installing.</p>
+    <details>
+      <summary>Still stuck?</summary>
+      <p>Message Gary or Josh with a screenshot of the draft order and we'll sort it.</p>
+    </details>
+  </div>
+
+</div>
+
+<!-- ============ PART 2 ============ -->
+<section class="part" id="tech"><div class="wrap">
+  <p class="part-label">Part 2</p>
+  <h2 class="part-title">How it works</h2>
+  <div class="chips">
+    <span class="tagchip">Chrome Extension (MV3)</span>
+    <span class="tagchip">Content Script</span>
+    <span class="tagchip">Service Worker</span>
+    <span class="tagchip">Storefront AJAX API</span>
+    <span class="tagchip">Read-only</span>
+  </div>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="n">1</span> Architecture</h2>
+    <div class="diagram">
+      <div class="row">
+        <div class="box client"><div class="t">Content Script</div><div class="s">reads draft-order line items in the admin, draws badges + the total panel</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>asks</span></div>
+        <div class="box worker"><div class="t">Service Worker</div><div class="s">looks up pricing off the storefront (cross-origin, cached)</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>reads</span></div>
+        <div class="box shop"><div class="t">Storefront</div><div class="s">public product pricing: RRP + promo per variant</div></div>
+      </div>
+    </div>
+    <p style="margin-top:16px">Manifest V3. A content script runs on the Shopify admin, finds each draft-order line, and asks the background service worker for that product's pricing. The service worker does the lookup from the extension context (so the cross-origin call to the storefront is clean) and hands back RRP, promo and the saving. The content script paints a badge on each line and keeps a running total in the corner panel.</p>
+    <table>
+      <tr><th>File</th><th>Role</th></tr>
+      <tr><td><code>manifest.json</code></td><td>MV3 config, storefront host permissions, content-script registration</td></tr>
+      <tr><td><code>src/content.js</code> / <code>content.css</code></td><td>Detects line items, injects badges + the total-saving panel</td></tr>
+      <tr><td><code>src/background.js</code></td><td>Service worker: resolves RRP vs promo pricing from the storefront, caches results</td></tr>
+      <tr><td><code>src/options.html</code> / <code>options.js</code></td><td>Store&rarr;storefront mapping, currency, on/off</td></tr>
+      <tr><td><code>src/popup.html</code> / <code>popup.js</code></td><td>Toolbar popup: enable toggle + rescan</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span> Where the pricing comes from</h2>
+    <p>Entirely from each brand's <strong>public storefront</strong>, no API key required. Each draft-order line exposes its exact <strong>variant ID</strong> in the admin, and the worker matches that against a catalogue it pulls once (and caches) from the storefront's public product feed:</p>
+    <pre><span>// build a variant&rarr;price index once, cached 30 min</span>
+GET /products.json?limit=250&amp;page=N   <span>// id, price, compare_at_price</span>
+<span>// fallback for anything not in the feed:</span>
+GET /search/suggest.json?q={title}  &rarr;  GET /products/{handle}.js</pre>
+    <p>Resolving by variant ID is exact and immune to title quirks &mdash; the old title-search path returned nothing for products with a <code>&trade;</code> or unusual characters in the name, which showed as &ldquo;no live price&rdquo;. If <code>compare_at_price</code> is higher than the current price, the line is on sale and the difference is the saving. This is the same pricing the customer sees on the website, so the rep&rsquo;s quote and the storefront never disagree.</p>
+    <div class="note good"><strong>Verified against a live 5-line order.</strong> Every catalogue product prices correctly &mdash; e.g. the Force USA G20 Pro resolves to <em>was $8,499, now $5,999, save $2,500</em>. Service items (e.g. &ldquo;Assembly &amp; Rubbish Removal&rdquo;) have no storefront product, so they correctly show no price.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span> Privacy &amp; security</h2>
+    <ul>
+      <li><strong>Read-only.</strong> The extension never writes to Shopify &mdash; no edits to draft orders, prices, or anything else.</li>
+      <li>No accounts, no API keys, no tokens. It reads the same public pricing anyone can see on the website.</li>
+      <li>No backend and no tracking. Settings (your store mappings) stay in your browser via Chrome sync storage.</li>
+      <li>It only runs on Shopify admin pages, and only calls the AFS brand storefronts you've mapped.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span> Status &amp; limitations</h2>
+    <div class="note"><strong>Version 0.2 &mdash; verified live.</strong> Line-item detection now works against Shopify's current admin, which renders the order editor as web components inside nested Shadow DOM. Badges attach under each product and the summary tallies the total saving. Confirmed end-to-end on a live multi-line draft order.</div>
+    <ul>
+      <li>Custom / one-off line items (not real catalogue products) won't have a storefront price to match &mdash; they show "no live price".</li>
+      <li>Products not published to the online store can't be read from the storefront.</li>
+      <li>Pricing reflects the storefront's current default price. Customer-specific or draft-order-level manual overrides aren't compared against RRP.</li>
+      <li>Internal AFS use only. Not published to the Chrome Web Store.</li>
+    </ul>
+  </div>
+
+</div>
+<footer>
+  The AFS Group &middot; AFS RRP Radar v0.3.2 &middot; Updated 14 Jul 2026 &middot; Managed by Josh / Gary<br>
+  Questions &rarr; <a href="mailto:josh@gymandfitness.com.au">josh@gymandfitness.com.au</a>
+</footer>
+</body>
+</html>

@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Queensland Maroons Limited Edition Bumper Plates | Gym and Fitness</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --qm-black: #0A0A0A;
+      --qm-dark: #111111;
+      --qm-dark-card: #161616;
+      --qm-dark-mid: #1A1A1A;
+      --qm-maroon: #7B1D3A;
+      --qm-maroon-light: #9B2D4E;
+      --qm-maroon-glow: rgba(123, 29, 58, 0.4);
+      --qm-cream: #F5F0E8;
+      --qm-cream-dim: rgba(245, 240, 232, 0.6);
+      --qm-white: #FFFFFF;
+      --qm-orange: #F26422;
+      --qm-orange-hover: #D85418;
+      --qm-grey: #888888;
+      --qm-border: rgba(255,255,255,0.08);
+      --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--qm-black);
+      color: var(--qm-cream);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+
+    /* ===== SCROLL REVEAL SYSTEM ===== */
+    .qm-reveal {
+      opacity: 0;
+      transform: translateY(50px);
+      transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .qm-reveal.qm-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .qm-reveal-delay-1 { transition-delay: 0.1s; }
+    .qm-reveal-delay-2 { transition-delay: 0.2s; }
+    .qm-reveal-delay-3 { transition-delay: 0.3s; }
+    .qm-reveal-delay-4 { transition-delay: 0.4s; }
+    .qm-reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ===== EYEBROW ===== */
+    .qm-eyebrow {
+      font: 700 11px/1.3 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--qm-maroon-light);
+      margin-bottom: 20px;
+    }
+
+    /* ===== SECTION 1: HERO ===== */
+    .qm-hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 24px 40px;
+      position: relative;
+      background: var(--qm-black);
+      overflow: hidden;
+    }
+
+    .qm-hero::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 800px;
+      height: 800px;
+      transform: translate(-50%, -40%);
+      background: radial-gradient(circle, var(--qm-maroon-glow) 0%, transparent 60%);
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    .qm-hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .qm-hero-eyebrow {
+      font: 600 12px/1.3 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--qm-maroon-light);
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: qm-fadeDown 1s 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .qm-hero-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: clamp(42px, 8vw, 110px);
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -0.03em;
+      color: var(--qm-cream);
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: qm-fadeUp 1.2s 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .qm-hero-title .qm-maroon {
+      color: var(--qm-maroon);
+      display: block;
+    }
+
+    .qm-hero-sub {
+      font: 400 17px/1.7 var(--font-body);
+      color: var(--qm-cream-dim);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      opacity: 0;
+      animation: qm-fadeUp 1s 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .qm-hero-plate {
+      width: clamp(260px, 35vw, 420px);
+      margin: 0 auto;
+      position: relative;
+      opacity: 0;
+      animation: qm-plateReveal 1.4s 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .qm-hero-plate img {
+      width: 100%;
+      animation: qm-slowSpin 40s linear infinite;
+      filter: drop-shadow(0 0 60px var(--qm-maroon-glow)) drop-shadow(0 20px 40px rgba(0,0,0,0.6));
+    }
+
+    .qm-scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 2;
+      opacity: 0;
+      animation: qm-fadeUp 1s 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .qm-scroll-indicator span {
+      display: block;
+      font: 600 10px/1 var(--font-display);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--qm-grey);
+      margin-bottom: 16px;
+    }
+
+    .qm-scroll-line {
+      width: 1px;
+      height: 48px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .qm-scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, transparent, var(--qm-maroon-light), transparent);
+      animation: qm-scrollPulse 2s ease-in-out infinite;
+    }
+
+    /* ===== SECTION 2: ORIGIN STORY ===== */
+    .qm-origin {
+      padding: 140px 24px;
+      background: var(--qm-dark);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qm-origin::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--qm-border), transparent);
+    }
+
+    .qm-origin-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .qm-origin-text h2 {
+      font: 900 clamp(36px, 5vw, 64px)/1.0 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--qm-cream);
+      margin-bottom: 28px;
+    }
+
+    .qm-origin-text p {
+      font: 400 16px/1.8 var(--font-body);
+      color: var(--qm-cream-dim);
+      margin-bottom: 16px;
+    }
+
+    .qm-origin-image {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .qm-origin-image::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, var(--qm-maroon), transparent 50%);
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .qm-origin-image img {
+      width: 100%;
+      aspect-ratio: 4/5;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    /* ===== SECTION 3: FORGED - FULL BLEED ===== */
+    .qm-forged {
+      min-height: 90vh;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      padding: 80px 24px;
+      background-image: url('https://cdn.shopify.com/s/files/1/1950/1891/files/Josh_2.png?v=1779326007');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
+    }
+
+    .qm-forged::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to bottom,
+        rgba(10,10,10,0.3) 0%,
+        rgba(10,10,10,0.1) 30%,
+        rgba(10,10,10,0.5) 60%,
+        rgba(10,10,10,0.92) 100%
+      );
+    }
+
+    .qm-forged-content {
+      position: relative;
+      z-index: 2;
+      max-width: 680px;
+    }
+
+    .qm-forged-content h2 {
+      font: 900 clamp(36px, 6vw, 72px)/1.0 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--qm-white);
+      margin-bottom: 24px;
+    }
+
+    .qm-forged-content p {
+      font: 400 17px/1.8 var(--font-body);
+      color: rgba(255,255,255,0.8);
+      margin-bottom: 16px;
+      max-width: 540px;
+    }
+
+    /* ===== SECTION 4: THE FULL RANGE ===== */
+    .qm-range {
+      padding: 140px 24px;
+      background: var(--qm-black);
+      position: relative;
+    }
+
+    .qm-range::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--qm-border), transparent);
+    }
+
+    .qm-range-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 80px;
+    }
+
+    .qm-range-header h2 {
+      font: 900 clamp(36px, 5vw, 56px)/1.05 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--qm-cream);
+      margin-top: 8px;
+    }
+
+    .qm-plate-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .qm-plate-card {
+      background: var(--qm-dark-card);
+      border: 1px solid var(--qm-border);
+      border-radius: 12px;
+      padding: 32px 20px 28px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qm-plate-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 40%, var(--qm-maroon-glow) 0%, transparent 70%);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    .qm-plate-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: var(--qm-maroon);
+      box-shadow: 0 24px 64px rgba(123, 29, 58, 0.2), 0 8px 24px rgba(0,0,0,0.4);
+    }
+
+    .qm-plate-card:hover::before {
+      opacity: 1;
+    }
+
+    .qm-plate-card-img {
+      position: relative;
+      z-index: 1;
+      width: 85%;
+      margin: 0 auto 20px;
+      transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .qm-plate-card:hover .qm-plate-card-img {
+      transform: scale(1.1);
+    }
+
+    .qm-plate-card-img img {
+      width: 100%;
+      filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));
+    }
+
+    .qm-plate-weight {
+      position: relative;
+      z-index: 1;
+      font: 700 20px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--qm-cream);
+      transition: color 0.3s ease;
+    }
+
+    .qm-plate-card:hover .qm-plate-weight {
+      color: var(--qm-white);
+    }
+
+    /* ===== SECTION 5: CAMP TESTED (full bleed photo) ===== */
+    .qm-camp {
+      height: 70vh;
+      min-height: 500px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qm-camp img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 30%;
+    }
+
+    .qm-camp-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 60px 40px 48px;
+      background: linear-gradient(to top, rgba(10,10,10,0.95) 0%, transparent 100%);
+    }
+
+    .qm-camp-overlay h3 {
+      font: 900 clamp(28px, 4vw, 48px)/1.0 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.01em;
+      color: var(--qm-white);
+      margin-bottom: 6px;
+    }
+
+    .qm-camp-overlay p {
+      font: 400 14px/1.5 var(--font-body);
+      color: var(--qm-cream-dim);
+      letter-spacing: 0.02em;
+    }
+
+    /* ===== SECTION 6: SPECS ===== */
+    .qm-specs {
+      padding: 140px 24px;
+      background: var(--qm-dark-mid);
+      position: relative;
+    }
+
+    .qm-specs::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--qm-border), transparent);
+    }
+
+    .qm-specs-header {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 80px;
+    }
+
+    .qm-specs-header h2 {
+      font: 900 clamp(36px, 5vw, 56px)/1.05 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--qm-cream);
+      margin-top: 8px;
+    }
+
+    .qm-specs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 32px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .qm-spec-card {
+      background: var(--qm-dark-card);
+      border: 1px solid var(--qm-border);
+      border-top: 2px solid var(--qm-maroon);
+      border-radius: 12px;
+      padding: 48px 32px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .qm-spec-card:hover {
+      transform: translateY(-4px);
+      border-top-color: var(--qm-maroon-light);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+
+    .qm-spec-value {
+      font: 900 clamp(48px, 6vw, 80px)/1.0 var(--font-display);
+      text-transform: uppercase;
+      color: var(--qm-cream);
+      margin-bottom: 4px;
+    }
+
+    .qm-spec-label {
+      font: 700 13px/1.3 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--qm-maroon-light);
+      margin-bottom: 20px;
+    }
+
+    .qm-spec-desc {
+      font: 400 14px/1.7 var(--font-body);
+      color: var(--qm-cream-dim);
+    }
+
+    /* ===== SECTION 7: WAITLIST CTA ===== */
+    .qm-waitlist {
+      padding: 140px 24px;
+      background: linear-gradient(180deg, var(--qm-dark-mid) 0%, var(--qm-black) 100%);
+      text-align: center;
+      position: relative;
+    }
+
+    .qm-waitlist::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 600px;
+      height: 600px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, var(--qm-maroon-glow) 0%, transparent 60%);
+      pointer-events: none;
+      opacity: 0.25;
+    }
+
+    .qm-waitlist-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .qm-waitlist h2 {
+      font: 900 clamp(36px, 5vw, 56px)/1.05 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: -0.02em;
+      color: var(--qm-cream);
+      margin-bottom: 16px;
+    }
+
+    .qm-waitlist-sub {
+      font: 400 16px/1.7 var(--font-body);
+      color: var(--qm-cream-dim);
+      margin-bottom: 40px;
+    }
+
+    .qm-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .qm-form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .qm-input {
+      width: 100%;
+      font: 400 15px/1.4 var(--font-body);
+      padding: 14px 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--qm-border);
+      border-radius: 8px;
+      color: var(--qm-cream);
+      outline: none;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .qm-input::placeholder {
+      color: rgba(245,240,232,0.35);
+    }
+
+    .qm-input:focus {
+      border-color: var(--qm-maroon);
+      box-shadow: 0 0 0 3px rgba(123, 29, 58, 0.25);
+    }
+
+    .qm-btn {
+      font: 700 14px/1 var(--font-display);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      border: 0;
+      border-radius: 999px;
+      padding: 18px 36px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      background: var(--qm-orange);
+      color: #fff;
+      width: 100%;
+    }
+
+    .qm-btn:hover {
+      background: var(--qm-orange-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(242, 100, 34, 0.3);
+    }
+
+    .qm-btn:active {
+      transform: translateY(1px);
+      box-shadow: none;
+    }
+
+    .qm-privacy {
+      font: 400 12px/1.5 var(--font-body);
+      color: rgba(245,240,232,0.4);
+      margin-top: 8px;
+    }
+
+    /* ===== SECTION 8: PARTNERSHIP BADGE ===== */
+    .qm-badge {
+      padding: 80px 24px;
+      background: var(--qm-black);
+      text-align: center;
+      position: relative;
+    }
+
+    .qm-badge::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--qm-border), transparent);
+    }
+
+    .qm-badge-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 28px;
+      margin-bottom: 16px;
+    }
+
+    .qm-badge-gaf {
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 16px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+    }
+
+    .qm-badge-gaf img {
+      height: 32px;
+      width: auto;
+    }
+
+    .qm-badge-x {
+      font: 300 24px/1 var(--font-body);
+      color: var(--qm-grey);
+    }
+
+    .qm-badge-qrl {
+      font: 900 28px/1 var(--font-display);
+      color: var(--qm-cream);
+      letter-spacing: 0.04em;
+    }
+
+    .qm-badge p {
+      font: 400 14px/1.5 var(--font-body);
+      color: var(--qm-cream-dim);
+      font-style: italic;
+    }
+
+    /* ===== ANIMATIONS ===== */
+    @keyframes qm-fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes qm-fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes qm-plateReveal {
+      from { opacity: 0; transform: scale(0.85) translateY(40px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    @keyframes qm-slowSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes qm-scrollPulse {
+      0% { top: -100%; }
+      100% { top: 100%; }
+    }
+
+    /* ===== COUNTER ANIMATION ===== */
+    .qm-counter {
+      display: inline-block;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .qm-plate-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .qm-specs-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .qm-hero { min-height: 100svh; padding: 60px 20px 40px; }
+
+      .qm-origin { padding: 80px 20px; }
+      .qm-origin-grid {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+      .qm-origin-image { order: -1; }
+
+      .qm-forged {
+        min-height: 70vh;
+        background-attachment: scroll;
+        align-items: flex-end;
+      }
+
+      .qm-range { padding: 80px 20px; }
+      .qm-plate-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+      .qm-plate-grid .qm-plate-card:last-child {
+        grid-column: 1 / -1;
+        max-width: 50%;
+        margin: 0 auto;
+      }
+
+      .qm-camp { height: 50vh; min-height: 360px; }
+
+      .qm-specs { padding: 80px 20px; }
+      .qm-specs-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+      }
+      .qm-spec-card { padding: 36px 24px; }
+
+      .qm-waitlist { padding: 80px 20px; }
+      .qm-form-row { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .qm-hero-title { letter-spacing: -0.02em; }
+      .qm-plate-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .qm-plate-card { padding: 20px 12px 20px; border-radius: 10px; }
+      .qm-plate-weight { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HERO ===== -->
+  <section class="qm-hero">
+    <div class="qm-hero-content">
+      <div class="qm-hero-eyebrow">Limited Edition 2026 Origin Camp Series</div>
+      <h1 class="qm-hero-title">
+        Queensland
+        <span class="qm-maroon">Maroons</span>
+        Bumper Plates
+      </h1>
+      <p class="qm-hero-sub">The same plates used by the Queensland Maroons during Origin camp. Now available for your home gym. Built by Force USA. Exclusively at Gym and Fitness.</p>
+      <div class="qm-hero-plate">
+        <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Lionel_4.png?v=1779325992" alt="20KG Queensland Maroons Limited Edition Bumper Plate" />
+      </div>
+    </div>
+    <div class="qm-scroll-indicator">
+      <span>Scroll to explore</span>
+      <div class="qm-scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===== ORIGIN STORY ===== -->
+  <section class="qm-origin">
+    <div class="qm-origin-grid">
+      <div class="qm-origin-text">
+        <div class="qm-eyebrow qm-reveal">Born at Origin Camp</div>
+        <h2 class="qm-reveal qm-reveal-delay-1">Isn't just<br>a plate.</h2>
+        <p class="qm-reveal qm-reveal-delay-2">These plates were born in the Queensland Maroons training facility. Built to withstand the intensity of Origin camp preparation, they carry the weight of state pride in every rep.</p>
+        <p class="qm-reveal qm-reveal-delay-3">Now, for the first time, this limited edition series is available to the public. Same plates. Same quality. Your gym.</p>
+      </div>
+      <div class="qm-origin-image qm-reveal qm-reveal-delay-2">
+        <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Josh_3.png?v=1779326012" alt="Queensland Maroons athlete squatting with maroon bumper plates at Origin camp" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FORGED FOR ORIGIN ===== -->
+  <section class="qm-forged">
+    <div class="qm-forged-content">
+      <div class="qm-eyebrow qm-reveal">Born at Origin Camp</div>
+      <h2 class="qm-reveal qm-reveal-delay-1">Forged for<br>State of Origin</h2>
+      <p class="qm-reveal qm-reveal-delay-2">These plates were born in the Queensland Maroons training facility. Built to withstand the intensity of Origin camp preparation, they carry the weight of state pride in every rep.</p>
+      <p class="qm-reveal qm-reveal-delay-3">Now, for the first time, this limited edition series is available to the public. Same plates. Same quality. Your gym.</p>
+    </div>
+  </section>
+
+  <!-- ===== THE FULL RANGE ===== -->
+  <section class="qm-range">
+    <div class="qm-range-header">
+      <div class="qm-eyebrow qm-reveal">Pro Grade Bumper Plates</div>
+      <h2 class="qm-reveal qm-reveal-delay-1">The Full Range</h2>
+    </div>
+    <div class="qm-plate-grid">
+      <div class="qm-plate-card qm-reveal qm-reveal-delay-1">
+        <div class="qm-plate-card-img">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/QLD_MAROONS_5KG_v2.png?v=1779325999" alt="5KG Queensland Maroons Bumper Plate" />
+        </div>
+        <div class="qm-plate-weight">5 KG</div>
+      </div>
+      <div class="qm-plate-card qm-reveal qm-reveal-delay-2">
+        <div class="qm-plate-card-img">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Lionel_2.png?v=1779325985" alt="10KG Queensland Maroons Bumper Plate" />
+        </div>
+        <div class="qm-plate-weight">10 KG</div>
+      </div>
+      <div class="qm-plate-card qm-reveal qm-reveal-delay-3">
+        <div class="qm-plate-card-img">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Lionel_3.png?v=1779325989" alt="15KG Queensland Maroons Bumper Plate" />
+        </div>
+        <div class="qm-plate-weight">15 KG</div>
+      </div>
+      <div class="qm-plate-card qm-reveal qm-reveal-delay-4">
+        <div class="qm-plate-card-img">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Lionel_4.png?v=1779325992" alt="20KG Queensland Maroons Bumper Plate" />
+        </div>
+        <div class="qm-plate-weight">20 KG</div>
+      </div>
+      <div class="qm-plate-card qm-reveal qm-reveal-delay-5">
+        <div class="qm-plate-card-img">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Lionel_5.png?v=1779325995" alt="25KG Queensland Maroons Bumper Plate" />
+        </div>
+        <div class="qm-plate-weight">25 KG</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CAMP TESTED ===== -->
+  <section class="qm-camp">
+    <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Josh_2.png?v=1779326007" alt="Athlete performing barbell rows with Queensland Maroons bumper plates at Origin camp" />
+    <div class="qm-camp-overlay">
+      <h3 class="qm-reveal">Camp Tested</h3>
+      <p class="qm-reveal qm-reveal-delay-1">Origin camp training facility, 2025</p>
+    </div>
+  </section>
+
+  <!-- ===== SPECS ===== -->
+  <section class="qm-specs">
+    <div class="qm-specs-header">
+      <div class="qm-eyebrow qm-reveal">Specifications</div>
+      <h2 class="qm-reveal qm-reveal-delay-1">Built to Perform</h2>
+    </div>
+    <div class="qm-specs-grid">
+      <div class="qm-spec-card qm-reveal qm-reveal-delay-1">
+        <div class="qm-spec-value">Pro</div>
+        <div class="qm-spec-label">Grade</div>
+        <p class="qm-spec-desc">Competition-grade virgin rubber construction with steel insert</p>
+      </div>
+      <div class="qm-spec-card qm-reveal qm-reveal-delay-2">
+        <div class="qm-spec-value"><span class="qm-counter" data-target="450">0</span>mm</div>
+        <div class="qm-spec-label">Diameter</div>
+        <p class="qm-spec-desc">IWF standard diameter across all weights</p>
+      </div>
+      <div class="qm-spec-card qm-reveal qm-reveal-delay-3">
+        <div class="qm-spec-value"><span class="qm-counter" data-target="50">0</span>mm</div>
+        <div class="qm-spec-label">Hub</div>
+        <p class="qm-spec-desc">Precision stainless steel centre hub fits all Olympic barbells</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== WAITLIST CTA ===== -->
+  <section class="qm-waitlist">
+    <div class="qm-waitlist-inner">
+      <div class="qm-eyebrow qm-reveal">Pre-sale Coming Soon</div>
+      <h2 class="qm-reveal qm-reveal-delay-1">Join the Waitlist</h2>
+      <p class="qm-waitlist-sub qm-reveal qm-reveal-delay-2">Be the first to know when the Queensland Maroons Limited Edition Bumper Plates drop. Waitlist members get early access and exclusive pricing.</p>
+      <form class="qm-form qm-reveal qm-reveal-delay-3" onsubmit="return false;">
+        <div class="qm-form-row">
+          <input type="text" class="qm-input" placeholder="First Name" required />
+          <input type="text" class="qm-input" placeholder="Last Name" required />
+        </div>
+        <input type="email" class="qm-input" placeholder="Email Address" required />
+        <button type="submit" class="qm-btn">Join the Waitlist</button>
+      </form>
+      <p class="qm-privacy qm-reveal qm-reveal-delay-4">We'll only email you about this drop. No spam, ever.</p>
+    </div>
+  </section>
+
+  <!-- ===== PARTNERSHIP BADGE ===== -->
+  <section class="qm-badge">
+    <div class="qm-badge-logos qm-reveal">
+      <div class="qm-badge-gaf">
+        <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary_1_360x@2x.png?v=1740540419" alt="Gym and Fitness" />
+      </div>
+      <span class="qm-badge-x">&times;</span>
+      <span class="qm-badge-qrl">QRL</span>
+    </div>
+    <p class="qm-reveal qm-reveal-delay-1">Official Equipment Suppliers to the Queensland Maroons</p>
+  </section>
+
+  <!-- ===== JAVASCRIPT ===== -->
+  <script>
+    (function() {
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('qm-visible');
+
+            var counters = entry.target.querySelectorAll('.qm-counter');
+            counters.forEach(function(counter) {
+              if (counter.dataset.animated) return;
+              counter.dataset.animated = 'true';
+              var target = parseInt(counter.dataset.target, 10);
+              var duration = 1200;
+              var start = performance.now();
+              function step(now) {
+                var progress = Math.min((now - start) / duration, 1);
+                var ease = 1 - Math.pow(1 - progress, 3);
+                counter.textContent = Math.round(target * ease);
+                if (progress < 1) requestAnimationFrame(step);
+              }
+              requestAnimationFrame(step);
+            });
+          }
+        });
+      }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+      document.querySelectorAll('.qm-reveal').forEach(function(el) {
+        observer.observe(el);
+      });
+
+      var hero = document.querySelector('.qm-hero');
+      var scrollInd = document.querySelector('.qm-scroll-indicator');
+      if (hero && scrollInd) {
+        window.addEventListener('scroll', function() {
+          var scrolled = window.scrollY;
+          var heroH = hero.offsetHeight;
+          if (scrolled > heroH * 0.3) {
+            scrollInd.style.opacity = '0';
+          } else {
+            scrollInd.style.opacity = '';
+          }
+        }, { passive: true });
+      }
+    })();
+  </script>
+
+</body>
+</html>

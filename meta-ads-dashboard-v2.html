@@ -1,0 +1,3464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Performance Dashboard v2</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+/* ─── Base ─── */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow-x:hidden;background:#f8f8fa}
+h1,h2,h3,h4,h5,h6,.font-display{font-family:'Montserrat',sans-serif}
+.scrollbar-thin::-webkit-scrollbar{width:6px;height:6px}
+.scrollbar-thin::-webkit-scrollbar-track{background:transparent}
+.scrollbar-thin::-webkit-scrollbar-thumb{background:#d1d5db;border-radius:3px}
+.scrollbar-thin::-webkit-scrollbar-thumb:hover{background:#9ca3af}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .4s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*{opacity:0;animation:fadeIn .4s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}
+.stagger>*:nth-child(2){animation-delay:.1s}
+.stagger>*:nth-child(3){animation-delay:.15s}
+.stagger>*:nth-child(4){animation-delay:.2s}
+.stagger>*:nth-child(5){animation-delay:.25s}
+.stagger>*:nth-child(6){animation-delay:.3s}
+.stagger>*:nth-child(7){animation-delay:.35s}
+.stagger>*:nth-child(8){animation-delay:.4s}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.4}}
+.pulse-dot{animation:pulse-dot 2s ease-in-out infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{animation:spin 1s linear infinite}
+input[type="date"]{color-scheme:light}
+.creative-card:hover .creative-overlay{opacity:1}
+.creative-overlay{transition:opacity .2s ease}
+.dash-card{background:#fff;border-radius:16px;box-shadow:0 1px 3px rgba(0,0,0,.04),0 1px 2px rgba(0,0,0,.06);border:1px solid rgba(0,0,0,.04)}
+.dash-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.06),0 1px 3px rgba(0,0,0,.04)}
+
+/* ─── GAF Design System Tokens ─── */
+:root{
+  --gaf-black:#000000;
+  --gaf-orange:#F26422;
+  --gaf-orange-hover:#D85418;
+  --gaf-orange-soft:#FDE9DD;
+  --gaf-grey-50:#FAFAFA;
+  --gaf-grey-100:#F0F0F0;
+  --gaf-grey-200:#E2E2E2;
+  --gaf-grey-300:#C9C9C9;
+  --gaf-grey-500:#717171;
+  --gaf-grey-600:#555555;
+  --gaf-grey-700:#424242;
+  --gaf-grey-800:#2B2B2B;
+  --gaf-shadow-sm:0 2px 4px rgba(21,21,19,.06),0 1px 2px rgba(21,21,19,.04);
+  --gaf-shadow-md:0 6px 14px rgba(21,21,19,.08),0 2px 4px rgba(21,21,19,.04);
+  --gaf-ease-out:cubic-bezier(0.2,0.8,0.2,1);
+  --gaf-dur-base:200ms;
+}
+
+/* ─── GAF Brand Overrides (active when data-brand="gaf") ─── */
+[data-brand="gaf"]{background:var(--gaf-grey-50)}
+
+[data-brand="gaf"] .dash-card{
+  border-radius:6px;
+  border:1px solid var(--gaf-grey-200);
+  box-shadow:var(--gaf-shadow-sm);
+  background:#fff;
+}
+[data-brand="gaf"] .dash-card:hover{
+  box-shadow:var(--gaf-shadow-md);
+  transform:translateY(-1px);
+  transition:box-shadow var(--gaf-dur-base) var(--gaf-ease-out),transform var(--gaf-dur-base) var(--gaf-ease-out);
+}
+
+/* KPI number/label tokens */
+[data-brand="gaf"] .gaf-kpi-value{
+  font-family:'Montserrat',sans-serif;
+  font-weight:700;
+  color:#000;
+  letter-spacing:-0.01em;
+  font-size:clamp(1.1rem,2vw,1.5rem);
+}
+[data-brand="gaf"] .gaf-kpi-label{
+  font-family:'Open Sans',sans-serif;
+  font-size:10px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.08em;
+  color:var(--gaf-grey-500);
+}
+[data-brand="gaf"] .gaf-eyebrow{
+  font-family:'Montserrat',sans-serif;
+  font-size:10px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:var(--gaf-orange);
+  margin-bottom:4px;
+  display:block;
+}
+
+/* Section heading style */
+[data-brand="gaf"] .gaf-section-title{
+  font-family:'Montserrat',sans-serif;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:-0.01em;
+  color:#000;
+}
+
+/* GAF primary pill button */
+[data-brand="gaf"] .gaf-btn{
+  background:var(--gaf-orange);
+  color:#fff;
+  border-radius:999px;
+  font-family:'Montserrat',sans-serif;
+  font-weight:700;
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.04em;
+  border:none;
+  padding:8px 18px;
+  cursor:pointer;
+  transition:background var(--gaf-dur-base) var(--gaf-ease-out),transform var(--gaf-dur-base) var(--gaf-ease-out);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+}
+[data-brand="gaf"] .gaf-btn:hover{background:var(--gaf-orange-hover)}
+[data-brand="gaf"] .gaf-btn:active{transform:translateY(1px)}
+[data-brand="gaf"] .gaf-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* GAF tab nav pill */
+[data-brand="gaf"] .gaf-tab-active{
+  background:#000;
+  color:#fff;
+  border-radius:4px;
+}
+[data-brand="gaf"] .gaf-tab-inactive{
+  color:var(--gaf-grey-600);
+  background:transparent;
+}
+[data-brand="gaf"] .gaf-tab-inactive:hover{color:#000;background:var(--gaf-grey-100)}
+
+/* Brand toggle */
+[data-brand="gaf"] .gaf-brand-toggle-wrap{
+  border:1px solid var(--gaf-grey-200);
+  border-radius:999px;
+  overflow:hidden;
+  display:flex;
+}
+[data-brand="gaf"] .gaf-brand-active{background:#000;color:#fff}
+[data-brand="gaf"] .gaf-brand-inactive{background:transparent;color:var(--gaf-grey-500)}
+
+/* GAF orange delta positive */
+[data-brand="gaf"] .gaf-delta-pos{color:#2E8B4A}
+[data-brand="gaf"] .gaf-delta-neg{color:#C23B22}
+[data-brand="gaf"] .gaf-delta-neutral{color:var(--gaf-grey-500)}
+
+/* GAF select/input */
+[data-brand="gaf"] select,[data-brand="gaf"] input[type="date"]{
+  border:1px solid var(--gaf-grey-200) !important;
+  border-radius:6px !important;
+  font-family:'Open Sans',sans-serif;
+  font-size:13px;
+  color:#000;
+  background:#fff;
+}
+[data-brand="gaf"] select:focus,[data-brand="gaf"] input[type="date"]:focus{
+  outline:none;
+  border-color:var(--gaf-orange) !important;
+  box-shadow:0 0 0 3px rgba(242,100,34,.2) !important;
+}
+
+/* GAF alert/info cards */
+[data-brand="gaf"] .gaf-alert-waste{
+  border-left:3px solid #C23B22 !important;
+  border-radius:6px !important;
+}
+
+/* GAF scale winner cards */
+[data-brand="gaf"] .gaf-winner-card{
+  border:1px solid #E7F3EB;
+  background:#F7FCF9;
+  border-radius:6px;
+}
+
+/* GAF header bar */
+.gaf-header{
+  background:#000;
+  border-bottom:none;
+}
+.gaf-header-title{
+  font-family:'Montserrat',sans-serif;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:0.06em;
+  font-size:12px;
+  color:rgba(255,255,255,.6);
+}
+
+/* KPI card accent bar */
+[data-brand="gaf"] .gaf-kpi-card{
+  position:relative;
+  overflow:hidden;
+}
+[data-brand="gaf"] .gaf-kpi-card::before{
+  content:'';
+  position:absolute;
+  top:0;left:0;right:0;
+  height:2px;
+  background:var(--gaf-orange);
+  transform:scaleX(0);
+  transform-origin:left;
+  transition:transform var(--gaf-dur-base) var(--gaf-ease-out);
+}
+[data-brand="gaf"] .gaf-kpi-card:hover::before{transform:scaleX(1)}
+
+/* Announcement strip style for GAF */
+[data-brand="gaf"] .gaf-strip{
+  background:#000;
+  color:#fff;
+  font-family:'Montserrat',sans-serif;
+  font-size:11px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.1em;
+  padding:6px 24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+[data-brand="gaf"] .gaf-strip-dot{
+  width:4px;height:4px;
+  border-radius:50%;
+  background:var(--gaf-orange);
+  flex-shrink:0;
+}
+</style>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        display: ['"Montserrat"','sans-serif'],
+        body: ['"Open Sans"','sans-serif'],
+        accent: ['"Playfair Display"','serif'],
+      }
+    }
+  }
+}
+</script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-type="module">
+
+const { useState, useEffect, useCallback, useMemo, useRef } = React;
+
+// ─── Brand Config ───
+const BRANDS = {
+  gaf: {
+    name: 'Gym & Fitness',
+    accountId: 'act_10153080558849684',
+    igId: '17841400440304858',
+    pageId: '106498739683',
+    currency: 'AUD',
+    logo: 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576',
+    logoDark: 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576',
+    primary: '#f26422',
+    primaryLight: '#fff3ec',
+    primaryMid: '#fde0cc',
+    headerBg: '#000000',
+    headerText: '#ffffff',
+    cardBorder: '#f0f0f0',
+    accentGradient: 'from-orange-500 to-orange-600',
+    bodyFont: '"Open Sans", sans-serif',
+    headingFont: '"Montserrat", sans-serif',
+  },
+  revel: {
+    name: 'Revel Saunas',
+    accountId: 'act_2412898282250572',
+    igId: '17841449027645284',
+    pageId: '122103865226004055',
+    currency: 'AUD',
+    logo: 'https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102',
+    logoDark: 'https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-Black-01.png?v=1691024664',
+    primary: '#25B34B',
+    primaryLight: '#ecfdf0',
+    primaryMid: '#d1fae0',
+    headerBg: '#485D4D',
+    headerText: '#ffffff',
+    cardBorder: '#e8ede9',
+    accentGradient: 'from-green-500 to-green-600',
+    bodyFont: '"Montserrat", sans-serif',
+    headingFont: '"Montserrat", sans-serif',
+  }
+};
+
+const META_API = 'https://graph.facebook.com/v21.0';
+const DEFAULT_TOKEN = 'EAAKiMl2GC1oBRQg8ZAgeiudsZCDUZCRAbGruYU6V1VgY3nGWLvxEUhZBGQ0RZAP59zLJXgAMZBTMf2OiULsjSW7FVmOZAYOiQATkQeDT2lQHam14DRXfteiBDMkXpxP6DreX8ZCYtO7fEZBQEiaMFU1N6caFsLYxPYWF0TLS5b2hLusGoZAb8IXhSMq2nwlAZDZD';
+
+// ─── Helpers ───
+const fmt = {
+  currency: (v) => {
+    const n = parseFloat(v) || 0;
+    if (n >= 1000000) return '$' + (n/1000000).toFixed(1) + 'M';
+    if (n >= 10000) return '$' + (n/1000).toFixed(1) + 'K';
+    return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+  },
+  number: (v) => {
+    const n = parseFloat(v) || 0;
+    if (n >= 1000000) return (n/1000000).toFixed(1) + 'M';
+    if (n >= 1000) return (n/1000).toFixed(1) + 'K';
+    return n.toLocaleString();
+  },
+  pct: (v) => (parseFloat(v) || 0).toFixed(2) + '%',
+  decimal: (v) => (parseFloat(v) || 0).toFixed(2),
+  roas: (v) => (parseFloat(v) || 0).toFixed(2) + 'x',
+};
+
+function getActionValue(actions, type) {
+  if (!actions) return 0;
+  const a = actions.find(x => x.action_type === type);
+  return a ? parseFloat(a.value) : 0;
+}
+
+function getDateRange(preset, custom) {
+  const today = new Date();
+  const pad = d => d.toISOString().slice(0,10);
+  const daysAgo = n => { const d = new Date(today); d.setDate(d.getDate() - n); return d; };
+  switch(preset) {
+    case 'today': return { since: pad(today), until: pad(today) };
+    case 'yesterday': return { since: pad(daysAgo(1)), until: pad(daysAgo(1)) };
+    case 'last_7d': return { since: pad(daysAgo(6)), until: pad(today) };
+    case 'last_14d': return { since: pad(daysAgo(13)), until: pad(today) };
+    case 'last_30d': return { since: pad(daysAgo(29)), until: pad(today) };
+    case 'last_90d': return { since: pad(daysAgo(89)), until: pad(today) };
+    case 'this_month': {
+      const start = new Date(today.getFullYear(), today.getMonth(), 1);
+      return { since: pad(start), until: pad(today) };
+    }
+    case 'last_month': {
+      const start = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+      const end = new Date(today.getFullYear(), today.getMonth(), 0);
+      return { since: pad(start), until: pad(end) };
+    }
+    case 'last_12m': {
+      const start = new Date(today.getFullYear() - 1, today.getMonth(), today.getDate() + 1);
+      return { since: pad(start), until: pad(today) };
+    }
+    case 'custom': return { since: custom.since, until: custom.until };
+    default: return { since: pad(daysAgo(29)), until: pad(today) };
+  }
+}
+
+async function apiFetch(path, token) {
+  const sep = path.includes('?') ? '&' : '?';
+  const url = `${META_API}${path}${sep}access_token=${token}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err?.error?.message || `API error ${res.status}`);
+  }
+  return res.json();
+}
+
+async function fetchAllPages(path, token, maxPages = 50) {
+  let all = [];
+  let url = `${META_API}${path}${path.includes('?') ? '&' : '?'}access_token=${token}`;
+  let page = 0;
+  while (url && page < maxPages) {
+    const res = await fetch(url);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err?.error?.message || `API error ${res.status}`);
+    }
+    const json = await res.json();
+    all = all.concat(json.data || []);
+    url = json.paging?.next || null;
+    page++;
+  }
+  return all;
+}
+
+// Fetch daily series for total_value metrics by calling one window per day/month
+async function fetchDailySeries(igId, since, until, token) {
+  const METRICS = 'accounts_engaged,total_interactions,views,likes,comments,saves,shares';
+  const start = new Date(since), end = new Date(until);
+  const daysDiff = Math.ceil((end - start) / 86400000);
+
+  let windows = [];
+  if (daysDiff <= 90) {
+    const cur = new Date(start);
+    while (cur <= end) {
+      const d = cur.toISOString().slice(0, 10);
+      windows.push({ label: d, ts: Math.floor(cur.getTime() / 1000), uts: Math.floor(cur.getTime() / 1000) + 86399 });
+      cur.setDate(cur.getDate() + 1);
+    }
+  } else {
+    const cur = new Date(start.getFullYear(), start.getMonth(), 1);
+    while (cur <= end) {
+      const mEnd = new Date(cur.getFullYear(), cur.getMonth() + 1, 0);
+      const windowEnd = mEnd > end ? end : mEnd;
+      windows.push({ label: cur.toISOString().slice(0, 7) + '-01', ts: Math.floor(cur.getTime() / 1000), uts: Math.floor(windowEnd.getTime() / 1000) + 86399 });
+      cur.setMonth(cur.getMonth() + 1);
+    }
+  }
+
+  const results = await Promise.all(
+    windows.map(w =>
+      fetch(`${META_API}/${igId}/insights?metric=${METRICS}&metric_type=total_value&period=day&since=${w.ts}&until=${w.uts}&access_token=${token}`)
+        .then(r => r.json()).catch(() => null)
+    )
+  );
+
+  const series = {};
+  results.forEach((r, i) => {
+    (r?.data || []).forEach(m => {
+      if (!series[m.name]) series[m.name] = [];
+      series[m.name].push({ date: windows[i].label, value: m.total_value?.value || 0 });
+    });
+  });
+  return series;
+}
+
+// Fetch totals for the comparison (previous) period
+async function fetchOrganicComparison(igId, since, until, token) {
+  try {
+    const start = new Date(since + 'T00:00:00Z'), end = new Date(until + 'T00:00:00Z');
+    const days = Math.round((end - start) / 86400000) + 1;
+    // Use UTC dates to avoid timezone drift; cap window at 28 days to stay safely inside IG API limits
+    const windowDays = Math.min(days, 28);
+    const prevEndDate = new Date(start.getTime() - 86400000); // day before current start
+    const prevStartDate = new Date(prevEndDate.getTime() - (windowDays - 1) * 86400000);
+    const ps = prevStartDate.toISOString().slice(0, 10);
+    const pu = prevEndDate.toISOString().slice(0, 10);
+    const sinceTs = Math.floor(prevStartDate.getTime() / 1000);
+    const untilTs = Math.floor(prevEndDate.getTime() / 1000) + 86399;
+
+    const [reachRes, totalsRes] = await Promise.all([
+      igInsightsChunked(igId, 'reach', ps, pu, token, null),
+      fetch(`${META_API}/${igId}/insights?metric=accounts_engaged,total_interactions,views&metric_type=total_value&period=day&since=${sinceTs}&until=${untilTs}&access_token=${token}`).then(r => r.json()).catch(() => ({ data: [] })),
+    ]);
+
+    const prevReach = (reachRes?.data?.[0]?.values || []).reduce((a, v) => a + (v.value || 0), 0);
+    const prevMap = {};
+    (totalsRes?.data || []).forEach(m => { prevMap[m.name] = m.total_value?.value || 0; });
+    return { reach: prevReach, accounts_engaged: prevMap['accounts_engaged'] || 0, total_interactions: prevMap['total_interactions'] || 0, views: prevMap['views'] || 0 };
+  } catch (_) {
+    return null;
+  }
+}
+
+// IG Insights API max window is 90 days for period=day — chunk longer ranges
+async function igInsightsChunked(igId, metric, since, until, token, metricType) {
+  const CHUNK = 88;
+  const start = new Date(since), end = new Date(until);
+  const days = Math.ceil((end - start) / 86400000);
+  const mtParam = metricType ? `&metric_type=${metricType}` : '';
+
+  async function fetchWindow(s, u) {
+    const sTs = Math.floor(s.getTime() / 1000);
+    const uTs = Math.floor(u.getTime() / 1000) + 86399;
+    const res = await fetch(`${META_API}/${igId}/insights?metric=${metric}&period=day&since=${sTs}&until=${uTs}${mtParam}&access_token=${token}`).then(r => r.json()).catch(() => ({ data: [] }));
+    return res.error ? { data: [] } : res;
+  }
+
+  if (days <= CHUNK) return fetchWindow(start, end);
+
+  const chunks = [];
+  let cur = new Date(start);
+  while (cur <= end) {
+    const next = new Date(cur); next.setDate(next.getDate() + CHUNK);
+    const windowEnd = next > end ? end : next;
+    chunks.push(await fetchWindow(cur, windowEnd));
+    cur = new Date(windowEnd); cur.setDate(cur.getDate() + 1);
+  }
+
+  // Merge: for time-series (no metricType) concat values; for total_value sum
+  if (!metricType) {
+    const merged = {};
+    chunks.forEach(c => (c.data || []).forEach(m => {
+      if (!merged[m.name]) merged[m.name] = { ...m, values: [] };
+      merged[m.name].values.push(...(m.values || []));
+    }));
+    return { data: Object.values(merged) };
+  } else {
+    const totals = {};
+    chunks.forEach(c => (c.data || []).forEach(m => {
+      totals[m.name] = (totals[m.name] || 0) + (m.total_value?.value || 0);
+    }));
+    return { data: Object.keys(totals).map(name => ({ name, total_value: { value: totals[name] } })) };
+  }
+}
+
+async function fetchOrganicData(igId, pageId, since, until, token) {
+  const base = META_API;
+  const sinceTs = Math.floor(new Date(since).getTime() / 1000);
+  const untilTs = Math.floor(new Date(until + 'T23:59:59').getTime() / 1000);
+
+  // Get page access token first — page insights require it
+  const accountsRes = await fetch(`${base}/me/accounts?fields=id,access_token&access_token=${token}`).then(r => r.json()).catch(() => ({ data: [] }));
+  const pageTokenEntry = (accountsRes?.data || []).find(p => p.id === pageId);
+  const pageToken = pageTokenEntry?.access_token || token;
+
+  // Fetch IG insights, profile, media, page insights, daily series, and comparison — in parallel
+  const [profileRes, reachRes, totalsRes, followsRes, mediaRes, pageFansRes, dailySeries, comparison] = await Promise.all([
+    fetch(`${base}/${igId}?fields=username,followers_count,media_count&access_token=${token}`).then(r => r.json()),
+    igInsightsChunked(igId, 'reach', since, until, token, null),
+    igInsightsChunked(igId, 'accounts_engaged,total_interactions,profile_views,views', since, until, token, 'total_value'),
+    fetch(`${base}/${igId}/insights?metric=follows_and_unfollows&metric_type=total_value&breakdown=follow_type&period=day&since=${sinceTs}&until=${untilTs}&access_token=${token}`).then(r => r.json()).catch(() => ({ data: [] })),
+    fetch(`${base}/${igId}/media?fields=id,caption,timestamp,media_type,media_url,thumbnail_url,permalink,like_count,comments_count&limit=100&access_token=${token}`).then(r => r.json()),
+    fetch(`${base}/${pageId}?fields=fan_count,name,talking_about_count&access_token=${token}`).then(r => r.json()).catch(() => ({})),
+    fetchDailySeries(igId, since, until, token).catch(() => ({})),
+    fetchOrganicComparison(igId, since, until, token).catch(() => null),
+  ]);
+
+  if (profileRes.error) throw new Error(profileRes.error.message);
+
+  // Daily reach time series
+  const dailyReach = (reachRes?.data?.[0]?.values || []).map(v => ({
+    date: (v.end_time || '').slice(0, 10), value: v.value || 0,
+  }));
+  const totalReach = dailyReach.reduce((a, b) => a + b.value, 0);
+
+  // KPI totals
+  const totalsMap = {};
+  (totalsRes?.data || []).forEach(m => { totalsMap[m.name] = m.total_value?.value || 0; });
+
+  // Follows/unfollows — dimension values are FOLLOWER (new follows) and NON_FOLLOWER (unfollows)
+  const followsData = (followsRes?.data || []).find(m => m.name === 'follows_and_unfollows');
+  const fBreakdown = followsData?.total_value?.breakdowns?.[0]?.results || [];
+  const follows = fBreakdown.find(r => (r.dimension_values?.[0]||'').toUpperCase() === 'FOLLOWER')?.value || 0;
+  const unfollows = fBreakdown.find(r => (r.dimension_values?.[0]||'').toUpperCase() === 'NON_FOLLOWER')?.value || 0;
+
+  // Top posts — filter to selected date range, sort by likes
+  const rangeStart = new Date(since), rangeEnd = new Date(until + 'T23:59:59');
+  const postsInRange = (mediaRes?.data || []).filter(p => {
+    const ts = new Date(p.timestamp);
+    return ts >= rangeStart && ts <= rangeEnd;
+  });
+  const sortedPosts = postsInRange.sort((a, b) => (b.like_count || 0) - (a.like_count || 0)).slice(0, 12);
+
+  const videoMetric = p => p.media_type === 'VIDEO' ? 'reach,saved,shares,plays' : 'reach,saved,shares';
+  const postInsights = await Promise.all(
+    sortedPosts.map(p =>
+      fetch(`${base}/${p.id}/insights?metric=${videoMetric(p)}&access_token=${token}`)
+        .then(r => r.json()).catch(() => null)
+    )
+  );
+
+  const topPosts = sortedPosts.map((p, i) => {
+    const ins = postInsights[i]?.data || [];
+    const getM = name => ins.find(m => m.name === name)?.values?.[0]?.value || 0;
+    return {
+      id: p.id, caption: (p.caption || '').slice(0, 120),
+      timestamp: p.timestamp, media_type: p.media_type,
+      thumbnail: p.thumbnail_url || (p.media_type !== 'VIDEO' ? p.media_url : null),
+      permalink: p.permalink,
+      likes: p.like_count || 0, comments: p.comments_count || 0,
+      reach: getM('reach'), saves: getM('saved'), shares: getM('shares'),
+      plays: getM('plays'),
+    };
+  });
+
+  const breakdown = {
+    Likes: topPosts.reduce((a, p) => a + p.likes, 0),
+    Comments: topPosts.reduce((a, p) => a + p.comments, 0),
+    Saves: topPosts.reduce((a, p) => a + p.saves, 0),
+    Shares: topPosts.reduce((a, p) => a + p.shares, 0),
+  };
+
+  // Facebook page insights — classic metrics deprecated in new Pages experience; fan_count still available
+
+  return {
+    profile: profileRes,
+    reach: totalReach, dailyReach,
+    engagedTotal: totalsMap['accounts_engaged'] || 0,
+    interactionsTotal: totalsMap['total_interactions'] || 0,
+    profileViewsTotal: totalsMap['profile_views'] || 0,
+    viewsTotal: totalsMap['views'] || 0,
+    followsUnfollows: { follows, unfollows, net: follows - unfollows },
+    topPosts, breakdown,
+    postsInRange: postsInRange.length,
+    since, until,
+    page: { name: pageFansRes?.name || 'Facebook Page', fanCount: pageFansRes?.fan_count || 0, talkingAbout: pageFansRes?.talking_about_count || 0 },
+    dailySeries,
+    comparison,
+  };
+}
+
+async function fetchInsights(accountId, level, since, until, token, attrWindow) {
+  const fields = 'campaign_name,campaign_id,adset_name,adset_id,ad_name,ad_id,spend,impressions,reach,cpm,clicks,ctr,cpc,frequency,outbound_clicks,actions,cost_per_action_type,action_values';
+  const timeRange = JSON.stringify({since, until});
+  const attrParam = attrWindow ? `&action_attribution_windows=["${attrWindow}"]` : '';
+  return fetchAllPages(
+    `/${accountId}/insights?fields=${fields}&level=${level}&time_range=${timeRange}&limit=500&filtering=[{"field":"spend","operator":"GREATER_THAN","value":"0"}]${attrParam}`,
+    token
+  );
+}
+
+async function fetchAdsCreatives(adIds, token) {
+  if (!adIds || adIds.length === 0) return [];
+  const batchSize = 50;
+  const allAds = [];
+  for (let i = 0; i < adIds.length; i += batchSize) {
+    const batch = adIds.slice(i, i + batchSize);
+    const ids = batch.join(',');
+    const res = await fetch(`${META_API}/?ids=${ids}&fields=id,name,status,creative{id,video_id},preview_shareable_link&access_token=${token}`);
+    if (!res.ok) continue;
+    const json = await res.json();
+    allAds.push(...Object.values(json));
+  }
+  const adCreativeMap = {};
+  const creativeIds = [];
+  const videoIdSet = new Set();
+  allAds.forEach(ad => {
+    if (ad.creative?.id) {
+      adCreativeMap[ad.id] = ad.creative.id;
+      if (!creativeIds.includes(ad.creative.id)) creativeIds.push(ad.creative.id);
+      if (ad.creative.video_id && /^\d+$/.test(String(ad.creative.video_id))) videoIdSet.add(String(ad.creative.video_id));
+    }
+  });
+  const creativeDetails = {};
+  for (let i = 0; i < creativeIds.length; i += batchSize) {
+    const batch = creativeIds.slice(i, i + batchSize);
+    const ids = batch.join(',');
+    const res = await fetch(`${META_API}/?ids=${ids}&fields=thumbnail_url,image_url,body,title,name,object_story_spec,object_type&thumbnail_width=480&thumbnail_height=480&access_token=${token}`);
+    if (!res.ok) continue;
+    const json = await res.json();
+    Object.values(json).forEach(c => {
+      creativeDetails[c.id] = c;
+      const specVideoId = c.object_story_spec?.video_data?.video_id || c.object_story_spec?.link_data?.video_id;
+      if (specVideoId && /^\d+$/.test(String(specVideoId))) videoIdSet.add(String(specVideoId));
+    });
+  }
+  console.log('[Meta] Video IDs collected:', videoIdSet.size, [...videoIdSet].slice(0, 5));
+  const videoSources = {};
+  const videoIds = [...videoIdSet];
+  for (let i = 0; i < videoIds.length; i += batchSize) {
+    const batch = videoIds.slice(i, i + batchSize);
+    const ids = batch.join(',');
+    try {
+      const res = await fetch(`${META_API}/?ids=${ids}&fields=source,thumbnails&access_token=${token}`);
+      if (res.ok) {
+        const json = await res.json();
+        Object.values(json).forEach(v => { videoSources[v.id] = v.source; });
+      }
+    } catch(e) { console.warn('[Meta] Video source fetch error:', e); }
+  }
+  console.log('[Meta] Video sources fetched:', Object.keys(videoSources).length, 'for IDs:', Object.keys(videoSources).slice(0, 3));
+  const result = allAds.map(ad => {
+    const detail = creativeDetails[adCreativeMap[ad.id]] || {};
+    const spec = detail.object_story_spec;
+    const isVideo = !!spec?.video_data || !!ad.creative?.video_id || detail.object_type === 'VIDEO';
+    const candidateIds = [ad.creative?.video_id, spec?.video_data?.video_id, spec?.link_data?.video_id].filter(Boolean).map(String);
+    const videoId = candidateIds.find(id => /^\d+$/.test(id)) || null;
+    return {
+      ...ad,
+      creative: {
+        ...(detail || ad.creative || {}),
+        videoId,
+        isVideo,
+        videoSource: videoId ? (videoSources[videoId] || null) : null,
+      },
+      preview_shareable_link: ad.preview_shareable_link,
+    };
+  });
+  const withSource = result.filter(a => a.creative.videoSource);
+  const withId = result.filter(a => a.creative.videoId);
+  const isVid = result.filter(a => a.creative.isVideo);
+  console.log('[Meta] Ads mapped:', result.length, '| isVideo:', isVid.length, '| hasVideoId:', withId.length, '| hasSource:', withSource.length);
+  if (withId.length > 0 && withSource.length === 0) {
+    const sample = result.find(a => a.creative.videoId);
+    console.log('[Meta] Sample videoId:', sample.creative.videoId, '| in videoSources?', sample.creative.videoId in videoSources, '| videoSources keys sample:', Object.keys(videoSources).slice(0, 3));
+  }
+  return result;
+}
+
+// ─── Comparison & Daily Fetch ───
+function getComparisonRange(since, until) {
+  const s = new Date(since), e = new Date(until);
+  const days = Math.round((e - s) / 86400000);
+  const compEnd = new Date(s); compEnd.setDate(compEnd.getDate() - 1);
+  const compStart = new Date(compEnd); compStart.setDate(compStart.getDate() - days);
+  return { since: compStart.toISOString().slice(0,10), until: compEnd.toISOString().slice(0,10) };
+}
+
+async function fetchDailyInsights(accountId, since, until, token, timeIncrement = 1, attrWindow) {
+  const fields = 'spend,impressions,reach,clicks,ctr,cpm,cpc,frequency,actions,action_values,outbound_clicks';
+  const timeRange = JSON.stringify({since, until});
+  const attrParam = attrWindow ? `&action_attribution_windows=["${attrWindow}"]` : '';
+  return fetchAllPages(
+    `/${accountId}/insights?fields=${fields}&level=account&time_range=${timeRange}&time_increment=${timeIncrement}&limit=500${attrParam}`,
+    token
+  );
+}
+
+async function fetchCampaignMeta(accountId, token) {
+  return fetchAllPages(`/${accountId}/campaigns?fields=id,name,objective,status&limit=500`, token);
+}
+
+async function fetchVideoInsights(accountId, since, until, token, attrWindow) {
+  const fields = 'campaign_name,campaign_id,adset_name,adset_id,ad_name,ad_id,spend,impressions,reach,clicks,ctr,actions,outbound_clicks,video_thruplay_watched_actions,video_p25_watched_actions,video_p50_watched_actions,video_p75_watched_actions,video_p95_watched_actions,video_p100_watched_actions,video_avg_time_watched_actions,video_play_actions';
+  const timeRange = JSON.stringify({since, until});
+  const attrParam = attrWindow ? `&action_attribution_windows=["${attrWindow}"]` : '';
+  return fetchAllPages(
+    `/${accountId}/insights?fields=${fields}&level=ad&time_range=${timeRange}&limit=500&filtering=[{"field":"spend","operator":"GREATER_THAN","value":"0"}]${attrParam}`,
+    token
+  );
+}
+
+async function fetchBreakdownInsights(accountId, since, until, token, breakdown, attrWindow) {
+  const fields = 'spend,impressions,reach,clicks,ctr,cpc,cpm,actions,action_values,outbound_clicks';
+  const timeRange = JSON.stringify({since, until});
+  const attrParam = attrWindow ? `&action_attribution_windows=["${attrWindow}"]` : '';
+  return fetchAllPages(
+    `/${accountId}/insights?fields=${fields}&level=account&time_range=${timeRange}&breakdowns=${breakdown}&limit=500&filtering=[{"field":"spend","operator":"GREATER_THAN","value":"0"}]${attrParam}`,
+    token
+  );
+}
+
+const OBJECTIVE_MAP = {
+  OUTCOME_SALES: 'conversion', CONVERSIONS: 'conversion', CATALOG_SALES: 'conversion', PRODUCT_CATALOG_SALES: 'conversion',
+  OUTCOME_TRAFFIC: 'traffic', LINK_CLICKS: 'traffic',
+  OUTCOME_AWARENESS: 'awareness', REACH: 'awareness', BRAND_AWARENESS: 'awareness',
+  OUTCOME_ENGAGEMENT: 'engagement', POST_ENGAGEMENT: 'engagement', VIDEO_VIEWS: 'engagement',
+  OUTCOME_LEADS: 'leads', LEAD_GENERATION: 'leads',
+};
+
+const OBJECTIVE_LABELS = {
+  OUTCOME_SALES: 'Sales', CONVERSIONS: 'Conversions', CATALOG_SALES: 'Catalogue Sales', PRODUCT_CATALOG_SALES: 'Catalogue Sales',
+  OUTCOME_TRAFFIC: 'Traffic', LINK_CLICKS: 'Traffic',
+  OUTCOME_AWARENESS: 'Awareness', REACH: 'Reach', BRAND_AWARENESS: 'Brand Awareness',
+  OUTCOME_ENGAGEMENT: 'Engagement', POST_ENGAGEMENT: 'Engagement', VIDEO_VIEWS: 'Video Views',
+  OUTCOME_LEADS: 'Leads', LEAD_GENERATION: 'Lead Gen',
+  OUTCOME_APP_PROMOTION: 'App Promo', APP_INSTALLS: 'App Installs',
+  MESSAGES: 'Messages', STORE_TRAFFIC: 'Store Traffic',
+};
+
+function classifyCampaign(row, avgMetrics, objective) {
+  const goal = OBJECTIVE_MAP[objective] || null;
+  const spend = parseFloat(row.spend || 0);
+  const conversions = getActionValue(row.actions, 'purchase') + getActionValue(row.actions, 'omni_purchase');
+  const revenue = getActionValue(row.action_values, 'purchase') + getActionValue(row.action_values, 'omni_purchase');
+  const roas = spend > 0 ? revenue / spend : 0;
+  const ctr = parseFloat(row.ctr || 0);
+  const cpm = parseFloat(row.cpm || 0);
+
+  let metric, val, avg, label, lowerBetter = false;
+
+  if (goal === 'conversion' || goal === 'leads' || (!goal && conversions > 0)) {
+    metric = 'ROAS'; val = roas; avg = avgMetrics.roas; label = fmt.roas(roas);
+  } else if (goal === 'traffic') {
+    metric = 'CTR'; val = ctr; avg = avgMetrics.ctr; label = fmt.pct(ctr);
+  } else if (goal === 'awareness') {
+    metric = 'CPM'; val = cpm; avg = avgMetrics.cpm; label = fmt.currency(cpm); lowerBetter = true;
+  } else if (goal === 'engagement') {
+    metric = 'CTR'; val = ctr; avg = avgMetrics.ctr; label = fmt.pct(ctr);
+  } else {
+    if (conversions > 0) { metric = 'ROAS'; val = roas; avg = avgMetrics.roas; label = fmt.roas(roas); }
+    else { metric = 'CTR'; val = ctr; avg = avgMetrics.ctr; label = fmt.pct(ctr); }
+  }
+
+  let tier;
+  if (lowerBetter) {
+    tier = val <= avg * 0.6 ? 'win' : val <= avg * 1.5 ? 'watch' : 'waste';
+  } else {
+    tier = val >= avg * 1.0 ? 'win' : val >= avg * 0.5 ? 'watch' : 'waste';
+  }
+
+  if (spend < 50) tier = 'watch';
+
+  return { tier, metric, label };
+}
+
+// ─── Icons (inline SVG) ───
+const Icons = {
+  refresh: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>,
+  spend: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
+  eye: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>,
+  click: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" /></svg>,
+  cart: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 100 4 2 2 0 000-4z" /></svg>,
+  chart: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>,
+  sort: <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/></svg>,
+  key: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" /></svg>,
+  logout: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>,
+};
+
+// ─── Token Screen ───
+function TokenScreen({ onSave, brand }) {
+  const [input, setInput] = useState('');
+  const b = BRANDS[brand];
+  const isGaf = brand === 'gaf';
+
+  if (isGaf) {
+    return (
+      <div data-brand="gaf" className="min-h-screen flex items-center justify-center p-4" style={{background:'#000'}}>
+        <div className="max-w-md w-full fade-in" style={{background:'#fff',borderRadius:'6px',border:'1px solid var(--gaf-grey-200)',padding:'40px',boxShadow:'var(--gaf-shadow-lg,0 14px 32px rgba(21,21,19,.10))'}}>
+          <div className="flex justify-center mb-8">
+            <img src={b.logoDark} alt={b.name} style={{height:'36px',width:'auto',objectFit:'contain'}} />
+          </div>
+          <div style={{textAlign:'center',marginBottom:'32px'}}>
+            <span className="gaf-eyebrow" style={{display:'block',textAlign:'center',marginBottom:'8px'}}>Social Performance</span>
+            <h2 className="gaf-section-title" style={{fontSize:'22px',letterSpacing:'-0.02em'}}>Connect Your Account</h2>
+            <p style={{marginTop:'8px',color:'var(--gaf-grey-600)',fontSize:'13px',fontFamily:'Open Sans,sans-serif',lineHeight:1.5}}>
+              Paste your Meta access token to connect. Stored locally only.
+            </p>
+          </div>
+          <div style={{marginBottom:'24px'}}>
+            <label className="gaf-kpi-label" style={{display:'block',marginBottom:'8px'}}>Access Token</label>
+            <textarea
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="EAAxxxxxxx..."
+              rows={3}
+              style={{width:'100%',padding:'12px',border:'1px solid var(--gaf-grey-200)',borderRadius:'6px',fontSize:'12px',fontFamily:'ui-monospace,SFMono-Regular,Menlo,monospace',resize:'none',outline:'none',color:'#000'}}
+              onFocus={e => { e.target.style.borderColor='var(--gaf-orange)'; e.target.style.boxShadow='0 0 0 3px rgba(242,100,34,.2)'; }}
+              onBlur={e => { e.target.style.borderColor='var(--gaf-grey-200)'; e.target.style.boxShadow='none'; }}
+            />
+          </div>
+          <button
+            onClick={() => { localStorage.setItem('meta_ads_token', input.trim()); onSave(input.trim()); }}
+            disabled={!input.trim()}
+            className="gaf-btn"
+            style={{width:'100%',justifyContent:'center',padding:'13px 20px',fontSize:'13px'}}
+          >
+            Connect
+          </button>
+          <p style={{fontSize:'11px',color:'var(--gaf-grey-500)',textAlign:'center',marginTop:'20px',fontFamily:'Open Sans,sans-serif'}}>
+            Token stored in localStorage. Never sent anywhere except Meta's API.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 fade-in">
+        <div className="flex justify-center mb-6">
+          <img src={b.logoDark} alt={b.name} className="h-10 w-auto object-contain" />
+        </div>
+        <h2 className="font-display text-2xl font-bold text-center text-gray-900 mb-2">
+          Ad Performance Dashboard
+        </h2>
+        <p className="text-center text-gray-500 text-sm mb-8">
+          Paste your Meta access token to connect. It's stored locally in your browser only.
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">
+              Access Token
+            </label>
+            <textarea
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              placeholder="EAAxxxxxxx..."
+              rows={3}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+              style={{focusRingColor: b.primary}}
+            />
+          </div>
+          <button
+            onClick={() => { localStorage.setItem('meta_ads_token', input.trim()); onSave(input.trim()); }}
+            disabled={!input.trim()}
+            className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all disabled:opacity-40"
+            style={{backgroundColor: b.primary}}
+          >
+            Connect
+          </button>
+        </div>
+        <p className="text-xs text-gray-400 text-center mt-6">
+          Token is stored in localStorage. Never sent anywhere except Meta's API.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── KPI Card ───
+function KpiCard({ label, value, icon, brand, delta, invertDelta, tooltip }) {
+  const b = BRANDS[brand];
+  const hasDelta = delta !== undefined && delta !== null && isFinite(delta);
+  const isPositive = invertDelta ? delta < 0 : delta > 0;
+  const isNeutral = hasDelta && Math.abs(delta) < 0.5;
+
+  if (brand === 'gaf') {
+    return (
+      <div className="dash-card gaf-kpi-card p-3 sm:p-5 transition-all" title={tooltip || ''}>
+        <span className="gaf-eyebrow">{label}</span>
+        <div className="gaf-kpi-value tabular-nums">{value}</div>
+        {hasDelta && (
+          <div className={`flex items-center gap-1 mt-1.5 ${isNeutral ? 'gaf-delta-neutral' : isPositive ? 'gaf-delta-pos' : 'gaf-delta-neg'}`}>
+            <span className="text-[10px] font-bold tabular-nums" style={{fontFamily:'Montserrat,sans-serif'}}>
+              {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
+            </span>
+            <span className="text-[9px]" style={{color:'#A0A0A0'}}>vs prev</span>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="dash-card p-3 sm:p-5 transition-all group" title={tooltip || ''}>
+      <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+        <span className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider leading-tight">{label}</span>
+      </div>
+      <div className="text-lg sm:text-2xl font-bold text-gray-900 font-display tabular-nums">{value}</div>
+      {hasDelta && (
+        <div className={`flex items-center gap-1 mt-1.5 ${isNeutral ? 'text-gray-400' : isPositive ? 'text-emerald-600' : 'text-red-500'}`}>
+          <span className="text-[10px] sm:text-xs font-semibold tabular-nums">
+            {delta > 0 ? '+' : ''}{delta.toFixed(1)}%
+          </span>
+          <span className="text-[9px] text-gray-400">vs prev</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Trend Chart ───
+function TrendChart({ dailyData, brand, datePreset }) {
+  const [metric, setMetric] = useState('spend');
+  const [hover, setHover] = useState(null);
+  const b = BRANDS[brand];
+
+  const metricDefs = [
+    { key: 'spend', label: 'Spend', format: fmt.currency },
+    { key: 'roas', label: 'ROAS', format: fmt.roas },
+    { key: 'purchases', label: 'Purchases', format: fmt.number },
+    { key: 'cpm', label: 'CPM', format: fmt.currency },
+    { key: 'ctr', label: 'CTR', format: fmt.pct },
+  ];
+
+  const points = useMemo(() => {
+    return (dailyData || []).map(d => {
+      const spend = parseFloat(d.spend || 0);
+      const purchases = getActionValue(d.actions, 'purchase') + getActionValue(d.actions, 'omni_purchase');
+      const revenue = getActionValue(d.action_values, 'purchase') + getActionValue(d.action_values, 'omni_purchase');
+      return {
+        date: d.date_start,
+        spend,
+        impressions: parseInt(d.impressions || 0),
+        reach: parseInt(d.reach || 0),
+        clicks: parseInt(d.clicks || 0),
+        ctr: parseFloat(d.ctr || 0),
+        cpm: parseFloat(d.cpm || 0),
+        purchases,
+        revenue,
+        roas: spend > 0 ? revenue / spend : 0,
+      };
+    });
+  }, [dailyData]);
+
+  // Aggregate by month for last_12m
+  const monthlyPoints = useMemo(() => {
+    if ((datePreset !== 'last_12m' && datePreset !== 'last_90d') || !points.length) return [];
+    const buckets = {};
+    points.forEach(p => {
+      const key = p.date.slice(0, 7); // YYYY-MM
+      if (!buckets[key]) buckets[key] = { month: key, spend: 0, impressions: 0, reach: 0, clicks: 0, purchases: 0, revenue: 0, days: 0, ctrSum: 0, cpmSum: 0 };
+      const b = buckets[key];
+      b.spend += p.spend;
+      b.impressions += p.impressions;
+      b.reach += p.reach;
+      b.clicks += p.clicks;
+      b.purchases += p.purchases;
+      b.revenue += p.revenue;
+      b.ctrSum += p.ctr;
+      b.cpmSum += p.cpm;
+      b.days += 1;
+    });
+    return Object.values(buckets)
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .map(m => ({
+        ...m,
+        ctr: m.impressions > 0 ? (m.clicks / m.impressions) * 100 : 0,
+        cpm: m.impressions > 0 ? (m.spend / m.impressions) * 1000 : 0,
+        roas: m.spend > 0 ? m.revenue / m.spend : 0,
+      }));
+  }, [points, datePreset]);
+
+  const isBarChart = datePreset === 'last_12m' && monthlyPoints.length > 0;
+  const chartPoints = isBarChart ? monthlyPoints : points;
+
+  if (chartPoints.length < 2) return null;
+
+  const W = 800, H = 220;
+  const PAD = { top: 20, right: 20, bottom: 30, left: 60 };
+  const chartW = W - PAD.left - PAD.right;
+  const chartH = H - PAD.top - PAD.bottom;
+
+  const values = chartPoints.map(p => p[metric]);
+  const max = Math.max(...values, 0.01);
+  const min = isBarChart ? 0 : Math.min(...values, 0);
+  const range = max - min || 1;
+  const avg = values.reduce((a, c) => a + c, 0) / values.length;
+  const fmtFn = metricDefs.find(m => m.key === metric)?.format || fmt.number;
+
+  // Bar chart rendering
+  if (isBarChart) {
+    const barCount = monthlyPoints.length;
+    const barGap = 8;
+    const barWidth = Math.max(12, (chartW - barGap * (barCount - 1)) / barCount);
+    const totalBarsWidth = barCount * barWidth + (barCount - 1) * barGap;
+    const offsetX = PAD.left + (chartW - totalBarsWidth) / 2;
+
+    const getBarX = i => offsetX + i * (barWidth + barGap);
+    const getBarH = v => ((v - min) / range) * chartH;
+    const getBarY = v => PAD.top + chartH - getBarH(v);
+    const avgY = getBarY(avg);
+    const peakVal = max;
+    const lowVal = Math.min(...values);
+
+    return (
+      <div className="dash-card p-5 sm:p-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+          {brand === 'gaf'
+            ? <h3 className="gaf-section-title text-lg">Monthly Performance</h3>
+            : <h3 className="font-display text-lg font-bold text-gray-900">Monthly Performance</h3>
+          }
+          <div className="flex gap-1 flex-wrap">
+            {metricDefs.map(m => (
+              <button key={m.key} onClick={() => { setMetric(m.key); setHover(null); }}
+                className={`px-2.5 py-1 text-xs font-medium transition-colors ${metric === m.key ? 'text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+                style={metric === m.key ? { backgroundColor: b.primary, borderRadius: brand === 'gaf' ? '4px' : '6px', fontFamily: brand === 'gaf' ? 'Montserrat,sans-serif' : undefined, fontWeight: brand === 'gaf' ? 700 : undefined, textTransform: brand === 'gaf' ? 'uppercase' : undefined, letterSpacing: brand === 'gaf' ? '0.04em' : undefined, fontSize: brand === 'gaf' ? '10px' : undefined } : { borderRadius: brand === 'gaf' ? '4px' : '6px' }}
+              >{m.label}</button>
+            ))}
+          </div>
+        </div>
+        <div className="relative">
+          <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{maxHeight: '280px'}}>
+            {[0, 0.25, 0.5, 0.75, 1].map(frac => {
+              const y = PAD.top + chartH * (1 - frac);
+              return (
+                <g key={frac}>
+                  <line x1={PAD.left} y1={y} x2={PAD.left + chartW} y2={y} stroke="#f0f0f2" strokeWidth="1" />
+                  <text x={PAD.left - 8} y={y + 4} textAnchor="end" fill="#9ca3af" fontSize="9" fontFamily="Open Sans">{fmtFn(min + range * frac)}</text>
+                </g>
+              );
+            })}
+            <line x1={PAD.left} y1={avgY} x2={PAD.left + chartW} y2={avgY} stroke={b.primary} strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
+            {monthlyPoints.map((p, i) => {
+              const x = getBarX(i);
+              const barH = getBarH(p[metric]);
+              const y = getBarY(p[metric]);
+              const radius = Math.min(4, barWidth / 3);
+              const isHovered = hover === i;
+              return (
+                <g key={i}>
+                  <clipPath id={`bar-clip-${i}`}>
+                    <rect x={x} y={y} width={barWidth} height={barH} rx={radius} ry={radius} />
+                  </clipPath>
+                  <rect x={x} y={y} width={barWidth} height={barH} rx={radius} ry={radius}
+                    fill={b.primary} opacity={isHovered ? 1 : 0.75}
+                    style={{transition: 'opacity 0.15s ease'}} />
+                  <rect x={x} y={PAD.top} width={barWidth} height={chartH}
+                    fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} />
+                  <text x={x + barWidth / 2} y={H - 5} textAnchor="middle" fill="#9ca3af" fontSize="9" fontFamily="Open Sans">
+                    {new Date(p.month + '-01T00:00:00').toLocaleDateString('en-AU', { month: 'short' })}
+                  </text>
+                </g>
+              );
+            })}
+            {hover !== null && monthlyPoints[hover] && (
+              <g>
+                <rect x={getBarX(hover) + barWidth / 2 - 50} y={Math.max(PAD.top, getBarY(monthlyPoints[hover][metric]) - 28)} width="100" height="22" rx="6" fill="#1f2937" opacity="0.9" />
+                <text x={getBarX(hover) + barWidth / 2} y={Math.max(PAD.top + 14, getBarY(monthlyPoints[hover][metric]) - 14)} textAnchor="middle" fill="white" fontSize="10" fontFamily="Open Sans" fontWeight="600">
+                  {fmtFn(monthlyPoints[hover][metric])}
+                </text>
+              </g>
+            )}
+          </svg>
+        </div>
+        <div className="flex items-center gap-6 mt-3 pt-3 border-t" style={{borderColor: '#f0f0f2'}}>
+          <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Avg</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(avg)}</span></div>
+          <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Peak</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(peakVal)}</span></div>
+          <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Low</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(lowVal)}</span></div>
+        </div>
+      </div>
+    );
+  }
+
+  // Line chart (default)
+  const getX = i => PAD.left + (i / (points.length - 1)) * chartW;
+  const getY = v => PAD.top + chartH - ((v - min) / range) * chartH;
+
+  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${getX(i)},${getY(p[metric])}`).join(' ');
+  const areaD = pathD + ` L${getX(points.length-1)},${PAD.top + chartH} L${PAD.left},${PAD.top + chartH} Z`;
+  const avgY = getY(avg);
+
+  const labelEvery = Math.max(1, Math.floor(points.length / 7));
+
+  return (
+    <div className="dash-card p-5 sm:p-6">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+        {brand === 'gaf'
+          ? <h3 className="gaf-section-title text-lg">Performance Trend</h3>
+          : <h3 className="font-display text-lg font-bold text-gray-900">Performance Trend</h3>
+        }
+        <div className="flex gap-1 flex-wrap">
+          {metricDefs.map(m => (
+            <button key={m.key} onClick={() => setMetric(m.key)}
+              className={`px-2.5 py-1 text-xs font-medium transition-colors ${metric === m.key ? 'text-white' : 'text-gray-500 hover:bg-gray-100'}`}
+              style={metric === m.key ? { backgroundColor: b.primary, borderRadius: brand === 'gaf' ? '4px' : '6px', fontFamily: brand === 'gaf' ? 'Montserrat,sans-serif' : undefined, fontWeight: brand === 'gaf' ? 700 : undefined, textTransform: brand === 'gaf' ? 'uppercase' : undefined, letterSpacing: brand === 'gaf' ? '0.04em' : undefined, fontSize: brand === 'gaf' ? '10px' : undefined } : { borderRadius: brand === 'gaf' ? '4px' : '6px' }}
+            >{m.label}</button>
+          ))}
+        </div>
+      </div>
+      <div className="relative">
+        <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{maxHeight: '280px'}}>
+          {[0, 0.25, 0.5, 0.75, 1].map(frac => {
+            const y = PAD.top + chartH * (1 - frac);
+            return (
+              <g key={frac}>
+                <line x1={PAD.left} y1={y} x2={PAD.left + chartW} y2={y} stroke="#f0f0f2" strokeWidth="1" />
+                <text x={PAD.left - 8} y={y + 4} textAnchor="end" fill="#9ca3af" fontSize="9" fontFamily="Open Sans">{fmtFn(min + range * frac)}</text>
+              </g>
+            );
+          })}
+          {points.map((p, i) => (i % labelEvery === 0 || i === points.length - 1) ? (
+            <text key={i} x={getX(i)} y={H - 5} textAnchor="middle" fill="#9ca3af" fontSize="9" fontFamily="Open Sans">
+              {new Date(p.date + 'T00:00:00').toLocaleDateString('en-AU', { day: 'numeric', month: 'short' })}
+            </text>
+          ) : null)}
+          <line x1={PAD.left} y1={avgY} x2={PAD.left + chartW} y2={avgY} stroke={b.primary} strokeWidth="1" strokeDasharray="6 4" opacity="0.4" />
+          <path d={areaD} fill={b.primary} opacity="0.07" />
+          <path d={pathD} fill="none" stroke={b.primary} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          {points.length <= 60 && points.map((p, i) => (
+            <circle key={i} cx={getX(i)} cy={getY(p[metric])} r={hover === i ? 5 : 3} fill={hover === i ? b.primary : 'white'} stroke={b.primary} strokeWidth="2" />
+          ))}
+          {points.map((p, i) => (
+            <rect key={'h'+i} x={getX(i) - chartW / points.length / 2} y={PAD.top} width={chartW / points.length} height={chartH}
+              fill="transparent" onMouseEnter={() => setHover(i)} onMouseLeave={() => setHover(null)} />
+          ))}
+          {hover !== null && (
+            <g>
+              <line x1={getX(hover)} y1={PAD.top} x2={getX(hover)} y2={PAD.top + chartH} stroke={b.primary} strokeWidth="1" opacity="0.3" />
+              <rect x={getX(hover) - 45} y={getY(points[hover][metric]) - 28} width="90" height="22" rx="6" fill="#1f2937" opacity="0.9" />
+              <text x={getX(hover)} y={getY(points[hover][metric]) - 14} textAnchor="middle" fill="white" fontSize="10" fontFamily="Open Sans" fontWeight="600">{fmtFn(points[hover][metric])}</text>
+            </g>
+          )}
+        </svg>
+      </div>
+      <div className="flex items-center gap-6 mt-3 pt-3 border-t" style={{borderColor: '#f0f0f2'}}>
+        <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Avg</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(avg)}</span></div>
+        <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Peak</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(max)}</span></div>
+        <div><span className="text-[10px] text-gray-400 uppercase tracking-wider">Low</span><span className="text-sm font-bold text-gray-700 ml-2 tabular-nums">{fmtFn(min)}</span></div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Tier Badge ───
+const TIER_TOOLTIPS = {
+  win: 'Performing above average for its objective. Strong candidate for scaling.',
+  watch: 'Near average performance or low spend. Monitor before making changes.',
+  waste: 'Performing well below average for its objective. Consider pausing or reallocating budget.',
+};
+
+function TierBadge({ tier, metric, label }) {
+  const styles = {
+    win: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    watch: 'bg-amber-50 text-amber-700 border-amber-200',
+    waste: 'bg-red-50 text-red-600 border-red-200',
+  };
+  const icons = { win: '+', watch: '~', waste: '-' };
+  const names = { win: 'Win', watch: 'Watch', waste: 'Waste' };
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold border ${styles[tier] || styles.watch}`} title={TIER_TOOLTIPS[tier] || ''}>
+      {names[tier]} <span className="opacity-60">({label})</span>
+    </span>
+  );
+}
+
+// ─── Metric Filter ───
+const FILTER_METRICS = [
+  { key: 'spend', label: 'Spend', fmt: '$' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'reach', label: 'Reach' },
+  { key: 'clicks', label: 'Clicks' },
+  { key: 'ctr', label: 'CTR (%)' },
+  { key: 'cpc', label: 'CPC ($)' },
+  { key: 'cpm', label: 'CPM ($)' },
+  { key: 'outboundClicks', label: 'Outbound Clicks' },
+  { key: 'outboundCtr', label: 'Outbound CTR (%)' },
+  { key: 'lpv', label: 'Landing Page Views' },
+  { key: 'frequency', label: 'Frequency' },
+  { key: 'atc', label: 'Add to Cart' },
+  { key: 'atcRate', label: 'ATC Rate (%)' },
+  { key: 'costPerAtc', label: 'Cost / ATC ($)' },
+  { key: 'conversions', label: 'Conversions' },
+  { key: 'costPerConv', label: 'CPA ($)' },
+  { key: 'revenue', label: 'Revenue ($)' },
+  { key: 'roas', label: 'ROAS (x)' },
+];
+
+const OBJECTIVE_BADGE_MAP = {
+  OUTCOME_SALES: 'Conversion', CONVERSIONS: 'Conversion', CATALOG_SALES: 'Conversion', PRODUCT_CATALOG_SALES: 'Conversion',
+  OUTCOME_LEADS: 'Conversion', LEAD_GENERATION: 'Conversion',
+  OUTCOME_TRAFFIC: 'Traffic', LINK_CLICKS: 'Traffic',
+  OUTCOME_AWARENESS: 'Awareness', REACH: 'Awareness', BRAND_AWARENESS: 'Awareness',
+  OUTCOME_ENGAGEMENT: 'Awareness', POST_ENGAGEMENT: 'Awareness', VIDEO_VIEWS: 'Awareness',
+  OUTCOME_APP_PROMOTION: 'Traffic', APP_INSTALLS: 'Traffic',
+  MESSAGES: 'Conversion', STORE_TRAFFIC: 'Traffic',
+};
+
+const OBJECTIVE_BADGE_STYLES = {
+  Awareness: 'bg-purple-50 text-purple-600',
+  Traffic: 'bg-blue-50 text-blue-600',
+  Conversion: 'bg-emerald-50 text-emerald-600',
+};
+
+const METRIC_TOOLTIPS = {
+  spend: 'Total amount spent on ads',
+  impressions: 'Number of times your ads were shown',
+  reach: 'Number of unique people who saw your ads',
+  clicks: 'All clicks on the ad (link, profile, reactions, comments, shares)',
+  ctr: 'Click-through rate: clicks / impressions',
+  cpc: 'Cost per click: spend / clicks',
+  cpm: 'Cost per 1,000 impressions: (spend / impressions) x 1,000',
+  frequency: 'Average number of times each person saw your ad',
+  outboundClicks: 'Clicks that lead people off Meta (to your website)',
+  outboundCtr: 'Outbound CTR: outbound clicks / impressions',
+  lpv: 'Landing page views: people who clicked and waited for your page to load',
+  conversions: 'Purchases attributed to your ads',
+  costPerConv: 'Cost per purchase: spend / conversions',
+  revenue: 'Total purchase revenue attributed to your ads',
+  roas: 'Return on ad spend: revenue / spend',
+  atc: 'Number of add-to-cart actions attributed to your ads',
+  atcRate: 'Add-to-cart rate: add to carts / outbound clicks',
+  costPerAtc: 'Cost per add-to-cart: spend / add to carts',
+  engagements: 'Post engagements: reactions, comments, shares, saves, clicks',
+  engagementRate: 'Engagement rate: post engagements / impressions',
+  objective: 'Campaign objective set in Meta Ads Manager',
+  videoPlays: 'Number of times your video started playing (3-second views)',
+  thumbStopRate: 'Thumb stop rate: video plays / impressions',
+  p25Rate: '25% played: viewers who watched at least 25% of the video / video plays',
+  p50Rate: '50% played: viewers who watched at least 50% of the video / video plays',
+  p75Rate: '75% played: viewers who watched at least 75% of the video / video plays',
+  completionRate: 'Completion rate: viewers who watched 100% of the video / video plays',
+  avgWatchTime: 'Average time people watched your video',
+  thruPlays: 'Views of 15 seconds or more (or to completion if shorter)',
+};
+
+function MetricFilter({ filters, onChange, metricOptions }) {
+  const options = metricOptions || FILTER_METRICS;
+  const addFilter = () => onChange([...filters, { metric: '', min: '', max: '' }]);
+  const removeFilter = (idx) => onChange(filters.filter((_, i) => i !== idx));
+  const updateFilter = (idx, update) => onChange(filters.map((f, i) => i === idx ? { ...f, ...update } : f));
+  return (
+    <div className="space-y-2">
+      {filters.map((f, idx) => (
+        <div key={idx} className="flex items-center gap-2 flex-wrap">
+          <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider" style={{minWidth: '38px'}}>
+            {idx === 0 ? 'Filter' : 'AND'}
+          </label>
+          <select value={f.metric} onChange={e => updateFilter(idx, { metric: e.target.value, min: '', max: '' })}
+            className="px-2 py-1.5 text-xs border rounded-lg bg-white focus:outline-none" style={{borderColor: '#f0f0f2'}}>
+            <option value="">None</option>
+            {options.map(m => <option key={m.key} value={m.key}>{m.label}</option>)}
+          </select>
+          {f.metric && (
+            <>
+              <span className="text-[10px] text-gray-400">min</span>
+              <input type="number" step="any" value={f.min} onChange={e => updateFilter(idx, { min: e.target.value })}
+                placeholder="0" className="px-2 py-1.5 text-xs border rounded-lg bg-white w-20 focus:outline-none tabular-nums" style={{borderColor: '#f0f0f2'}} />
+              <span className="text-[10px] text-gray-400">max</span>
+              <input type="number" step="any" value={f.max} onChange={e => updateFilter(idx, { max: e.target.value })}
+                placeholder="-" className="px-2 py-1.5 text-xs border rounded-lg bg-white w-20 focus:outline-none tabular-nums" style={{borderColor: '#f0f0f2'}} />
+            </>
+          )}
+          {filters.length > 1 && (
+            <button onClick={() => removeFilter(idx)} className="text-gray-300 hover:text-red-400 transition-colors p-0.5" title="Remove filter">
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+          )}
+        </div>
+      ))}
+      {filters.length < 4 && filters.some(f => f.metric) && (
+        <button onClick={addFilter} className="text-xs text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1 ml-[46px]">
+          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+          Add filter
+        </button>
+      )}
+    </div>
+  );
+}
+
+function applyMetricFilter(rows, filters) {
+  if (!Array.isArray(filters)) filters = [filters];
+  return filters.reduce((result, filter) => {
+    if (!filter.metric) return result;
+    return result.filter(r => {
+      const v = r[filter.metric] || 0;
+      if (filter.min !== '' && v < parseFloat(filter.min)) return false;
+      if (filter.max !== '' && v > parseFloat(filter.max)) return false;
+      return true;
+    });
+  }, rows);
+}
+
+// ─── Sortable Table ───
+function SortableTable({ columns, data, brand, onRowClick }) {
+  const [sortCol, setSortCol] = useState(null);
+  const [sortDir, setSortDir] = useState('desc');
+  const b = BRANDS[brand];
+
+  const sorted = useMemo(() => {
+    if (!sortCol) return data;
+    return [...data].sort((a, b) => {
+      let va = a[sortCol], vb = b[sortCol];
+      if (typeof va === 'string' && !isNaN(parseFloat(va))) { va = parseFloat(va); vb = parseFloat(vb); }
+      if (typeof va === 'number' || typeof va === 'undefined') {
+        va = va || 0; vb = vb || 0;
+        return sortDir === 'asc' ? va - vb : vb - va;
+      }
+      return sortDir === 'asc' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+    });
+  }, [data, sortCol, sortDir]);
+
+  const handleSort = (key) => {
+    if (sortCol === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortCol(key); setSortDir('desc'); }
+  };
+
+  return (
+    <div className="overflow-x-auto scrollbar-thin dash-card">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b" style={{borderColor: '#f0f0f2'}}>
+            {columns.map(col => (
+              <th key={col.key}
+                onClick={() => col.sortable !== false && handleSort(col.key)}
+                className={`px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-gray-400 whitespace-nowrap ${col.sortable !== false ? 'cursor-pointer hover:text-gray-600 select-none' : ''} ${col.align === 'right' ? 'text-right' : ''}`}
+                title={METRIC_TOOLTIPS[col.key] || ''}
+              >
+                <span className="inline-flex items-center gap-1">
+                  {col.label}
+                  {sortCol === col.key && <span className={`transition-transform ${sortDir === 'asc' ? 'rotate-180' : ''}`}>{Icons.sort}</span>}
+                </span>
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {sorted.length === 0 ? (
+            <tr><td colSpan={columns.length} className="px-4 py-12 text-center text-gray-400">No data for selected period</td></tr>
+          ) : sorted.map((row, i) => (
+            <tr key={i}
+              onClick={() => onRowClick?.(row)}
+              className={`border-b last:border-0 hover:bg-gray-50 transition-colors ${onRowClick ? 'cursor-pointer' : ''}`}
+              style={{borderColor: '#f0f0f2'}}
+            >
+              {columns.map(col => (
+                <td key={col.key} className={`px-4 py-3 whitespace-nowrap ${col.align === 'right' ? 'text-right tabular-nums' : ''} ${col.bold ? 'font-semibold text-gray-900' : 'text-gray-600'}`}>
+                  {col.render ? col.render(row[col.key], row) : row[col.key]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+// ─── Status Badge ───
+function StatusBadge({ status }) {
+  const colors = {
+    ACTIVE: 'bg-emerald-50 text-emerald-700',
+    PAUSED: 'bg-amber-50 text-amber-700',
+    DELETED: 'bg-red-50 text-red-600',
+    ARCHIVED: 'bg-gray-100 text-gray-500',
+  };
+  return (
+    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${colors[status] || 'bg-gray-100 text-gray-500'}`}>
+      {status === 'ACTIVE' && <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 pulse-dot"></span>}
+      {(status || 'Unknown').charAt(0) + (status || 'Unknown').slice(1).toLowerCase()}
+    </span>
+  );
+}
+
+// ─── Overview Tab ───
+function OverviewTab({ data, brand, datePreset }) {
+  if (!data?.campaignInsights?.length) return <EmptyState brand={brand} />;
+
+  const sumInsights = (rows) => {
+    const t = { spend: 0, impressions: 0, reach: 0, clicks: 0, conversions: 0, revenue: 0, outboundClicks: 0, atc: 0, lpv: 0 };
+    rows.forEach(r => {
+      t.spend += parseFloat(r.spend || 0);
+      t.impressions += parseInt(r.impressions || 0);
+      t.reach += parseInt(r.reach || 0);
+      t.clicks += parseInt(r.clicks || 0);
+      t.conversions += getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+      t.revenue += getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+      t.outboundClicks += getActionValue(r.outbound_clicks, 'outbound_click');
+      t.atc += getActionValue(r.actions, 'add_to_cart');
+      t.lpv += getActionValue(r.actions, 'landing_page_view');
+    });
+    return t;
+  };
+
+  const totals = useMemo(() => sumInsights(data.campaignInsights), [data]);
+  const prevTotals = useMemo(() => data.compInsights?.length ? sumInsights(data.compInsights) : null, [data]);
+
+  const pctChange = (cur, prev) => prev && prev !== 0 ? ((cur - prev) / Math.abs(prev)) * 100 : undefined;
+
+  const kpis = [
+    { label: 'Total Spend', value: fmt.currency(totals.spend), delta: pctChange(totals.spend, prevTotals?.spend), tooltip: METRIC_TOOLTIPS.spend },
+    { label: 'Impressions', value: fmt.number(totals.impressions), delta: pctChange(totals.impressions, prevTotals?.impressions), tooltip: METRIC_TOOLTIPS.impressions },
+    { label: 'Reach', value: fmt.number(totals.reach), delta: pctChange(totals.reach, prevTotals?.reach), tooltip: METRIC_TOOLTIPS.reach },
+    { label: 'Clicks', value: fmt.number(totals.clicks), delta: pctChange(totals.clicks, prevTotals?.clicks), tooltip: METRIC_TOOLTIPS.clicks },
+    { label: 'CTR', value: fmt.pct(totals.clicks / totals.impressions * 100), delta: pctChange(totals.clicks / totals.impressions, prevTotals ? prevTotals.clicks / (prevTotals.impressions || 1) : undefined), tooltip: METRIC_TOOLTIPS.ctr },
+    { label: 'CPC', value: fmt.currency(totals.spend / totals.clicks), delta: pctChange(totals.spend / totals.clicks, prevTotals ? prevTotals.spend / (prevTotals.clicks || 1) : undefined), invertDelta: true, tooltip: METRIC_TOOLTIPS.cpc },
+    { label: 'CPM', value: fmt.currency(totals.spend / totals.impressions * 1000), delta: pctChange(totals.spend / totals.impressions, prevTotals ? prevTotals.spend / (prevTotals.impressions || 1) : undefined), invertDelta: true, tooltip: METRIC_TOOLTIPS.cpm },
+    { label: 'Outbound Clicks', value: fmt.number(totals.outboundClicks), delta: pctChange(totals.outboundClicks, prevTotals?.outboundClicks), tooltip: METRIC_TOOLTIPS.outboundClicks },
+    { label: 'Outbound CTR', value: totals.impressions > 0 ? fmt.pct(totals.outboundClicks / totals.impressions * 100) : '-', delta: totals.impressions > 0 && prevTotals?.impressions > 0 ? pctChange(totals.outboundClicks / totals.impressions, prevTotals.outboundClicks / prevTotals.impressions) : undefined, tooltip: METRIC_TOOLTIPS.outboundCtr },
+    { label: 'Landing Page Views', value: fmt.number(totals.lpv), delta: pctChange(totals.lpv, prevTotals?.lpv), tooltip: METRIC_TOOLTIPS.lpv },
+    { label: 'Add to Cart', value: fmt.number(totals.atc), delta: pctChange(totals.atc, prevTotals?.atc), tooltip: METRIC_TOOLTIPS.atc },
+    { label: 'ATC Rate', value: totals.outboundClicks > 0 ? fmt.pct(totals.atc / totals.outboundClicks * 100) : '-', delta: totals.outboundClicks > 0 && prevTotals?.outboundClicks > 0 ? pctChange(totals.atc / totals.outboundClicks, prevTotals.atc / prevTotals.outboundClicks) : undefined, tooltip: METRIC_TOOLTIPS.atcRate },
+    { label: 'Cost / ATC', value: totals.atc > 0 ? fmt.currency(totals.spend / totals.atc) : '-', delta: totals.atc > 0 && prevTotals?.atc > 0 ? pctChange(totals.spend / totals.atc, prevTotals.spend / prevTotals.atc) : undefined, invertDelta: true, tooltip: METRIC_TOOLTIPS.costPerAtc },
+    { label: 'Conversions', value: fmt.number(totals.conversions), delta: pctChange(totals.conversions, prevTotals?.conversions), tooltip: METRIC_TOOLTIPS.conversions },
+    { label: 'Cost / Conv.', value: totals.conversions > 0 ? fmt.currency(totals.spend / totals.conversions) : '-', delta: totals.conversions > 0 && prevTotals?.conversions > 0 ? pctChange(totals.spend / totals.conversions, prevTotals.spend / prevTotals.conversions) : undefined, invertDelta: true, tooltip: METRIC_TOOLTIPS.costPerConv },
+    { label: 'Revenue', value: fmt.currency(totals.revenue), delta: pctChange(totals.revenue, prevTotals?.revenue), tooltip: METRIC_TOOLTIPS.revenue },
+    { label: 'ROAS', value: totals.spend > 0 ? fmt.roas(totals.revenue / totals.spend) : '-', delta: totals.spend > 0 && prevTotals?.spend > 0 ? pctChange(totals.revenue / totals.spend, prevTotals.revenue / prevTotals.spend) : undefined, tooltip: METRIC_TOOLTIPS.roas },
+  ];
+
+  const b = BRANDS[brand];
+
+  const objMap = useMemo(() => {
+    const m = {};
+    (data.campaignMeta || []).forEach(c => { m[c.id] = c.objective; });
+    return m;
+  }, [data]);
+
+  const avgMetrics = useMemo(() => {
+    const ci = data.campaignInsights;
+    const median = arr => { const s = [...arr].sort((a,b) => a - b); const m = Math.floor(s.length / 2); return s.length % 2 ? s[m] : (s[m-1] + s[m]) / 2; };
+    const roasVals = ci.map(r => { const sp = parseFloat(r.spend || 0); const rev = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase'); return sp > 0 ? rev / sp : 0; }).filter(v => v > 0);
+    const ctrVals = ci.map(r => parseFloat(r.ctr || 0)).filter(v => v > 0);
+    const cpmVals = ci.map(r => parseFloat(r.cpm || 0)).filter(v => v > 0);
+    return {
+      roas: roasVals.length ? median(roasVals) : 0,
+      ctr: ctrVals.length ? median(ctrVals) : 0,
+      cpm: cpmVals.length ? median(cpmVals) : 0,
+    };
+  }, [data]);
+
+  const tieredCampaigns = useMemo(() => {
+    return data.campaignInsights.map(r => {
+      const objective = objMap[r.campaign_id] || '';
+      const tier = classifyCampaign(r, avgMetrics, objective);
+      const spend = parseFloat(r.spend || 0);
+      const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+      const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+      return { ...tier, name: r.campaign_name, spend, conversions, revenue, roas: spend > 0 ? revenue / spend : 0, ctr: parseFloat(r.ctr || 0), cpm: parseFloat(r.cpm || 0), objective };
+    }).sort((a, b) => b.spend - a.spend);
+  }, [data, objMap, avgMetrics]);
+
+  const tierGroups = { win: [], watch: [], waste: [] };
+  tieredCampaigns.forEach(c => tierGroups[c.tier].push(c));
+  const wasteSpend = tierGroups.waste.reduce((s, c) => s + c.spend, 0);
+
+  const scaleWinners = useMemo(() => {
+    return (data.adsetInsights || []).map(r => {
+      const spend = parseFloat(r.spend || 0);
+      const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+      const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+      const roas = spend > 0 ? revenue / spend : 0;
+      return { name: r.adset_name, campaign: r.campaign_name, spend, conversions, revenue, roas, ctr: parseFloat(r.ctr || 0), cpm: parseFloat(r.cpm || 0) };
+    }).filter(r => r.roas > avgMetrics.roas && r.conversions >= 2 && r.spend >= 200)
+      .sort((a, b) => b.roas - a.roas)
+      .slice(0, 5);
+  }, [data, avgMetrics]);
+
+  const tierColors = { win: '#059669', watch: '#d97706', waste: '#dc2626' };
+  const tierLabels = { win: 'Win', watch: 'Watch', waste: 'Waste' };
+
+  return (
+    <div className="space-y-6 fade-in">
+      {/* KPI Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-2 sm:gap-3 stagger">
+        {kpis.map(k => <KpiCard key={k.label} {...k} brand={brand} />)}
+      </div>
+
+      {/* Trend Chart */}
+      {data.dailyInsights?.length > 1 && <TrendChart dailyData={data.dailyInsights} brand={brand} datePreset={datePreset} />}
+
+      {/* Budget Waste Alert */}
+      {wasteSpend > 0 && (
+        <div className={`dash-card p-4 sm:p-5 ${brand === 'gaf' ? 'gaf-alert-waste' : 'border-l-4'}`} style={brand !== 'gaf' ? {borderLeftColor: '#dc2626'} : {}}>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 flex items-center justify-center" style={{borderRadius: brand === 'gaf' ? '4px' : '8px', background:'#F8E3DE'}}>
+              <svg className="w-4 h-4" style={{color:'#C23B22'}} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+            </div>
+            <div>
+              {brand === 'gaf'
+                ? <h4 className="gaf-section-title" style={{fontSize:'13px'}}>Budget at risk: {fmt.currency(wasteSpend)}</h4>
+                : <h4 className="font-display text-sm font-bold text-gray-900">Budget at risk: {fmt.currency(wasteSpend)}</h4>
+              }
+              <p className="text-xs mt-0.5" style={{color: brand === 'gaf' ? 'var(--gaf-grey-600)' : '#6b7280'}}>{tierGroups.waste.length} campaign{tierGroups.waste.length !== 1 ? 's' : ''} underperforming relative to their objective. Review or reallocate.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Campaign Performance Tiers */}
+      <div className="dash-card p-5 sm:p-6">
+        <div className="flex items-center gap-3 mb-5">
+          {brand === 'gaf' ? (
+            <div className="w-8 h-8 flex items-center justify-center" style={{borderRadius:'4px',background:'#000'}}>
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{backgroundColor: b.primary}}>
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+            </div>
+          )}
+          {brand === 'gaf'
+            ? <h3 className="gaf-section-title text-lg">Campaign Performance</h3>
+            : <h3 className="font-display text-lg font-bold text-gray-900">Campaign Performance</h3>
+          }
+          <div className="flex gap-2 ml-auto">
+            {['win','watch','waste'].map(t => (
+              <span key={t} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-wider" style={{color: tierColors[t]}} title={TIER_TOOLTIPS[t]}>
+                <span className="w-2 h-2 rounded-full" style={{backgroundColor: tierColors[t]}} /> {tierLabels[t]} ({tierGroups[t].length})
+              </span>
+            ))}
+          </div>
+        </div>
+        <div className="space-y-2.5">
+          {tieredCampaigns.map((c, i) => {
+            const maxSpend = tieredCampaigns[0]?.spend || 1;
+            const pct = (c.spend / maxSpend) * 100;
+            return (
+              <div key={i} className="group">
+                <div className="flex items-center justify-between mb-1 gap-2">
+                  <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{backgroundColor: tierColors[c.tier]}} />
+                    <span className="text-sm font-medium text-gray-700 truncate">{c.name}</span>
+                    <TierBadge tier={c.tier} metric={c.metric} label={c.label} />
+                  </div>
+                  <div className="flex items-center gap-4 text-xs text-gray-500 flex-shrink-0">
+                    <span title={METRIC_TOOLTIPS.spend}>{fmt.currency(c.spend)}</span>
+                    <span title={METRIC_TOOLTIPS.conversions}>{c.conversions > 0 ? fmt.number(c.conversions) + ' conv.' : '-'}</span>
+                    <span title={METRIC_TOOLTIPS.roas}>{c.roas > 0 ? fmt.roas(c.roas) + ' ROAS' : '-'}</span>
+                  </div>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-700" style={{width: pct + '%', backgroundColor: tierColors[c.tier]}} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Scale Winners */}
+      {scaleWinners.length > 0 && (
+        <div className="dash-card p-5 sm:p-6">
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-8 h-8 flex items-center justify-center" style={{borderRadius: brand === 'gaf' ? '4px' : '8px', background: brand === 'gaf' ? '#E7F3EB' : '#ecfdf5'}}>
+              <svg className="w-4 h-4" style={{color:'#2E8B4A'}} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+            </div>
+            <div>
+              {brand === 'gaf'
+                ? <h3 className="gaf-section-title text-lg">Scale Winners</h3>
+                : <h3 className="font-display text-lg font-bold text-gray-900">Scale Winners</h3>
+              }
+              <p className="text-xs mt-0.5" style={{color: brand === 'gaf' ? 'var(--gaf-grey-500)' : '#9ca3af'}}>Ad sets above avg ROAS with 2+ purchases and $200+ spend</p>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3">
+            {scaleWinners.map((w, i) => (
+              <div key={i} className={brand === 'gaf' ? 'gaf-winner-card p-3.5' : 'rounded-xl border border-emerald-100 bg-emerald-50/30 p-3.5'}>
+                <h4 className="text-xs font-semibold truncate leading-tight" style={{color: '#000', fontFamily: brand === 'gaf' ? 'Montserrat,sans-serif' : undefined}}>{w.name}</h4>
+                <p className="text-[10px] truncate mt-0.5 mb-3" style={{color: brand === 'gaf' ? 'var(--gaf-grey-500)' : '#9ca3af'}}>{w.campaign}</p>
+                <div className="text-xl font-bold font-display tabular-nums mb-2" style={{color:'#2E8B4A'}} title={METRIC_TOOLTIPS.roas}>{fmt.roas(w.roas)}</div>
+                <div className="grid grid-cols-2 gap-1.5 text-center">
+                  <div className="bg-white py-1.5" style={{borderRadius: brand === 'gaf' ? '4px' : '6px'}} title={METRIC_TOOLTIPS.spend}><div className="text-[8px] uppercase" style={{color:'var(--gaf-grey-500)',letterSpacing:'0.06em',fontFamily:brand==='gaf'?'Open Sans,sans-serif':undefined}}>Spend</div><div className="text-[10px] font-semibold" style={{color:'#000'}}>{fmt.currency(w.spend)}</div></div>
+                  <div className="bg-white py-1.5" style={{borderRadius: brand === 'gaf' ? '4px' : '6px'}} title={METRIC_TOOLTIPS.conversions}><div className="text-[8px] uppercase" style={{color:'var(--gaf-grey-500)',letterSpacing:'0.06em',fontFamily:brand==='gaf'?'Open Sans,sans-serif':undefined}}>Conv.</div><div className="text-[10px] font-semibold" style={{color:'#000'}}>{fmt.number(w.conversions)}</div></div>
+                  <div className="bg-white py-1.5" style={{borderRadius: brand === 'gaf' ? '4px' : '6px'}} title={METRIC_TOOLTIPS.revenue}><div className="text-[8px] uppercase" style={{color:'var(--gaf-grey-500)',letterSpacing:'0.06em',fontFamily:brand==='gaf'?'Open Sans,sans-serif':undefined}}>Revenue</div><div className="text-[10px] font-semibold" style={{color:'#000'}}>{fmt.currency(w.revenue)}</div></div>
+                  <div className="bg-white py-1.5" style={{borderRadius: brand === 'gaf' ? '4px' : '6px'}} title={METRIC_TOOLTIPS.ctr}><div className="text-[8px] uppercase" style={{color:'var(--gaf-grey-500)',letterSpacing:'0.06em',fontFamily:brand==='gaf'?'Open Sans,sans-serif':undefined}}>CTR</div><div className="text-[10px] font-semibold" style={{color:'#000'}}>{fmt.pct(w.ctr)}</div></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Campaign Tab ───
+function CampaignsTab({ data, brand }) {
+  if (!data?.campaignInsights?.length) return <EmptyState brand={brand} />;
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [mFilters, setMFilters] = useState([{ metric: '', min: '', max: '' }]);
+  const objMap = useMemo(() => {
+    const m = {};
+    (data.campaignMeta || []).forEach(c => { m[c.id] = c.objective; });
+    return m;
+  }, [data]);
+  const rows = useMemo(() => data.campaignInsights.map(r => {
+    const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+    const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+    const costPerConv = getActionValue(r.cost_per_action_type, 'purchase') + getActionValue(r.cost_per_action_type, 'omni_purchase');
+    const outbound = getActionValue(r.outbound_clicks, 'outbound_click');
+    const atc = getActionValue(r.actions, 'add_to_cart');
+    const lpv = getActionValue(r.actions, 'landing_page_view');
+    const spend = parseFloat(r.spend || 0);
+    const impressions = parseInt(r.impressions || 0);
+    const rawObj = objMap[r.campaign_id] || '';
+    return {
+      name: r.campaign_name,
+      objective: OBJECTIVE_LABELS[rawObj] || rawObj.replace(/^OUTCOME_/, '').replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, c => c.toUpperCase()) || '-',
+      spend,
+      impressions,
+      reach: parseInt(r.reach || 0),
+      clicks: parseInt(r.clicks || 0),
+      ctr: parseFloat(r.ctr || 0),
+      cpc: parseFloat(r.cpc || 0),
+      cpm: parseFloat(r.cpm || 0),
+      frequency: parseFloat(r.frequency || 0),
+      outboundClicks: outbound,
+      outboundCtr: impressions > 0 ? (outbound / impressions) * 100 : 0,
+      lpv,
+      atc,
+      atcRate: outbound > 0 ? (atc / outbound) * 100 : 0,
+      costPerAtc: atc > 0 ? spend / atc : 0,
+      conversions,
+      costPerConv: costPerConv || (conversions > 0 ? spend / conversions : 0),
+      revenue,
+      roas: spend > 0 ? revenue / spend : 0,
+    };
+  }), [data, objMap]);
+
+  const objColors = { Sales: 'text-emerald-600 bg-emerald-50', Conversions: 'text-emerald-600 bg-emerald-50', 'Catalogue Sales': 'text-emerald-600 bg-emerald-50', Traffic: 'text-blue-600 bg-blue-50', Awareness: 'text-purple-600 bg-purple-50', Reach: 'text-purple-600 bg-purple-50', 'Brand Awareness': 'text-purple-600 bg-purple-50', Engagement: 'text-amber-600 bg-amber-50', 'Video Views': 'text-amber-600 bg-amber-50', Leads: 'text-cyan-600 bg-cyan-50', 'Lead Gen': 'text-cyan-600 bg-cyan-50' };
+
+  const columns = [
+    { key: 'name', label: 'Campaign', bold: true, sortable: true },
+    { key: 'objective', label: 'Objective', sortable: true, render: v => <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold ${objColors[v] || 'text-gray-500 bg-gray-100'}`}>{v}</span> },
+    { key: 'spend', label: 'Spend', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'impressions', label: 'Impr.', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'reach', label: 'Reach', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'clicks', label: 'Clicks', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'ctr', label: 'CTR', align: 'right', sortable: true, render: v => fmt.pct(v) },
+    { key: 'cpc', label: 'CPC', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'cpm', label: 'CPM', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'outboundClicks', label: 'Outbound', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'outboundCtr', label: 'OB CTR', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'lpv', label: 'LPV', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'frequency', label: 'Freq.', align: 'right', sortable: true, render: v => fmt.decimal(v) },
+    { key: 'atc', label: 'ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'atcRate', label: 'ATC Rate', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'costPerAtc', label: 'Cost/ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'conversions', label: 'Conv.', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'costPerConv', label: 'CPA', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'revenue', label: 'Revenue', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'roas', label: 'ROAS', align: 'right', sortable: true, render: v => v > 0 ? fmt.roas(v) : '-' },
+  ];
+
+  const filteredRows = useMemo(() => applyMetricFilter(rows, mFilters), [rows, mFilters]);
+
+  return (
+    <div className="space-y-4 fade-in">
+      <MetricFilter filters={mFilters} onChange={setMFilters} />
+      <SortableTable columns={columns} data={filteredRows} brand={brand} />
+    </div>
+  );
+}
+
+// ─── Ad Sets Tab ───
+function AdSetsTab({ data, brand }) {
+  if (!data?.adsetInsights?.length) return <EmptyState brand={brand} />;
+  const [campaignFilter, setCampaignFilter] = useState('all');
+  const [mFilters, setMFilters] = useState([{ metric: '', min: '', max: '' }]);
+  const campaigns = useMemo(() => [...new Set(data.adsetInsights.map(r => r.campaign_name))].sort(), [data]);
+  const b = BRANDS[brand];
+
+  const rows = useMemo(() => {
+    let filtered = data.adsetInsights;
+    if (campaignFilter !== 'all') filtered = filtered.filter(r => r.campaign_name === campaignFilter);
+    return filtered.map(r => {
+      const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+      const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+      const outbound = getActionValue(r.outbound_clicks, 'outbound_click');
+      const atc = getActionValue(r.actions, 'add_to_cart');
+      const lpv = getActionValue(r.actions, 'landing_page_view');
+      const spend = parseFloat(r.spend || 0);
+      const impressions = parseInt(r.impressions || 0);
+      return {
+        campaign: r.campaign_name,
+        name: r.adset_name,
+        spend,
+        impressions,
+        reach: parseInt(r.reach || 0),
+        clicks: parseInt(r.clicks || 0),
+        ctr: parseFloat(r.ctr || 0),
+        cpc: parseFloat(r.cpc || 0),
+        cpm: parseFloat(r.cpm || 0),
+        frequency: parseFloat(r.frequency || 0),
+        outboundClicks: outbound,
+        outboundCtr: impressions > 0 ? (outbound / impressions) * 100 : 0,
+        lpv,
+        atc,
+        atcRate: outbound > 0 ? (atc / outbound) * 100 : 0,
+        costPerAtc: atc > 0 ? spend / atc : 0,
+        conversions,
+        costPerConv: conversions > 0 ? spend / conversions : 0,
+        revenue,
+        roas: spend > 0 ? revenue / spend : 0,
+      };
+    });
+  }, [data, campaignFilter]);
+
+  const columns = [
+    { key: 'campaign', label: 'Campaign', sortable: true, render: v => <span className="text-gray-400 text-xs">{v}</span> },
+    { key: 'name', label: 'Ad Set', bold: true, sortable: true, render: v => <span className="block truncate max-w-[180px]" title={v}>{v}</span> },
+    { key: 'spend', label: 'Spend', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'impressions', label: 'Impr.', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'reach', label: 'Reach', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'clicks', label: 'Clicks', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'ctr', label: 'CTR', align: 'right', sortable: true, render: v => fmt.pct(v) },
+    { key: 'cpc', label: 'CPC', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'outboundClicks', label: 'Outbound', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'outboundCtr', label: 'OB CTR', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'lpv', label: 'LPV', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'frequency', label: 'Freq.', align: 'right', sortable: true, render: v => fmt.decimal(v) },
+    { key: 'atc', label: 'ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'atcRate', label: 'ATC Rate', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'costPerAtc', label: 'Cost/ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'conversions', label: 'Conv.', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'costPerConv', label: 'CPA', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'roas', label: 'ROAS', align: 'right', sortable: true, render: v => v > 0 ? fmt.roas(v) : '-' },
+  ];
+
+  return (
+    <div className="space-y-4 fade-in">
+      <div className="flex items-center gap-3">
+        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Campaign</label>
+        <select
+          value={campaignFilter}
+          onChange={e => setCampaignFilter(e.target.value)}
+          className="px-3 py-1.5 text-sm border rounded-lg bg-white focus:outline-none"
+          style={{borderColor: '#f0f0f2'}}
+        >
+          <option value="all">All Campaigns</option>
+          {campaigns.map(c => <option key={c} value={c}>{c}</option>)}
+        </select>
+      </div>
+      <MetricFilter filters={mFilters} onChange={setMFilters} />
+      <SortableTable columns={columns} data={applyMetricFilter(rows, mFilters)} brand={brand} />
+    </div>
+  );
+}
+
+// ─── Video Player (lazy-loads source URL) ───
+function VideoPlayer({ videoId, videoSource: initialSource, poster, className, style }) {
+  const [src, setSrc] = useState(initialSource || null);
+  const [loading, setLoading] = useState(false);
+  const [playError, setPlayError] = useState(false);
+  const [muted, setMuted] = useState(true);
+  const videoRef = React.useRef(null);
+
+  useEffect(() => {
+    if (src || !videoId) return;
+    const token = localStorage.getItem('meta_ads_token');
+    if (!token) return;
+    setLoading(true);
+    fetch(`${META_API}/${videoId}?fields=source&access_token=${token}`)
+      .then(r => r.ok ? r.json() : Promise.reject(r.status))
+      .then(d => { if (d.source) setSrc(d.source); else setPlayError(true); })
+      .catch(() => setPlayError(true))
+      .finally(() => setLoading(false));
+  }, [videoId, src]);
+
+  if (loading) return (
+    <div className={className} style={{...style, display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#000', minHeight: '200px'}}>
+      <div className="text-white text-sm animate-pulse">Loading video...</div>
+    </div>
+  );
+
+  if (src && !playError) return (
+    <div className="relative" style={style}>
+      <video
+        ref={videoRef}
+        src={src}
+        poster={poster}
+        controls
+        muted={muted}
+        autoPlay
+        playsInline
+        className={className}
+        style={style}
+        onError={() => setPlayError(true)}
+      />
+      {muted && (
+        <button
+          onClick={(e) => { e.stopPropagation(); setMuted(false); if (videoRef.current) { videoRef.current.muted = false; } }}
+          className="absolute bottom-3 right-3 px-2.5 py-1 rounded-full bg-black/60 text-white text-[10px] font-semibold backdrop-blur-sm hover:bg-black/80 transition-colors flex items-center gap-1"
+        >
+          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+          Unmute
+        </button>
+      )}
+    </div>
+  );
+
+  return (
+    <div className={className} style={{...style, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#000', minHeight: '200px'}}>
+      {poster && <img src={poster} alt="" className="w-full object-contain" style={{maxHeight: style?.maxHeight || '55vh', opacity: 0.6}} />}
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-2">
+        {src ? (
+          <a href={src} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
+            className="px-4 py-2 rounded-lg bg-white/90 text-gray-800 text-sm font-semibold hover:bg-white transition-colors flex items-center gap-2">
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            Open video in new tab
+          </a>
+        ) : (
+          <span className="px-3 py-1.5 rounded-lg bg-black/50 text-gray-300 text-xs backdrop-blur-sm">Video source unavailable</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// ─── Creative Detail Modal ───
+function CreativeModal({ card, rank, brand, onClose, accountId }) {
+  if (!card) return null;
+  const b = BRANDS[brand];
+  const adsManagerUrl = card.adId ? `https://www.facebook.com/adsmanager/manage/ads?act=${accountId}&selected_ad_ids=${card.adId}` : null;
+  useEffect(() => {
+    const handler = e => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    document.body.style.overflow = 'hidden';
+    return () => { document.removeEventListener('keydown', handler); document.body.style.overflow = ''; };
+  }, [onClose]);
+  const stats = [
+    { label: 'Spend', value: fmt.currency(card.spend), primary: true, tip: METRIC_TOOLTIPS.spend },
+    { label: 'ROAS', value: card.roas > 0 ? fmt.roas(card.roas) : '-', primary: true, tip: METRIC_TOOLTIPS.roas },
+    { label: 'Revenue', value: card.revenue > 0 ? fmt.currency(card.revenue) : '-', primary: true, tip: METRIC_TOOLTIPS.revenue },
+    { label: 'Conversions', value: card.conversions > 0 ? fmt.number(card.conversions) : '-', primary: true, tip: METRIC_TOOLTIPS.conversions },
+    { label: 'CPA', value: card.costPerConv > 0 ? fmt.currency(card.costPerConv) : '-', primary: true, tip: METRIC_TOOLTIPS.costPerConv },
+    { label: 'Add to Cart', value: card.atc > 0 ? fmt.number(card.atc) : '-', primary: true, tip: METRIC_TOOLTIPS.atc },
+    { label: 'ATC Rate', value: card.atcRate > 0 ? fmt.pct(card.atcRate) : '-', primary: true, tip: METRIC_TOOLTIPS.atcRate },
+    { label: 'Cost / ATC', value: card.costPerAtc > 0 ? fmt.currency(card.costPerAtc) : '-', primary: true, tip: METRIC_TOOLTIPS.costPerAtc },
+    { label: 'Impressions', value: fmt.number(card.impressions), tip: METRIC_TOOLTIPS.impressions },
+    { label: 'Reach', value: fmt.number(card.reach), tip: METRIC_TOOLTIPS.reach },
+    { label: 'Clicks', value: fmt.number(card.clicks), tip: METRIC_TOOLTIPS.clicks },
+    { label: 'CTR', value: fmt.pct(card.ctr), tip: METRIC_TOOLTIPS.ctr },
+    { label: 'CPC', value: fmt.currency(card.cpc), tip: METRIC_TOOLTIPS.cpc },
+    { label: 'CPM', value: fmt.currency(card.cpm), tip: METRIC_TOOLTIPS.cpm },
+    { label: 'Outbound Clicks', value: fmt.number(card.outboundClicks), tip: METRIC_TOOLTIPS.outboundClicks },
+    { label: 'Outbound CTR', value: card.outboundCtr > 0 ? fmt.pct(card.outboundCtr) : '-', tip: METRIC_TOOLTIPS.outboundCtr },
+    { label: 'Landing Page Views', value: card.lpv > 0 ? fmt.number(card.lpv) : '-', tip: METRIC_TOOLTIPS.lpv },
+    { label: 'Engagements', value: card.engagements > 0 ? fmt.number(card.engagements) : '-', tip: METRIC_TOOLTIPS.engagements },
+    { label: 'Eng. Rate', value: card.engagementRate > 0 ? fmt.pct(card.engagementRate) : '-', tip: METRIC_TOOLTIPS.engagementRate },
+    { label: 'Frequency', value: fmt.decimal(card.frequency), tip: METRIC_TOOLTIPS.frequency },
+  ];
+  return ReactDOM.createPortal(
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6" onClick={onClose} style={{fontFamily: b.bodyFont}}>
+      <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[92vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+        <button onClick={onClose} className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors backdrop-blur-sm">
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <div className="relative bg-gray-950 rounded-t-2xl flex items-center justify-center" style={{minHeight: '200px'}}>
+          {(card.isVideo && (card.videoSource || card.videoId)) ? (
+            <VideoPlayer videoId={card.videoId} videoSource={card.videoSource} poster={card.thumbnail} className="w-full object-contain" style={{maxHeight: '55vh'}} />
+          ) : (
+            <img src={card.thumbnail} alt={card.name} className="w-full object-contain" style={{maxHeight: '55vh'}} />
+          )}
+          <div className="absolute top-3 left-3">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-full text-white text-xs font-bold shadow-lg backdrop-blur-sm" style={{backgroundColor: b.primary + 'dd'}}>#{rank}</span>
+          </div>
+          {card.isVideo && (
+            <div className="absolute top-3 right-12">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/50 text-white text-[10px] font-semibold backdrop-blur-sm">
+                <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                VIDEO
+              </span>
+            </div>
+          )}
+        </div>
+        <div className="p-4 sm:p-5">
+          <h3 className="font-display text-base sm:text-lg font-bold text-gray-900 mb-0.5 leading-tight">{card.name}</h3>
+          <p className="text-xs text-gray-400 mb-0.5">{card.campaign}</p>
+          <p className="text-[10px] text-gray-300 mb-4">{card.adset}</p>
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2 mb-3">
+            {stats.filter(s => s.primary).map(s => (
+              <div key={s.label} className="text-center py-2 px-1 rounded-lg" style={{backgroundColor: b.primaryLight}} title={s.tip || ''}>
+                <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wide">{s.label}</div>
+                <div className="text-xs sm:text-sm font-bold mt-0.5" style={{color: b.primary}}>{s.value}</div>
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-4 gap-1.5 sm:gap-2">
+            {stats.filter(s => !s.primary).map(s => (
+              <div key={s.label} className="text-center py-2 px-1 rounded-lg bg-gray-50" title={s.tip || ''}>
+                <div className="text-[9px] sm:text-[10px] text-gray-400 uppercase tracking-wide">{s.label}</div>
+                <div className="text-xs sm:text-sm font-bold text-gray-700 mt-0.5">{s.value}</div>
+              </div>
+            ))}
+          </div>
+          {(card.body || card.title) && (
+            <div className="mt-4 border-t pt-3" style={{borderColor: '#f0f0f2'}}>
+              <p className="text-[10px] text-gray-400 uppercase tracking-wider mb-1.5 font-semibold">Ad Copy</p>
+              {card.title && <p className="text-sm font-semibold text-gray-700 mb-1">{card.title}</p>}
+              {card.body && <p className="text-xs text-gray-500 whitespace-pre-line leading-relaxed">{card.body}</p>}
+            </div>
+          )}
+          <div className="flex items-center gap-2 mt-4 pt-3 border-t" style={{borderColor: '#f0f0f2'}}>
+            {card.previewLink && (
+              <a href={card.previewLink} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90"
+                style={{backgroundColor: b.primary}}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                Preview Ad
+              </a>
+            )}
+            {adsManagerUrl && (
+              <a href={adsManagerUrl} target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all hover:bg-gray-50"
+                style={{borderColor: '#e5e7eb', color: '#374151'}}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                Ads Manager
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
+
+// ─── Creative Performance (Ads) Tab ───
+function CreativeTab({ data, brand }) {
+  if (!data?.adInsights?.length) return <EmptyState brand={brand} />;
+  const [sortMetric, setSortMetric] = useState('roas');
+  const [campaignFilter, setCampaignFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [selected, setSelected] = useState(null);
+  const b = BRANDS[brand];
+  const campaigns = useMemo(() => [...new Set(data.adInsights.map(r => r.campaign_name))].sort(), [data]);
+
+  const [mFilters, setMFilters] = useState([{ metric: '', min: '', max: '' }]);
+
+  const creativeMap = useMemo(() => {
+    const map = {};
+    (data.adsCreatives || []).forEach(ad => {
+      if (ad.creative) map[ad.id] = { ...ad.creative, previewLink: ad.preview_shareable_link || null };
+    });
+    return map;
+  }, [data]);
+
+  const objMap = useMemo(() => {
+    const m = {};
+    (data.campaignMeta || []).forEach(c => { m[c.id] = c.objective; });
+    return m;
+  }, [data]);
+
+  const videoAdIds = useMemo(() => {
+    const ids = new Set();
+    (data.videoInsights || []).forEach(r => { if (r.ad_id) ids.add(r.ad_id); });
+    return ids;
+  }, [data]);
+
+  const accountId = BRANDS[brand].accountId.replace('act_', '');
+
+  const cards = useMemo(() => {
+    const filtered = campaignFilter === 'all' ? data.adInsights : data.adInsights.filter(r => r.campaign_name === campaignFilter);
+    const lowerBetter = sortMetric === 'cpc' || sortMetric === 'costPerConv' || sortMetric === 'cpm' || sortMetric === 'costPerAtc';
+    return filtered
+      .map(r => {
+        const creative = creativeMap[r.ad_id];
+        const thumb = creative?.image_url || creative?.thumbnail_url;
+        if (!thumb) return null;
+        const isVideo = !!creative?.isVideo || !!creative?.videoId || videoAdIds.has(r.ad_id);
+        const videoId = creative?.videoId || null;
+        const videoSource = creative?.videoSource || null;
+        const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+        const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+        const outbound = getActionValue(r.outbound_clicks, 'outbound_click');
+        const atc = getActionValue(r.actions, 'add_to_cart');
+        const lpv = getActionValue(r.actions, 'landing_page_view');
+        const engagements = getActionValue(r.actions, 'post_engagement');
+        const spend = parseFloat(r.spend || 0);
+        const impressions = parseInt(r.impressions || 0);
+        const rawObj = objMap[r.campaign_id] || '';
+        const objectiveBadge = OBJECTIVE_BADGE_MAP[rawObj] || null;
+        return {
+          adId: r.ad_id,
+          name: r.ad_name,
+          campaign: r.campaign_name,
+          adset: r.adset_name,
+          thumbnail: thumb,
+          title: creative?.title || '',
+          body: creative?.body || '',
+          previewLink: creative?.previewLink || null,
+          isVideo,
+          videoId,
+          videoSource,
+          objectiveBadge,
+          spend,
+          impressions,
+          reach: parseInt(r.reach || 0),
+          clicks: parseInt(r.clicks || 0),
+          ctr: parseFloat(r.ctr || 0),
+          cpc: parseFloat(r.cpc || 0),
+          cpm: parseFloat(r.cpm || 0),
+          frequency: parseFloat(r.frequency || 0),
+          outboundClicks: outbound,
+          outboundCtr: impressions > 0 ? (outbound / impressions) * 100 : 0,
+          lpv,
+          atc,
+          atcRate: outbound > 0 ? (atc / outbound) * 100 : 0,
+          costPerAtc: atc > 0 ? spend / atc : 0,
+          engagements,
+          engagementRate: impressions > 0 ? (engagements / impressions) * 100 : 0,
+          conversions,
+          costPerConv: conversions > 0 ? spend / conversions : 0,
+          revenue,
+          roas: spend > 0 ? revenue / spend : 0,
+        };
+      })
+      .filter(Boolean)
+      .filter(c => typeFilter === 'all' || (typeFilter === 'video' ? c.isVideo : !c.isVideo))
+      .sort((a, b) => lowerBetter ? (a[sortMetric] || 0) - (b[sortMetric] || 0) : (b[sortMetric] || 0) - (a[sortMetric] || 0));
+  }, [data, creativeMap, objMap, sortMetric, campaignFilter, typeFilter]);
+
+  const filteredCards = useMemo(() => applyMetricFilter(cards, mFilters), [cards, mFilters]);
+
+  const avgMetric = useMemo(() => {
+    if (!filteredCards.length) return 0;
+    return filteredCards.reduce((s, c) => s + (c[sortMetric] || 0), 0) / filteredCards.length;
+  }, [filteredCards, sortMetric]);
+
+  const metricOptions = [
+    { value: 'roas', label: 'ROAS' },
+    { value: 'revenue', label: 'Revenue' },
+    { value: 'conversions', label: 'Conversions' },
+    { value: 'costPerConv', label: 'CPA (low is better)' },
+    { value: 'atc', label: 'Add to Cart' },
+    { value: 'atcRate', label: 'ATC Rate' },
+    { value: 'costPerAtc', label: 'Cost/ATC (low is better)' },
+    { value: 'engagements', label: 'Engagements' },
+    { value: 'engagementRate', label: 'Engagement Rate' },
+    { value: 'spend', label: 'Spend' },
+    { value: 'ctr', label: 'CTR' },
+    { value: 'cpc', label: 'CPC (low is better)' },
+    { value: 'cpm', label: 'CPM (low is better)' },
+    { value: 'outboundClicks', label: 'Outbound Clicks' },
+    { value: 'outboundCtr', label: 'Outbound CTR' },
+    { value: 'lpv', label: 'Landing Page Views' },
+    { value: 'impressions', label: 'Impressions' },
+    { value: 'reach', label: 'Reach' },
+    { value: 'clicks', label: 'Clicks' },
+    { value: 'frequency', label: 'Frequency' },
+  ];
+
+  const isLowerBetter = sortMetric === 'cpc' || sortMetric === 'costPerConv' || sortMetric === 'cpm' || sortMetric === 'costPerAtc';
+
+  const fmtMetricVal = (card) => {
+    const v = card[sortMetric] || 0;
+    if (sortMetric === 'roas') return v > 0 ? fmt.roas(v) : '-';
+    if (sortMetric === 'ctr' || sortMetric === 'outboundCtr' || sortMetric === 'atcRate' || sortMetric === 'engagementRate') return v > 0 ? fmt.pct(v) : '-';
+    if (sortMetric === 'cpc' || sortMetric === 'cpm' || sortMetric === 'costPerConv' || sortMetric === 'costPerAtc') return v > 0 ? fmt.currency(v) : '-';
+    if (sortMetric === 'spend' || sortMetric === 'revenue') return fmt.currency(v);
+    if (sortMetric === 'frequency') return fmt.decimal(v);
+    return fmt.number(v);
+  };
+
+  return (
+    <div className="space-y-4 fade-in">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Campaign</label>
+            <select
+              value={campaignFilter}
+              onChange={e => setCampaignFilter(e.target.value)}
+              className="px-3 py-1.5 text-sm border rounded-lg bg-white focus:outline-none"
+              style={{borderColor: '#f0f0f2'}}
+            >
+              <option value="all">All Campaigns</option>
+              {campaigns.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Type</label>
+            <select
+              value={typeFilter}
+              onChange={e => setTypeFilter(e.target.value)}
+              className="px-3 py-1.5 text-sm border rounded-lg bg-white focus:outline-none"
+              style={{borderColor: '#f0f0f2'}}
+            >
+              <option value="all">All Types</option>
+              <option value="video">Video</option>
+              <option value="image">Image</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Rank by</label>
+            <select
+              value={sortMetric}
+              onChange={e => setSortMetric(e.target.value)}
+              className="px-3 py-1.5 text-sm border rounded-lg bg-white focus:outline-none"
+              style={{borderColor: '#f0f0f2'}}
+            >
+              {metricOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+          </div>
+        </div>
+        <span className="text-xs text-gray-400">{filteredCards.length} of {cards.length} ads</span>
+      </div>
+      <MetricFilter filters={mFilters} onChange={setMFilters} />
+
+      {filteredCards.length === 0 ? (
+        <div className="text-center py-12 text-gray-400">
+          No ad creatives with thumbnails found. Creative thumbnails require active or recently paused ads.
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3 stagger">
+          {filteredCards.map((card, i) => {
+            const val = card[sortMetric] || 0;
+            const isGood = isLowerBetter ? val < avgMetric : val > avgMetric;
+            const perfColor = i < 3 ? b.primary : (isGood ? '#059669' : '#dc2626');
+            const borderStyle = i < 3 ? `2px solid ${b.primary}` : `1px solid ${isGood ? '#d1fae5' : '#fee2e2'}`;
+            const cardStats = [
+              { label: 'Spend', value: fmt.currency(card.spend), tip: METRIC_TOOLTIPS.spend },
+              { label: 'ATC', value: card.atc > 0 ? fmt.number(card.atc) : '-', tip: METRIC_TOOLTIPS.atc },
+              { label: 'ATC Rate', value: card.atcRate > 0 ? fmt.pct(card.atcRate) : '-', tip: METRIC_TOOLTIPS.atcRate },
+              { label: 'Eng.', value: card.engagements > 0 ? fmt.number(card.engagements) : '-', tip: METRIC_TOOLTIPS.engagements },
+              { label: 'Eng. Rate', value: card.engagementRate > 0 ? fmt.pct(card.engagementRate) : '-', tip: METRIC_TOOLTIPS.engagementRate },
+              { label: 'Conv.', value: card.conversions > 0 ? fmt.number(card.conversions) : '-', tip: METRIC_TOOLTIPS.conversions },
+              { label: 'ROAS', value: card.roas > 0 ? fmt.roas(card.roas) : '-', tip: METRIC_TOOLTIPS.roas },
+              { label: 'CTR', value: fmt.pct(card.ctr), tip: METRIC_TOOLTIPS.ctr },
+              { label: 'OB CTR', value: card.outboundCtr > 0 ? fmt.pct(card.outboundCtr) : '-', tip: METRIC_TOOLTIPS.outboundCtr },
+              { label: 'LPV', value: card.lpv > 0 ? fmt.number(card.lpv) : '-', tip: METRIC_TOOLTIPS.lpv },
+              { label: 'CPC', value: fmt.currency(card.cpc), tip: METRIC_TOOLTIPS.cpc },
+              { label: 'Revenue', value: card.revenue > 0 ? fmt.currency(card.revenue) : '-', tip: METRIC_TOOLTIPS.revenue },
+            ];
+            return (
+              <div key={i} className="creative-card bg-white rounded-xl overflow-hidden hover:shadow-lg transition-all cursor-pointer group" style={{border: borderStyle}} onClick={() => setSelected(i)}>
+                <div className="relative bg-gray-950 flex items-center justify-center">
+                  <img src={card.thumbnail} alt={card.name} className="w-full object-contain" style={{maxHeight: '220px', minHeight: '120px'}} loading="lazy" />
+                  <div className="absolute top-1.5 left-1.5">
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-[10px] font-bold shadow-md" style={{backgroundColor: perfColor + 'dd'}}>
+                      {i + 1}
+                    </span>
+                  </div>
+                  {card.isVideo && (
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className="w-10 h-10 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm">
+                        <svg className="w-5 h-5 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-2.5">
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${card.isVideo ? 'bg-purple-50 text-purple-600' : 'bg-blue-50 text-blue-600'}`}>
+                      {card.isVideo ? 'Video' : 'Image'}
+                    </span>
+                    {card.objectiveBadge && (
+                      <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-bold uppercase tracking-wider ${OBJECTIVE_BADGE_STYLES[card.objectiveBadge] || 'bg-gray-100 text-gray-500'}`}>
+                        {card.objectiveBadge}
+                      </span>
+                    )}
+                  </div>
+                  <h4 className="text-xs font-semibold text-gray-900 truncate leading-tight">{card.name}</h4>
+                  <p className="text-[10px] text-gray-400 truncate mt-0.5 mb-2">{card.campaign}</p>
+                  <div className="flex items-center justify-between py-1.5 px-2 rounded-md mb-2" style={{backgroundColor: i < 3 ? b.primaryLight : (isGood ? '#f0fdf4' : '#fef2f2')}}>
+                    <span className="text-[9px] text-gray-500 uppercase font-medium tracking-wide">{metricOptions.find(o => o.value === sortMetric)?.label?.replace(' (low is better)', '') || sortMetric}</span>
+                    <span className="text-xs font-bold tabular-nums" style={{color: perfColor}}>{fmtMetricVal(card)}</span>
+                  </div>
+                  <div className="grid grid-cols-6 gap-x-1.5 gap-y-1">
+                    {cardStats.map(s => (
+                      <div key={s.label} className="text-center" title={s.tip || ''}>
+                        <div className="text-[8px] text-gray-400 uppercase tracking-wide leading-tight">{s.label}</div>
+                        <div className="text-[10px] font-semibold text-gray-700 tabular-nums leading-tight">{s.value}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {selected !== null && filteredCards[selected] && (
+        <CreativeModal card={filteredCards[selected]} rank={selected + 1} brand={brand} accountId={accountId} onClose={() => setSelected(null)} />
+      )}
+    </div>
+  );
+}
+
+// ─── Video Performance Tab ───
+const VIDEO_FILTER_METRICS = [
+  { key: 'spend', label: 'Spend', fmt: '$' },
+  { key: 'impressions', label: 'Impressions' },
+  { key: 'videoPlays', label: 'Video Plays' },
+  { key: 'thumbStopRate', label: 'Thumb Stop (%)' },
+  { key: 'p25Rate', label: '25% Played (%)' },
+  { key: 'p50Rate', label: '50% Played (%)' },
+  { key: 'p75Rate', label: '75% Played (%)' },
+  { key: 'completionRate', label: 'Completion (%)' },
+  { key: 'avgWatchTime', label: 'Avg Watch Time (s)' },
+  { key: 'atc', label: 'Add to Cart' },
+  { key: 'atcRate', label: 'ATC Rate (%)' },
+  { key: 'engagements', label: 'Engagements' },
+  { key: 'engagementRate', label: 'Engagement Rate (%)' },
+];
+
+function getVideoActionValue(actions, type) {
+  if (!actions) return 0;
+  const a = actions.find(x => x.action_type === type || x.action_type === 'video_view');
+  return a ? parseFloat(a.value) : 0;
+}
+
+function VideoTab({ data, brand }) {
+  const videoData = data?.videoInsights;
+  if (!videoData?.length) return <EmptyState brand={brand} />;
+  const b = BRANDS[brand];
+  const [mFilters, setMFilters] = useState([{ metric: '', min: '', max: '' }]);
+  const [viewMode, setViewMode] = useState('cards');
+  const [sortBy, setSortBy] = useState('spend');
+  const [selectedVideo, setSelectedVideo] = useState(null);
+
+  const creativeMap = useMemo(() => {
+    const map = {};
+    (data.adsCreatives || []).forEach(ad => {
+      if (ad.creative) map[ad.id] = { ...ad.creative, previewLink: ad.preview_shareable_link || null };
+    });
+    return map;
+  }, [data]);
+
+  const accountId = BRANDS[brand].accountId.replace('act_', '');
+
+  const rows = useMemo(() => {
+    return videoData
+      .filter(r => {
+        const hasThruplay = r.video_thruplay_watched_actions && r.video_thruplay_watched_actions.length > 0;
+        const hasPlays = r.video_play_actions && r.video_play_actions.length > 0;
+        return hasThruplay || hasPlays;
+      })
+      .map(r => {
+        const spend = parseFloat(r.spend || 0);
+        const impressions = parseInt(r.impressions || 0);
+        const videoPlays = getVideoActionValue(r.video_play_actions, 'video_view');
+        const thruPlays = getVideoActionValue(r.video_thruplay_watched_actions, 'video_view');
+        const p25 = getVideoActionValue(r.video_p25_watched_actions, 'video_view');
+        const p50 = getVideoActionValue(r.video_p50_watched_actions, 'video_view');
+        const p75 = getVideoActionValue(r.video_p75_watched_actions, 'video_view');
+        const p95 = getVideoActionValue(r.video_p95_watched_actions, 'video_view');
+        const p100 = getVideoActionValue(r.video_p100_watched_actions, 'video_view');
+        const avgWatchTime = getVideoActionValue(r.video_avg_time_watched_actions, 'video_view');
+        const thumbStopRate = impressions > 0 ? (videoPlays / impressions) * 100 : 0;
+        const p25Rate = videoPlays > 0 ? (p25 / videoPlays) * 100 : 0;
+        const p50Rate = videoPlays > 0 ? (p50 / videoPlays) * 100 : 0;
+        const p75Rate = videoPlays > 0 ? (p75 / videoPlays) * 100 : 0;
+        const completionRate = videoPlays > 0 ? (p100 / videoPlays) * 100 : 0;
+        const creative = creativeMap[r.ad_id];
+        const thumbnail = creative?.image_url || creative?.thumbnail_url || null;
+        const videoId = creative?.videoId || null;
+        const videoSource = creative?.videoSource || null;
+        const previewLink = creative?.previewLink || null;
+        const outbound = getActionValue(r.outbound_clicks, 'outbound_click');
+        const atc = getActionValue(r.actions, 'add_to_cart');
+        const engagements = getActionValue(r.actions, 'post_engagement');
+        return {
+          adName: r.ad_name,
+          adId: r.ad_id,
+          campaign: r.campaign_name,
+          thumbnail, videoId, videoSource, previewLink,
+          spend, impressions, videoPlays, thruPlays,
+          thumbStopRate, p25Rate, p50Rate, p75Rate, completionRate,
+          p25, p50, p75, p95, p100, avgWatchTime,
+          atc,
+          atcRate: outbound > 0 ? (atc / outbound) * 100 : 0,
+          engagements,
+          engagementRate: impressions > 0 ? (engagements / impressions) * 100 : 0,
+        };
+      })
+      .sort((a, b) => b.spend - a.spend);
+  }, [videoData]);
+
+  const filteredRows = useMemo(() => applyMetricFilter(rows, mFilters), [rows, mFilters]);
+
+  const sortedRows = useMemo(() => {
+    return [...filteredRows].sort((a, b) => (b[sortBy] || 0) - (a[sortBy] || 0));
+  }, [filteredRows, sortBy]);
+
+  const summary = useMemo(() => {
+    if (!filteredRows.length) return { totalSpend: 0, avgThumbStop: 0, avgP50Rate: 0, avgCompletion: 0 };
+    const totalSpend = filteredRows.reduce((s, r) => s + r.spend, 0);
+    const avgThumbStop = filteredRows.reduce((s, r) => s + r.thumbStopRate, 0) / filteredRows.length;
+    const avgP50Rate = filteredRows.reduce((s, r) => s + r.p50Rate, 0) / filteredRows.length;
+    const avgCompletion = filteredRows.reduce((s, r) => s + r.completionRate, 0) / filteredRows.length;
+    return { totalSpend, avgThumbStop, avgP50Rate, avgCompletion };
+  }, [filteredRows]);
+
+  const rateBarColor = (v) => v >= 50 ? '#059669' : v >= 25 ? '#d97706' : '#dc2626';
+  const pctColor = (v) => v >= 50 ? 'text-emerald-600 bg-emerald-50' : v >= 25 ? 'text-amber-600 bg-amber-50' : 'text-red-600 bg-red-50';
+
+  const sortOptions = [
+    { value: 'spend', label: 'Spend' },
+    { value: 'thumbStopRate', label: 'Thumb Stop' },
+    { value: 'p25Rate', label: '25% Played' },
+    { value: 'p50Rate', label: '50% Played' },
+    { value: 'p75Rate', label: '75% Played' },
+    { value: 'completionRate', label: 'Completion' },
+    { value: 'videoPlays', label: 'Video Plays' },
+    { value: 'avgWatchTime', label: 'Avg Watch Time' },
+  ];
+
+  const columns = [
+    { key: 'adName', label: 'Ad Name', bold: true, sortable: true, render: v => <span className="block truncate max-w-[160px]" title={v}>{v}</span> },
+    { key: 'campaign', label: 'Campaign', sortable: true, render: v => <span className="text-gray-400 text-xs block truncate max-w-[120px]" title={v}>{v}</span> },
+    { key: 'spend', label: 'Spend', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'impressions', label: 'Impr.', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'videoPlays', label: 'Plays', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'thumbStopRate', label: 'Thumb Stop %', align: 'right', sortable: true, render: v => <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${pctColor(v)}`}>{fmt.pct(v)}</span> },
+    { key: 'p25Rate', label: '25% Played', align: 'right', sortable: true, render: v => <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${pctColor(v)}`}>{fmt.pct(v)}</span> },
+    { key: 'p50Rate', label: '50% Played', align: 'right', sortable: true, render: v => <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${pctColor(v)}`}>{fmt.pct(v)}</span> },
+    { key: 'p75Rate', label: '75% Played', align: 'right', sortable: true, render: v => <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${pctColor(v)}`}>{fmt.pct(v)}</span> },
+    { key: 'completionRate', label: 'Complete %', align: 'right', sortable: true, render: v => <span className={`inline-block px-1.5 py-0.5 rounded text-xs font-semibold ${pctColor(v)}`}>{fmt.pct(v)}</span> },
+    { key: 'avgWatchTime', label: 'Avg Watch (s)', align: 'right', sortable: true, render: v => v > 0 ? v.toFixed(1) + 's' : '-' },
+    { key: 'atc', label: 'ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'atcRate', label: 'ATC Rate', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'engagements', label: 'Eng.', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'engagementRate', label: 'Eng. Rate', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+  ];
+
+  return (
+    <div className="space-y-4 fade-in">
+      {/* KPI Summary */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 stagger">
+        <div className="dash-card p-3 sm:p-5" title={METRIC_TOOLTIPS.spend}>
+          <div className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Total Video Spend</div>
+          <div className="text-lg sm:text-2xl font-bold text-gray-900 font-display tabular-nums">{fmt.currency(summary.totalSpend)}</div>
+        </div>
+        <div className="dash-card p-3 sm:p-5" title={METRIC_TOOLTIPS.thumbStopRate}>
+          <div className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Avg Thumb Stop %</div>
+          <div className="text-lg sm:text-2xl font-bold font-display tabular-nums" style={{color: b.primary}}>{fmt.pct(summary.avgThumbStop)}</div>
+        </div>
+        <div className="dash-card p-3 sm:p-5" title={METRIC_TOOLTIPS.p50Rate}>
+          <div className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Avg 50% Played</div>
+          <div className="text-lg sm:text-2xl font-bold font-display tabular-nums" style={{color: b.primary}}>{fmt.pct(summary.avgP50Rate)}</div>
+        </div>
+        <div className="dash-card p-3 sm:p-5" title={METRIC_TOOLTIPS.completionRate}>
+          <div className="text-[10px] sm:text-xs font-medium text-gray-400 uppercase tracking-wider mb-1.5">Avg Completion %</div>
+          <div className="text-lg sm:text-2xl font-bold font-display tabular-nums" style={{color: b.primary}}>{fmt.pct(summary.avgCompletion)}</div>
+        </div>
+      </div>
+
+      {/* Controls */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex rounded-lg overflow-hidden border" style={{borderColor: '#e5e7eb'}}>
+            <button onClick={() => setViewMode('cards')}
+              className="px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1"
+              style={{ backgroundColor: viewMode === 'cards' ? b.primary : 'transparent', color: viewMode === 'cards' ? '#fff' : '#6b7280' }}>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" /></svg>
+              Cards
+            </button>
+            <button onClick={() => setViewMode('table')}
+              className="px-3 py-1.5 text-xs font-semibold transition-all flex items-center gap-1"
+              style={{ backgroundColor: viewMode === 'table' ? b.primary : 'transparent', color: viewMode === 'table' ? '#fff' : '#6b7280' }}>
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M3 14h18M3 18h18M3 6h18" /></svg>
+              Table
+            </button>
+          </div>
+          {viewMode === 'cards' && (
+            <div className="flex items-center gap-2">
+              <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Sort by</label>
+              <select value={sortBy} onChange={e => setSortBy(e.target.value)}
+                className="px-3 py-1.5 text-sm border rounded-lg bg-white focus:outline-none" style={{borderColor: '#f0f0f2'}}>
+                {sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+              </select>
+            </div>
+          )}
+        </div>
+        <span className="text-xs text-gray-400">{filteredRows.length} video ads</span>
+      </div>
+
+      <MetricFilter filters={mFilters} onChange={setMFilters} metricOptions={VIDEO_FILTER_METRICS} />
+
+      {/* Cards View */}
+      {viewMode === 'cards' && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 stagger">
+          {sortedRows.map((row, i) => {
+            const rates = [
+              { label: 'Thumb Stop', value: row.thumbStopRate, tip: METRIC_TOOLTIPS.thumbStopRate },
+              { label: '25% Played', value: row.p25Rate, tip: METRIC_TOOLTIPS.p25Rate },
+              { label: '50% Played', value: row.p50Rate, tip: METRIC_TOOLTIPS.p50Rate },
+              { label: '75% Played', value: row.p75Rate, tip: METRIC_TOOLTIPS.p75Rate },
+              { label: 'Completion', value: row.completionRate, tip: METRIC_TOOLTIPS.completionRate },
+            ];
+            return (
+              <div key={i} className="dash-card overflow-hidden hover:shadow-md transition-all">
+                {row.thumbnail && (
+                  <div className="relative bg-gray-950 flex items-center justify-center cursor-pointer" onClick={() => setSelectedVideo(row)}>
+                    <img src={row.thumbnail} alt={row.adName} className="w-full object-contain" style={{maxHeight: '140px', minHeight: '80px'}} loading="lazy" />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                      <span className="w-9 h-9 rounded-full bg-black/50 flex items-center justify-center backdrop-blur-sm opacity-80 group-hover:opacity-100">
+                        <svg className="w-4 h-4 text-white ml-0.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      </span>
+                    </div>
+                    <div className="absolute top-1.5 left-1.5">
+                      <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-[10px] font-bold shadow-md" style={{backgroundColor: b.primary + 'dd'}}>{i + 1}</span>
+                    </div>
+                  </div>
+                )}
+                <div className="p-4">
+                {!row.thumbnail && (
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1 min-w-0">
+                      <h4 className="text-xs font-semibold text-gray-900 truncate leading-tight" title={row.adName}>{row.adName}</h4>
+                      <p className="text-[10px] text-gray-400 truncate mt-0.5" title={row.campaign}>{row.campaign}</p>
+                    </div>
+                    <span className="inline-flex items-center justify-center w-6 h-6 rounded-full text-white text-[10px] font-bold ml-2 flex-shrink-0" style={{backgroundColor: b.primary + 'cc'}}>
+                      {i + 1}
+                    </span>
+                  </div>
+                )}
+                {row.thumbnail && (
+                  <div className="mb-2">
+                    <h4 className="text-xs font-semibold text-gray-900 truncate leading-tight" title={row.adName}>{row.adName}</h4>
+                    <p className="text-[10px] text-gray-400 truncate mt-0.5" title={row.campaign}>{row.campaign}</p>
+                  </div>
+                )}
+                <div className="flex items-center gap-3 mb-3 pb-3 border-b" style={{borderColor: '#f0f0f2'}}>
+                  <div title={METRIC_TOOLTIPS.spend}><span className="text-[9px] text-gray-400 uppercase">Spend</span><div className="text-xs font-bold text-gray-700">{fmt.currency(row.spend)}</div></div>
+                  <div title={METRIC_TOOLTIPS.videoPlays}><span className="text-[9px] text-gray-400 uppercase">Plays</span><div className="text-xs font-bold text-gray-700">{fmt.number(row.videoPlays)}</div></div>
+                  {row.avgWatchTime > 0 && <div title={METRIC_TOOLTIPS.avgWatchTime}><span className="text-[9px] text-gray-400 uppercase">Avg Watch</span><div className="text-xs font-bold text-gray-700">{row.avgWatchTime.toFixed(1)}s</div></div>}
+                </div>
+                <div className="space-y-2.5">
+                  {rates.map((m, j) => (
+                    <div key={j} title={m.tip || ''}>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="text-[9px] text-gray-500 uppercase tracking-wide font-medium">{m.label}</span>
+                        <span className="text-[11px] font-bold tabular-nums" style={{color: rateBarColor(m.value)}}>{fmt.pct(m.value)}</span>
+                      </div>
+                      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                        <div className="h-full rounded-full transition-all duration-500" style={{width: Math.min(100, m.value) + '%', backgroundColor: rateBarColor(m.value)}} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Table View */}
+      {viewMode === 'table' && <SortableTable columns={columns} data={filteredRows} brand={brand} />}
+
+      {/* Video Playback Modal */}
+      {selectedVideo && ReactDOM.createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8" onClick={() => setSelectedVideo(null)} style={{fontFamily: b.bodyFont}}>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <button onClick={() => setSelectedVideo(null)} className="absolute top-3 right-3 z-10 w-8 h-8 flex items-center justify-center rounded-full bg-black/40 text-white hover:bg-black/60 transition-colors backdrop-blur-sm">
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+            <div className="bg-black rounded-t-2xl">
+              <VideoPlayer videoId={selectedVideo.videoId} videoSource={selectedVideo.videoSource} poster={selectedVideo.thumbnail} className="w-full object-contain rounded-t-2xl" style={{maxHeight: '50vh'}} />
+            </div>
+            <div className="p-5">
+              <h3 className="font-display text-base font-bold text-gray-900 mb-1 leading-snug">{selectedVideo.adName}</h3>
+              <p className="text-xs text-gray-400 mb-4">{selectedVideo.campaign}</p>
+              <div className="grid grid-cols-4 gap-3 mb-4">
+                <div className="text-center" title={METRIC_TOOLTIPS.spend}><div className="text-[9px] text-gray-400 uppercase mb-0.5">Spend</div><div className="text-sm font-bold">{fmt.currency(selectedVideo.spend)}</div></div>
+                <div className="text-center" title={METRIC_TOOLTIPS.videoPlays}><div className="text-[9px] text-gray-400 uppercase mb-0.5">Plays</div><div className="text-sm font-bold">{fmt.number(selectedVideo.videoPlays)}</div></div>
+                <div className="text-center" title={METRIC_TOOLTIPS.thruPlays}><div className="text-[9px] text-gray-400 uppercase mb-0.5">ThruPlays</div><div className="text-sm font-bold">{fmt.number(selectedVideo.thruPlays)}</div></div>
+                <div className="text-center" title={METRIC_TOOLTIPS.avgWatchTime}><div className="text-[9px] text-gray-400 uppercase mb-0.5">Avg Watch</div><div className="text-sm font-bold">{selectedVideo.avgWatchTime > 0 ? selectedVideo.avgWatchTime.toFixed(1) + 's' : '-'}</div></div>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { label: 'Thumb Stop', value: selectedVideo.thumbStopRate, tip: METRIC_TOOLTIPS.thumbStopRate },
+                  { label: '25% Played', value: selectedVideo.p25Rate, tip: METRIC_TOOLTIPS.p25Rate },
+                  { label: '50% Played', value: selectedVideo.p50Rate, tip: METRIC_TOOLTIPS.p50Rate },
+                  { label: '75% Played', value: selectedVideo.p75Rate, tip: METRIC_TOOLTIPS.p75Rate },
+                  { label: 'Completion', value: selectedVideo.completionRate, tip: METRIC_TOOLTIPS.completionRate },
+                ].map((m, j) => (
+                  <div key={j} title={m.tip}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-[10px] text-gray-500 uppercase tracking-wide font-medium">{m.label}</span>
+                      <span className="text-xs font-bold tabular-nums" style={{color: rateBarColor(m.value)}}>{fmt.pct(m.value)}</span>
+                    </div>
+                    <div className="h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-500" style={{width: Math.min(100, m.value) + '%', backgroundColor: rateBarColor(m.value)}} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex items-center gap-2 mt-4 pt-3 border-t" style={{borderColor: '#f0f0f2'}}>
+                {selectedVideo.previewLink && (
+                  <a href={selectedVideo.previewLink} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-white rounded-lg transition-all hover:opacity-90"
+                    style={{backgroundColor: b.primary}} onClick={e => e.stopPropagation()}>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                    Preview Ad
+                  </a>
+                )}
+                {selectedVideo.adId && (
+                  <a href={`https://www.facebook.com/adsmanager/manage/ads?act=${accountId}&selected_ad_ids=${selectedVideo.adId}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all hover:bg-gray-50"
+                    style={{borderColor: '#e5e7eb', color: '#374151'}} onClick={e => e.stopPropagation()}>
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    Ads Manager
+                  </a>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
+    </div>
+  );
+}
+
+// ─── Breakdowns Tab ───
+function BreakdownsTab({ data, brand }) {
+  const b = BRANDS[brand];
+  const [subTab, setSubTab] = useState('publisher_platform');
+  const subTabs = [
+    { id: 'publisher_platform', label: 'Platform' },
+    { id: 'platform_position', label: 'Placement' },
+    { id: 'age', label: 'Age' },
+    { id: 'gender', label: 'Gender' },
+    { id: 'region', label: 'State' },
+  ];
+
+  const dataMap = {
+    publisher_platform: data?.breakdownPlatform || [],
+    platform_position: data?.breakdownPosition || [],
+    age: data?.breakdownAge || [],
+    gender: data?.breakdownGender || [],
+    region: data?.breakdownRegion || [],
+  };
+
+  const rawRows = dataMap[subTab] || [];
+
+  const rows = useMemo(() => {
+    const getDimension = (r) => {
+      if (subTab === 'platform_position') {
+        const plat = r.publisher_platform || '';
+        const pos = r.platform_position || '';
+        if (plat && pos) return plat.charAt(0).toUpperCase() + plat.slice(1) + ' - ' + pos.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        return pos || plat || 'Unknown';
+      }
+      const key = subTab === 'region' ? 'region' : subTab;
+      return r[key] || 'Unknown';
+    };
+    return rawRows.map(r => {
+      const spend = parseFloat(r.spend || 0);
+      const impressions = parseInt(r.impressions || 0);
+      const reach = parseInt(r.reach || 0);
+      const clicks = parseInt(r.clicks || 0);
+      const ctr = parseFloat(r.ctr || 0);
+      const cpc = parseFloat(r.cpc || 0);
+      const cpm = parseFloat(r.cpm || 0);
+      const conversions = getActionValue(r.actions, 'purchase') + getActionValue(r.actions, 'omni_purchase');
+      const revenue = getActionValue(r.action_values, 'purchase') + getActionValue(r.action_values, 'omni_purchase');
+      const outbound = getActionValue(r.outbound_clicks, 'outbound_click');
+      const atc = getActionValue(r.actions, 'add_to_cart');
+      const lpv = getActionValue(r.actions, 'landing_page_view');
+      const cpa = conversions > 0 ? spend / conversions : 0;
+      const roas = spend > 0 ? revenue / spend : 0;
+      return {
+        dimension: getDimension(r),
+        spend, impressions, reach, clicks, ctr, cpc, cpm,
+        outboundCtr: impressions > 0 ? (outbound / impressions) * 100 : 0,
+        lpv,
+        atc,
+        atcRate: outbound > 0 ? (atc / outbound) * 100 : 0,
+        costPerAtc: atc > 0 ? spend / atc : 0,
+        conversions, cpa, revenue, roas,
+      };
+    }).sort((a, b) => b.spend - a.spend);
+  }, [rawRows, subTab]);
+
+  const totalSpend = useMemo(() => rows.reduce((s, r) => s + r.spend, 0), [rows]);
+  const maxSpend = useMemo(() => rows.length ? rows[0].spend : 1, [rows]);
+
+  const columns = [
+    { key: 'dimension', label: subTabs.find(t => t.id === subTab)?.label || 'Dimension', bold: true, sortable: true, render: (v, row) => (
+      <div className="flex items-center gap-3 min-w-[140px]">
+        <span className="font-medium text-gray-900">{v}</span>
+      </div>
+    )},
+    { key: 'spend', label: 'Spend', align: 'right', sortable: true, render: (v, row) => (
+      <div className="relative min-w-[100px]">
+        <div className="absolute inset-0 rounded" style={{
+          width: totalSpend > 0 ? Math.max(2, (v / maxSpend) * 100) + '%' : '0%',
+          backgroundColor: b.primary,
+          opacity: 0.1,
+        }} />
+        <span className="relative z-10 font-semibold">{fmt.currency(v)}</span>
+        <span className="relative z-10 text-[10px] text-gray-400 ml-1">({totalSpend > 0 ? ((v / totalSpend) * 100).toFixed(1) : 0}%)</span>
+      </div>
+    )},
+    { key: 'impressions', label: 'Impr.', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'clicks', label: 'Clicks', align: 'right', sortable: true, render: v => fmt.number(v) },
+    { key: 'ctr', label: 'CTR', align: 'right', sortable: true, render: v => fmt.pct(v) },
+    { key: 'cpc', label: 'CPC', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'cpm', label: 'CPM', align: 'right', sortable: true, render: v => fmt.currency(v) },
+    { key: 'outboundCtr', label: 'OB CTR', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'lpv', label: 'LPV', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'atc', label: 'ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'atcRate', label: 'ATC Rate', align: 'right', sortable: true, render: v => v > 0 ? fmt.pct(v) : '-' },
+    { key: 'costPerAtc', label: 'Cost/ATC', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'conversions', label: 'Conv.', align: 'right', sortable: true, render: v => v > 0 ? fmt.number(v) : '-' },
+    { key: 'cpa', label: 'CPA', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'revenue', label: 'Revenue', align: 'right', sortable: true, render: v => v > 0 ? fmt.currency(v) : '-' },
+    { key: 'roas', label: 'ROAS', align: 'right', sortable: true, render: v => v > 0 ? fmt.roas(v) : '-' },
+  ];
+
+  if (!rows.length) return (
+    <div className="space-y-4 fade-in">
+      <div className="flex gap-1 flex-wrap bg-white rounded-xl p-1" style={{boxShadow: '0 1px 2px rgba(0,0,0,.04)', border: '1px solid rgba(0,0,0,.04)'}}>
+        {subTabs.map(t => (
+          <button key={t.id} onClick={() => setSubTab(t.id)}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all"
+            style={{ backgroundColor: subTab === t.id ? b.primary : 'transparent', color: subTab === t.id ? '#ffffff' : '#6b7280' }}
+          >{t.label}</button>
+        ))}
+      </div>
+      <EmptyState brand={brand} />
+    </div>
+  );
+
+  return (
+    <div className="space-y-4 fade-in">
+      <div className="flex gap-1 flex-wrap bg-white rounded-xl p-1" style={{boxShadow: '0 1px 2px rgba(0,0,0,.04)', border: '1px solid rgba(0,0,0,.04)'}}>
+        {subTabs.map(t => (
+          <button key={t.id} onClick={() => setSubTab(t.id)}
+            className="px-3 py-1.5 text-xs font-semibold rounded-lg transition-all"
+            style={{ backgroundColor: subTab === t.id ? b.primary : 'transparent', color: subTab === t.id ? '#ffffff' : '#6b7280' }}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      {/* Visual bar chart summary */}
+      <div className="dash-card p-5 sm:p-6">
+        <h3 className="font-display text-lg font-bold text-gray-900 mb-4">Spend by {subTabs.find(t => t.id === subTab)?.label}</h3>
+        <div className="space-y-3">
+          {rows.slice(0, 10).map((row, i) => {
+            const pct = maxSpend > 0 ? (row.spend / maxSpend) * 100 : 0;
+            return (
+              <div key={i}>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-gray-700">{row.dimension}</span>
+                  <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <span className="font-semibold">{fmt.currency(row.spend)}</span>
+                    <span className="text-gray-400">({totalSpend > 0 ? ((row.spend / totalSpend) * 100).toFixed(1) : 0}%)</span>
+                    {row.roas > 0 && <span>{fmt.roas(row.roas)} ROAS</span>}
+                  </div>
+                </div>
+                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full rounded-full transition-all duration-700" style={{width: pct + '%', backgroundColor: b.primary, opacity: 0.7 + (0.3 * (1 - i / 10))}} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      <SortableTable columns={columns} data={rows} brand={brand} />
+    </div>
+  );
+}
+
+// ─── Organic Tab ───
+function Sparkline({ series, color }) {
+  if (!series || series.length < 2) return null;
+  const W = 80, H = 28, PAD = 2;
+  const vals = series.map(d => d.value);
+  const max = Math.max(...vals, 1), min = Math.min(...vals, 0);
+  const range = max - min || 1;
+  const pts = vals.map((v, i) => {
+    const x = PAD + (i / (vals.length - 1)) * (W - PAD * 2);
+    const y = H - PAD - ((v - min) / range) * (H - PAD * 2);
+    return `${x},${y}`;
+  }).join(' ');
+  return (
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{height:'28px',opacity:0.7}}>
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round"/>
+    </svg>
+  );
+}
+
+function DeltaBadge({ current, previous }) {
+  if (previous == null || previous < 0) return null;
+  if (previous === 0) return <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-gray-100 text-gray-400">— prev</span>;
+  const pct = ((current - previous) / previous) * 100;
+  const up = pct >= 0;
+  return (
+    <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${up ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-500'}`}>
+      {up ? '↑' : '↓'} {Math.abs(pct).toFixed(1)}%
+    </span>
+  );
+}
+
+function OrganicTab({ organicData, organicLoading, brand, datePreset }) {
+  const b = BRANDS[brand];
+  const [activeMetric, setActiveMetric] = useState('reach');
+  const [hoverIdx, setHoverIdx] = useState(null);
+  const isLongRange = datePreset === 'last_12m' || datePreset === 'last_90d';
+
+  const igIcon = (
+    <svg className="w-3.5 h-3.5 inline-block mr-1" viewBox="0 0 24 24" fill="currentColor" style={{color:'#E1306C'}}>
+      <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+    </svg>
+  );
+
+  if (organicLoading) return (
+    <div className="flex items-center justify-center py-24">
+      <div className="text-center">
+        <div className="w-10 h-10 rounded-full spinner mx-auto mb-4" style={{borderWidth:'3px',borderColor:'#e5e7eb',borderTopColor:b.primary}} />
+        <p className="text-sm text-gray-400">Pulling organic data…</p>
+      </div>
+    </div>
+  );
+
+  if (!organicData) return (
+    <div className="flex flex-col items-center justify-center py-20 text-gray-400">
+      <p className="text-sm">Click Refresh to load organic data</p>
+    </div>
+  );
+
+  const { profile, reach, engagedTotal, interactionsTotal, profileViewsTotal, viewsTotal, followsUnfollows, topPosts, dailyReach, breakdown, postsInRange, since, until, page, dailySeries, comparison } = organicData;
+  const engRate = reach > 0 ? (engagedTotal / reach * 100) : 0;
+  const netFol = followsUnfollows?.net || 0;
+
+  // Build chart series — reach is native daily, others come from dailySeries
+  const reachSeries = isLongRange
+    ? (() => { const b = {}; dailyReach.forEach(d => { const k = d.date.slice(0,7); b[k] = (b[k]||0)+d.value; }); return Object.entries(b).sort((a,b)=>a[0].localeCompare(b[0])).map(([k,v])=>({date:k+'-01',value:v})); })()
+    : dailyReach;
+
+  const seriesMap = {
+    reach: reachSeries,
+    views: dailySeries?.views || [],
+    interactions: dailySeries?.total_interactions || [],
+    engaged: dailySeries?.accounts_engaged || [],
+    likes: dailySeries?.likes || [],
+    saves: dailySeries?.saves || [],
+    shares: dailySeries?.shares || [],
+  };
+
+  const chartSeries = seriesMap[activeMetric] || reachSeries;
+  const chartMax = Math.max(...chartSeries.map(d => d.value), 1);
+  const chartAvg = chartSeries.length ? chartSeries.reduce((a,d)=>a+d.value,0)/chartSeries.length : 0;
+  const W = 800, H = 300, PAD = { top: 20, right: 16, bottom: 32, left: 56 };
+  const cW = W - PAD.left - PAD.right, cH = H - PAD.top - PAD.bottom;
+
+  const kpis = [
+    { key: 'views',        label: 'Views',           rawValue: viewsTotal,                  value: fmt.number(viewsTotal),                prevVal: comparison?.views,              sub: 'total impressions',               series: dailySeries?.views },
+    { key: 'reach',        label: 'Reach',           rawValue: reach,                       value: fmt.number(reach),                    prevVal: comparison?.reach,              sub: 'unique accounts',                 series: reachSeries },
+    { key: 'interactions', label: 'Engagements',     rawValue: interactionsTotal,           value: fmt.number(interactionsTotal),         prevVal: comparison?.total_interactions, sub: 'likes · comments · saves · shares', series: dailySeries?.total_interactions },
+    { key: 'eng',          label: 'Eng. Rate',       rawValue: null,                        value: engRate.toFixed(2) + '%',             prevVal: null,                           sub: 'engaged ÷ reach',                 series: null },
+    { key: 'posts',        label: 'Posts Published', rawValue: postsInRange,                value: fmt.number(postsInRange),             prevVal: null,                           sub: 'in selected period',              series: null },
+    { key: 'followers',    label: 'Followers',       rawValue: profile?.followers_count||0, value: fmt.number(profile?.followers_count||0), prevVal: null,                        sub: (netFol>=0?'+':'')+fmt.number(netFol)+' net', series: null },
+  ];
+
+  const typeIcon = t => t === 'VIDEO' ? '▶' : t === 'CAROUSEL_ALBUM' ? '⊞' : '▪';
+
+  const dateLabel = since && until
+    ? `${new Date(since).toLocaleDateString('en-AU',{day:'numeric',month:'short'})} – ${new Date(until).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}`
+    : '';
+
+  return (
+    <div className="space-y-6 fade-in">
+
+      {/* ─── Instagram Section ─── */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="font-display text-lg font-bold text-gray-900 flex items-center gap-2">
+            {igIcon} Instagram · <span className="text-gray-400 font-normal">@{profile?.username}</span>
+          </h2>
+          <p className="text-xs text-gray-400 mt-0.5">{dateLabel} · {fmt.number(profile?.followers_count||0)} followers · {fmt.number(profile?.media_count||0)} posts total</p>
+        </div>
+      </div>
+
+      {/* KPIs — click card to drive chart */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 stagger">
+        {kpis.map((k) => {
+          const isActive = activeMetric === k.key && k.series;
+          return (
+            <div
+              key={k.key}
+              onClick={() => k.series && setActiveMetric(k.key)}
+              className={`dash-card p-4 transition-all flex flex-col ${k.series ? 'cursor-pointer hover:shadow-md' : ''}`}
+              style={isActive ? { outline: `2px solid ${b.primary}`, outlineOffset: '-2px' } : {}}
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-1">{k.label}</p>
+              <p className="text-xl font-bold font-display text-gray-900 tabular-nums">{k.value}</p>
+              <div className="flex items-center gap-1.5 mt-1 mb-1 min-h-[18px]">
+                {k.rawValue != null && k.prevVal != null && <DeltaBadge current={k.rawValue} previous={k.prevVal} />}
+              </div>
+              {k.series && k.series.length > 1
+                ? <div className="mt-auto pt-1"><Sparkline series={k.series} color={isActive ? b.primary : '#d1d5db'} /></div>
+                : <p className="text-[10px] text-gray-400 mt-auto leading-tight">{k.sub}</p>
+              }
+            </div>
+          );
+        })}
+      </div>
+      {/* Period comparison label */}
+      {comparison && (
+        <p className="text-[10px] text-gray-400 -mt-2">
+          vs. prior {Math.ceil((new Date(until)-new Date(since))/86400000)+1}-day period
+          · Reach: {fmt.number(comparison.reach)} · Views: {fmt.number(comparison.views)} · Engagements: {fmt.number(comparison.total_interactions)}
+        </p>
+      )}
+
+      {/* Chart */}
+      {chartSeries.length > 1 && (
+        <div className="dash-card p-5 sm:p-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-display text-base font-bold text-gray-900">
+              {isLongRange ? 'Monthly' : 'Daily'} {kpis.find(k=>k.key===activeMetric)?.label || 'Reach'}
+            </h3>
+            <span className="text-xs text-gray-400">avg {fmt.number(Math.round(chartAvg))} / {isLongRange ? 'month' : 'day'}</span>
+          </div>
+          <div className="relative">
+            <svg viewBox={`0 0 ${W} ${H}`} className="w-full" style={{height:'260px'}} preserveAspectRatio="none"
+              onMouseLeave={() => setHoverIdx(null)}>
+              <defs>
+                <linearGradient id={`orgGrad_${brand}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor={b.primary} stopOpacity="0.15"/>
+                  <stop offset="100%" stopColor={b.primary} stopOpacity="0.02"/>
+                </linearGradient>
+              </defs>
+              {/* Avg dashed line */}
+              {(() => { const y = PAD.top + cH*(1-chartAvg/chartMax); return <line x1={PAD.left} y1={y} x2={PAD.left+cW} y2={y} stroke={b.primary} strokeWidth="1" strokeDasharray="4,3" opacity="0.3"/>; })()}
+              {/* Bars */}
+              {chartSeries.map((d, i) => {
+                const bw = Math.max(1, cW/chartSeries.length - (chartSeries.length > 60 ? 0.5 : 2));
+                const bh = Math.max(2, (d.value/chartMax)*cH);
+                const x = PAD.left + (i/chartSeries.length)*cW + (cW/chartSeries.length - bw)/2;
+                const y = PAD.top + cH - bh;
+                const isHover = hoverIdx === i;
+                return (
+                  <g key={i} onMouseEnter={() => setHoverIdx(i)} style={{cursor:'default'}}>
+                    <rect x={x-1} y={PAD.top} width={bw+2} height={cH} fill="transparent"/>
+                    <rect x={x} y={y} width={bw} height={bh} rx="2"
+                      fill={b.primary} opacity={isHover ? 1 : 0.72}/>
+                    {isHover && (() => {
+                      const tx = Math.min(Math.max(x+bw/2, PAD.left+52), PAD.left+cW-52);
+                      const ty = PAD.top + 6;
+                      return <>
+                        <line x1={x+bw/2} y1={ty+46} x2={x+bw/2} y2={y-2} stroke={b.primary} strokeWidth="1" strokeDasharray="2,2" opacity="0.4"/>
+                        <rect x={tx-52} y={ty} width="104" height="42" rx="6" fill="#1f2937" opacity="0.92"/>
+                        <text x={tx} y={ty+16} textAnchor="middle" fontSize="11" fill="#9ca3af">
+                          {new Date(d.date).toLocaleDateString('en-AU', isLongRange?{month:'short',year:'2-digit'}:{day:'numeric',month:'short'})}
+                        </text>
+                        <text x={tx} y={ty+34} textAnchor="middle" fontSize="14" fontWeight="700" fill="#ffffff">
+                          {fmt.number(d.value)}
+                        </text>
+                      </>;
+                    })()}
+                  </g>
+                );
+              })}
+              {/* Y axis */}
+              {[0, 0.5, 1].map((pct,i) => {
+                const y = PAD.top + cH*(1-pct);
+                return <text key={i} x={PAD.left-6} y={y+4} textAnchor="end" fontSize="10" fill="#9ca3af">{fmt.number(Math.round(chartMax*pct))}</text>;
+              })}
+              {/* X axis */}
+              {[0, Math.floor(chartSeries.length/2), chartSeries.length-1].map(idx => {
+                if (!chartSeries[idx]) return null;
+                const x = PAD.left + (idx/chartSeries.length)*cW + (cW/chartSeries.length)/2;
+                const d = new Date(chartSeries[idx].date);
+                const label = d.toLocaleDateString('en-AU', isLongRange?{month:'short',year:'2-digit'}:{day:'numeric',month:'short'});
+                return <text key={idx} x={x} y={H-4} textAnchor="middle" fontSize="10" fill="#9ca3af">{label}</text>;
+              })}
+            </svg>
+          </div>
+        </div>
+      )}
+
+      {/* Engagement Breakdown + Follower Movement */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 dash-card p-5 sm:p-6">
+          <h3 className="font-display text-base font-bold text-gray-900 mb-5">Engagement Breakdown <span className="text-xs font-normal text-gray-400 ml-1">from posts in period</span></h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+            {Object.entries(breakdown).map(([k, v]) => {
+              const total = Object.values(breakdown).reduce((a,b) => a+b, 0);
+              const pct = total > 0 ? (v/total*100) : 0;
+              return (
+                <div key={k}>
+                  <p className="text-xs text-gray-400 font-medium mb-1">{k}</p>
+                  <p className="text-2xl font-bold font-display text-gray-900 tabular-nums mb-2">{fmt.number(v)}</p>
+                  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all duration-700" style={{width:pct+'%',backgroundColor:b.primary}}/>
+                  </div>
+                  <p className="text-[10px] text-gray-400 mt-1">{pct.toFixed(0)}%</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="dash-card p-5 sm:p-6">
+          <h3 className="font-display text-base font-bold text-gray-900 mb-5">Follower Movement</h3>
+          <div className="space-y-4">
+            <div>
+              <p className="text-xs text-gray-400 mb-1">New Follows</p>
+              <p className="text-2xl font-bold font-display text-emerald-600 tabular-nums">+{fmt.number(followsUnfollows?.follows||0)}</p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-400 mb-1">Unfollows</p>
+              <p className="text-2xl font-bold font-display text-red-400 tabular-nums">−{fmt.number(followsUnfollows?.unfollows||0)}</p>
+            </div>
+            <div className="pt-3 border-t border-gray-100">
+              <p className="text-xs text-gray-400 mb-1">Net Growth</p>
+              <p className={`text-2xl font-bold font-display tabular-nums ${netFol>=0?'text-emerald-600':'text-red-400'}`}>
+                {netFol>=0?'+':''}{fmt.number(netFol)}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Top Posts */}
+      <div className="dash-card p-5 sm:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-display text-base font-bold text-gray-900">Top Posts</h3>
+          <p className="text-xs text-gray-400">{postsInRange} posts · sorted by interactions · {dateLabel}</p>
+        </div>
+        {topPosts.length === 0 ? (
+          <p className="text-sm text-gray-400 py-6 text-center">No posts found in this date range</p>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {topPosts.slice(0, 8).map((post, i) => {
+              const interactions = post.likes + post.comments + post.saves + post.shares;
+              return (
+                <a key={i} href={post.permalink} target="_blank" rel="noopener noreferrer"
+                  className="group block bg-white rounded-2xl overflow-hidden border border-gray-100 hover:shadow-lg transition-shadow duration-200">
+                  {/* Image */}
+                  <div className="relative bg-gray-100" style={{aspectRatio:'4/5'}}>
+                    {post.thumbnail
+                      ? <img src={post.thumbnail} alt="" className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-400" loading="lazy"/>
+                      : <div className="w-full h-full flex items-center justify-center bg-gray-50">
+                          <svg className="w-10 h-10 text-gray-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                        </div>
+                    }
+                    {/* Rank badge */}
+                    <div className="absolute top-2.5 left-2.5 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shadow-md" style={{backgroundColor: b.primary}}>
+                      {i + 1}
+                    </div>
+                    {/* Media type badge */}
+                    {post.media_type !== 'IMAGE' && (
+                      <span className="absolute top-2.5 right-2.5 text-[9px] font-bold bg-black/60 text-white px-1.5 py-0.5 rounded-full">
+                        {post.media_type === 'VIDEO' ? '▶ Video' : '⊞ Carousel'}
+                      </span>
+                    )}
+                  </div>
+                  {/* Content */}
+                  <div className="p-3">
+                    {/* Interactions headline */}
+                    <p className="font-display font-bold text-sm text-gray-900 mb-1.5">
+                      🔥 <span>{fmt.number(interactions)} interactions</span>
+                    </p>
+                    {/* Caption */}
+                    {post.caption && (
+                      <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-3" style={{display:'-webkit-box',WebkitLineClamp:3,WebkitBoxOrient:'vertical',overflow:'hidden'}}>
+                        {post.caption}
+                      </p>
+                    )}
+                    {/* Views + Reach stats */}
+                    <div className="space-y-1 mb-2.5">
+                      {(post.plays > 0 || post.reach > 0) && (
+                        <>
+                          {post.plays > 0 && (
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-400">Views</span>
+                              <span className="font-semibold text-gray-800 tabular-nums">{fmt.number(post.plays)}</span>
+                            </div>
+                          )}
+                          {post.reach > 0 && (
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-400">Reach</span>
+                              <span className="font-semibold text-gray-800 tabular-nums">{fmt.number(post.reach)}</span>
+                            </div>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    {/* Divider + reaction icons */}
+                    <div className="pt-2 border-t border-gray-100 flex items-center gap-3 text-xs text-gray-500">
+                      <span className="flex items-center gap-1"><span>❤️</span><span className="font-medium tabular-nums">{fmt.number(post.likes)}</span></span>
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+                        <span className="font-medium tabular-nums">{fmt.number(post.comments)}</span>
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                        <span className="font-medium tabular-nums">{fmt.number(post.shares)}</span>
+                      </span>
+                      <span className="ml-auto text-[10px] text-gray-300">{new Date(post.timestamp).toLocaleDateString('en-AU',{day:'numeric',month:'short'})}</span>
+                    </div>
+                  </div>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* ─── Facebook Page Section ─── */}
+      <div className="flex items-center gap-2 mt-2">
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+        <h2 className="font-display text-lg font-bold text-gray-900">Facebook Page · <span className="text-gray-400 font-normal">{page?.name}</span></h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="dash-card p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Page Followers</p>
+          <p className="text-2xl font-bold font-display text-gray-900 tabular-nums">{fmt.number(page?.fanCount||0)}</p>
+          <p className="text-[10px] text-gray-400 mt-1">total fans / followers</p>
+        </div>
+        <div className="dash-card p-5">
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Talking About</p>
+          <p className="text-2xl font-bold font-display text-gray-900 tabular-nums">{fmt.number(page?.talkingAbout||0)}</p>
+          <p className="text-[10px] text-gray-400 mt-1">people engaged last 7 days</p>
+        </div>
+        <div className="dash-card p-5 flex items-start gap-3">
+          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center mt-0.5">
+            <svg className="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <div>
+            <p className="text-xs font-semibold text-gray-700 mb-0.5">Deeper FB analytics</p>
+            <p className="text-[10px] text-gray-400 leading-relaxed">Meta deprecated classic Page Insights for new Pages Experience. Full reach/impression data requires the Meta Business Suite reporting API — flagged for future setup.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  );
+}
+
+// ─── Empty State ───
+function EmptyState({ brand }) {
+  const isGaf = brand === 'gaf';
+  return (
+    <div className="flex flex-col items-center justify-center py-20 fade-in" style={{color: isGaf ? 'var(--gaf-grey-400,#A0A0A0)' : '#9ca3af'}}>
+      <svg className="w-16 h-16 mb-4 opacity-20" fill="none" stroke={isGaf ? '#000' : 'currentColor'} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+      {isGaf
+        ? <p className="gaf-section-title" style={{fontSize:'14px'}}>No data for selected period</p>
+        : <p className="text-sm">No data for selected period</p>
+      }
+      <p className="text-xs mt-1" style={{color: isGaf ? 'var(--gaf-grey-500)' : '#9ca3af', fontFamily: isGaf ? 'Open Sans,sans-serif' : undefined}}>Try adjusting the date range or check your token has ads_read permission</p>
+    </div>
+  );
+}
+
+// ─── Loading Overlay ───
+function LoadingOverlay({ brand }) {
+  const b = BRANDS[brand];
+  const isGaf = brand === 'gaf';
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center" style={{background: isGaf ? 'rgba(250,250,250,.92)' : 'rgba(248,248,250,.85)', backdropFilter: isGaf ? 'none' : 'blur(8px)'}}>
+      <div className="text-center">
+        <div className="w-10 h-10 rounded-full spinner mx-auto mb-4" style={{borderTopColor: b.primary, borderWidth: '2px', borderStyle: 'solid', borderColor: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb', borderTopColor: b.primary}} />
+        {isGaf
+          ? <p className="gaf-section-title" style={{fontSize:'12px',color:'var(--gaf-grey-600)'}}>Pulling fresh data from Meta</p>
+          : <p className="text-sm text-gray-500 font-medium">Pulling fresh data from Meta...</p>
+        }
+      </div>
+    </div>
+  );
+}
+
+// ─── Main App ───
+function App() {
+  const [token, setToken] = useState(localStorage.getItem('meta_ads_token') || DEFAULT_TOKEN);
+  const [brand, setBrand] = useState(localStorage.getItem('meta_ads_brand') || 'gaf');
+  const [tab, setTab] = useState('overview');
+  const [datePreset, setDatePreset] = useState('last_30d');
+  const [customDates, setCustomDates] = useState({ since: '', until: '' });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
+  const [lastRefresh, setLastRefresh] = useState(null);
+  const [attrWindow, setAttrWindow] = useState('7d_click');
+  const [organicData, setOrganicData] = useState(null);
+  const [organicLoading, setOrganicLoading] = useState(false);
+
+  const b = BRANDS[brand];
+
+  const handleBrandSwitch = (newBrand) => {
+    setBrand(newBrand);
+    localStorage.setItem('meta_ads_brand', newBrand);
+    setData(null);
+    setOrganicData(null);
+  };
+
+  const loadOrganic = useCallback(async () => {
+    if (!token) return;
+    setOrganicLoading(true);
+    try {
+      const { since, until } = getDateRange(datePreset, customDates);
+      if (!since || !until) return;
+      const { igId, pageId } = BRANDS[brand];
+      const result = await fetchOrganicData(igId, pageId, since, until, token);
+      setOrganicData(result);
+    } catch (err) {
+      console.error('Organic fetch error:', err.message);
+    } finally {
+      setOrganicLoading(false);
+    }
+  }, [token, brand, datePreset, customDates]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('meta_ads_token');
+    setToken('');
+    setData(null);
+  };
+
+  const fetchData = useCallback(async () => {
+    if (!token) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const { since, until } = getDateRange(datePreset, customDates);
+      if (!since || !until) { setError('Please select valid dates'); setLoading(false); return; }
+      const accountId = BRANDS[brand].accountId;
+      const comp = getComparisonRange(since, until);
+
+      const isLongRange = datePreset === 'last_12m' || datePreset === 'last_90d';
+      const dailyIncrement = isLongRange ? 'monthly' : 1;
+
+      const aw = attrWindow;
+      const [campaignInsights, adsetInsights, adInsights, dailyInsights, compInsights, campaignMeta, videoInsights, breakdownAge, breakdownGender, breakdownPlatform, breakdownPosition, breakdownCountry] = await Promise.all([
+        fetchInsights(accountId, 'campaign', since, until, token, aw),
+        fetchInsights(accountId, 'adset', since, until, token, aw).catch(() => []),
+        fetchInsights(accountId, 'ad', since, until, token, aw).catch(() => []),
+        fetchDailyInsights(accountId, since, until, token, dailyIncrement, aw),
+        fetchInsights(accountId, 'campaign', comp.since, comp.until, token, aw).catch(() => []),
+        fetchCampaignMeta(accountId, token).catch(() => []),
+        fetchVideoInsights(accountId, since, until, token, aw).catch(() => []),
+        fetchBreakdownInsights(accountId, since, until, token, 'age', aw).catch(() => []),
+        fetchBreakdownInsights(accountId, since, until, token, 'gender', aw).catch(() => []),
+        fetchBreakdownInsights(accountId, since, until, token, 'publisher_platform', aw).catch(() => []),
+        fetchBreakdownInsights(accountId, since, until, token, 'publisher_platform,platform_position', aw).catch(() => []),
+        fetchBreakdownInsights(accountId, since, until, token, 'region', aw).catch(() => []),
+      ]);
+
+      const adIds = [...new Set(adInsights.map(r => r.ad_id).filter(Boolean))];
+      const adsCreatives = await fetchAdsCreatives(adIds, token);
+
+      setData({ campaignInsights, adsetInsights, adInsights, adsCreatives, dailyInsights, compInsights, campaignMeta, videoInsights, breakdownAge, breakdownGender, breakdownPlatform, breakdownPosition, breakdownRegion: breakdownCountry });
+      setLastRefresh(new Date());
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [token, brand, datePreset, customDates, attrWindow]);
+
+  useEffect(() => {
+    if (token) fetchData();
+  }, [brand]);
+
+  useEffect(() => {
+    if (token && !data && !loading) fetchData();
+  }, [token]);
+
+  useEffect(() => {
+    if (token && data) fetchData();
+  }, [datePreset]);
+
+  useEffect(() => {
+    if (token && data) fetchData();
+  }, [attrWindow]);
+
+  useEffect(() => {
+    if (token && data && datePreset === 'custom' && customDates.since && customDates.until) fetchData();
+  }, [customDates.since, customDates.until]);
+
+  useEffect(() => {
+    if (tab === 'organic' && token && !organicData && !organicLoading) loadOrganic();
+  }, [tab]);
+
+  useEffect(() => {
+    if (tab === 'organic' && token) { setOrganicData(null); }
+  }, [brand, datePreset]);
+
+  if (!token) return <TokenScreen onSave={setToken} brand={brand} />;
+
+  const tabs = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'campaigns', label: 'Campaigns' },
+    { id: 'adsets', label: 'Ad Sets' },
+    { id: 'creative', label: 'Creative Performance (Ads)' },
+    { id: 'video', label: 'Video Performance' },
+    { id: 'breakdowns', label: 'Breakdowns' },
+    { id: 'organic', label: '📸 Organic' },
+  ];
+
+  const attrOptions = [
+    { value: '7d_click', label: '7-day click' },
+    { value: '1d_click', label: '1-day click' },
+    { value: '28d_click', label: '28-day click' },
+    { value: '7d_view', label: '7-day view' },
+    { value: '1d_view', label: '1-day view' },
+  ];
+
+  const dateOptions = [
+    { value: 'today', label: 'Today' },
+    { value: 'yesterday', label: 'Yesterday' },
+    { value: 'last_7d', label: 'Last 7 Days' },
+    { value: 'last_14d', label: 'Last 14 Days' },
+    { value: 'last_30d', label: 'Last 30 Days' },
+    { value: 'last_90d', label: 'Last 90 Days' },
+    { value: 'this_month', label: 'This Month' },
+    { value: 'last_month', label: 'Last Month' },
+    { value: 'last_12m', label: 'Last 12 Months' },
+    { value: 'custom', label: 'Custom Range' },
+  ];
+
+  const isGaf = brand === 'gaf';
+
+  return (
+    <div className="min-h-screen" data-brand={brand} style={{background: isGaf ? 'var(--gaf-grey-50)' : '#f8f8fa'}}>
+      {loading && <LoadingOverlay brand={brand} />}
+
+      {/* Header */}
+      {isGaf ? (
+        <header className="gaf-header sticky top-0 z-40">
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-6">
+            <div className="flex items-center justify-between h-14 sm:h-16">
+              <div className="flex items-center gap-4">
+                <img src={b.logo} alt={b.name} className="h-5 sm:h-6 w-auto object-contain" style={{filter:'brightness(0) invert(1)'}} />
+                <div className="h-5 w-px hidden sm:block" style={{background:'rgba(255,255,255,.15)'}} />
+                <span className="gaf-header-title hidden sm:block">Social Performance</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="gaf-brand-toggle-wrap">
+                  {Object.entries(BRANDS).map(([key]) => (
+                    <button
+                      key={key}
+                      onClick={() => handleBrandSwitch(key)}
+                      className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider transition-all ${brand === key ? 'gaf-brand-active' : 'gaf-brand-inactive'}`}
+                      style={{fontFamily:'Montserrat,sans-serif'}}
+                    >
+                      {key === 'gaf' ? 'GAF' : 'Revel'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+      ) : (
+        <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md" style={{boxShadow: '0 1px 3px rgba(0,0,0,.08)'}}>
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-6">
+            <div className="flex items-center justify-between h-14 sm:h-16">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <img src={b.logoDark} alt={b.name} className="h-5 sm:h-7 w-auto object-contain" />
+                <div className="h-5 w-px bg-gray-200 hidden sm:block" />
+                <h1 className="font-display text-sm sm:text-base font-bold text-gray-900 hidden sm:block">Social Performance</h1>
+              </div>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="flex rounded-lg overflow-hidden border" style={{borderColor: '#e5e7eb'}}>
+                  {Object.entries(BRANDS).map(([key, val]) => (
+                    <button
+                      key={key}
+                      onClick={() => handleBrandSwitch(key)}
+                      className="px-2.5 sm:px-3.5 py-1 sm:py-1.5 text-xs font-semibold uppercase tracking-wider transition-all"
+                      style={{
+                        backgroundColor: brand === key ? b.primary : 'transparent',
+                        color: brand === key ? '#fff' : '#6b7280',
+                      }}
+                    >
+                      {key === 'gaf' ? 'GAF' : 'Revel'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+      )}
+
+      {/* Controls Bar */}
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-6 mt-4 sm:mt-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          {/* Tabs */}
+          {isGaf ? (
+            <nav className="flex items-center gap-1 overflow-x-auto scrollbar-thin bg-white rounded-md p-1" style={{border:'1px solid var(--gaf-grey-200)',boxShadow:'var(--gaf-shadow-sm)'}}>
+              {tabs.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[11px] font-bold whitespace-nowrap transition-all ${tab === t.id ? 'gaf-tab-active' : 'gaf-tab-inactive'}`}
+                  style={{fontFamily:'Montserrat,sans-serif',textTransform:'uppercase',letterSpacing:'0.05em'}}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </nav>
+          ) : (
+            <nav className="flex items-center gap-1 overflow-x-auto scrollbar-thin bg-white rounded-xl p-1" style={{boxShadow: '0 1px 2px rgba(0,0,0,.04)', border: '1px solid rgba(0,0,0,.04)'}}>
+              {tabs.map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => setTab(t.id)}
+                  className="px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold rounded-lg whitespace-nowrap transition-all"
+                  style={{
+                    backgroundColor: tab === t.id ? b.primary : 'transparent',
+                    color: tab === t.id ? '#ffffff' : '#6b7280',
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </nav>
+          )}
+
+          {/* Attribution + Date + Refresh */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <select
+              value={attrWindow}
+              onChange={e => setAttrWindow(e.target.value)}
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border rounded-lg bg-white focus:outline-none"
+              style={{borderColor: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb'}}
+              title="Attribution window"
+            >
+              {attrOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+            <div className="h-4 w-px hidden sm:block" style={{background: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb'}} />
+            <select
+              value={datePreset}
+              onChange={e => setDatePreset(e.target.value)}
+              className="px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm border rounded-lg bg-white focus:outline-none flex-1 sm:flex-none"
+              style={{borderColor: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb'}}
+            >
+              {dateOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
+            </select>
+
+            {datePreset === 'custom' && (
+              <div className="flex items-center gap-1">
+                <input
+                  type="date"
+                  value={customDates.since}
+                  onChange={e => setCustomDates(p => ({...p, since: e.target.value}))}
+                  className="px-1.5 sm:px-2 py-1.5 text-xs sm:text-sm border rounded-lg w-28 sm:w-auto"
+                  style={{borderColor: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb'}}
+                />
+                <span className="text-xs" style={{color: isGaf ? 'var(--gaf-grey-500)' : '#9ca3af'}}>to</span>
+                <input
+                  type="date"
+                  value={customDates.until}
+                  onChange={e => setCustomDates(p => ({...p, until: e.target.value}))}
+                  className="px-1.5 sm:px-2 py-1.5 text-xs sm:text-sm border rounded-lg w-28 sm:w-auto"
+                  style={{borderColor: isGaf ? 'var(--gaf-grey-200)' : '#e5e7eb'}}
+                />
+              </div>
+            )}
+
+            {isGaf ? (
+              <button
+                onClick={() => { if (tab === 'organic') { setOrganicData(null); setTimeout(loadOrganic, 50); } else { fetchData(); } }}
+                disabled={loading || organicLoading}
+                className="gaf-btn"
+              >
+                {Icons.refresh}
+                Refresh
+              </button>
+            ) : (
+              <button
+                onClick={() => { if (tab === 'organic') { setOrganicData(null); setTimeout(loadOrganic, 50); } else { fetchData(); } }}
+                disabled={loading || organicLoading}
+                className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-semibold text-white rounded-lg transition-all hover:opacity-90 disabled:opacity-50"
+                style={{backgroundColor: b.primary}}
+              >
+                {Icons.refresh}
+                Refresh
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Error Banner */}
+      {error && (
+        <div className="max-w-[1600px] mx-auto px-4 sm:px-6 mt-4">
+          <div className="dash-card px-4 py-3 flex items-center justify-between" style={{background:'#F8E3DE', border: isGaf ? '1px solid #F0C9BE' : undefined}}>
+            <span className="text-sm" style={{color:'#C23B22'}}>{error}</span>
+            <button onClick={() => setError(null)} className="text-sm" style={{color:'#C23B22', opacity:.6}}>Dismiss</button>
+          </div>
+        </div>
+      )}
+
+      {/* Last Refreshed */}
+      {lastRefresh && (
+        <div className="max-w-[1600px] mx-auto px-3 sm:px-6 mt-2 sm:mt-3">
+          <p className="text-[10px] sm:text-xs" style={{color: isGaf ? 'var(--gaf-grey-500)' : '#9ca3af', fontFamily: isGaf ? 'Open Sans,sans-serif' : undefined}}>
+            Last refreshed: {lastRefresh.toLocaleTimeString()} ({getDateRange(datePreset, customDates).since} to {getDateRange(datePreset, customDates).until}) &middot; Attribution: {attrOptions.find(o => o.value === attrWindow)?.label}
+          </p>
+        </div>
+      )}
+
+      {/* Content */}
+      <main className="max-w-[1600px] mx-auto px-3 sm:px-6 py-4 sm:py-6">
+        {!data && !loading && !error && (
+          <div className="text-center py-20 text-gray-400">
+            <p className="text-sm">Click Refresh to pull data</p>
+          </div>
+        )}
+        {tab === 'overview' && data && <OverviewTab data={data} brand={brand} datePreset={datePreset} />}
+        {tab === 'campaigns' && data && <CampaignsTab data={data} brand={brand} />}
+        {tab === 'adsets' && data && <AdSetsTab data={data} brand={brand} />}
+        {tab === 'creative' && data && <CreativeTab data={data} brand={brand} />}
+        {tab === 'video' && data && <VideoTab data={data} brand={brand} />}
+        {tab === 'breakdowns' && data && <BreakdownsTab data={data} brand={brand} />}
+        {tab === 'organic' && <OrganicTab organicData={organicData} organicLoading={organicLoading} brand={brand} datePreset={datePreset} />}
+      </main>
+
+      {/* Footer */}
+      {isGaf ? (
+        <footer className="py-4 mt-8" style={{borderTop:'1px solid var(--gaf-grey-200)'}}>
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-[11px]" style={{color:'var(--gaf-grey-500)',fontFamily:'Open Sans,sans-serif',textTransform:'uppercase',letterSpacing:'0.06em'}}>Paid: Meta Marketing API v21.0 &middot; Organic: Instagram Graph API v21.0</span>
+            <span className="text-[10px] sm:text-[11px]" style={{color:'var(--gaf-grey-500)',fontFamily:'Open Sans,sans-serif',textTransform:'uppercase',letterSpacing:'0.06em'}}>Token stored locally only</span>
+          </div>
+        </footer>
+      ) : (
+        <footer className="py-3 sm:py-4 mt-6 sm:mt-8">
+          <div className="max-w-[1600px] mx-auto px-3 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-1">
+            <span className="text-[10px] sm:text-xs text-gray-300">Paid data: Meta Marketing API v21.0 · Organic data: Instagram Graph API v21.0</span>
+            <span className="text-[10px] sm:text-xs text-gray-300">Token stored locally in browser only</span>
+          </div>
+        </footer>
+      )}
+    </div>
+  );
+}
+
+// ─── Mount ───
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+
+</script>
+</body>
+</html>

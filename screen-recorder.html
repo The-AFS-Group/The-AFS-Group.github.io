@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>AFS Screen Recorder | The AFS Group</title>
+<link rel="icon" type="image/png" href="images/afs-group-icon-orange.png">
+<link rel="apple-touch-icon" href="images/afs-group-icon-orange.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2a44; --off-white:#edeae3; --orange:#f26422;
+    --mgrey:#424242; --dgrey:#232323; --white:#fff;
+    --line:#dcd8cf; --muted:#6f6a61;
+    --good-soft:#e7f1ea; --warn-soft:#fdeee4; --info-soft:#e7edf3;
+    --code-bg:#0e2a44; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--off-white);color:var(--dgrey);
+    font-family:'Lato',Tahoma,sans-serif;line-height:1.62;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',Tahoma,sans-serif;color:var(--navy);margin:0}
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px 60px}
+  .topbar{background:var(--white);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+  .topbar img{height:34px;display:block}
+  .topbar .tag{font-family:'Archivo';font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+  header.hero{position:relative;background:var(--navy);color:#fff;padding:52px 0 44px;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-60px;bottom:-70px;width:240px;height:240px;
+    background:var(--orange);opacity:.13;clip-path:polygon(100% 0,0 100%,100% 100%)}
+  .hero .wrap{padding-bottom:0;position:relative;z-index:1}
+  .eyebrow{font-family:'Archivo';text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:700;color:var(--orange);margin:0 0 12px}
+  .hero h1{color:#fff;font-size:31px;line-height:1.18;font-weight:800;margin:0 0 12px}
+  .hero p{margin:0 0 22px;color:#cdd6e0;font-size:16.5px;max-width:62ch}
+  .jump{display:flex;flex-wrap:wrap;gap:10px}
+  .jump a{font-family:'Archivo';font-size:13px;font-weight:700;text-decoration:none;color:#fff;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px}
+  .jump a:hover{background:var(--orange);border-color:var(--orange)}
+  .part{margin:40px 0 4px;padding:0}
+  .part .wrap{padding-bottom:0}
+  .part-label{font-family:'Archivo';font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:0 0 4px}
+  .part h2.part-title{font-size:25px;font-weight:800;margin:0;padding-bottom:10px;border-bottom:3px solid var(--orange);display:inline-block}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 28px;margin:20px 0;box-shadow:0 1px 3px rgba(14,42,68,.05)}
+  h2{font-size:20px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .n{width:27px;height:27px;border-radius:7px;background:var(--orange);color:#fff;font-size:14px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-family:'Archivo'}
+  h3{font-size:14.5px;margin:20px 0 6px;font-weight:700;color:var(--mgrey)}
+  p{margin:0 0 12px}
+  .lead{font-size:16px;color:var(--mgrey)}
+  ul,ol{margin:0 0 6px;padding-left:22px}
+  li{margin:7px 0}
+  code{background:#f1eee8;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--navy)}
+  pre{background:var(--code-bg);color:#e7eefc;border-radius:10px;padding:15px 16px;overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.8px;line-height:1.55;margin:10px 0}
+  pre .c{color:#8aa0b6}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:8px 0 0}
+  .steps li{counter-increment:step;position:relative;padding:0 0 16px 46px;margin:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:-2px;width:30px;height:30px;
+    border-radius:50%;background:var(--orange);color:#fff;font-family:'Archivo';font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center}
+  .steps li:not(:last-child)::after{content:"";position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--line)}
+  .note{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:14.5px;border:1px solid}
+  .note.good{background:var(--good-soft);border-color:#bfddcc;color:#155c40}
+  .note.warn{background:var(--warn-soft);border-color:#f6cbb0;color:#a8430f}
+  .note.info{background:var(--info-soft);border-color:#c5d2df;color:#1d3b59}
+  .note strong{font-weight:700}
+  .pill{display:inline-block;background:var(--info-soft);color:var(--navy);border-radius:999px;
+    padding:2px 11px;font-family:'Archivo';font-size:12px;font-weight:700;margin-left:6px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:'Archivo';color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td code{font-size:12.5px}
+  .ex{background:#f6f4ef;border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-style:italic;color:var(--mgrey)}
+  details{border:1px solid var(--line);border-radius:10px;padding:4px 16px;margin:12px 0;background:#faf9f5}
+  summary{cursor:pointer;font-weight:700;padding:10px 0;color:var(--mgrey)}
+  .kbd{font-size:13px;color:var(--muted)}
+  .diagram{margin:6px 0 2px}
+  .row{display:flex;align-items:center;gap:14px}
+  .box{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;background:#faf9f5}
+  .box .t{font-family:'Archivo';font-weight:700;font-size:14.5px;margin-bottom:2px;color:var(--navy)}
+  .box .s{font-size:12.5px;color:var(--muted)}
+  .box.client{border-color:#c5d2df;background:var(--info-soft)}
+  .box.worker{border-color:#f6cbb0;background:var(--warn-soft)}
+  .box.shop{border-color:#cfe0d6;background:var(--good-soft)}
+  .arrow{display:flex;flex-direction:column;align-items:center;color:var(--muted);font-size:12px;flex:0 0 auto}
+  .arrow .line{font-size:20px;line-height:1;color:var(--orange)}
+  .tagchip{background:#f1eee8;border:1px solid var(--line);color:var(--navy);border-radius:999px;padding:3px 11px;font-family:'Archivo';font-size:12px;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  .dl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;
+    font-family:'Archivo';font-weight:700;font-size:15px;text-decoration:none;
+    padding:12px 24px;border-radius:10px;margin:12px 0 4px;transition:background .15s}
+  .dl-btn:hover{background:#d9571b}
+  .dl-btn svg{width:20px;height:20px;fill:currentColor}
+  footer{background:var(--navy);color:#c3ccd6;font-size:13px;text-align:center;padding:26px 20px;margin-top:40px;line-height:1.7}
+  footer a{color:#fff}
+  .counter-band{background:var(--navy);border-top:1px solid rgba(255,255,255,.08);color:#fff;text-align:center;padding:22px 20px}
+  .counter-band .num{font-family:'Archivo';font-weight:800;font-size:42px;color:var(--orange);line-height:1;display:block}
+  .counter-band .lbl{font-size:14px;color:#cdd6e0;margin-top:6px;display:block;letter-spacing:.02em}
+  @media(max-width:560px){.row{flex-direction:column}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
+  <span class="tag">Internal Tool</span>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">The AFS Group</p>
+    <h1>AFS Screen Recorder</h1>
+    <p>Loom-style screen recording. Records locally, share via Google Drive.</p>
+    <nav class="jump">
+      <a href="#install">Install &amp; use</a>
+      <a href="#tech">How it works</a>
+      <a href="#download-section">Download</a>
+    </nav>
+  </div>
+</header>
+
+<div class="counter-band">
+  <span class="num" id="recCount">0</span>
+  <span class="lbl">Team Videos Created</span>
+</div>
+
+<!-- ============ PART 1 ============ -->
+<section class="part" id="install"><div class="wrap">
+  <p class="part-label">Part 1</p>
+  <h2 class="part-title">Install &amp; use</h2>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>What this is</h2>
+    <p class="lead">A Chrome extension for the AFS team that records your screen, webcam, and microphone into one video. A single draggable webcam head sits on the page - drag it wherever you like and that is exactly where it appears in the recording. A slim recorder toolbar, plus the extension icon itself, gives you pause and stop at any time. Recordings are saved locally to your machine. To share, drag the file into Google Drive and copy the link.</p>
+    <table>
+      <tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>Camera</td><td>A live webcam head you drag onto the page; filmed in place. Pick which camera in the popup.</td></tr>
+      <tr><td>Audio</td><td>Microphone captured with the screen. Pick which mic in the popup.</td></tr>
+      <tr><td>Controls</td><td>Pause and stop from the buttons on your webcam head (faint until you hover, then solid), the slim toolbar, or the extension icon. A 3-2-1 countdown before recording.</td></tr>
+      <tr><td>Cursor highlight</td><td>A red spotlight that follows your mouse, so viewers can see where you are pointing. Toggle it on or off with the <strong>Cursor</strong> button on the webcam head.</td></tr>
+      <tr><td>Output</td><td><code>.webm</code> file saved to your Downloads folder</td></tr>
+      <tr><td>Sharing</td><td>Drag the file into Google Drive for a shareable link</td></tr>
+      <tr><td>Cost</td><td>Zero. No servers, no accounts, no subscriptions</td></tr>
+    </table>
+  </div>
+
+  <div class="card" id="download-section">
+    <h2>Download</h2>
+    <p>Grab the extension zip below.</p>
+    <a class="dl-btn" href="screen-recorder-extension.zip" download>
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Download AFS Screen Recorder
+    </a>
+    <p class="kbd" style="margin-top:8px">screen-recorder-extension.zip</p>
+  </div>
+
+  <div class="card">
+    <h2>Install on Chrome / Chromebook</h2>
+    <ol class="steps">
+      <li>Download the zip above and unzip it. You should get a folder with <code>manifest.json</code>, a <code>src/</code> folder, and an <code>icons/</code> folder directly inside (no nested subfolder). On ChromeOS, open <strong>Files</strong>, find the zip, right-click and choose <strong>Extract</strong>.</li>
+      <li><strong>Move the unzipped folder somewhere permanent</strong> before loading it into Chrome. Chrome reads the extension files directly from the folder you point it at - it does not copy them. If that folder gets deleted or cleaned up, the extension breaks.<br><br>
+        <strong>Where to put it:</strong><br>
+        <strong>ChromeOS / Chromebook:</strong> Open <strong>Files</strong>, go to <strong>My Files</strong>, and create a folder called <strong>Extensions</strong>. Move the unzipped folder there so the path is <code>My Files &rsaquo; Extensions &rsaquo; AFS Screen Recorder</code>. Do not leave it in Downloads - ChromeOS can clean that folder out automatically.<br>
+        <strong>Mac:</strong> Move it to your home folder, e.g. <code>~/AFS Screen Recorder</code>.<br>
+        <strong>Windows:</strong> Move it to <code>Documents\AFS Screen Recorder</code>.</li>
+      <li>Open Chrome and go to <strong><code>chrome://extensions</code></strong>.</li>
+      <li>Turn on <strong>Developer mode</strong> using the toggle in the top-right corner.</li>
+      <li>Click <strong>Load unpacked</strong> (top-left) and select the unzipped folder - the one containing <code>manifest.json</code>. On ChromeOS, you can also drag the folder directly onto the extensions page.</li>
+      <li>The <strong>AFS Screen Recorder</strong> tile appears. Click the puzzle-piece icon in the toolbar and pin it so it's always visible.</li>
+    </ol>
+    <div class="note warn"><strong>On a Mac, grant Screen Recording once.</strong> macOS requires it before Chrome can capture. Open <strong>System Settings &rarr; Privacy &amp; Security &rarr; Screen Recording</strong>, tick <strong>Google Chrome</strong>, then relaunch Chrome. Without this, recordings come out blank. Windows needs no such step.</div>
+    <div class="note info"><strong>Reload your tabs once after installing.</strong> The on-page webcam head only appears on pages opened or reloaded after the extension is installed. Open a fresh tab, or reload the page you want to record.</div>
+  </div>
+
+  <div class="card">
+    <h2>How to record</h2>
+    <ol class="steps">
+      <li>Click the <strong>AFS Screen Recorder</strong> icon in the Chrome toolbar.</li>
+      <li>Pick your <strong>Camera</strong> and <strong>Microphone</strong>: toggle each on or off, and choose the device from the dropdowns. If the device names are blank the first time, click <strong>Allow camera &amp; mic to list devices</strong>. Your choices are remembered.</li>
+      <li>Click <strong>Start Recording</strong>.</li>
+      <li>A large <strong>Choose what to record</strong> window opens. Chrome asks what to capture - choose a <strong>screen</strong>, <strong>window</strong>, or <strong>tab</strong>, then click <strong>Share</strong>. The big window shrinks to a small toolbar the moment you choose. Tip: choose a window or tab to keep the little controls toolbar out of the video.</li>
+      <li>A <strong>3-2-1 countdown</strong> plays, then recording begins. Your <strong>webcam head</strong> appears on the page - drag it wherever you want and that is exactly where it sits in the video.</li>
+      <li>Pause or stop anytime from the buttons beneath your <strong>webcam head</strong> (faint until you hover over the head, then solid), or use the slim <strong>recorder toolbar</strong> or the <strong>extension icon</strong> (handy if the toolbar gets buried behind other windows). Chrome's native <strong>Stop sharing</strong> bar also ends it cleanly.</li>
+      <li>Want to point things out? Hit the <strong>Cursor</strong> button on the webcam head to switch on a red spotlight that follows your mouse, so viewers can see exactly where you are pointing. Hit it again to turn it off.</li>
+      <li>A result page opens automatically. Click <strong>Download</strong> to save the <code>.webm</code> file, or click <strong>Open My Drive</strong> to go to Google Drive and drag the file in for a shareable link.</li>
+    </ol>
+    <div class="note info"><strong>First time on a website.</strong> Chrome asks for camera permission so the head can show on that page. Click <strong>Allow</strong> once and it is remembered for that site.</div>
+  </div>
+
+  <div class="card">
+    <h2>Troubleshooting</h2>
+    <h3>The webcam head does not appear on some pages</h3>
+    <p>Chrome does not allow extensions to inject onto <code>chrome://</code> pages, the Chrome Web Store, or the built-in PDF viewer, so the head cannot show there. Also note the head only appears on pages opened or reloaded after the extension was installed - reload the tab if it is missing. Screen recording itself still works regardless; use the recorder toolbar or the extension icon to control it.</p>
+    <h3>My webcam is not in the recording</h3>
+    <p>When you first click Start Recording, Chrome will prompt for camera permission. Click <strong>Allow</strong>. If you previously dismissed or blocked the prompt, click the lock or tune icon in the address bar, find Camera, set it to <strong>Allow</strong>, and reload the page before trying again.</p>
+    <h3>"Your file couldn't be accessed" / ERR_FILE_NOT_FOUND</h3>
+    <p>Chrome reads the extension directly from the folder you selected during install. If that folder was moved, renamed, or deleted (common if it was left in Downloads), Chrome can no longer find the files. To fix: go to <strong><code>chrome://extensions</code></strong>, find AFS Screen Recorder, and click the <strong>reload</strong> button (circular arrow). If the folder is gone entirely, re-download the zip, unzip it to a permanent location (see install step 2), remove the broken extension, and load it fresh.</p>
+    <h3>The video will not play in some apps</h3>
+    <p>The recording is saved as a <code>.webm</code> file. It plays natively in Chrome and in Google Drive's built-in player. If another app cannot open it, upload it to Google Drive and play it there, or share the Drive link directly.</p>
+    <details>
+      <summary>Still stuck?</summary>
+      <p>Message Gary or Josh and we will sort it out.</p>
+    </details>
+  </div>
+
+</div>
+
+<!-- ============ PART 2 ============ -->
+<section class="part" id="tech"><div class="wrap">
+  <p class="part-label">Part 2</p>
+  <h2 class="part-title">How it works</h2>
+  <div class="chips">
+    <span class="tagchip">Chrome Extension (MV3)</span>
+    <span class="tagchip">MediaRecorder</span>
+    <span class="tagchip">desktopCapture</span>
+    <span class="tagchip">Content Script</span>
+    <span class="tagchip">IndexedDB</span>
+  </div>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="n">1</span> Architecture</h2>
+    <div class="diagram">
+      <div class="row">
+        <div class="box client"><div class="t">Popup (icon)</div><div class="s">device pickers + live pause/stop controls</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>opens</span></div>
+        <div class="box worker"><div class="t">Recorder Window</div><div class="s">opens the screen picker, records the chosen surface + mic with MediaRecorder</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>flags</span></div>
+        <div class="box shop"><div class="t">Content Script</div><div class="s">draggable webcam head on the page, filmed in place</div></div>
+      </div>
+    </div>
+    <p style="margin-top:16px">Manifest V3, with no background service worker. A slim recorder window does the actual capture (a normal window is the only context allowed to open the screen picker) and records the chosen surface directly. A content script paints the single draggable webcam head onto the page, which the screen capture films in place. The finished video is handed to the result page through IndexedDB, and pause/stop travel between the popup and the recorder window via a small storage flag.</p>
+    <table>
+      <tr><th>File</th><th>Role</th></tr>
+      <tr><td><code>manifest.json</code></td><td>Permissions (<code>desktopCapture</code>, <code>storage</code>) and content script registration</td></tr>
+      <tr><td><code>src/popup.html/js</code></td><td>Setup (camera/mic device pickers) and live recording controls on the icon</td></tr>
+      <tr><td><code>src/recorder.html/js</code></td><td>Slim toolbar window - opens the screen picker, records screen + mic, saves the video</td></tr>
+      <tr><td><code>src/content.js/css</code></td><td>Injects the single draggable webcam head onto the page</td></tr>
+      <tr><td><code>src/result.html/js</code></td><td>Post-recording page: inline preview, download button, Drive link</td></tr>
+      <tr><td><code>src/lib/</code></td><td>Shared utilities: MIME detection, filename generation, IndexedDB recording store</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span> Footprint and cost</h2>
+    <p>Effectively zero. The extension records fully locally with no accounts or API keys and nothing to pay for. Network activity is limited to two things: the Google Drive tab that opens when you choose to share (your own Drive), and a single anonymous <code>+1</code> sent to a tiny usage counter when you save a recording - that is what powers the team tally at the top of this page. No identity, no content, just a number. The counter runs on a small Cloudflare Worker, free tier.</p>
+    <div class="note good"><strong>No ongoing cost.</strong> Unlike Loom or similar tools, there is no monthly fee, no storage limit, and no third-party data handling.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span> Privacy and security</h2>
+    <ul>
+      <li>Recordings never leave your machine unless you explicitly upload them.</li>
+      <li>The extension stores nothing remotely and has no backend of any kind.</li>
+      <li>Camera and microphone are captured and recorded entirely in the browser.</li>
+      <li>The one thing the extension sends out is an anonymous <code>+1</code> to the team usage counter when you save a recording - no account, no identity, no video, just a tally.</li>
+      <li>Sharing is a deliberate manual step - drag the file into Drive yourself.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span> Limitations</h2>
+    <ul>
+      <li>The webcam head overlays web pages only, not native desktop apps or <code>chrome://</code> pages. If you record a non-browser app, the head will not appear in that part of the video.</li>
+      <li>Recording the whole screen also films the small controls toolbar. Record a specific tab or window to keep it out of the video.</li>
+      <li>The first time the head appears on a website, Chrome asks for camera permission for that page. Tabs opened before installing the extension need one reload before the head shows.</li>
+      <li>On macOS, Chrome needs Screen Recording permission (System Settings &rarr; Privacy &amp; Security &rarr; Screen Recording) or recordings come out blank.</li>
+      <li>Output format is <code>.webm</code>. It plays in Chrome and Google Drive. For other apps, upload to Drive and use the Drive player or shareable link.</li>
+      <li>Sharing requires a manual drag into Google Drive. There is no one-click "copy link" built in.</li>
+      <li>Internal AFS use only. Not published to the Chrome Web Store.</li>
+    </ul>
+  </div>
+
+</div>
+<footer>
+  The AFS Group &middot; AFS Screen Recorder v0.5.6 &middot; Built 24 Jun 2026, updated 1 Jul 2026 &middot; Managed by Josh / Gary<br>
+  Questions &rarr; <a href="mailto:josh@gymandfitness.com.au">josh@gymandfitness.com.au</a>
+</footer>
+<script>
+(function () {
+  var el = document.getElementById('recCount');
+  fetch('https://afs-recorder-counter.josh-03c.workers.dev/count')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      var target = d.count || 0, t0 = null, dur = 1200;
+      function step(ts) {
+        if (!t0) t0 = ts;
+        var p = Math.min((ts - t0) / dur, 1);
+        var v = Math.floor(target * (1 - Math.pow(1 - p, 3)));
+        el.textContent = v.toLocaleString();
+        if (p < 1) requestAnimationFrame(step); else el.textContent = target.toLocaleString();
+      }
+      requestAnimationFrame(step);
+    })
+    .catch(function () {
+      var band = el.closest('.counter-band');
+      if (band) band.style.display = 'none';
+    });
+})();
+</script>
+</body>
+</html>

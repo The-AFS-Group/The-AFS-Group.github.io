@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CAO Interview - Josh Hancock</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    @font-face { font-family: 'Geist'; src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2'); font-weight: 400; }
+    @font-face { font-family: 'Geist'; src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2'); font-weight: 500; }
+    @font-face { font-family: 'Geist'; src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; }
+    @font-face { font-family: 'Geist'; src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Bold.woff2') format('woff2'); font-weight: 700; }
+
+    :root {
+      --primary: #EA580C;
+      --primary-hover: #C2410C;
+      --primary-soft: rgba(234,88,12,0.12);
+      --primary-glow: rgba(234,88,12,0.25);
+      --accent: #FDBA74;
+      --surface: #191C21;
+      --surface-raised: #1F2329;
+      --surface-overlay: #262B33;
+      --bg: #0F1114;
+      --bg-alt: #141720;
+      --white: #FFFFFF;
+      --text-1: #F3F4F6;
+      --text-2: #9CA3AF;
+      --text-3: #6B7280;
+      --text-4: #4B5563;
+      --border-1: #2A2F38;
+      --border-2: #374151;
+      --success: #34D399;
+      --success-soft: rgba(52,211,153,0.12);
+
+      --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-body: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+
+      --shadow-sm: 0 2px 8px rgba(0,0,0,.3);
+      --shadow-md: 0 8px 24px rgba(0,0,0,.4);
+      --shadow-lg: 0 16px 48px rgba(0,0,0,.5);
+      --shadow-glow: 0 0 40px rgba(234,88,12,.15);
+
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --dur-base: 200ms;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-snap-type: y mandatory;
+      overflow-y: scroll;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font: 400 16px/1.6 var(--font-body);
+      color: var(--text-1);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .slide {
+      min-height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide-inner {
+      width: 100%;
+      max-width: 1080px;
+      padding: 64px 48px;
+    }
+
+    /* --- NAV --- */
+    .nav-dots { position: fixed; right: 28px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 12px; z-index: 100; }
+    .nav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-2); border: none; cursor: pointer; transition: all var(--dur-base) var(--ease-out); padding: 0; }
+    .nav-dot.active { background: var(--primary); box-shadow: 0 0 8px var(--primary-glow); transform: scale(1.4); }
+    .nav-dot:hover { background: var(--primary-hover); }
+    .slide-counter { position: fixed; bottom: 28px; right: 28px; font: 500 12px/1 var(--font-mono); color: var(--text-3); letter-spacing: 0.06em; z-index: 100; }
+    .slide-counter .current { color: var(--primary); font-size: 16px; font-weight: 700; }
+
+    /* --- TYPOGRAPHY --- */
+    .eyebrow {
+      font: 600 12px/1.2 var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--primary);
+      margin-bottom: 16px;
+      display: inline-block;
+    }
+
+    h1 { font: 500 64px/1.04 var(--font-display); letter-spacing: 0; color: var(--text-1); }
+    h2 { font: 500 40px/1.1 var(--font-display); letter-spacing: -0.01em; margin-bottom: 32px; color: var(--text-1); }
+    h3 { font: 500 20px/1.3 var(--font-display); margin-bottom: 12px; color: var(--text-1); }
+    h4 { font: 500 17px/1.35 var(--font-display); margin-bottom: 8px; color: var(--text-1); }
+
+    .subtitle { font: 400 18px/1.6 var(--font-body); color: var(--text-2); max-width: 640px; }
+    .big-number { font: 700 72px/1 var(--font-display); color: var(--primary); letter-spacing: -0.03em; }
+    .big-number-label { font: 500 12px/1.2 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3); margin-top: 8px; }
+
+    /* --- CARDS --- */
+    .card {
+      background: var(--surface-raised);
+      border: 1px solid var(--border-1);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      transition: all var(--dur-base) var(--ease-out);
+    }
+    .card:hover { border-color: var(--border-2); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+
+    /* --- GRID --- */
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+    .grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+
+    /* --- PILLS --- */
+    .pill { display: inline-block; font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; padding: 5px 12px; border-radius: 9999px; margin: 0 6px 8px 0; }
+    .pill-orange { background: var(--primary-soft); color: var(--primary); }
+    .pill-dark { background: var(--surface-overlay); color: var(--text-2); border: 1px solid var(--border-1); }
+    .pill-outline { background: transparent; color: var(--text-3); border: 1px solid var(--border-2); }
+    .pill-success { background: var(--success-soft); color: var(--success); }
+
+    /* --- INTEGRATION --- */
+    .integration-grid { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+    .integration-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface-raised); border: 1px solid var(--border-1); border-radius: var(--radius-md);
+      padding: 10px 16px; font: 500 12px/1 var(--font-mono); color: var(--text-2);
+    }
+    .integration-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+
+    /* --- SLIDES --- */
+    .slide-title { background: var(--bg); }
+    .slide-title h1 { font-size: 64px; margin-bottom: 20px; }
+    .slide-title h1 span { color: var(--primary); }
+    .slide-title .subtitle { color: var(--text-2); font-size: 20px; }
+
+    .title-meta { margin-top: 48px; display: flex; gap: 40px; }
+    .title-meta-item { font: 400 14px/1.4 var(--font-body); color: var(--text-3); }
+    .title-meta-item strong { display: block; font: 500 15px/1.3 var(--font-display); color: var(--text-1); margin-bottom: 2px; }
+
+    .slide-dark { background: var(--bg); }
+    .slide-alt { background: var(--bg-alt); }
+
+    .slide-dark h2, .slide-dark h3, .slide-dark h4 { color: var(--text-1); }
+    .slide-dark .subtitle { color: var(--text-2); }
+    .slide-alt h2, .slide-alt h3, .slide-alt h4 { color: var(--text-1); }
+
+    /* --- RESPONSIVE --- */
+    @media (max-width: 768px) {
+      .slide-inner { padding: 40px 24px; }
+      h1 { font-size: 36px; }
+      h2 { font-size: 28px; }
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .big-number { font-size: 48px; }
+      .title-meta { flex-direction: column; gap: 16px; }
+      .nav-dots { right: 12px; }
+      .slide-title h1 { font-size: 40px; }
+    }
+
+    /* --- ANIMATIONS --- */
+    .fade-in { opacity: 0; transform: translateY(20px); transition: opacity 0.5s var(--ease-out), transform 0.5s var(--ease-out); }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+    .stagger-1 { transition-delay: 0.1s; }
+    .stagger-2 { transition-delay: 0.2s; }
+    .stagger-3 { transition-delay: 0.3s; }
+    .stagger-4 { transition-delay: 0.4s; }
+  </style>
+</head>
+<body>
+
+  <nav class="nav-dots" id="navDots"></nav>
+  <div class="slide-counter" id="slideCounter"></div>
+
+  <!-- SLIDE 1: TITLE -->
+  <section class="slide slide-title" data-label="Title">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">CAO Partners Interview</span>
+      <h1 class="fade-in stagger-1">Building an AI<br>Operating System<br><span>From the Inside</span></h1>
+      <p class="subtitle fade-in stagger-2">How I built a production AI agent that runs marketing, operations, and strategy across a multi-brand retail group.</p>
+      <div class="title-meta fade-in stagger-3">
+        <div class="title-meta-item">
+          <strong>Josh Hancock</strong>
+          CMO, AFS Group / GAF
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: THESIS -->
+  <section class="slide slide-alt" data-label="Thesis">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">The Thesis</span>
+      <h2 class="fade-in stagger-1">I didn't bolt AI<br>onto existing processes.</h2>
+      <div style="display: flex; gap: 48px; align-items: flex-start; margin-bottom: 48px;" class="fade-in stagger-2">
+        <p class="subtitle" style="font-size: 17px; max-width: 580px; margin: 0;">
+          I rebuilt workflows around an AI-first operating system. A full-time agent named "Gary" that runs 24/7 across every platform we use, with its own accounts, its own memory, and its own governance framework.
+        </p>
+        <div style="flex-shrink: 0; text-align: center;">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/Gary_Profile_Pic.png?v=1776392033" alt="Gary" style="width: 120px; height: 120px; border-radius: 50%; border: 2px solid var(--primary); box-shadow: var(--shadow-glow);">
+          <p style="font: 500 11px/1.2 var(--font-mono); color: var(--text-3); margin-top: 10px; letter-spacing: 0.08em; text-transform: uppercase;">Meet Gary</p>
+        </div>
+      </div>
+      <div class="grid-3 fade-in stagger-3">
+        <div class="card">
+          <h4>Not a Chatbot</h4>
+          <p style="font-size: 14px; color: var(--text-2);">Gary has his own Google Workspace, Asana board, Discord bot, Telegram bot, GitHub account, and email address. He's infrastructure, not a tool.</p>
+        </div>
+        <div class="card">
+          <h4>Not a Pilot</h4>
+          <p style="font-size: 14px; color: var(--text-2);">8 autonomous processes running in production. Email triage every 60 seconds. Nightly memory consolidation. Monthly deep reviews. Real output, not experiments.</p>
+        </div>
+        <div class="card">
+          <h4>Not Consulting</h4>
+          <p style="font-size: 14px; color: var(--text-2);">I built this while running marketing across three brands. The agent exists because a CMO needed more hours in the day and decided to engineer them.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: INTEGRATIONS -->
+  <section class="slide slide-dark" data-label="Integrations">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Connected Systems</span>
+      <h2 class="fade-in stagger-1">One Agent,<br>Every Platform</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 32px;">Gary connects to our full stack via MCP servers and APIs. Each integration is authenticated, production-grade, and actively used daily.</p>
+      <div class="integration-grid fade-in stagger-3">
+        <div class="integration-pill"><span class="dot"></span>Gmail</div>
+        <div class="integration-pill"><span class="dot"></span>Google Calendar</div>
+        <div class="integration-pill"><span class="dot"></span>Google Chat</div>
+        <div class="integration-pill"><span class="dot"></span>Google Docs / Drive</div>
+        <div class="integration-pill"><span class="dot"></span>Asana</div>
+        <div class="integration-pill"><span class="dot"></span>HubSpot CRM</div>
+        <div class="integration-pill"><span class="dot"></span>Shopify (x2)</div>
+        <div class="integration-pill"><span class="dot"></span>NetSuite ERP</div>
+        <div class="integration-pill"><span class="dot"></span>GA4 Analytics</div>
+        <div class="integration-pill"><span class="dot"></span>Meta Ads API</div>
+        <div class="integration-pill"><span class="dot"></span>Google Ads API</div>
+        <div class="integration-pill"><span class="dot"></span>Search Console</div>
+        <div class="integration-pill"><span class="dot"></span>Discord Bot</div>
+        <div class="integration-pill"><span class="dot"></span>Telegram Bot</div>
+        <div class="integration-pill"><span class="dot"></span>GitHub Pages</div>
+        <div class="integration-pill"><span class="dot"></span>Chrome DevTools</div>
+        <div class="integration-pill"><span class="dot"></span>Impact.com</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: SKILLS -->
+  <section class="slide slide-alt" data-label="Skills">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Reusable Skills</span>
+      <h2 class="fade-in stagger-1">24 Packaged<br>Workflows</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 32px;">Every recurring process is codified as a skill. The agent gets better at each task every time it runs, with corrections stored as persistent feedback memory.</p>
+      <div class="grid-2 fade-in stagger-3">
+        <div>
+          <h4 style="margin-bottom: 16px;">Operational Skills (17)</h4>
+          <div>
+            <span class="pill pill-orange">Email Triage</span>
+            <span class="pill pill-orange">Asana Tasks</span>
+            <span class="pill pill-orange">Meeting Prep</span>
+            <span class="pill pill-orange">Session Notes</span>
+            <span class="pill pill-orange">Creative Briefs</span>
+            <span class="pill pill-orange">Content Review</span>
+            <span class="pill pill-orange">Reporting</span>
+            <span class="pill pill-orange">Email Drafting</span>
+            <span class="pill pill-orange">Google Chat Triage</span>
+            <span class="pill pill-orange">Document Ingest</span>
+            <span class="pill pill-orange">Heartbeats</span>
+            <span class="pill pill-orange">Connection Gen</span>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 16px;">Brand Design Skills (7)</h4>
+          <div>
+            <span class="pill pill-dark">GAF Brand Mockup</span>
+            <span class="pill pill-dark">Revel Brand Mockup</span>
+            <span class="pill pill-dark">Force USA Brand Mockup</span>
+            <span class="pill pill-dark">AFS Group Brand</span>
+            <span class="pill pill-dark">HubSpot EDM Builder</span>
+            <span class="pill pill-dark">Monthly Update Deck</span>
+            <span class="pill pill-dark">Shopify Landing Pages</span>
+          </div>
+          <div style="margin-top: 24px; padding: 20px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border-1);">
+            <h4 style="font: 600 11px/1 var(--font-mono); color: var(--text-3); margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.1em;">Persistent Memory</h4>
+            <div style="display: flex; gap: 24px;">
+              <div>
+                <span style="font: 700 32px/1 var(--font-display); color: var(--primary);">40+</span>
+                <span style="display: block; font: 500 10px/1 var(--font-mono); color: var(--text-3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Memory Files</span>
+              </div>
+              <div>
+                <span style="font: 700 32px/1 var(--font-display); color: var(--primary);">5</span>
+                <span style="display: block; font: 500 10px/1 var(--font-mono); color: var(--text-3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Memory Types</span>
+              </div>
+              <div>
+                <span style="font: 700 32px/1 var(--font-display); color: var(--primary);">Nightly</span>
+                <span style="display: block; font: 500 10px/1 var(--font-mono); color: var(--text-3); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.08em;">Auto-Consolidation</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: DASHBOARDS -->
+  <section class="slide slide-dark" data-label="Dashboards">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Production Output</span>
+      <h2 class="fade-in stagger-1">Live Dashboards<br>& Reporting</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 36px;">Built and deployed to GitHub Pages. Pull live data from APIs on load. No manual spreadsheets.</p>
+      <div class="grid-3 fade-in stagger-3" style="gap: 20px;">
+        <div class="card" style="border-top: 2px solid var(--primary);">
+          <span class="pill pill-orange" style="margin-bottom: 12px;">Live</span>
+          <h3 style="font-size: 17px;">Social Performance Dashboard</h3>
+          <p style="font-size: 14px; color: var(--text-2); margin-bottom: 16px;">React 18 single-file app pulling Meta Marketing API + Instagram Graph API. Two brands with live toggle.</p>
+          <div style="font: 400 13px/1.8 var(--font-body); color: var(--text-3);">
+            &bull; 6 tabs (Overview, Campaigns, Ad Sets, Ads, Creative, Organic)<br>
+            &bull; Win / Watch / Waste campaign tiering<br>
+            &bull; Period-over-period deltas on all KPIs<br>
+            &bull; Daily trend charts (SVG)<br>
+            &bull; Scale Winners + Budget at Risk callouts
+          </div>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--primary);">
+          <span class="pill pill-orange" style="margin-bottom: 12px;">Live</span>
+          <h3 style="font-size: 17px;">CAC Attribution Model</h3>
+          <p style="font-size: 14px; color: var(--text-2); margin-bottom: 16px;">Channel-weighted, GA4-validated customer acquisition cost model across both brands. Data that didn't exist before.</p>
+          <div style="font: 400 13px/1.8 var(--font-body); color: var(--text-3);">
+            &bull; True CAC per customer segment<br>
+            &bull; Shopify + HubSpot first-touch attribution<br>
+            &bull; Dark traffic redistribution<br>
+            &bull; Archetype classification from call transcripts<br>
+            &bull; Now drives budget allocation decisions
+          </div>
+        </div>
+        <div class="card" style="border-top: 2px solid var(--primary);">
+          <span class="pill pill-orange" style="margin-bottom: 12px;">Live</span>
+          <h3 style="font-size: 17px;">Customer Intelligence</h3>
+          <p style="font-size: 14px; color: var(--text-2); margin-bottom: 16px;">Archetype deep-dive page built from n=678 customer cohort. JTBD analysis, persona snapshots, strategic recommendations.</p>
+          <div style="font: 400 13px/1.8 var(--font-body); color: var(--text-3);">
+            &bull; Competitor war rooms (HTML intelligence briefs)<br>
+            &bull; Monthly marketing decks (brand-compliant)<br>
+            &bull; HubSpot EDM templates (custom coded)<br>
+            &bull; Shopify landing pages (via API)<br>
+            &bull; Presentation decks across all brands
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: CASE STUDY -->
+  <section class="slide slide-alt" data-label="Case Study">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Real Example</span>
+      <h2 class="fade-in stagger-1" style="margin-bottom: 8px;">From Request to<br>Live Landing Page</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 36px;">A team member @tagged Gary in Asana. Gary built the full Shopify landing page, sent it to me for approval via Discord, and delivered it back ready for review.</p>
+
+      <div class="fade-in stagger-3" style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 0; align-items: start; margin-bottom: 48px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span class="pill pill-orange" style="margin: 0;">Asana</span>
+            <span style="font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3);">The Request</span>
+          </div>
+          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border-1);">
+            <img src="cao-asana-request.png" alt="Asana request" style="width: 100%; display: block;">
+          </div>
+          <p style="font-size: 13px; color: var(--text-3); margin-top: 12px; line-height: 1.5;">
+            Team member @tags Gary in Asana: "Can you take what is on this page and break that out into its own Latitude Finance page?"
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; height: 100%; padding-top: 80px;">
+          <span style="font: 700 20px/1 var(--font-display); color: var(--primary);">&rarr;</span>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span class="pill pill-success" style="margin: 0;">Shopify</span>
+            <span style="font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3);">The Output</span>
+          </div>
+          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border-1); max-height: 400px; overflow-y: auto;">
+            <img src="cao-landing-page.png" alt="Landing page output" style="width: 100%; display: block;">
+          </div>
+          <p style="font-size: 13px; color: var(--text-3); margin-top: 12px; line-height: 1.5;">
+            Full Shopify landing page: hero, cost comparison, 3-step process, finance tiers, value props, FAQ accordion, CTA. All legal T&Cs preserved.
+          </p>
+        </div>
+      </div>
+
+      <div class="fade-in stagger-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">
+            <span class="pill pill-dark" style="margin: 0;">Google Chat</span>
+            <span style="font: 600 10px/1 var(--font-mono); text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-3);">Team Communication</span>
+          </div>
+          <div style="border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); border: 1px solid var(--border-1);">
+            <img src="cao-gchat-example.png" alt="Google Chat post" style="width: 100%; display: block;">
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; height: 100%;">
+          <div>
+            <h4 style="margin-bottom: 12px;">Gary communicates with the team directly</h4>
+            <p style="font-size: 14px; color: var(--text-2); line-height: 1.7; margin-bottom: 16px;">
+              After Josh and Sasha presented the EOFY Sales Briefing, Gary shared the presentation link in the 37-person team chat for anyone who couldn't attend.
+            </p>
+            <div style="font-size: 13px; color: var(--text-3); line-height: 1.8;">
+              &bull; Posts to Google Chat as a recognised team member<br>
+              &bull; Links to presentations hosted on GitHub Pages<br>
+              &bull; Communicates in natural, on-brand tone<br>
+              &bull; Team engages naturally (reactions, replies)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: GARY'S BRAIN -->
+  <section class="slide slide-dark" data-label="Brain">
+    <div class="slide-inner" style="text-align: center;">
+      <span class="eyebrow fade-in">Knowledge Graph</span>
+      <h2 class="fade-in stagger-1" style="margin-bottom: 12px;">Gary's Brain</h2>
+      <p class="subtitle fade-in stagger-2" style="margin: 0 auto 36px; text-align: center;">Each dot represents a memory file. Each connection represents the mapping between files. This is rebuilt weekly and is how Gary understands the relationships across the business.</p>
+      <div class="fade-in stagger-3" style="max-width: 960px; margin: 0 auto;">
+        <video controls playsinline preload="metadata" style="width: 100%; border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); border: 1px solid var(--border-1); background: #000;">
+          <source src="cao-demo.mov" type="video/quicktime">
+          <source src="cao-demo.mov" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: SALES CALLS -->
+  <section class="slide slide-alt" data-label="Sales Calls">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Strategic Impact</span>
+      <h2 class="fade-in stagger-1">AI Turned Phone Calls<br>Into a Data Asset</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 40px;">I built scripts that pull every sales team phone call, codify the conversations, and deliver real-time insights on who's buying, why, and what's stopping them.</p>
+      <div class="grid-2 fade-in stagger-3" style="gap: 40px;">
+        <div>
+          <div style="display: flex; gap: 24px; margin-bottom: 32px;">
+            <div>
+              <span class="big-number" style="font-size: 56px;">3,447</span>
+              <p class="big-number-label">Calls Analysed</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 16px; margin-bottom: 24px;">
+            <div style="flex: 1; padding: 16px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border-1); text-align: center;">
+              <span style="font: 700 28px/1 var(--font-display); color: var(--primary);">2,266</span>
+              <p style="font: 500 10px/1 var(--font-mono); color: var(--text-3); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em;">GAF / Force USA</p>
+            </div>
+            <div style="flex: 1; padding: 16px; background: var(--surface); border-radius: var(--radius-md); border: 1px solid var(--border-1); text-align: center;">
+              <span style="font: 700 28px/1 var(--font-display); color: var(--primary);">1,181</span>
+              <p style="font: 500 10px/1 var(--font-mono); color: var(--text-3); margin-top: 8px; text-transform: uppercase; letter-spacing: 0.08em;">Revel</p>
+            </div>
+          </div>
+          <p style="font-size: 14px; color: var(--text-2); line-height: 1.7;">
+            Six months of call data (Nov 2025 to Apr 2026), structured and searchable across both brands.
+          </p>
+        </div>
+        <div>
+          <h4 style="color: var(--primary); margin-bottom: 20px;">What Each Call Gets Coded With</h4>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px;">
+            <span class="pill pill-dark">Customer Segment</span>
+            <span class="pill pill-dark">JTBD (Functional)</span>
+            <span class="pill pill-dark">JTBD (Emotional)</span>
+            <span class="pill pill-dark">JTBD (Social)</span>
+            <span class="pill pill-dark">Buying Stage</span>
+            <span class="pill pill-dark">Readiness Score</span>
+            <span class="pill pill-dark">Budget Range</span>
+            <span class="pill pill-dark">Motivations</span>
+            <span class="pill pill-dark">Barriers</span>
+            <span class="pill pill-dark">Competitors Mentioned</span>
+            <span class="pill pill-dark">Products Discussed</span>
+            <span class="pill pill-dark">Sentiment</span>
+            <span class="pill pill-dark">Coaching Opps</span>
+            <span class="pill pill-dark">Verbatim Quotes</span>
+          </div>
+          <h4 style="color: var(--primary); margin-bottom: 12px;">What This Unlocked</h4>
+          <div style="font-size: 14px; color: var(--text-2); line-height: 2;">
+            <div>&bull; <strong style="color: var(--text-1);">Profitable buyer profiles</strong> matched back to real purchase data</div>
+            <div>&bull; <strong style="color: var(--text-1);">Competitor intelligence</strong> from actual customer cross-shopping behaviour</div>
+            <div>&bull; <strong style="color: var(--text-1);">Sales coaching signals</strong> surfaced automatically per rep</div>
+            <div>&bull; <strong style="color: var(--text-1);">Content strategy</strong> driven by real objections and motivations</div>
+            <div>&bull; <strong style="color: var(--text-1);">Customer archetypes</strong> validated against 3,000+ real conversations</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: GOVERNANCE -->
+  <section class="slide slide-dark" data-label="Governance">
+    <div class="slide-inner">
+      <span class="eyebrow fade-in">Governance & Trust</span>
+      <h2 class="fade-in stagger-1">Built Responsibly,<br>Not Just Fast</h2>
+      <p class="subtitle fade-in stagger-2" style="margin-bottom: 36px;">An agent that can send emails, post to Asana, and action tasks needs guardrails. I built a 4-tier trust framework from day one.</p>
+      <div class="grid-2 fade-in stagger-3" style="gap: 24px;">
+        <div>
+          <h4 style="margin-bottom: 20px;">Trust Tiers</h4>
+          <div class="card" style="margin-bottom: 10px; padding: 14px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div><span class="pill pill-success" style="margin: 0;">Tier 1</span><span style="font: 500 14px/1 var(--font-display); margin-left: 12px;">Autonomous</span></div>
+              <span style="font: 400 12px/1 var(--font-mono); color: var(--text-3);">Read, organise, learn</span>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom: 10px; padding: 14px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div><span class="pill pill-orange" style="margin: 0;">Tier 2</span><span style="font: 500 14px/1 var(--font-display); margin-left: 12px;">Draft & Review</span></div>
+              <span style="font: 400 12px/1 var(--font-mono); color: var(--text-3);">Draft anything, Josh approves</span>
+            </div>
+          </div>
+          <div class="card" style="margin-bottom: 10px; padding: 14px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div><span class="pill pill-dark" style="margin: 0;">Tier 3</span><span style="font: 500 14px/1 var(--font-display); margin-left: 12px;">Action with Audit</span></div>
+              <span style="font: 400 12px/1 var(--font-mono); color: var(--text-3);">Can act, must leave trail</span>
+            </div>
+          </div>
+          <div class="card" style="padding: 14px 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div><span class="pill pill-outline" style="margin: 0;">Tier 4</span><span style="font: 500 14px/1 var(--font-display); margin-left: 12px;">Never Autonomous</span></div>
+              <span style="font: 400 12px/1 var(--font-mono); color: var(--text-3);">Financial, external, irreversible</span>
+            </div>
+          </div>
+        </div>
+        <div>
+          <h4 style="margin-bottom: 20px;">Key Guardrails</h4>
+          <div style="font-size: 14px; line-height: 2.2; color: var(--text-2);">
+            <div>&bull; <strong style="color: var(--text-1);">Draft Approval Protocol</strong> - Nothing goes external without explicit sign-off</div>
+            <div>&bull; <strong style="color: var(--text-1);">NetSuite Read-Only</strong> - ERP is never written to without consent</div>
+            <div>&bull; <strong style="color: var(--text-1);">Shared Platform Rule</strong> - Never replies unless explicitly @tagged</div>
+            <div>&bull; <strong style="color: var(--text-1);">Audit Trail</strong> - Every Asana action gets a comment explaining what was done and why</div>
+            <div>&bull; <strong style="color: var(--text-1);">Duplicate Check</strong> - Heartbeats verify no existing response before acting</div>
+            <div>&bull; <strong style="color: var(--text-1);">CC Protocol</strong> - Josh is CC'd on every outbound email automatically</div>
+            <div>&bull; <strong style="color: var(--text-1);">Feedback Memory</strong> - Corrections persist across sessions so mistakes happen once</div>
+            <div>&bull; <strong style="color: var(--text-1);">Model Governance</strong> - Opus for judgment, Sonnet for routine, documented rationale</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10: CLOSING -->
+  <section class="slide slide-alt" data-label="Close">
+    <div class="slide-inner" style="text-align: center;">
+      <span class="eyebrow fade-in">Summary</span>
+      <h2 class="fade-in stagger-1" style="max-width: 800px; margin: 0 auto 40px;">I'm not theorizing about<br>what a CAO could do.<br><span style="color: var(--primary);">I'm already doing it.</span></h2>
+      <div class="grid-4 fade-in stagger-2" style="max-width: 900px; margin: 0 auto 48px;">
+        <div style="text-align: center;">
+          <span class="big-number" style="font-size: 48px;">8</span>
+          <p class="big-number-label">Autonomous<br>Processes</p>
+        </div>
+        <div style="text-align: center;">
+          <span class="big-number" style="font-size: 48px;">17</span>
+          <p class="big-number-label">Connected<br>Platforms</p>
+        </div>
+        <div style="text-align: center;">
+          <span class="big-number" style="font-size: 48px;">24</span>
+          <p class="big-number-label">Packaged<br>Skills</p>
+        </div>
+        <div style="text-align: center;">
+          <span class="big-number" style="font-size: 48px;">3</span>
+          <p class="big-number-label">Brands<br>Managed</p>
+        </div>
+      </div>
+      <div class="fade-in stagger-3" style="max-width: 600px; margin: 0 auto;">
+        <div class="card" style="text-align: left; border-top: 2px solid var(--primary);">
+          <h4>Josh Hancock</h4>
+          <p style="font-size: 14px; color: var(--text-2); margin-bottom: 12px;">
+            CMO, AFS Group / Gym and Fitness<br>
+            hancockjluke@gmail.com &bull; 0419 836 366
+          </p>
+          <p style="font-size: 13px; color: var(--text-3);">
+            Four months ago I started building an AI agent to help me run marketing. Today it's an operating system that runs across every platform we use, produces real revenue-impacting analysis, and is reshaping our five-year strategy. I built this while doing my day job. Imagine what happens when it becomes the day job.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const navDots = document.getElementById('navDots');
+    const counter = document.getElementById('slideCounter');
+    const total = slides.length;
+    slides.forEach((slide, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'nav-dot';
+      dot.title = slide.dataset.label || `Slide ${i + 1}`;
+      dot.addEventListener('click', () => slide.scrollIntoView({ behavior: 'smooth' }));
+      navDots.appendChild(dot);
+    });
+    const dots = document.querySelectorAll('.nav-dot');
+    function updateNav() {
+      let current = 0;
+      slides.forEach((slide, i) => {
+        const rect = slide.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) current = i;
+      });
+      dots.forEach((dot, i) => dot.classList.toggle('active', i === current));
+      counter.innerHTML = `<span class="current">${String(current + 1).padStart(2, '0')}</span> / ${String(total).padStart(2, '0')}`;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.querySelectorAll('.fade-in').forEach(el => el.classList.add('visible')); });
+    }, { threshold: 0.2 });
+    slides.forEach(slide => observer.observe(slide));
+    window.addEventListener('scroll', updateNav);
+    updateNav();
+    document.addEventListener('keydown', (e) => {
+      let current = 0;
+      slides.forEach((slide, i) => { const rect = slide.getBoundingClientRect(); if (rect.top <= window.innerHeight / 2 && rect.bottom > window.innerHeight / 2) current = i; });
+      if ((e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') && current < total - 1) { e.preventDefault(); slides[current + 1].scrollIntoView({ behavior: 'smooth' }); }
+      else if ((e.key === 'ArrowUp' || e.key === 'PageUp') && current > 0) { e.preventDefault(); slides[current - 1].scrollIntoView({ behavior: 'smooth' }); }
+    });
+  </script>
+
+</body>
+</html>

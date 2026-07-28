@@ -1,0 +1,128 @@
+@import "tailwindcss";
+
+/* =============================================
+   GAF Design System Tokens
+   Source: design-parity-spec.md Section 1
+   ============================================= */
+
+:root {
+  /* Brand colors */
+  --gaf-primary:        #f26422;
+  --gaf-primary-light:  #fff3ec;
+  --gaf-primary-mid:    #fde0cc;
+
+  /* Page & surface */
+  --gaf-page-bg:        #f8f8fa;
+  --gaf-card-bg:        #ffffff;
+
+  /* Header */
+  --gaf-header-bg:      rgba(255, 255, 255, 0.8);
+  --gaf-header-shadow:  0 1px 3px rgba(0, 0, 0, 0.08);
+
+  /* Borders */
+  --gaf-card-border:    rgba(0, 0, 0, 0.04);
+  --gaf-row-border:     #f0f0f2;
+  --gaf-input-border:   #e5e7eb;
+
+  /* Text */
+  --gaf-text-primary:   #111827;
+  --gaf-text-secondary: #6b7280;
+  --gaf-text-muted:     #9ca3af;
+
+  /* Delta colors */
+  --gaf-delta-pos:      #059669;  /* emerald-600 */
+  --gaf-delta-neg:      #ef4444;  /* red-500 */
+  --gaf-delta-flat:     #9ca3af;  /* gray-400 */
+
+  /* Chart */
+  --gaf-chart-grid:     #f0f0f2;
+  --gaf-chart-tooltip:  #1f2937;
+
+  /* Fonts */
+  --font-display:       'Montserrat', sans-serif;
+  --font-body:          'Open Sans', sans-serif;
+}
+
+/* =============================================
+   Base typography
+   ============================================= */
+
+body {
+  background-color: var(--gaf-page-bg);
+  color: var(--gaf-text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, h5, h6,
+.font-display {
+  font-family: var(--font-display);
+}
+
+/* =============================================
+   Card component (.dash-card)
+   ============================================= */
+
+.dash-card {
+  background: var(--gaf-card-bg);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--gaf-card-border);
+}
+
+.dash-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+/* =============================================
+   Scrollbar styling (table overflow wrappers)
+   ============================================= */
+
+.scrollbar-thin::-webkit-scrollbar {
+  height: 4px;
+  width: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+
+/* =============================================
+   Fade-in animation (tab content)
+   ============================================= */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =============================================
+   KPI stagger animation
+   ============================================= */
+
+@keyframes staggerIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stagger > * {
+  animation: staggerIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.stagger > *:nth-child(1)  { animation-delay: 0.00s; }
+.stagger > *:nth-child(2)  { animation-delay: 0.05s; }
+.stagger > *:nth-child(3)  { animation-delay: 0.10s; }
+.stagger > *:nth-child(4)  { animation-delay: 0.15s; }
+.stagger > *:nth-child(5)  { animation-delay: 0.20s; }
+.stagger > *:nth-child(6)  { animation-delay: 0.25s; }
+.stagger > *:nth-child(7)  { animation-delay: 0.30s; }
+.stagger > *:nth-child(8)  { animation-delay: 0.35s; }

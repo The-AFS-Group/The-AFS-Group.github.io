@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Shopify Assistant for Claude — Setup &amp; Technical Reference | The AFS Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2a44; --off-white:#edeae3; --orange:#f26422;
+    --mgrey:#424242; --dgrey:#232323; --white:#fff;
+    --line:#dcd8cf; --muted:#6f6a61;
+    --good-soft:#e7f1ea; --warn-soft:#fdeee4; --info-soft:#e7edf3;
+    --code-bg:#0e2a44; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--off-white);color:var(--dgrey);
+    font-family:'Lato',Tahoma,sans-serif;line-height:1.62;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',Tahoma,sans-serif;color:var(--navy);margin:0}
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px 60px}
+  /* logo bar */
+  .topbar{background:var(--white);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+  .topbar img{height:34px;display:block}
+  .topbar .tag{font-family:'Archivo';font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+  /* hero */
+  header.hero{position:relative;background:var(--navy);color:#fff;padding:52px 0 44px;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-60px;bottom:-70px;width:240px;height:240px;
+    background:var(--orange);opacity:.13;clip-path:polygon(100% 0,0 100%,100% 100%)}
+  .hero .wrap{padding-bottom:0;position:relative;z-index:1}
+  .eyebrow{font-family:'Archivo';text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:700;color:var(--orange);margin:0 0 12px}
+  .hero h1{color:#fff;font-size:31px;line-height:1.18;font-weight:800;margin:0 0 12px}
+  .hero p{margin:0 0 22px;color:#cdd6e0;font-size:16.5px;max-width:62ch}
+  .jump{display:flex;flex-wrap:wrap;gap:10px}
+  .jump a{font-family:'Archivo';font-size:13px;font-weight:700;text-decoration:none;color:#fff;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px}
+  .jump a:hover{background:var(--orange);border-color:var(--orange)}
+  /* part divider */
+  .part{margin:40px 0 4px;padding:0}
+  .part .wrap{padding-bottom:0}
+  .part-label{font-family:'Archivo';font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:0 0 4px}
+  .part h2.part-title{font-size:25px;font-weight:800;margin:0;padding-bottom:10px;border-bottom:3px solid var(--orange);display:inline-block}
+  /* cards */
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 28px;margin:20px 0;box-shadow:0 1px 3px rgba(14,42,68,.05)}
+  h2{font-size:20px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .n{width:27px;height:27px;border-radius:7px;background:var(--orange);color:#fff;font-size:14px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-family:'Archivo'}
+  h3{font-size:14.5px;margin:20px 0 6px;font-weight:700;color:var(--mgrey)}
+  p{margin:0 0 12px}
+  .lead{font-size:16px;color:var(--mgrey)}
+  ul,ol{margin:0 0 6px;padding-left:22px}
+  li{margin:7px 0}
+  code{background:#f1eee8;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--navy)}
+  pre{background:var(--code-bg);color:#e7eefc;border-radius:10px;padding:15px 16px;overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.8px;line-height:1.55;margin:10px 0}
+  pre .c{color:#8aa0b6}
+  .url{display:block;background:var(--navy);color:#e7eefc;border-radius:10px;padding:14px 16px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;word-break:break-all;margin:8px 0 4px}
+  .url .ph{color:var(--orange);font-weight:700}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:8px 0 0}
+  .steps li{counter-increment:step;position:relative;padding:0 0 16px 46px;margin:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:-2px;width:30px;height:30px;
+    border-radius:50%;background:var(--orange);color:#fff;font-family:'Archivo';font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center}
+  .steps li:not(:last-child)::after{content:"";position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--line)}
+  .note{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:14.5px;border:1px solid}
+  .note.good{background:var(--good-soft);border-color:#bfddcc;color:#155c40}
+  .note.warn{background:var(--warn-soft);border-color:#f6cbb0;color:#a8430f}
+  .note.info{background:var(--info-soft);border-color:#c5d2df;color:#1d3b59}
+  .note strong{font-weight:700}
+  .pill{display:inline-block;background:var(--info-soft);color:var(--navy);border-radius:999px;
+    padding:2px 11px;font-family:'Archivo';font-size:12px;font-weight:700;margin-left:6px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:'Archivo';color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td code{font-size:12.5px}
+  .ex{background:#f6f4ef;border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-style:italic;color:var(--mgrey)}
+  details{border:1px solid var(--line);border-radius:10px;padding:4px 16px;margin:12px 0;background:#faf9f5}
+  summary{cursor:pointer;font-weight:700;padding:10px 0;color:var(--mgrey)}
+  .kbd{font-size:13px;color:var(--muted)}
+  /* diagram */
+  .diagram{margin:6px 0 2px}
+  .row{display:flex;align-items:center;gap:14px}
+  .box{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;background:#faf9f5}
+  .box .t{font-family:'Archivo';font-weight:700;font-size:14.5px;margin-bottom:2px;color:var(--navy)}
+  .box .s{font-size:12.5px;color:var(--muted)}
+  .box.client{border-color:#c5d2df;background:var(--info-soft)}
+  .box.worker{border-color:#f6cbb0;background:var(--warn-soft)}
+  .box.shop{border-color:#cfe0d6;background:var(--good-soft)}
+  .arrow{display:flex;flex-direction:column;align-items:center;color:var(--muted);font-size:12px;flex:0 0 auto}
+  .arrow .line{font-size:20px;line-height:1;color:var(--orange)}
+  .tagchip{background:#f1eee8;border:1px solid var(--line);color:var(--navy);border-radius:999px;padding:3px 11px;font-family:'Archivo';font-size:12px;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  footer{background:var(--navy);color:#c3ccd6;font-size:13px;text-align:center;padding:26px 20px;margin-top:40px;line-height:1.7}
+  footer a{color:#fff}
+  @media(max-width:560px){.row{flex-direction:column}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
+  <span class="tag">Internal Tool</span>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">The AFS Group</p>
+    <h1>Shopify Assistant for Claude</h1>
+    <p>A read-only assistant for looking up products, orders and customers across Gym and Fitness and Revel Saunas, right inside Claude. This page covers both how to set it up and how it's built.</p>
+    <nav class="jump">
+      <a href="#setup">① Setup guide</a>
+      <a href="#tech">② Architecture &amp; security</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ PART 1 ============ -->
+<section class="part" id="setup"><div class="wrap">
+  <p class="part-label">Part 1 · For the team</p>
+  <h2 class="part-title">Setup guide</h2>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>What this is</h2>
+    <p class="lead">Once connected, you can ask Claude things like "find the Revel Aura sauna," "what's the status of GAF order #138892," or "look up the customer on that order" and it pulls live answers straight from our Shopify stores.</p>
+    <table>
+      <tr><th>You can</th><th>You can't</th></tr>
+      <tr>
+        <td>Search and view products (price, stock, variants)<br>Look up orders, including customer contact &amp; shipping<br>Look up customers and their order history<br>Ask other read questions (inventory, discounts, etc.)</td>
+        <td>Change anything — it is strictly <strong>read-only</strong><br>No edits, no pricing changes, no order changes</td>
+      </tr>
+    </table>
+    <div class="note warn"><strong>This includes customer personal data</strong> (names, emails, addresses). Use it for legitimate work only — don't export, forward or share customer details outside the business.</div>
+  </div>
+
+  <div class="card">
+    <h2>Before you start</h2>
+    <ul>
+      <li>A <strong>Claude account</strong> (claude.ai or the Claude desktop app). The free plan allows one custom connector; Pro/Team allow more.</li>
+      <li>Your <strong>personal connector link</strong> — it's in the same shared <strong>LastPass</strong> item you opened these instructions from. It looks like the link below, with your own code on the end.</li>
+    </ul>
+    <span class="url">https://shopify-mcp.josh-03c.workers.dev/c/<span class="ph">YOUR-PERSONAL-CODE</span></span>
+    <div class="note warn"><strong>Treat this link like a password.</strong> It lives in LastPass for a reason — anyone who has it has your access. Don't copy it into shared chats, emails or docs. If it ever leaks, tell Josh and he'll issue a new one in seconds.</div>
+  </div>
+
+  <div class="card">
+    <h2>Set it up <span class="pill">claude.ai — web</span></h2>
+    <ol class="steps">
+      <li>Open <strong>claude.ai</strong> and sign in. Click your name (bottom-left) → <strong>Settings</strong>.</li>
+      <li>Go to <strong>Connectors</strong> (under "Customize"). Click <strong>Add custom connector</strong>.</li>
+      <li>In <strong>Remote MCP server URL</strong>, paste <strong>your personal link</strong>. Leave the OAuth Client ID / Secret boxes <strong>empty</strong>.</li>
+      <li>Click <strong>Add</strong>. You'll see <em>"Shopify"</em> appear in your connector list.</li>
+      <li>Open any chat. Click the <strong>+</strong> (or the connectors/tools icon) → <strong>Connectors</strong> → switch <strong>Shopify</strong> <strong>on</strong>.</li>
+      <li>Ask it something — see the examples below. Done.</li>
+    </ol>
+    <div class="note info">The connector stays in your account, so you only do this once. Just toggle it on (step 5) in new chats where you want to use it.</div>
+  </div>
+
+  <div class="card">
+    <h2>Set it up <span class="pill">Claude desktop app</span></h2>
+    <p>Exactly the same flow: <strong>Settings → Connectors → Add custom connector</strong>, paste your personal link, leave OAuth blank, click Add. Then toggle <strong>Shopify</strong> on inside a chat.</p>
+  </div>
+
+  <div class="card">
+    <h2>Try these</h2>
+    <div class="ex">"Search Gym and Fitness products for adjustable dumbbells and show the prices."</div>
+    <div class="ex">"Look up Revel order 189122 — what's in it, who ordered it, and has it shipped?"</div>
+    <div class="ex">"Find the customer jane@example.com on Gym and Fitness and show their recent orders."</div>
+    <div class="ex">"What's the current stock and price on the Revel Aura 2-person sauna?"</div>
+    <p class="kbd">Tip: tell it which store you mean — "Gym and Fitness" (GAF) or "Revel". You can ask about either.</p>
+  </div>
+
+  <div class="card">
+    <h2>If something's not working</h2>
+    <h3>The connector won't add</h3>
+    <p>Check the link is pasted in full and the OAuth fields are left <strong>blank</strong>. On a free plan with an existing custom connector, you may need to remove the old one or upgrade.</p>
+    <h3>No Shopify tools show up in the chat</h3>
+    <p>Make sure you toggled the connector <strong>on</strong> for that chat (the <strong>+</strong> → Connectors menu).</p>
+    <h3>It says "unauthorized" or stops working</h3>
+    <p>Your link may have been rotated or revoked. Message Josh and he'll sort it.</p>
+    <details>
+      <summary>On a Team or Enterprise plan and can't add a custom connector?</summary>
+      <p>Custom connectors may be locked at the organisation level. Ask Josh to approve it under <strong>Organization Settings → Connectors</strong> first, then retry.</p>
+    </details>
+  </div>
+
+</div>
+
+<!-- ============ PART 2 ============ -->
+<section class="part" id="tech"><div class="wrap">
+  <p class="part-label">Part 2 · For maintainers</p>
+  <h2 class="part-title">Architecture &amp; security</h2>
+  <div class="chips">
+    <span class="tagchip">Cloudflare Workers</span>
+    <span class="tagchip">MCP (Streamable HTTP)</span>
+    <span class="tagchip">Shopify Admin GraphQL</span>
+    <span class="tagchip">Read-only</span>
+  </div>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="n">1</span> Purpose</h2>
+    <p>Give selected team members read-only access to Gym and Fitness and Revel Shopify data from inside Claude — products, orders, customers and more — <strong>without</strong> ever handing them a Shopify API key, and with the key fully managed centrally. The credential lives server-side; access is scoped per user and revocable in seconds.</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span> At a glance</h2>
+    <table>
+      <tr><th>Layer</th><th>Technology</th><th>Why</th></tr>
+      <tr><td>Client</td><td>Claude (web / desktop / Claude&nbsp;Code)</td><td>Where the user works; speaks MCP</td></tr>
+      <tr><td>Transport</td><td>MCP over Streamable HTTP (JSON-RPC 2.0)</td><td>Standard remote-MCP protocol Claude connectors support</td></tr>
+      <tr><td>Compute</td><td>Cloudflare Worker (single <code>worker.js</code>, no dependencies)</td><td>Always-on, edge-hosted, secrets encrypted at rest, free tier</td></tr>
+      <tr><td>Upstream</td><td>Shopify Admin GraphQL API <code>2024-10</code></td><td>Modern Shopify data access; one endpoint per store</td></tr>
+      <tr><td>Store auth</td><td>Shopify <code>client_credentials</code> → 24h <code>shpat_</code> token</td><td>Per-store custom-app tokens, minted &amp; cached server-side</td></tr>
+      <tr><td>User auth</td><td>Per-user token (bearer header <em>or</em> capability URL)</td><td>Identifies &amp; scopes each person; revocable independently</td></tr>
+      <tr><td>Docs hosting</td><td>GitHub Pages (<code>Gary-AFS/afs-pages</code>)</td><td>This page</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span> Architecture</h2>
+    <div class="diagram">
+      <div class="row">
+        <div class="box client"><div class="t">Claude</div><div class="s">web · desktop · Claude Code</div></div>
+        <div class="arrow"><span class="line">→</span><span>JSON-RPC<br>over HTTPS</span></div>
+        <div class="box worker"><div class="t">Cloudflare Worker</div><div class="s">shopify-mcp · MCP server</div></div>
+        <div class="arrow"><span class="line">→</span><span>GraphQL<br>+ shpat_ token</span></div>
+        <div class="box shop"><div class="t">Shopify</div><div class="s">GAF · Revel stores</div></div>
+      </div>
+    </div>
+    <p style="margin-top:16px">The Worker is the only component that holds a Shopify credential. The client authenticates to the Worker with its <em>own</em> per-user token; the Worker then talks to Shopify with a store credential the user never sees. Two independent trust boundaries, joined in the middle.</p>
+    <h3>Request lifecycle</h3>
+    <ul>
+      <li><strong>1. Inbound</strong> — Claude POSTs a JSON-RPC message. The user's token arrives as <code>Authorization: Bearer &lt;token&gt;</code> or in the URL path (<code>/c/&lt;token&gt;</code>).</li>
+      <li><strong>2. Authenticate</strong> — Worker resolves the token against <code>USER_TOKENS</code> → <code>{ name, stores[] }</code>. Unknown/missing → <code>401</code>.</li>
+      <li><strong>3. Dispatch</strong> — <code>initialize</code> / <code>tools/list</code> answered locally; <code>tools/call</code> checks the requested <code>store</code> is in the user's allowlist, then runs the handler.</li>
+      <li><strong>4. Mint &amp; cache</strong> — handler fetches a Shopify token via <code>client_credentials</code> (cached in-isolate ~20h of its 24h life), then calls the Admin GraphQL API.</li>
+      <li><strong>5. Return</strong> — the response is shaped into a clean object and returned as MCP tool content.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span> Tools</h2>
+    <p>Seven read-only tools, each requiring a <code>store</code> argument (<code>"gaf"</code> | <code>"revel"</code>):</p>
+    <table>
+      <tr><th>Tool</th><th>Returns</th></tr>
+      <tr><td><code>search_products</code></td><td>Keyword search → title, handle, status, inventory, variant pricing</td></tr>
+      <tr><td><code>get_product</code></td><td>Single product by handle/ID → full variants, pricing, inventory</td></tr>
+      <tr><td><code>list_orders</code></td><td>Recent orders → number, date, status, total, line items, customer contact</td></tr>
+      <tr><td><code>get_order</code></td><td>Single order → status, totals, line items, customer contact &amp; shipping address</td></tr>
+      <tr><td><code>search_customers</code></td><td>Customer search → contact details, order count, lifetime spend</td></tr>
+      <tr><td><code>get_customer</code></td><td>Single customer → contact, address, spend, recent orders</td></tr>
+      <tr><td><code>shopify_query</code></td><td>Arbitrary <strong>read-only</strong> Admin GraphQL — covers everything else the token allows (inventory, discounts, price rules, draft orders, analytics, content, metaobjects…). Mutations rejected.</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">5</span> Authentication model</h2>
+    <h3>Two boundaries</h3>
+    <ul>
+      <li><strong>User → Worker.</strong> Each person gets a unique random token, stored as a key in the <code>USER_TOKENS</code> secret (a JSON map). The value records their display name and which stores they may reach.</li>
+      <li><strong>Worker → Shopify.</strong> Per-store <code>client_id</code>/<code>client_secret</code> live as encrypted Worker secrets. The Worker mints short-lived <code>shpat_</code> tokens on demand. No Shopify credential is ever sent to the client.</li>
+    </ul>
+    <h3>Why two token-delivery methods</h3>
+    <p>claude.ai's custom-connector UI (confirmed June 2026) accepts only OAuth or no-auth — it cannot send a custom <code>Authorization</code> header. So the Worker also accepts the token as a <strong>capability URL</strong> (<code>/c/&lt;token&gt;</code>): the user pastes one URL, leaves OAuth blank, and the path segment <em>is</em> the credential. Claude Code and desktop config files use the cleaner bearer header.</p>
+<pre><span class="c">// USER_TOKENS secret — bearer -&gt; identity + store allowlist</span>
+{
+  "&lt;random-token&gt;": { "name": "Sales - Jane", "stores": ["gaf","revel"] }
+}
+
+<span class="c">// Connect (claude.ai / desktop GUI): paste as the connector URL</span>
+https://shopify-mcp.&lt;account&gt;.workers.dev/c/&lt;token&gt;
+
+<span class="c">// Connect (Claude Code)</span>
+claude mcp add --transport http shopify \
+  https://shopify-mcp.&lt;account&gt;.workers.dev \
+  --header "Authorization: Bearer &lt;token&gt;"</pre>
+    <div class="note info"><strong>Revocation.</strong> Remove a user's entry from <code>USER_TOKENS</code> and redeploy the secret — instant cutoff, no Shopify change. Adding a user is the inverse. Locking someone to one store is <code>"stores":["gaf"]</code>.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">6</span> Security model</h2>
+    <h3>The boundary: read-only, not narrow-scope</h3>
+    <p>The Shopify custom apps carry <strong>broad read scopes</strong> (including customer data), and — by owner decision — the MCP exposes that full read surface to authorised users. So the model does <em>not</em> rely on hiding data; it relies on three guarantees:</p>
+    <ul>
+      <li><strong>No write path.</strong> Every tool is read-only. The generic <code>shopify_query</code> tool strips comments/strings and rejects any <code>mutation</code> or <code>subscription</code> operation, so the API cannot be driven to change anything.</li>
+      <li><strong>Per-user identity &amp; revocation.</strong> Access is keyed to a per-user token that can be revoked instantly without touching Shopify. Each token is scoped to specific stores.</li>
+      <li><strong>Per-store gate.</strong> Every <code>tools/call</code> checks the requested store against the user's allowlist before any upstream call.</li>
+    </ul>
+    <div class="note warn"><strong>Customer personal data is in scope.</strong> Orders and customer tools return names, emails, phones and addresses. This is an accepted, deliberate decision — access should be limited to staff with a legitimate need, and the per-user token model is what enforces that.</div>
+    <h3>Credential handling</h3>
+    <ul>
+      <li>Shopify <code>client_id</code>/<code>secret</code> and the <code>USER_TOKENS</code> map are <strong>Cloudflare Worker secrets</strong> — encrypted at rest, never in source.</li>
+      <li><strong>Nothing secret is committed.</strong> Worker code/config are clean; local creds live in <code>chmod&nbsp;600</code> files outside the git repo; this public page uses placeholders only.</li>
+      <li>Minted <code>shpat_</code> tokens are short-lived (24h) and never leave the Worker.</li>
+    </ul>
+    <h3>Residual risks (accepted / known)</h3>
+    <ul>
+      <li><strong>Capability URL = bearer in a URL.</strong> Anyone holding the link has that user's access, so it is treated as a secret and is per-user revocable.</li>
+      <li><strong>Broad read access incl. PII.</strong> An authorised user can read customer data; mitigated by limiting who gets a token and by the no-write guarantee.</li>
+      <li><strong>No rate limiting or audit log yet</strong> (see future work).</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">7</span> Operations</h2>
+    <p>Source lives in the vault at <code>Agent/Scripts/shopify-mcp/</code> (<code>worker.js</code>, <code>wrangler.toml</code>, <code>README.md</code>). Deploy and secret management via Wrangler:</p>
+<pre><span class="c"># deploy</span>
+cd Agent/Scripts/shopify-mcp
+export $(grep -v '^#' ~/.cloudflare-env | xargs)
+npx wrangler@latest deploy
+
+<span class="c"># set / rotate a secret (reads from local chmod-600 creds files)</span>
+echo -n "$CLIENT_SECRET" | npx wrangler@latest secret put GAF_CLIENT_SECRET
+
+<span class="c"># add or revoke a user = edit the USER_TOKENS JSON, re-put</span>
+echo -n '{...}' | npx wrangler@latest secret put USER_TOKENS</pre>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">8</span> Future enhancements</h2>
+    <ul>
+      <li><strong>OAuth 2.0</strong> on the Worker → native, header-free connector auth in the claude.ai UI (replaces the capability URL).</li>
+      <li><strong>Cloudflare Access</strong> in front → staff log in with their <code>@gymandfitness.com.au</code> Google account instead of a per-user token.</li>
+      <li><strong>Audit logging</strong> (who called what, when) and <strong>rate limiting</strong> per user — especially relevant now PII is in scope.</li>
+      <li><strong>Optional PII redaction mode</strong> per user/token, for staff who only need product/order operations.</li>
+      <li><strong>KV-backed token cache</strong> for token reuse across Worker isolates.</li>
+    </ul>
+  </div>
+
+</div>
+<footer>
+  The AFS Group · Shopify Assistant for Claude · Built 15 Jun 2026 · Managed by Josh / Gary<br>
+  Strictly read-only · Source <code>Agent/Scripts/shopify-mcp/</code> · Access requests → Josh
+</footer>
+</body>
+</html>

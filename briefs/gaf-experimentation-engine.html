@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Marketing Experimentation Engine</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --white: #FFFFFF;
+  --orange: #F26422;
+  --orange-hover: #D85418;
+  --orange-soft: #FDE9DD;
+  --grey-50: #FAFAFA;
+  --grey-100: #F0F0F0;
+  --grey-200: #E2E2E2;
+  --grey-300: #C9C9C9;
+  --grey-400: #A0A0A0;
+  --grey-500: #717171;
+  --grey-600: #555555;
+  --grey-700: #424242;
+  --grey-800: #2B2B2B;
+  --grey-900: #1A1A1A;
+  --success: #2E8B4A;
+  --danger: #C23B22;
+  --blue: #2563EB;
+  --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--font-sans); color: var(--black); background: var(--white); line-height: 1.55; }
+h1,h2,h3,h4,h5 { font-family: var(--font-display); font-weight: 800; line-height: 1.1; }
+
+/* Sections */
+section {
+  padding: 80px 80px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+section.full {
+  max-width: none;
+  padding: 80px 0;
+}
+section.full > .inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 80px;
+}
+.dark-band {
+  background: var(--black);
+  color: var(--white);
+}
+.dark-band .eyebrow { color: var(--orange); }
+.grey-band { background: var(--grey-50); }
+.orange-band { background: var(--orange); color: var(--white); }
+
+/* Eyebrow */
+.eyebrow {
+  font: 700 11px/1.3 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--orange); margin-bottom: 12px;
+}
+
+/* Divider */
+.section-divider {
+  width: 60px; height: 3px; background: var(--orange);
+  margin: 48px 0;
+}
+.section-divider.center { margin: 48px auto; }
+
+/* Big stat */
+.big-stat { font-family: var(--font-display); font-weight: 900; font-size: 72px; line-height: 1; }
+.big-stat.orange { color: var(--orange); }
+
+/* Pill tags */
+.pill {
+  display: inline-block; padding: 6px 14px; border-radius: 999px;
+  font: 600 12px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em;
+  margin: 3px 4px 3px 0;
+}
+.pill.orange { background: var(--orange); color: var(--white); }
+.pill.black { background: var(--black); color: var(--white); }
+.pill.outline { background: transparent; border: 2px solid var(--grey-300); color: var(--grey-700); }
+.pill.green { background: var(--success); color: var(--white); }
+.pill.white { background: var(--white); color: var(--black); }
+
+/* Grids */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+.cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 32px; align-items: start; }
+.cols-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 24px; align-items: start; }
+
+/* Cards */
+.card {
+  background: var(--white); border-radius: 10px; padding: 28px;
+  border: 1px solid var(--grey-200);
+}
+.card.dark { background: var(--grey-800); color: var(--white); border-color: var(--grey-700); }
+.card.highlight { border-left: 4px solid var(--orange); }
+.card h3 { font-size: 18px; margin-bottom: 8px; }
+.card p { font-size: 14px; color: var(--grey-600); line-height: 1.5; }
+.card.dark p { color: var(--grey-400); }
+
+/* Stat row */
+.stat-row { display: flex; gap: 48px; flex-wrap: wrap; }
+.stat-item .val { font: 800 32px/1 var(--font-display); }
+.stat-item .val.orange { color: var(--orange); }
+.stat-item .label { font: 600 10px/1.3 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-500); margin-top: 6px; }
+
+/* Tables */
+.strat-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.strat-table th { text-align: left; font-family: var(--font-display); font-weight: 700; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--grey-500); padding: 10px 12px; border-bottom: 2px solid var(--grey-200); }
+.strat-table td { padding: 12px 12px; border-bottom: 1px solid var(--grey-100); vertical-align: top; }
+.strat-table td:first-child { font-weight: 700; font-family: var(--font-display); white-space: nowrap; }
+.strat-table tr:last-child td { border-bottom: none; }
+
+/* Owner card */
+.owner-card {
+  background: var(--white); border-radius: 10px; padding: 24px;
+  border: 1px solid var(--grey-200); height: 100%;
+}
+.owner-card .owner-name { font: 800 20px/1 var(--font-display); margin-bottom: 4px; }
+.owner-card .owner-role {
+  font: 600 11px/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--grey-500); margin-bottom: 16px;
+}
+.owner-card .hypothesis {
+  background: var(--grey-50); border-radius: 6px; padding: 14px;
+  font-size: 13px; line-height: 1.5; color: var(--grey-700);
+  margin-bottom: 10px; border-left: 3px solid var(--orange);
+}
+.owner-card .hypothesis strong { color: var(--orange); font-family: var(--font-display); font-weight: 700; font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 4px; }
+
+/* Board columns */
+.board { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.board-col { background: var(--grey-100); border-radius: 8px; padding: 14px; min-height: 200px; }
+.board-col .col-title {
+  font: 700 11px/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--grey-600); margin-bottom: 12px;
+  padding-bottom: 8px; border-bottom: 2px solid var(--grey-300);
+}
+.board-col .col-title.orange { border-color: var(--orange); color: var(--orange); }
+.board-card {
+  background: var(--white); border-radius: 6px; padding: 10px 12px;
+  font-size: 12px; line-height: 1.4; margin-bottom: 8px;
+  border: 1px solid var(--grey-200);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.board-card .card-tag {
+  font: 700 9px/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  padding: 3px 6px; border-radius: 3px;
+  display: inline-block; margin-bottom: 4px;
+}
+
+/* Cascade */
+.cascade { display: flex; align-items: center; gap: 0; justify-content: center; flex-wrap: nowrap; }
+.cascade-box {
+  padding: 20px 24px; border-radius: 8px; text-align: center;
+  font-family: var(--font-display); min-width: 170px;
+}
+.cascade-box .box-label { font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 6px; }
+.cascade-box .box-value { font-size: 16px; font-weight: 800; line-height: 1.2; }
+.cascade-arrow { font-size: 24px; color: var(--grey-600); padding: 0 8px; font-family: var(--font-display); font-weight: 900; flex-shrink: 0; }
+
+/* Scroll nav */
+.page-nav {
+  position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+  background: rgba(0,0,0,0.92); backdrop-filter: blur(12px);
+  padding: 14px 40px; display: flex; align-items: center; gap: 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  transition: transform 0.3s ease;
+}
+.page-nav .nav-logo {
+  font: 800 14px/1 var(--font-display); color: var(--white);
+  white-space: nowrap;
+}
+.page-nav .nav-logo span { color: var(--orange); }
+.page-nav a {
+  font: 600 10px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--grey-400); text-decoration: none;
+  transition: color 0.2s ease; white-space: nowrap;
+}
+.page-nav a:hover { color: var(--orange); }
+
+@media (max-width: 1024px) {
+  section, section.full > .inner { padding-left: 32px; padding-right: 32px; }
+  .cols, .cols-3, .cols-4 { grid-template-columns: 1fr; }
+  .big-stat { font-size: 48px; }
+  .board { grid-template-columns: repeat(3, 1fr); }
+  .cascade { flex-wrap: wrap; gap: 8px; }
+  .page-nav { overflow-x: auto; gap: 16px; padding: 12px 20px; }
+  .stat-row { gap: 24px; }
+}
+@media (max-width: 640px) {
+  .board { grid-template-columns: 1fr 1fr; }
+  .stat-row { flex-direction: column; gap: 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY NAV -->
+<nav class="page-nav" id="nav">
+  <div class="nav-logo">GAF <span>FY27</span></div>
+  <a href="#challenge">Challenge</a>
+  <a href="#adspend">Ad Spend</a>
+  <a href="#anchor">Strategy</a>
+  <a href="#cycle">The System</a>
+  <a href="#funnel">Funnel</a>
+  <a href="#scoring">Scoring</a>
+  <a href="#channels">Channels</a>
+  <a href="#board">Board</a>
+  <a href="#gary">Gary</a>
+  <a href="#rhythm">Rhythm</a>
+  <a href="#metrics">Metrics</a>
+  <a href="#sprint">First Sprint</a>
+  <a href="#actions">Actions</a>
+</nav>
+
+<!-- HERO -->
+<div class="dark-band" style="padding-top: 100px;">
+  <section>
+    <div class="eyebrow">GAF FY27 Marketing Plan</div>
+    <h1 style="font-size: clamp(42px,6vw,72px); margin-bottom: 16px;">The Experimentation<br><span style="color:var(--orange)">Engine.</span></h1>
+    <p style="font-size: 20px; color: var(--grey-400); font-weight: 300; max-width: 640px; margin-top: 8px; line-height: 1.6;">12% growth through 100 smart experiments, not 12 big bets.</p>
+    <div class="stat-row" style="margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+      <div class="stat-item"><div class="val orange">12%</div><div class="label">B2C YOY Growth</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">5%</div><div class="label">B2B MBR Target</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">FY27</div><div class="label">Planning Year</div></div>
+    </div>
+  </section>
+</div>
+
+<!-- THE CHALLENGE -->
+<div id="challenge">
+  <section>
+    <div class="eyebrow">The Challenge</div>
+    <h2 style="font-size: 44px; margin-bottom: 20px;">12 big campaigns<br>won't get us there.</h2>
+    <p style="font-size: 18px; color: var(--grey-600); max-width: 680px; line-height: 1.6;">We need 12% growth in B2C retail. The traditional approach is to plan 12 big-bang campaigns and hope they hit. The problem?</p>
+    <div class="cols" style="margin-top: 32px; gap: 40px;">
+      <div>
+        <div class="card highlight" style="margin-bottom: 16px; border-left-color: var(--danger);">
+          <h3 style="color: var(--danger);">High risk, slow learning</h3>
+          <p>Big campaigns take weeks to plan, launch, and review. If one misses, we've lost a month and a big chunk of budget with no insight into why.</p>
+        </div>
+        <div class="card highlight" style="margin-bottom: 16px; border-left-color: var(--danger);">
+          <h3 style="color: var(--danger);">No compounding</h3>
+          <p>Each campaign starts from scratch. We don't systematically build on what we learned last time.</p>
+        </div>
+        <div class="card highlight" style="border-left-color: var(--danger);">
+          <h3 style="color: var(--danger);">One customer fits all</h3>
+          <p>Big campaigns speak to everyone. Our data says we should be speaking directly to the Home Gym Builder and nobody else.</p>
+        </div>
+      </div>
+      <div>
+        <div style="background: var(--black); color: var(--white); padding: 32px; border-radius: 10px;">
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">The Alternative</div>
+          <h3 style="font-size: 24px; margin-bottom: 12px;">Systematic<br>experimentation.</h3>
+          <p style="color: var(--grey-400); font-size: 15px; line-height: 1.6;">Small, fast experiments across every channel. Each one teaches us something. The wins compound. The losses are cheap.</p>
+          <div style="margin-top: 20px; padding: 14px 18px; background: rgba(242,100,34,0.15); border-radius: 6px;">
+            <p style="color: var(--orange); font: 700 14px/1.4 var(--font-display);">Think lean startup, applied to marketing.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- AD SPEND REDEPLOYMENT -->
+<div class="dark-band" id="adspend">
+  <section>
+    <div class="eyebrow">The Ad Spend Problem</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">We're funding customers<br>who <span style="color:var(--danger)">lose us money.</span></h2>
+    <p style="font-size: 16px; color: var(--grey-400); font-weight: 300; max-width: 680px; margin-bottom: 32px;">Last year we spent $2.19M on ads to acquire 12,078 customers. The Profit Per X model shows that the majority of those customers are unprofitable. The opportunity isn't just to grow, it's to grow <em>smarter</em> by shifting spend toward the products and channels that attract Home Gym Builders.</p>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 32px;">
+      <div style="background: rgba(194,59,34,0.15); border: 1px solid rgba(194,59,34,0.3); border-radius: 10px; padding: 24px; text-align: center;">
+        <div style="font: 900 36px/1 var(--font-display); color: var(--danger);">6,322</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-top: 8px; color: var(--white);">Budget-Conscious Seekers</div>
+        <div style="font-size: 13px; color: var(--grey-500); margin-top: 6px;">56% of all customers</div>
+        <div style="margin-top: 10px; padding: 8px; background: rgba(194,59,34,0.2); border-radius: 4px;">
+          <div style="font: 800 20px/1 var(--font-display); color: var(--danger);">-$165</div>
+          <div style="font-size: 10px; color: var(--grey-500); margin-top: 2px;">median profit each</div>
+        </div>
+      </div>
+      <div style="background: rgba(194,59,34,0.1); border: 1px solid rgba(194,59,34,0.2); border-radius: 10px; padding: 24px; text-align: center;">
+        <div style="font: 900 36px/1 var(--font-display); color: var(--danger);">837</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-top: 8px; color: var(--white);">Performance Optimisers</div>
+        <div style="font-size: 13px; color: var(--grey-500); margin-top: 6px;">Online channel</div>
+        <div style="margin-top: 10px; padding: 8px; background: rgba(194,59,34,0.2); border-radius: 4px;">
+          <div style="font: 800 20px/1 var(--font-display); color: var(--danger);">-$25</div>
+          <div style="font-size: 10px; color: var(--grey-500); margin-top: 2px;">median profit each</div>
+        </div>
+      </div>
+      <div style="background: rgba(46,139,74,0.15); border: 1px solid rgba(46,139,74,0.3); border-radius: 10px; padding: 24px; text-align: center;">
+        <div style="font: 900 36px/1 var(--font-display); color: var(--success);">627</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-top: 8px; color: var(--white);">Home Gym Builders</div>
+        <div style="font-size: 13px; color: var(--grey-500); margin-top: 6px;">Sales-team-led</div>
+        <div style="margin-top: 10px; padding: 8px; background: rgba(46,139,74,0.2); border-radius: 4px;">
+          <div style="font: 800 20px/1 var(--font-display); color: var(--success);">+$1,271</div>
+          <div style="font-size: 10px; color: var(--grey-500); margin-top: 2px;">median profit each</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--grey-900); border-radius: 10px; padding: 28px; margin-bottom: 24px; border: 1px solid var(--grey-800);">
+      <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">The $1M Problem</div>
+      <div class="cols" style="gap: 32px;">
+        <div>
+          <p style="font-size: 15px; color: var(--grey-300); line-height: 1.7; margin-bottom: 16px;">Online Budget-Conscious Seekers cost us <strong style="color: var(--danger);">~$1.04M in losses</strong> last year ($165 x 6,322 customers), backed by <strong style="color: var(--white);">$1.8M in CAC</strong> to acquire them.</p>
+          <p style="font-size: 15px; color: var(--grey-300); line-height: 1.7;">The catch: we can't identify a deal seeker <em>before</em> they buy. But we <em>can</em> control what products we put ad spend behind and which audiences we target.</p>
+        </div>
+        <div>
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 12px;">The Lever</div>
+          <p style="font-size: 15px; color: var(--grey-300); line-height: 1.7;">Home Gym Builders buy <strong style="color: var(--orange);">all-in-one trainers, functional trainers, and full rack systems</strong>. Deal seekers buy entry-level benches, single accessories, and whatever's on sale. Shift ad creative and spend toward the products HGBs are building around, and we naturally filter the audience.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: var(--grey-900); border-radius: 10px; padding: 28px; border: 1px solid var(--grey-800);">
+      <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Redeployment Model</div>
+      <p style="font-size: 14px; color: var(--grey-400); margin-bottom: 20px;">If we reduce acquisition spend on low-margin product categories by 20%, here's what we can redeploy toward Home Gym Builder products and content.</p>
+      <table class="strat-table" style="font-size: 13px;">
+        <thead><tr><th style="color: var(--grey-400);">Action</th><th style="color: var(--grey-400);">Estimated Redeployment</th><th style="color: var(--grey-400);">Where It Goes</th></tr></thead>
+        <tbody>
+          <tr>
+            <td style="font-size: 12px; color: var(--white);">Reduce paid spend on entry-level / accessories</td>
+            <td style="color: var(--orange); font-weight: 800;">~$360K</td>
+            <td style="color: var(--grey-300); font-size: 12px;">20% of $1.8M Budget-Conscious CAC</td>
+          </tr>
+          <tr>
+            <td style="font-size: 12px; color: var(--white);">Redeploy to AIO / functional trainer campaigns</td>
+            <td style="color: var(--success); font-weight: 800;">+$180K</td>
+            <td style="color: var(--grey-300); font-size: 12px;">Prospecting: HGB product creative, AI Designer funnels</td>
+          </tr>
+          <tr>
+            <td style="font-size: 12px; color: var(--white);">Redeploy to content + organic</td>
+            <td style="color: var(--success); font-weight: 800;">+$100K</td>
+            <td style="color: var(--grey-300); font-size: 12px;">Blog, video, social targeting HGB JTBDs (convenience, building)</td>
+          </tr>
+          <tr>
+            <td style="font-size: 12px; color: var(--white);">Redeploy to retargeting + post-purchase</td>
+            <td style="color: var(--success); font-weight: 800;">+$80K</td>
+            <td style="color: var(--grey-300); font-size: 12px;">Phase 2 upsell, referral programs, advocacy experiments</td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top: 16px; padding: 14px 18px; background: rgba(242,100,34,0.15); border-radius: 6px;">
+        <p style="font-size: 13px; color: var(--grey-300); line-height: 1.5;"><strong style="color: var(--orange);">This is an experiment, not a switch.</strong> We test product-led targeting in one channel first, measure whether it shifts the customer mix toward HGBs, and scale what works. The experimentation engine is how we prove this out.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- STRATEGIC ANCHOR -->
+<div class="dark-band" id="anchor">
+  <section>
+    <div class="eyebrow">Strategic Anchor</div>
+    <h2 style="font-size: 44px; margin-bottom: 24px;">Everything serves<br>the <span style="color:var(--orange)">Home Gym Builder.</span></h2>
+    <p style="font-size: 16px; color: var(--grey-400); font-weight: 300; max-width: 640px; margin-bottom: 32px;">From strategy day: our most profitable customer is the Home Gym Builder. Every experiment we run should move us closer to reaching, converting, and retaining this customer.</p>
+    <div class="cascade" style="margin-bottom: 32px;">
+      <div class="cascade-box" style="background: var(--orange); color: var(--white);">
+        <div class="box-label" style="color: rgba(255,255,255,0.7);">BHAG</div>
+        <div class="box-value">30,000<br>Home Gyms</div>
+      </div>
+      <div class="cascade-arrow" style="color: var(--grey-600);">&rarr;</div>
+      <div class="cascade-box" style="background: var(--grey-800); color: var(--white); border: 1px solid var(--grey-700);">
+        <div class="box-label" style="color: var(--orange);">Annual Priority</div>
+        <div class="box-value" style="font-size: 14px;">HGB Marketing<br>Strategy by Oct 1</div>
+      </div>
+      <div class="cascade-arrow" style="color: var(--grey-600);">&rarr;</div>
+      <div class="cascade-box" style="background: var(--grey-800); color: var(--white); border: 1px solid var(--grey-700);">
+        <div class="box-label" style="color: var(--orange);">Growth Targets</div>
+        <div class="box-value" style="font-size: 14px;">B2C: 12% YOY<br>B2B: 5% MBR</div>
+      </div>
+      <div class="cascade-arrow" style="color: var(--grey-600);">&rarr;</div>
+      <div class="cascade-box" style="background: var(--grey-800); color: var(--white); border: 1px solid var(--orange);">
+        <div class="box-label" style="color: var(--orange);">How We Get There</div>
+        <div class="box-value" style="color: var(--orange);">Experimentation<br>Engine</div>
+      </div>
+    </div>
+    <div class="stat-row">
+      <div class="stat-item"><div class="val orange">$4,031</div><div class="label">Home Gym Builder AOV</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">$1,271</div><div class="label">Median Profit / Customer</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">2.5x</div><div class="label">vs Online-Only Profit</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">9%</div><div class="label">of Customers</div></div>
+      <div class="stat-item"><div class="val" style="color:var(--white)">27%</div><div class="label">of Revenue</div></div>
+    </div>
+    <div style="margin-top: 24px; padding: 14px 18px; background: rgba(242,100,34,0.15); border-radius: 6px; max-width: 720px;">
+      <p style="font-size: 13px; color: var(--grey-300); line-height: 1.5;"><strong style="color: var(--orange);">B2B note:</strong> Commercial website MVP now live. B2B has a $6M target at 5% MBR. The experimentation engine applies to both channels, with B2B experiments running through the new commercial site and commercial marketing.</p>
+    </div>
+  </section>
+</div>
+
+<!-- THE EXPERIMENT CYCLE -->
+<div class="grey-band" id="cycle">
+  <section>
+    <div class="eyebrow">The System</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Start with what you want to <span style="color:var(--orange)">learn.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-500); margin-bottom: 32px;">Every experiment starts with a learning goal and a line in the sand. Define the baseline, commit to what success looks like, then run the test. A miss isn't a failure. It's a validated learning that the hypothesis was wrong.</p>
+    <div class="cols" style="gap: 48px;">
+      <div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div style="background: var(--black); color: var(--white); border-radius: 10px; padding: 24px;">
+            <div style="font: 900 36px/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">01</div>
+            <div style="font: 800 18px/1.2 var(--font-display); margin-bottom: 8px;">Learn (the goal)</div>
+            <p style="font-size: 13px; color: var(--grey-400); line-height: 1.5;">What question are we trying to answer? Define the learning goal, measure the baseline, and commit to what success looks like before anything runs.</p>
+          </div>
+          <div style="background: var(--orange); color: var(--white); border-radius: 10px; padding: 24px;">
+            <div style="font: 900 36px/1 var(--font-display); color: rgba(255,255,255,0.5); margin-bottom: 8px;">02</div>
+            <div style="font: 800 18px/1.2 var(--font-display); margin-bottom: 8px;">Build</div>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5;">Design the smallest, fastest experiment that proves or disproves the hypothesis. One variable. Minimum viable test.</p>
+          </div>
+          <div style="background: var(--orange); color: var(--white); border-radius: 10px; padding: 24px;">
+            <div style="font: 900 36px/1 var(--font-display); color: rgba(255,255,255,0.5); margin-bottom: 8px;">03</div>
+            <div style="font: 800 18px/1.2 var(--font-display); margin-bottom: 8px;">Measure</div>
+            <p style="font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.5;">Track the metric you committed to against the baseline. Did we hit the success threshold? Don't move the goalposts.</p>
+          </div>
+          <div style="background: var(--black); color: var(--white); border-radius: 10px; padding: 24px;">
+            <div style="font: 900 36px/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">04</div>
+            <div style="font: 800 18px/1.2 var(--font-display); margin-bottom: 8px;">Learn (the output)</div>
+            <p style="font-size: 13px; color: var(--grey-400); line-height: 1.5;">Document the validated learning. Hit the threshold? Scale it. Missed? That's valuable too. Either way, it feeds the next hypothesis.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div style="background: var(--white); border-radius: 10px; padding: 28px; border: 1px solid var(--grey-200);">
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 14px;">Experiment Card Template</div>
+          <div style="background: var(--grey-50); border-radius: 6px; padding: 20px; font-size: 14px; line-height: 1.8; border-left: 3px solid var(--orange);">
+            <span style="color: var(--orange); font-weight: 700;">We want to learn:</span> [the question we're trying to answer]<br><br>
+            <span style="color: var(--orange); font-weight: 700;">Because</span> [observation / data],<br>
+            <span style="color: var(--orange); font-weight: 700;">we believe</span> [this change]<br>
+            <span style="color: var(--orange); font-weight: 700;">will cause</span> [expected outcome].<br><br>
+            <span style="color: var(--orange); font-weight: 700;">Baseline:</span> [current metric value, measured before we start]<br>
+            <span style="color: var(--orange); font-weight: 700;">Success looks like:</span> [specific threshold we commit to before running]<br>
+            <span style="color: var(--orange); font-weight: 700;">Duration:</span> [how long we run it]
+          </div>
+          <div style="margin-top: 16px; padding: 14px; background: var(--black); color: var(--white); border-radius: 6px; font-size: 13px; line-height: 1.6;">
+            <div style="font: 700 9px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--orange); margin-bottom: 6px;">Example</div>
+            <span style="color: var(--orange);">We want to learn:</span> Does lifestyle imagery outperform product shots for HGB prospecting?<br><br>
+            <span style="color: var(--orange);">Because</span> convenience is the #1 JTBD for Home Gym Builders,
+            <span style="color: var(--orange);">we believe</span> ad creative showing "garage gym lifestyle" imagery
+            <span style="color: var(--orange);">will cause</span> a 20% increase in CTR for Meta prospecting campaigns.<br><br>
+            <span style="color: var(--orange);">Baseline:</span> Current Meta prospecting CTR is 1.2%<br>
+            <span style="color: var(--orange);">Success looks like:</span> CTR hits 1.4%+ sustained over 2 weeks<br>
+            <span style="color: var(--orange);">Duration:</span> 2 weeks
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- THE FUNNEL -->
+<div class="dark-band" id="funnel">
+  <section>
+    <div class="eyebrow">The Full Funnel</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Every experiment maps to a <span style="color:var(--orange)">funnel stage.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-400); margin-bottom: 24px; max-width: 640px;">Tag each experiment to a stage. This helps us see where we're over-investing and where we have blind spots. The goal is proportional effort across the full journey.</p>
+    <div style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin-bottom: 24px;">
+      <div style="text-align: center; padding: 20px 12px; background: var(--grey-800); border-radius: 8px; border-top: 3px solid var(--orange);">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--orange); margin-bottom: 6px;">01</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Discovery</div>
+        <p style="font-size: 11px; color: var(--grey-500); line-height: 1.4;">They find us. SEO, social, paid, content, video, AI search.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Lionel</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Levi</span>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 20px 12px; background: var(--grey-800); border-radius: 8px; border-top: 3px solid var(--orange);">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--orange); margin-bottom: 6px;">02</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Interest</div>
+        <p style="font-size: 11px; color: var(--grey-500); line-height: 1.4;">They engage. Ad creative, landing pages, blog, lead magnets.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Joe</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Levi</span>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 20px 12px; background: var(--grey-800); border-radius: 8px; border-top: 3px solid var(--orange);">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--orange); margin-bottom: 6px;">03</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Appraisal</div>
+        <p style="font-size: 11px; color: var(--grey-500); line-height: 1.4;">They evaluate. PDPs, reviews, comparisons, trust signals, video demos.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Levi</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Lionel</span>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 20px 12px; background: var(--grey-800); border-radius: 8px; border-top: 3px solid var(--orange);">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--orange); margin-bottom: 6px;">04</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Confirmation</div>
+        <p style="font-size: 11px; color: var(--grey-500); line-height: 1.4;">They decide. Sales calls, email nurture, live chat, retargeting.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Joe</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Sales</span>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 20px 12px; background: var(--grey-800); border-radius: 8px; border-top: 3px solid var(--orange);">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--orange); margin-bottom: 6px;">05</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Conversion</div>
+        <p style="font-size: 11px; color: var(--grey-500); line-height: 1.4;">They buy. Checkout, pricing, finance, shipping, promotions.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Levi</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: var(--grey-700); color: var(--grey-300);">Joe</span>
+        </div>
+      </div>
+      <div style="text-align: center; padding: 20px 12px; background: var(--orange); color: var(--white); border-radius: 8px; border-top: 3px solid var(--white);">
+        <div style="font: 900 28px/1 var(--font-display); color: rgba(255,255,255,0.5); margin-bottom: 6px;">06</div>
+        <div style="font: 800 13px/1.2 var(--font-display); margin-bottom: 8px;">Advocacy</div>
+        <p style="font-size: 11px; color: rgba(255,255,255,0.8); line-height: 1.4;">They refer. Reviews, UGC, referrals, Phase 2, community.</p>
+        <div style="margin-top: 10px; display: flex; gap: 3px; flex-wrap: wrap; justify-content: center;">
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: rgba(255,255,255,0.2); color: var(--white);">Lionel</span>
+          <span class="pill" style="font-size: 8px; padding: 3px 6px; background: rgba(255,255,255,0.2); color: var(--white);">HubSpot</span>
+        </div>
+      </div>
+    </div>
+    <div class="cols" style="gap: 24px;">
+      <div class="card dark" style="padding: 20px; border-color: var(--orange);">
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 10px;">Advocacy Engine: HubSpot Post-Purchase</div>
+        <p style="font-size: 13px; color: var(--grey-400); line-height: 1.6; margin-bottom: 12px;">Todd has built a Closed Won workflow: 8 emails over 35 days. This is our starting point for turning buyers into advocates.</p>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          <div style="background: var(--grey-900); padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font: 800 11px/1 var(--font-display); color: var(--orange);">Day 7</div>
+            <div style="font-size: 10px; color: var(--grey-500); margin-top: 4px;">Refer a Friend<br>$50 voucher</div>
+          </div>
+          <div style="background: var(--grey-900); padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font: 800 11px/1 var(--font-display); color: var(--orange);">Day 21</div>
+            <div style="font-size: 10px; color: var(--grey-500); margin-top: 4px;">Share Your Space<br>+ review request</div>
+          </div>
+          <div style="background: var(--grey-900); padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font: 800 11px/1 var(--font-display); color: var(--orange);">Day 35</div>
+            <div style="font-size: 10px; color: var(--grey-500); margin-top: 4px;">Phase 2 upsell<br>booking</div>
+          </div>
+          <div style="background: var(--grey-900); padding: 10px; border-radius: 6px; text-align: center;">
+            <div style="font: 800 11px/1 var(--font-display); color: var(--orange);">Ongoing</div>
+            <div style="font-size: 10px; color: var(--grey-500); margin-top: 4px;">UGC + community<br>content feed</div>
+          </div>
+        </div>
+      </div>
+      <div class="card dark" style="padding: 20px;">
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 10px;">Tag Every Experiment</div>
+        <p style="font-size: 13px; color: var(--grey-400); line-height: 1.6; margin-bottom: 12px;">When you create an experiment card in Asana, tag it with a funnel stage. At monthly reviews we can spot gaps: if 80% of experiments are at Discovery and 0% at Advocacy, we're leaving money on the table.</p>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--grey-700); color: var(--grey-300);">Discovery</span>
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--grey-700); color: var(--grey-300);">Interest</span>
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--grey-700); color: var(--grey-300);">Appraisal</span>
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--grey-700); color: var(--grey-300);">Confirmation</span>
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--grey-700); color: var(--grey-300);">Conversion</span>
+          <span class="pill" style="font-size: 9px; padding: 4px 8px; background: var(--orange); color: var(--white);">Advocacy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- PRIORITISATION -->
+<div id="scoring">
+  <section>
+    <div class="eyebrow">Prioritisation</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Not all experiments are equal.</h2>
+    <p style="font-size: 14px; color: var(--grey-500); margin-bottom: 28px; max-width: 640px;">Score every experiment idea before you run it. Run the highest-scoring first. This prevents us from burning time on low-impact tests.</p>
+    <div class="cols" style="gap: 40px;">
+      <div>
+        <div class="cols-3" style="gap: 16px; margin-bottom: 24px;">
+          <div style="text-align: center; padding: 28px 20px; background: var(--black); color: var(--white); border-radius: 10px;">
+            <div style="font: 900 48px/1 var(--font-display); color: var(--orange);">I</div>
+            <div style="font: 800 16px/1 var(--font-display); margin-top: 8px; margin-bottom: 6px;">Impact</div>
+            <p style="font-size: 12px; color: var(--grey-400); line-height: 1.4;">If this works, how much does it move revenue or leads?</p>
+          </div>
+          <div style="text-align: center; padding: 28px 20px; background: var(--black); color: var(--white); border-radius: 10px;">
+            <div style="font: 900 48px/1 var(--font-display); color: var(--orange);">C</div>
+            <div style="font: 800 16px/1 var(--font-display); margin-top: 8px; margin-bottom: 6px;">Confidence</div>
+            <p style="font-size: 12px; color: var(--grey-400); line-height: 1.4;">How sure are we, based on data (not gut feel)?</p>
+          </div>
+          <div style="text-align: center; padding: 28px 20px; background: var(--black); color: var(--white); border-radius: 10px;">
+            <div style="font: 900 48px/1 var(--font-display); color: var(--orange);">E</div>
+            <div style="font: 800 16px/1 var(--font-display); margin-top: 8px; margin-bottom: 6px;">Ease</div>
+            <p style="font-size: 12px; color: var(--grey-400); line-height: 1.4;">How fast and cheap can we ship and measure this?</p>
+          </div>
+        </div>
+        <div style="background: var(--grey-50); border-radius: 8px; padding: 20px; text-align: center;">
+          <div style="font: 600 12px/1 var(--font-display); color: var(--grey-500); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px;">ICE Score</div>
+          <div style="font: 800 20px/1 var(--font-display);">(Impact + Confidence + Ease) / 3</div>
+          <p style="font-size: 13px; color: var(--grey-500); margin-top: 8px;">Score each 1-10. Run the highest-scoring experiment first.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 14px;">Example ICE Scoring</div>
+        <table class="strat-table" style="font-size: 13px;">
+          <thead><tr><th>Experiment</th><th>I</th><th>C</th><th>E</th><th>Score</th></tr></thead>
+          <tbody>
+            <tr style="background: var(--orange-soft);">
+              <td style="font-size: 12px;">Homepage hero: "Build Your Home Gym" CTA</td>
+              <td>9</td><td>7</td><td>8</td>
+              <td style="color: var(--orange); font-weight: 800;">8.0</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px;">Email: transformation story subject lines</td>
+              <td>7</td><td>6</td><td>9</td>
+              <td style="font-weight: 800;">7.3</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px;">Social: garage gym UGC series</td>
+              <td>6</td><td>5</td><td>8</td>
+              <td style="font-weight: 800;">6.3</td>
+            </tr>
+            <tr>
+              <td style="font-size: 12px;">Blog: inline product recs in HGB content</td>
+              <td>7</td><td>5</td><td>6</td>
+              <td style="font-weight: 800;">6.0</td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="margin-top: 16px; padding: 14px; background: var(--orange-soft); border-radius: 6px; font-size: 13px; line-height: 1.5; color: var(--grey-700);">
+          <strong style="color: var(--orange);">Rule of thumb:</strong> If you can't score it, you don't understand it well enough to test it yet. Go gather more data first.
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- CHANNEL OWNERSHIP -->
+<div class="dark-band" id="channels">
+  <section>
+    <div class="eyebrow">Channel Ownership</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Your channel. Your <span style="color:var(--orange)">experiments.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-400); margin-bottom: 28px; max-width: 640px;">Each of you owns a channel. You own the experiment backlog, the execution, and the learnings. The fortnightly sprint review is where we share, review, and course-correct together.</p>
+    <div class="cols-4" style="gap: 20px;">
+      <div class="owner-card" style="background: var(--grey-800); border-color: var(--grey-700);">
+        <div class="owner-name" style="color: var(--white);">Levi</div>
+        <div class="owner-role">Website + Blog</div>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 14px;">
+          <span class="pill orange" style="font-size: 10px; padding: 4px 10px;">Website</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">Blog</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">SEO</span>
+        </div>
+        <div class="hypothesis" style="background: var(--grey-900); color: var(--grey-300);">
+          <strong>Starter Hypothesis</strong>
+          Because Home Gym Builders spend $4k+ and start on the homepage, adding a "Build Your Home Gym" CTA above the fold will increase package page visits by 20%.
+        </div>
+      </div>
+      <div class="owner-card" style="background: var(--grey-800); border-color: var(--grey-700);">
+        <div class="owner-name" style="color: var(--white);">Joe</div>
+        <div class="owner-role">Design, Email + Ad Creative</div>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 14px;">
+          <span class="pill orange" style="font-size: 10px; padding: 4px 10px;">Email</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">Ads</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">Design</span>
+        </div>
+        <div class="hypothesis" style="background: var(--grey-900); color: var(--grey-300);">
+          <strong>Starter Hypothesis</strong>
+          Because convenience is the #1 JTBD, ad creative showing garage gym lifestyle will outperform product-only shots by 20% on CTR for Meta prospecting.
+        </div>
+      </div>
+      <div class="owner-card" style="background: var(--grey-800); border-color: var(--grey-700);">
+        <div class="owner-name" style="color: var(--white);">Lionel</div>
+        <div class="owner-role">Content, Social + Community</div>
+        <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 14px;">
+          <span class="pill orange" style="font-size: 10px; padding: 4px 10px;">Social</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">Video</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">Community</span>
+          <span class="pill" style="font-size: 10px; padding: 4px 10px; background: var(--grey-700); color: var(--white);">UGC</span>
+        </div>
+        <div class="hypothesis" style="background: var(--grey-900); color: var(--grey-300);">
+          <strong>Starter Hypothesis</strong>
+          Because 47% of Home Gym Builders are garage-based, a "Garage Gym of the Week" UGC series will increase community engagement by 25% vs product posts.
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- THE ASANA BOARD -->
+<div id="board">
+  <section>
+    <div class="eyebrow">The Operating System</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">One board. <span style="color:var(--orange)">One view.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-500); margin-bottom: 8px; max-width: 680px;">All experiments live on a single shared Asana board. One card per experiment. Filter by owner for your view, unfilter for the macro picture. Gary will set this up and manage the infrastructure.</p>
+    <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 24px;">
+      <span class="pill orange" style="font-size: 10px;">Owner: Levi / Joe / Lionel</span>
+      <span class="pill black" style="font-size: 10px;">Funnel Stage</span>
+      <span class="pill outline" style="font-size: 10px;">Channel</span>
+    </div>
+    <div class="board">
+      <div class="board-col">
+        <div class="col-title">Backlog</div>
+        <div class="board-card">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--grey-100); color: var(--grey-600);">ICE: 8.0</div>
+            <div class="card-tag" style="background: #E8F5E9; color: var(--success);">Levi</div>
+          </div>
+          Homepage "Build Your Home Gym" CTA
+        </div>
+        <div class="board-card">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--grey-100); color: var(--grey-600);">ICE: 7.3</div>
+            <div class="card-tag" style="background: #FFF3E0; color: #E65100;">Joe</div>
+          </div>
+          Transformation story email subject lines
+        </div>
+        <div class="board-card">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--grey-100); color: var(--grey-600);">ICE: 6.3</div>
+            <div class="card-tag" style="background: #E3F2FD; color: #1565C0;">Lionel</div>
+          </div>
+          Garage Gym of the Week UGC series
+        </div>
+      </div>
+      <div class="board-col">
+        <div class="col-title orange">This Sprint</div>
+        <div class="board-card" style="border-left: 3px solid var(--orange);">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--orange); color: var(--white);">Active</div>
+            <div class="card-tag" style="background: #E8F5E9; color: var(--success);">Levi</div>
+          </div>
+          Homepage CTA test<br>
+          <span style="font-size: 10px; color: var(--grey-500);">Metric: package page visits</span>
+        </div>
+        <div class="board-card" style="border-left: 3px solid var(--orange);">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--orange); color: var(--white);">Active</div>
+            <div class="card-tag" style="background: #E1F5FE; color: #0277BD;">Lionel</div>
+          </div>
+          60s transformation vs unboxing<br>
+          <span style="font-size: 10px; color: var(--grey-500);">Metric: view-through rate</span>
+        </div>
+      </div>
+      <div class="board-col">
+        <div class="col-title">Running</div>
+        <div class="board-card" style="border-left: 3px solid var(--blue);">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--blue); color: var(--white);">Live</div>
+            <div class="card-tag" style="background: #FFF3E0; color: #E65100;">Joe</div>
+          </div>
+          Garage lifestyle ad creative<br>
+          <span style="font-size: 10px; color: var(--grey-500);">Ends: Jul 14 / CTR target: 1.4%</span>
+        </div>
+      </div>
+      <div class="board-col">
+        <div class="col-title">Analysing</div>
+        <div class="board-card" style="border-left: 3px solid #9C27B0;">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: #9C27B0; color: var(--white);">Review</div>
+            <div class="card-tag" style="background: #E8F5E9; color: var(--success);">Levi</div>
+          </div>
+          Blog product rec widget<br>
+          <span style="font-size: 10px; color: var(--grey-500);">Result: +18% product clicks</span>
+        </div>
+      </div>
+      <div class="board-col">
+        <div class="col-title">Learnings</div>
+        <div class="board-card" style="border-left: 3px solid var(--success);">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--success); color: var(--white);">Win</div>
+            <div class="card-tag" style="background: #E3F2FD; color: #1565C0;">Lionel</div>
+          </div>
+          UGC garage gym series<br>
+          <span style="font-size: 10px; color: var(--grey-500);">+32% engagement. Scale to Reels.</span>
+        </div>
+        <div class="board-card" style="border-left: 3px solid var(--danger);">
+          <div style="display: flex; gap: 4px; margin-bottom: 4px;">
+            <div class="card-tag" style="background: var(--danger); color: var(--white);">Loss</div>
+            <div class="card-tag" style="background: #FFF3E0; color: #E65100;">Joe</div>
+          </div>
+          Product spec comparison table<br>
+          <span style="font-size: 10px; color: var(--grey-500);">No lift. Users want visuals not specs.</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 20px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <div style="background: var(--orange-soft); padding: 12px 18px; border-radius: 6px; font-size: 13px; color: var(--grey-700);">
+        <strong style="color: var(--orange);">Each card includes:</strong> Hypothesis (structured) / Primary metric / Funnel stage / Duration / Result / Learning / Next experiment
+      </div>
+      <div style="background: var(--grey-100); padding: 12px 18px; border-radius: 6px; font-size: 13px; color: var(--grey-700);">
+        <strong>Why one board?</strong> Macro view of experiment balance across channels. Cross-pollination is visible. Fortnightly sprint runs off one screen.
+      </div>
+    </div>
+
+    <!-- TWO BOARDS CALLOUT -->
+    <div style="margin-top: 28px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 0; align-items: stretch;">
+      <div style="background: var(--black); border-radius: 10px 0 0 10px; padding: 24px;">
+        <div style="font: 700 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 10px;">Experimentation Engine</div>
+        <div style="font: 800 18px/1.2 var(--font-display); color: var(--white); margin-bottom: 8px;">Learning</div>
+        <p style="font-size: 13px; color: var(--grey-400); line-height: 1.5;">Hypotheses, baselines, success criteria. Every card answers a question. Win or loss, the output is a validated learning.</p>
+        <div style="margin-top: 12px; display: flex; gap: 4px; flex-wrap: wrap;">
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">A/B tests</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Channel tests</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Messaging tests</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Format tests</span>
+        </div>
+      </div>
+      <div style="background: var(--grey-800); display: flex; align-items: center; justify-content: center; padding: 0 20px;">
+        <div style="text-align: center;">
+          <div style="font: 900 20px/1 var(--font-display); color: var(--orange);">&larr; &rarr;</div>
+          <div style="font: 600 9px/1.3 var(--font-display); color: var(--grey-500); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.1em;">Feeds into</div>
+        </div>
+      </div>
+      <div style="background: var(--black); border-radius: 0 10px 10px 0; padding: 24px;">
+        <div style="font: 700 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-500); margin-bottom: 10px;">2026 Marketing Calendar</div>
+        <div style="font: 800 18px/1.2 var(--font-display); color: var(--white); margin-bottom: 8px;">Execution</div>
+        <p style="font-size: 13px; color: var(--grey-400); line-height: 1.5;">Product drops, sales, EOFY, activations, collaborations, partnerships. Known playbook. Fixed dates. The calendar drives the business.</p>
+        <div style="margin-top: 12px; display: flex; gap: 4px; flex-wrap: wrap;">
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Product launches</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Sales events</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">HYROX / events</span>
+          <span class="pill" style="font-size: 9px; padding: 3px 8px; background: var(--grey-800); color: var(--grey-400);">Collabs</span>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 12px; padding: 12px 18px; background: var(--orange-soft); border-radius: 6px; font-size: 13px; color: var(--grey-700); line-height: 1.5;">
+      <strong style="color: var(--orange);">The connection:</strong> A sale or activation can spawn an experiment ("During EOFY, test GWP messaging vs discount messaging on the landing page"). The campaign lives on the marketing calendar. The test lives here. The learning feeds back into how we run the next one.
+    </div>
+  </section>
+</div>
+
+<!-- GARY: YOUR AI INFRASTRUCTURE -->
+<div class="orange-band" id="gary">
+  <section>
+    <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.18em; color: rgba(255,255,255,0.6); margin-bottom: 12px;">Your AI Teammate</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Gary handles the <span style="color: var(--black);">admin.</span></h2>
+    <p style="font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 300; max-width: 680px; margin-bottom: 32px;">You focus on the creative and strategic work. Gary (Josh's AI assistant) runs the experiment infrastructure so you spend zero time on board admin, data pulls, or write-ups.</p>
+    <div class="cols-3" style="gap: 20px; margin-bottom: 28px;">
+      <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 24px;">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--black); margin-bottom: 8px;">Set Up</div>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6;">Gary creates the Asana board, configures custom fields (Owner, Funnel Stage, Channel, ICE Score), and populates starter experiment cards from each person's backlog ideas.</p>
+      </div>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 24px;">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--black); margin-bottom: 8px;">Review</div>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6;">When an experiment completes, Gary pulls the performance data (GA4, Meta, Shopify, Search Console), writes up the learning, and suggests the next experiment based on what the data says.</p>
+      </div>
+      <div style="background: rgba(0,0,0,0.2); border-radius: 10px; padding: 24px;">
+        <div style="font: 900 28px/1 var(--font-display); color: var(--black); margin-bottom: 8px;">Rank</div>
+        <p style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.6;">Gary ICE-scores new experiment ideas using actual channel data (traffic, conversion rates, past results) so the backlog is always prioritised and ready to go.</p>
+      </div>
+    </div>
+    <div style="background: rgba(0,0,0,0.25); border-radius: 10px; padding: 28px;">
+      <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--black); margin-bottom: 16px;">How to Talk to Gary</div>
+      <div class="cols" style="gap: 32px;">
+        <div>
+          <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 32px; height: 32px; background: var(--black); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--orange); font: 800 14px/1 var(--font-display); flex-shrink: 0;">1</div>
+            <div>
+              <div style="font: 700 15px/1.2 var(--font-display);">Comment on an Asana card</div>
+              <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">@mention Gary on any experiment card. He monitors comments and will action your request.</p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: start; gap: 12px; margin-bottom: 16px;">
+            <div style="width: 32px; height: 32px; background: var(--black); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--orange); font: 800 14px/1 var(--font-display); flex-shrink: 0;">2</div>
+            <div>
+              <div style="font: 700 15px/1.2 var(--font-display);">Ask for data</div>
+              <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">"@Gary what was the CTR on this campaign last week?" He'll pull it from GA4/Meta/Shopify and post it back on the card.</p>
+            </div>
+          </div>
+          <div style="display: flex; align-items: start; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: var(--black); border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--orange); font: 800 14px/1 var(--font-display); flex-shrink: 0;">3</div>
+            <div>
+              <div style="font: 700 15px/1.2 var(--font-display);">Request a write-up</div>
+              <p style="font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px;">"@Gary this experiment is done, write up the learning." He'll document the result, update the card, and move it to Learnings.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255,255,255,0.5); margin-bottom: 12px;">What Gary Has Access To</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">GA4 Analytics</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Meta Ads</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Google Ads</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Shopify</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Search Console</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">HubSpot</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Asana</div>
+            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 6px; font: 600 12px/1.3 var(--font-display); color: var(--white);">Customer Data</div>
+          </div>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 10px; line-height: 1.4;">Gary can cross-reference data across all these platforms to score experiments, validate results, and spot opportunities you might not see from one channel alone.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- THE WEEKLY RHYTHM -->
+<div class="grey-band" id="rhythm">
+  <section>
+    <div class="eyebrow">Cadence</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">The fortnightly <span style="color:var(--orange)">sprint.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-500); margin-bottom: 28px; max-width: 640px;">Every fortnight at the marketing meeting, each person shares a 5-minute update on their experiments. Same format, every time. Two weeks gives experiments enough data to be meaningful.</p>
+    <div class="cols" style="gap: 40px;">
+      <div>
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 18px/1 var(--font-display); flex-shrink: 0;">1</div>
+            <div>
+              <div style="font: 800 16px/1 var(--font-display);">What's running?</div>
+              <p style="font-size: 13px; color: var(--grey-500); margin-top: 4px;">Quick status on live experiments. Any issues?</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 18px/1 var(--font-display); flex-shrink: 0;">2</div>
+            <div>
+              <div style="font: 800 16px/1 var(--font-display);">What did we learn?</div>
+              <p style="font-size: 13px; color: var(--grey-500); margin-top: 4px;">Share results from completed experiments. Win or loss, the learning is the value.</p>
+            </div>
+          </div>
+        </div>
+        <div style="margin-bottom: 20px;">
+          <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 18px/1 var(--font-display); flex-shrink: 0;">3</div>
+            <div>
+              <div style="font: 800 16px/1 var(--font-display);">What's next?</div>
+              <p style="font-size: 13px; color: var(--grey-500); margin-top: 4px;">Announce the next experiment launching. Get team input on the hypothesis.</p>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 40px; height: 40px; background: var(--black); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--orange); font: 800 18px/1 var(--font-display); flex-shrink: 0;">+</div>
+            <div>
+              <div style="font: 800 16px/1 var(--font-display);">Cross-pollinate</div>
+              <p style="font-size: 13px; color: var(--grey-500); margin-top: 4px;">A learning in one channel often sparks an experiment in another. That's the compound effect.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="card" style="background: var(--black); color: var(--white); padding: 28px;">
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Experiment Velocity Target</div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+            <div style="text-align: center;">
+              <div style="font: 900 48px/1 var(--font-display); color: var(--orange);">1</div>
+              <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-top: 6px;">Experiment per person per fortnight</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="font: 900 48px/1 var(--font-display); color: var(--white);">~78</div>
+              <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-top: 6px;">Total experiments per year</div>
+            </div>
+          </div>
+          <div style="border-top: 1px solid var(--grey-700); padding-top: 16px;">
+            <p style="font-size: 13px; color: var(--grey-400); line-height: 1.6;">3 people x 1 experiment/fortnight x 26 fortnights = ~78 experiments per year. If even 20% are winners, that's 15+ compounding improvements across every channel driving us toward 12% growth.</p>
+          </div>
+        </div>
+        <div style="margin-top: 16px; padding: 14px 18px; background: var(--orange-soft); border-radius: 6px;">
+          <p style="font-size: 13px; color: var(--grey-700); line-height: 1.5;"><strong style="color: var(--orange);">The rule:</strong> It's better to run a small experiment and learn something than to plan a perfect one that never launches.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- MEASURING SUCCESS -->
+<div class="dark-band" id="metrics">
+  <section>
+    <div class="eyebrow">Measuring Success</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">How we know it's <span style="color:var(--orange)">working.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-400); margin-bottom: 28px; max-width: 640px;">We track two layers: the experiments themselves (are we learning and improving?) and the business outcomes they drive (are we growing?).</p>
+    <div class="cols" style="gap: 40px;">
+      <div>
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Experiment Health Metrics</div>
+        <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font: 700 14px/1 var(--font-display);">Experiment velocity</span>
+            <span style="font: 800 14px/1 var(--font-display); color: var(--orange);">1 per person / fortnight</span>
+          </div>
+          <p style="font-size: 12px; color: var(--grey-500); margin-top: 4px;">Are we running enough experiments to compound?</p>
+        </div>
+        <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font: 700 14px/1 var(--font-display);">Win rate</span>
+            <span style="font: 800 14px/1 var(--font-display); color: var(--orange);">Target 20%+</span>
+          </div>
+          <p style="font-size: 12px; color: var(--grey-500); margin-top: 4px;">Industry average is 10-30%. If we're below 10%, we're not being bold enough. Above 30%, not being risky enough.</p>
+        </div>
+        <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font: 700 14px/1 var(--font-display);">Learning rate</span>
+            <span style="font: 800 14px/1 var(--font-display); color: var(--orange);">100%</span>
+          </div>
+          <p style="font-size: 12px; color: var(--grey-500); margin-top: 4px;">Every experiment, win or loss, must have a documented learning. No wasted tests.</p>
+        </div>
+        <div style="padding: 16px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font: 700 14px/1 var(--font-display);">Time to result</span>
+            <span style="font: 800 14px/1 var(--font-display); color: var(--orange);">2-4 weeks</span>
+          </div>
+          <p style="font-size: 12px; color: var(--grey-500); margin-top: 4px;">Most experiments should resolve within a month. If it takes longer, scope it smaller.</p>
+        </div>
+      </div>
+      <div>
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Business Outcomes (Lagging)</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+          <div class="card dark" style="text-align: center; padding: 24px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 8px;">B2C Primary</div>
+            <div style="font: 900 44px/1 var(--font-display); color: var(--orange);">12%</div>
+            <div style="font: 700 12px/1 var(--font-display); margin-top: 6px;">YOY Revenue Growth</div>
+          </div>
+          <div class="card dark" style="text-align: center; padding: 24px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 8px;">B2B Primary</div>
+            <div style="font: 900 44px/1 var(--font-display); color: var(--white);">5%</div>
+            <div style="font: 700 12px/1 var(--font-display); margin-top: 6px;">MBR ($6M Target)</div>
+          </div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="card dark" style="text-align: center; padding: 20px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 6px;">Leading</div>
+            <div style="font: 800 20px/1 var(--font-display); color: var(--white);">Leads</div>
+            <p style="font-size: 11px; color: var(--grey-500); margin-top: 4px;">Qualified leads into sales team</p>
+          </div>
+          <div class="card dark" style="text-align: center; padding: 20px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 6px;">Leading</div>
+            <div style="font: 800 20px/1 var(--font-display); color: var(--white);">CVR</div>
+            <p style="font-size: 11px; color: var(--grey-500); margin-top: 4px;">Website + funnel conversion rate</p>
+          </div>
+          <div class="card dark" style="text-align: center; padding: 20px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 6px;">Leading</div>
+            <div style="font: 800 20px/1 var(--font-display); color: var(--white);">AOV</div>
+            <p style="font-size: 11px; color: var(--grey-500); margin-top: 4px;">Average order value growth</p>
+          </div>
+          <div class="card dark" style="text-align: center; padding: 20px;">
+            <div style="font: 600 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 6px;">Leading</div>
+            <div style="font: 800 20px/1 var(--font-display); color: var(--white);">HGBs</div>
+            <p style="font-size: 11px; color: var(--grey-500); margin-top: 4px;">Home Gym Builder conversions</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- FIRST SPRINT -->
+<div id="sprint">
+  <section>
+    <div class="eyebrow">Getting Started</div>
+    <h2 style="font-size: 36px; margin-bottom: 8px;">Your first <span style="color:var(--orange)">sprint.</span></h2>
+    <p style="font-size: 14px; color: var(--grey-500); margin-bottom: 24px;">Gary sets up the board. You bring 5 experiment ideas for your channel by Friday. Don't worry about perfect formatting. Gary will structure and ICE-score them. Pick your top one and launch it.</p>
+    <div class="cols-4" style="gap: 20px;">
+      <div class="card highlight" style="padding: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <div style="width: 32px; height: 32px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 14px/1 var(--font-display);">L</div>
+          <div style="font: 800 16px/1 var(--font-display);">Levi</div>
+        </div>
+        <div style="font: 700 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 10px;">Website + Blog</div>
+        <ul style="font-size: 13px; line-height: 1.7; color: var(--grey-600); padding-left: 16px;">
+          <li>Homepage CTA: "Build Your Home Gym"</li>
+          <li>Blog content targeting HGB JTBDs</li>
+          <li>Collection page layout for home gym packages</li>
+          <li>PDP trust signals placement</li>
+          <li>Internal search optimisation for "home gym"</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 10px; background: var(--orange-soft); border-radius: 4px; font-size: 11px; color: var(--grey-700);">
+          <strong>Key metrics:</strong> Bounce rate, product page visits, package page CTR, blog-to-product CTR
+        </div>
+      </div>
+      <div class="card highlight" style="padding: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <div style="width: 32px; height: 32px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 14px/1 var(--font-display);">J</div>
+          <div style="font: 800 16px/1 var(--font-display);">Joe</div>
+        </div>
+        <div style="font: 700 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 10px;">Design, Email + Ad Creative</div>
+        <ul style="font-size: 13px; line-height: 1.7; color: var(--grey-600); padding-left: 16px;">
+          <li>JTBD-led ad creative (lifestyle vs product)</li>
+          <li>Email subject line testing (transformation stories)</li>
+          <li>Ad format testing (carousel vs single image)</li>
+          <li>Retargeting creative for package page visitors</li>
+          <li>Email send time optimisation</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 10px; background: var(--orange-soft); border-radius: 4px; font-size: 11px; color: var(--grey-700);">
+          <strong>Key metrics:</strong> CTR, ROAS, email open rate, email click rate, CPA
+        </div>
+      </div>
+      <div class="card highlight" style="padding: 24px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+          <div style="width: 32px; height: 32px; background: var(--orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--white); font: 800 14px/1 var(--font-display);">L</div>
+          <div style="font: 800 16px/1 var(--font-display);">Lionel</div>
+        </div>
+        <div style="font: 700 10px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-500); margin-bottom: 10px;">Social + Community</div>
+        <ul style="font-size: 13px; line-height: 1.7; color: var(--grey-600); padding-left: 16px;">
+          <li>Garage Gym of the Week UGC series</li>
+          <li>JTBD-themed content pillars test</li>
+          <li>Community engagement format (polls vs stories vs posts)</li>
+          <li>Customer transformation spotlight series</li>
+          <li>Social proof: sales team design walkthroughs</li>
+        </ul>
+        <div style="margin-top: 12px; padding: 10px; background: var(--orange-soft); border-radius: 4px; font-size: 11px; color: var(--grey-700);">
+          <strong>Key metrics:</strong> Engagement rate, DM inquiries, link clicks, follower growth, UGC submissions
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ACTIONS -->
+<div class="dark-band" id="actions">
+  <section>
+    <div class="eyebrow">This Sprint</div>
+    <h2 style="font-size: 44px; margin-bottom: 24px;">Actions from<br><span style="color:var(--orange)">today.</span></h2>
+    <div style="max-width: 720px;">
+      <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; gap: 16px; align-items: start;">
+        <div style="width: 32px; height: 32px; border: 2px solid var(--orange); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font: 800 14px/1 var(--font-display); color: var(--orange);">1</div>
+        <div>
+          <div style="font: 700 16px/1.3 var(--font-display);">Gary sets up the shared Asana board</div>
+          <p style="font-size: 14px; color: var(--grey-400); margin-top: 4px;">5 columns, custom fields (Owner, Funnel Stage, Channel, ICE Score). Done by end of day.</p>
+          <div style="margin-top: 6px;"><span class="pill" style="background: var(--orange); color: var(--white); font-size: 10px;">Gary</span> <span class="pill outline" style="border-color: var(--grey-600); color: var(--grey-400); font-size: 10px;">Today</span></div>
+        </div>
+      </div>
+      <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; gap: 16px; align-items: start;">
+        <div style="width: 32px; height: 32px; border: 2px solid var(--orange); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font: 800 14px/1 var(--font-display); color: var(--orange);">2</div>
+        <div>
+          <div style="font: 700 16px/1.3 var(--font-display);">Write 5 experiment ideas in your channel</div>
+          <p style="font-size: 14px; color: var(--grey-400); margin-top: 4px;">Jot down rough ideas. Don't worry about formatting. @Gary on the board and he'll turn them into structured hypothesis cards and ICE score them.</p>
+          <div style="margin-top: 6px;"><span class="pill" style="background: var(--grey-700); color: var(--white); font-size: 10px;">Everyone</span> <span class="pill outline" style="border-color: var(--grey-600); color: var(--grey-400); font-size: 10px;">By Friday</span></div>
+        </div>
+      </div>
+      <div style="padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; gap: 16px; align-items: start;">
+        <div style="width: 32px; height: 32px; border: 2px solid var(--orange); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font: 800 14px/1 var(--font-display); color: var(--orange);">3</div>
+        <div>
+          <div style="font: 700 16px/1.3 var(--font-display);">Pick your top experiment and move it to "This Sprint"</div>
+          <p style="font-size: 14px; color: var(--grey-400); margin-top: 4px;">Launch it. This is your first experiment under the new system.</p>
+          <div style="margin-top: 6px;"><span class="pill" style="background: var(--grey-700); color: var(--white); font-size: 10px;">Everyone</span> <span class="pill outline" style="border-color: var(--grey-600); color: var(--grey-400); font-size: 10px;">By next Tuesday</span></div>
+        </div>
+      </div>
+      <div style="padding: 16px 0; display: flex; gap: 16px; align-items: start;">
+        <div style="width: 32px; height: 32px; border: 2px solid var(--orange); border-radius: 4px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font: 800 14px/1 var(--font-display); color: var(--orange);">4</div>
+        <div>
+          <div style="font: 700 16px/1.3 var(--font-display);">First experiment review at next fortnight's sprint</div>
+          <p style="font-size: 14px; color: var(--grey-400); margin-top: 4px;">5 minutes each: what's running, what did you learn, what's next. Gary prepares the meeting brief.</p>
+          <div style="margin-top: 6px;"><span class="pill" style="background: var(--grey-700); color: var(--white); font-size: 10px;">Everyone</span> <span class="pill outline" style="border-color: var(--grey-600); color: var(--grey-400); font-size: 10px;">Next Tuesday</span></div>
+        </div>
+      </div>
+    </div>
+    <div style="margin-top: 32px; padding: 18px 24px; background: var(--orange); border-radius: 8px; max-width: 720px;">
+      <p style="font: 700 16px/1.35 var(--font-display); color: var(--white);">12% growth doesn't come from 12 big bets. It comes from dozens of small experiments, compounding every fortnight.</p>
+    </div>
+  </section>
+</div>
+
+<!-- DISCUSSION -->
+<div id="discussion">
+  <section style="padding-bottom: 120px;">
+    <div class="eyebrow">Open Discussion</div>
+    <h2 style="font-size: clamp(42px,6vw,64px); margin-bottom: 24px;">Let's <span style="color:var(--orange)">discuss.</span></h2>
+    <div class="cols" style="gap: 40px;">
+      <div>
+        <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Questions for the team</div>
+        <div style="padding: 14px 0; border-bottom: 1px solid var(--grey-200);">
+          <p style="font: 600 15px/1.5 var(--font-display);">What's the first experiment you'd want to run in your channel?</p>
+        </div>
+        <div style="padding: 14px 0; border-bottom: 1px solid var(--grey-200);">
+          <p style="font: 600 15px/1.5 var(--font-display);">Where do you feel the most uncertainty right now?</p>
+        </div>
+        <div style="padding: 14px 0; border-bottom: 1px solid var(--grey-200);">
+          <p style="font: 600 15px/1.5 var(--font-display);">What data do you need that you don't currently have access to?</p>
+        </div>
+        <div style="padding: 14px 0;">
+          <p style="font: 600 15px/1.5 var(--font-display);">How can we help each other's experiments succeed?</p>
+        </div>
+      </div>
+      <div>
+        <div style="background: var(--grey-50); border-radius: 10px; padding: 28px;">
+          <div style="font: 700 11px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--orange); margin-bottom: 16px;">Remember</div>
+          <div style="padding: 14px 18px; background: var(--white); border-radius: 6px; margin-bottom: 12px; border-left: 3px solid var(--orange);">
+            <p style="font-size: 14px; line-height: 1.5; color: var(--grey-700);">Every experiment must serve the <strong>Home Gym Builder</strong>.</p>
+          </div>
+          <div style="padding: 14px 18px; background: var(--white); border-radius: 6px; margin-bottom: 12px; border-left: 3px solid var(--orange);">
+            <p style="font-size: 14px; line-height: 1.5; color: var(--grey-700);">A failed experiment with a clear learning is a <strong>win</strong>.</p>
+          </div>
+          <div style="padding: 14px 18px; background: var(--white); border-radius: 6px; margin-bottom: 12px; border-left: 3px solid var(--orange);">
+            <p style="font-size: 14px; line-height: 1.5; color: var(--grey-700);">Speed beats perfection. <strong>Launch small, learn fast.</strong></p>
+          </div>
+          <div style="padding: 14px 18px; background: var(--white); border-radius: 6px; border-left: 3px solid var(--black);">
+            <p style="font-size: 14px; line-height: 1.5; color: var(--grey-700);">The fortnightly sprint review is sacred. <strong>Come prepared.</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Nav show/hide on scroll -->
+<script>
+let lastScroll = 0;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const st = window.scrollY;
+  if (st > lastScroll && st > 80) nav.style.transform = 'translateY(-100%)';
+  else nav.style.transform = 'translateY(0)';
+  lastScroll = st;
+}, { passive: true });
+
+// Highlight active nav link
+const links = nav.querySelectorAll('a[href^="#"]');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.style.color = '');
+      const active = nav.querySelector(`a[href="#${e.target.id}"]`);
+      if (active) active.style.color = '#F26422';
+    }
+  });
+}, { rootMargin: '-40% 0px -50% 0px' });
+document.querySelectorAll('[id]').forEach(s => { if (s.id !== 'nav') observer.observe(s); });
+</script>
+
+</body>
+</html>

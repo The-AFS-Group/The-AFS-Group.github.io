@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EOFY 2026 — Sales Team Briefing</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gaf-orange: #F26422;
+  --gaf-orange-hover: #D85418;
+  --gaf-orange-soft: #FDE9DD;
+  --gaf-grey-50: #FAFAFA;
+  --gaf-grey-100: #F0F0F0;
+  --gaf-grey-200: #E2E2E2;
+  --gaf-grey-400: #A0A0A0;
+  --gaf-grey-500: #717171;
+  --gaf-grey-600: #555555;
+  --gaf-grey-700: #424242;
+  --gaf-grey-800: #2B2B2B;
+  --gaf-grey-900: #1A1A1A;
+  --rev-green: #25B34B;
+  --rev-sage: #ABB99C;
+  --rev-forest: #485D4D;
+  --bg: #FFFFFF;
+  --bg-subtle: #FAFAFA;
+  --fg-1: #000000;
+  --fg-2: #555555;
+  --fg-3: #717171;
+  --fg-4: #A0A0A0;
+  --border-1: #E2E2E2;
+  --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+  --font-sans: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --shadow-sm: 0 2px 4px rgba(21,21,19,.06), 0 1px 2px rgba(21,21,19,.04);
+  --shadow-md: 0 6px 14px rgba(21,21,19,.08), 0 2px 4px rgba(21,21,19,.04);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-base: 200ms;
+  --accent: var(--gaf-orange);
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font: 400 16px/1.55 var(--font-sans);
+  color: var(--fg-1);
+  background: var(--gaf-grey-900);
+  overflow-x: hidden;
+}
+h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
+
+.progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px; z-index: 100;
+  background: var(--gaf-orange);
+  width: 0%;
+  transition: width 150ms linear;
+}
+.scroll-container {
+  height: 100vh;
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+.section {
+  min-height: 100vh;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 80px 64px;
+  position: relative;
+  overflow: hidden;
+}
+.section.dark { background: var(--gaf-grey-900); color: #FFFFFF; }
+.section.light { background: var(--bg); color: var(--fg-1); }
+.section.subtle { background: var(--bg-subtle); color: var(--fg-1); }
+.section.rev-dark { background: #0a120a; color: #FFFFFF; }
+.section.rev-light { background: #f5f7f5; color: var(--fg-1); }
+.section-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* Dot nav */
+.dot-nav {
+  position: fixed; right: 24px; top: 50%; transform: translateY(-50%);
+  z-index: 90; display: flex; flex-direction: column; align-items: flex-end; gap: 14px;
+}
+.dot-nav a {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; transition: all var(--dur-base) var(--ease-out);
+}
+.dot-nav a .dot-label {
+  font: 700 10px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.1em; opacity: 0; transform: translateX(8px);
+  transition: all var(--dur-base) var(--ease-out); white-space: nowrap;
+  color: var(--gaf-grey-400);
+}
+.dot-nav a.active .dot-label, .dot-nav a:hover .dot-label {
+  opacity: 1; transform: translateX(0);
+}
+.dot-nav a .dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gaf-grey-500); transition: all var(--dur-base) var(--ease-out); flex-shrink: 0;
+}
+.dot-nav a.active .dot {
+  box-shadow: 0 0 0 3px rgba(242,100,34,0.3); transform: scale(1.3);
+}
+.dot-nav a.active .dot, .dot-nav a:hover .dot { background: var(--gaf-orange); }
+.dot-nav a.active .dot-label { color: var(--gaf-orange); }
+.dot-nav a.rev.active .dot { background: var(--rev-green); box-shadow: 0 0 0 3px rgba(37,179,75,0.3); }
+.dot-nav a.rev:hover .dot { background: var(--rev-green); }
+.dot-nav a.rev.active .dot-label { color: var(--rev-green); }
+.dot-nav .dot-divider {
+  width: 1px; height: 16px; background: var(--gaf-grey-700); align-self: flex-end; margin-right: 4px;
+}
+
+/* Typography */
+.eyebrow {
+  font: 700 12px/1.3 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--gaf-orange); margin-bottom: 16px;
+}
+.eyebrow.rev { color: var(--rev-green); }
+.display-xl {
+  font: 900 clamp(40px, 7vw, 80px)/1.05 var(--font-display); letter-spacing: -0.02em;
+}
+.display-lg {
+  font: 700 clamp(32px, 5vw, 56px)/1.08 var(--font-display); letter-spacing: -0.01em;
+}
+.display-md {
+  font: 700 clamp(28px, 4vw, 44px)/1.10 var(--font-display);
+}
+.subtitle {
+  font: 400 18px/1.55 var(--font-sans); max-width: 640px; margin-top: 16px;
+}
+.section.dark .subtitle, .section.rev-dark .subtitle { color: var(--gaf-grey-400); }
+.section.light .subtitle, .section.subtle .subtitle, .section.rev-light .subtitle { color: var(--fg-2); }
+
+/* KPI grid */
+.kpi-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1px; margin-top: 48px; background: rgba(255,255,255,0.08);
+  border-radius: var(--radius-lg); overflow: hidden; border: 1px solid rgba(255,255,255,0.08);
+}
+.kpi-card { padding: 32px; background: var(--gaf-grey-900); }
+.section.rev-dark .kpi-card { background: #0a120a; }
+.kpi-num {
+  font: 700 11px/1 var(--font-display); color: var(--gaf-orange);
+  letter-spacing: 0.06em; margin-bottom: 16px;
+}
+.rev .kpi-num, .kpi-num.rev { color: var(--rev-green); }
+.kpi-value {
+  font: 800 clamp(32px, 4vw, 48px)/1 var(--font-display); color: #FFFFFF;
+  font-variant-numeric: tabular-nums; margin-bottom: 8px;
+}
+.kpi-label { font: 600 14px/1.3 var(--font-display); color: #FFFFFF; margin-bottom: 4px; }
+.kpi-sub { font: 400 13px/1.3 var(--font-sans); color: var(--gaf-grey-500); }
+.kpi-badge {
+  font: 700 11px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--gaf-orange); margin-top: 16px;
+}
+.kpi-badge.rev { color: var(--rev-green); }
+
+/* Highlight list */
+.highlight-list { display: flex; flex-direction: column; gap: 20px; margin-top: 40px; max-width: 800px; }
+.highlight-item { display: flex; gap: 16px; align-items: flex-start; }
+.highlight-num { font: 700 14px/1 var(--font-display); color: var(--gaf-orange); min-width: 28px; padding-top: 2px; }
+.highlight-num.rev { color: var(--rev-green); }
+.highlight-text { font: 400 16px/1.5 var(--font-sans); }
+
+/* Offer cards */
+.offer-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px; margin-top: 40px;
+}
+.offer-card {
+  padding: 20px; border-radius: var(--radius-md); border: 1px solid var(--border-1);
+  background: var(--bg); box-shadow: var(--shadow-sm);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.offer-name { font: 600 15px/1.3 var(--font-display); color: var(--fg-1); }
+.offer-badge {
+  font: 700 13px/1 var(--font-display); color: #FFFFFF; background: var(--gaf-orange);
+  padding: 6px 12px; border-radius: 999px; white-space: nowrap;
+}
+
+/* Value add cards */
+.value-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px;
+}
+.value-card {
+  padding: 20px 24px; border-radius: var(--radius-md);
+  background: var(--gaf-orange); color: #FFFFFF;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.value-sku { font: 700 16px/1 var(--font-display); }
+.value-offer { font: 400 14px/1.3 var(--font-sans); opacity: 0.9; text-align: right; }
+
+/* Timeline */
+.timeline { margin-top: 40px; display: flex; flex-direction: column; gap: 16px; }
+.tl-phase {
+  padding: 24px 28px; border-radius: var(--radius-md);
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+}
+.tl-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.tl-phase-name {
+  font: 700 13px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.15em; color: #FFFFFF;
+}
+.tl-dates { font: 600 13px/1 var(--font-display); color: var(--gaf-orange); margin-left: auto; }
+.tl-items { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 32px; }
+.tl-item { display: flex; align-items: center; gap: 8px; padding: 4px 0; }
+.tl-item-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gaf-grey-500); flex-shrink: 0; }
+.tl-item-text { font: 400 14px/1.3 var(--font-sans); color: var(--gaf-grey-400); }
+.tl-item-owner { font: 600 12px/1 var(--font-display); color: var(--gaf-orange); margin-left: auto; white-space: nowrap; }
+
+/* Channel grid */
+.channel-grid {
+  display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 40px;
+}
+.channel-card {
+  padding: 28px; border-radius: var(--radius-md); border: 1px solid var(--border-1);
+  background: var(--bg); box-shadow: var(--shadow-sm);
+}
+.channel-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-md);
+  background: rgba(242,100,34,0.08); display: flex; align-items: center;
+  justify-content: center; margin-bottom: 16px;
+}
+.channel-icon svg { width: 22px; height: 22px; stroke: var(--gaf-orange); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.channel-name { font: 700 17px/1.2 var(--font-display); color: var(--fg-1); margin-bottom: 6px; }
+.channel-desc { font: 400 14px/1.5 var(--font-sans); color: var(--fg-2); }
+.channel-owner { font: 600 12px/1 var(--font-display); color: var(--gaf-orange); margin-top: 12px; }
+
+/* Check grid */
+.check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
+.check-card {
+  display: flex; align-items: center; gap: 16px; padding: 24px;
+  border-radius: var(--radius-md); border: 1px solid var(--border-1);
+  background: var(--bg); box-shadow: var(--shadow-sm);
+}
+.check-icon {
+  width: 40px; height: 40px; border-radius: 50%; background: var(--gaf-orange);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.check-icon.rev { background: var(--rev-green); }
+.check-icon svg { width: 20px; height: 20px; stroke: white; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+.check-text { font: 500 15px/1.4 var(--font-sans); color: var(--fg-1); }
+
+/* Week cards (Revel) */
+.week-grid { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+.week-card {
+  display: flex; border-radius: var(--radius-md); overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
+}
+.week-accent { width: 4px; flex-shrink: 0; }
+.week-body { flex: 1; padding: 24px 28px; display: flex; gap: 32px; }
+.week-meta { min-width: 110px; }
+.week-num { font: 700 12px/1 var(--font-display); color: var(--rev-green); text-transform: uppercase; letter-spacing: 0.15em; }
+.week-dates { font: 400 13px/1.3 var(--font-sans); color: var(--gaf-grey-500); margin-top: 4px; }
+.week-content { flex: 1; }
+.week-name { font: 700 18px/1.2 var(--font-display); color: #FFFFFF; text-transform: uppercase; letter-spacing: 0.04em; }
+.week-focus { font: 400 14px/1.5 var(--font-sans); color: var(--gaf-grey-400); margin-top: 6px; }
+.week-message { font: 400 14px/1.5 var(--font-sans); color: var(--rev-sage); margin-top: 4px; font-style: italic; }
+.week-assets {
+  min-width: 220px; padding: 16px; border-radius: var(--radius-sm);
+  background: rgba(37,179,75,0.05); align-self: center;
+}
+.week-assets-label {
+  font: 700 10px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--gaf-grey-500); margin-bottom: 6px;
+}
+.week-assets-text { font: 400 13px/1.4 var(--font-sans); color: var(--gaf-grey-400); }
+
+/* Callout */
+.callout {
+  margin-top: 32px; padding: 20px 24px; border-radius: var(--radius-md);
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.callout.orange { background: rgba(242,100,34,0.05); border: 1px solid rgba(242,100,34,0.2); }
+.callout.green { background: rgba(37,179,75,0.05); border: 1px solid rgba(37,179,75,0.2); }
+.callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.callout.orange svg { stroke: var(--gaf-orange); }
+.callout.green svg { stroke: var(--rev-green); }
+.callout p { font: 400 14px/1.5 var(--font-sans); }
+.section.dark .callout p, .section.rev-dark .callout p { color: var(--gaf-grey-400); }
+.section.light .callout p, .section.subtle .callout p, .section.rev-light .callout p { color: var(--fg-2); }
+.callout strong { font-weight: 700; }
+.section.dark .callout strong, .section.rev-dark .callout strong { color: #FFFFFF; }
+.section.light .callout strong, .section.subtle .callout strong { color: var(--fg-1); }
+
+/* CTA button */
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 24px;
+  font: 700 14px/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.06em;
+  color: #FFFFFF; background: var(--gaf-orange); padding: 16px 28px;
+  border-radius: var(--radius-md); text-decoration: none;
+  transition: background var(--dur-base) var(--ease-out), transform var(--dur-base) var(--ease-out);
+}
+.cta-btn:hover { background: var(--gaf-orange-hover); transform: translateY(-1px); }
+.cta-btn.rev { background: var(--rev-green); }
+.cta-btn.rev:hover { background: #1e9a3f; }
+
+/* Meta strip */
+.meta-strip {
+  display: flex; gap: 40px; margin-top: 64px; padding-top: 32px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.meta-label {
+  font: 600 10px/1 var(--font-display); text-transform: uppercase;
+  letter-spacing: 0.12em; color: var(--gaf-grey-500); margin-bottom: 6px;
+}
+.meta-value { font: 700 14px/1.2 var(--font-display); color: #FFFFFF; }
+
+/* Logo container */
+.logo-container {
+  display: inline-block; background: #FFFFFF; border-radius: var(--radius-md);
+  padding: 10px 16px; margin-bottom: 32px;
+}
+.logo-container img { height: 36px; width: auto; display: block; }
+.logo-container.rev { background: transparent; }
+.logo-container.rev img { height: 28px; }
+
+/* Section split */
+.section-split { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: start; }
+
+/* Animations */
+.fade-up {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity 0.6s var(--ease-out), transform 0.6s var(--ease-out);
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+.fade-up.d1 { transition-delay: 0.08s; }
+.fade-up.d2 { transition-delay: 0.16s; }
+.fade-up.d3 { transition-delay: 0.24s; }
+.fade-up.d4 { transition-delay: 0.32s; }
+.fade-up.d5 { transition-delay: 0.40s; }
+.fade-up.d6 { transition-delay: 0.48s; }
+
+@media (max-width: 768px) {
+  .section { padding: 60px 20px; }
+  .dot-nav { right: 12px; gap: 10px; }
+  .dot-nav a .dot-label { display: none; }
+  .dot-nav a .dot { width: 8px; height: 8px; }
+  .kpi-grid { grid-template-columns: 1fr 1fr; }
+  .offer-grid { grid-template-columns: 1fr; }
+  .value-grid { grid-template-columns: 1fr; }
+  .channel-grid { grid-template-columns: 1fr; }
+  .check-grid { grid-template-columns: 1fr; }
+  .tl-items { grid-template-columns: 1fr; }
+  .meta-strip { flex-wrap: wrap; gap: 24px; }
+  .section-split { grid-template-columns: 1fr; }
+  .week-body { flex-direction: column; gap: 16px; }
+  .week-assets { min-width: unset; }
+}
+@media (max-width: 480px) {
+  .kpi-grid { grid-template-columns: 1fr; }
+  .section { padding: 48px 16px; }
+}
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--gaf-orange); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<nav class="dot-nav" id="dotNav">
+  <a href="#hero" data-section="hero"><span class="dot-label">Intro</span><span class="dot"></span></a>
+  <a href="#gaf-overview" data-section="gaf-overview"><span class="dot-label">GAF Overview</span><span class="dot"></span></a>
+  <a href="#gaf-offers" data-section="gaf-offers"><span class="dot-label">Hero Offers</span><span class="dot"></span></a>
+  <a href="#gaf-timeline" data-section="gaf-timeline"><span class="dot-label">Timeline</span><span class="dot"></span></a>
+  <a href="#gaf-channels" data-section="gaf-channels"><span class="dot-label">Channels</span><span class="dot"></span></a>
+  <a href="#gaf-playbook" data-section="gaf-playbook"><span class="dot-label">Playbook</span><span class="dot"></span></a>
+  <span class="dot-divider"></span>
+  <a href="#rev-hero" data-section="rev-hero" class="rev"><span class="dot-label">Revel</span><span class="dot"></span></a>
+  <a href="#rev-overview" data-section="rev-overview" class="rev"><span class="dot-label">Revel Plan</span><span class="dot"></span></a>
+  <a href="#rev-weeks" data-section="rev-weeks" class="rev"><span class="dot-label">Weeks</span><span class="dot"></span></a>
+  <a href="#closing" data-section="closing"><span class="dot-label">Q&A</span><span class="dot"></span></a>
+</nav>
+
+<div class="scroll-container" id="scrollContainer">
+
+  <!-- ═══ HERO ═══ -->
+  <section class="section dark" id="hero">
+    <div class="section-inner">
+      <div class="logo-container fade-up"><img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness"></div>
+      <div class="eyebrow fade-up">Sales Team Briefing</div>
+      <h1 class="display-xl fade-up d1">EOFY<br><span style="color:var(--gaf-orange)">2026.</span></h1>
+      <p class="subtitle fade-up d2">The full EOFY campaign plan for both GAF and Revel. What we're selling, when it goes live, and what the sales team needs to do.</p>
+      <div class="meta-strip fade-up d3">
+        <div class="meta-item"><div class="meta-label">Brands</div><div class="meta-value">GAF + Revel</div></div>
+        <div class="meta-item"><div class="meta-label">GAF Window</div><div class="meta-value">June 1 - 30</div></div>
+        <div class="meta-item"><div class="meta-label">Revel Window</div><div class="meta-value">May 25 - June 21</div></div>
+        <div class="meta-item"><div class="meta-label">Sections</div><div class="meta-value">10</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GAF OVERVIEW ═══ -->
+  <section class="section dark" id="gaf-overview">
+    <div class="section-inner">
+      <div class="eyebrow fade-up">GAF / The Campaign</div>
+      <h2 class="display-lg fade-up d1">30 days to close<br>the financial year.</h2>
+      <p class="subtitle fade-up d2">GAF's second major peak campaign of 2026. Compelling offers, finance messaging, and brand-led promotions across all channels before June 30.</p>
+      <div class="kpi-grid fade-up d3">
+        <div class="kpi-card">
+          <div class="kpi-num">01</div>
+          <div class="kpi-value">JUN 1-30</div>
+          <div class="kpi-label">Campaign Window</div>
+          <div class="kpi-sub">30-day campaign, weekly creative refreshes</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">02</div>
+          <div class="kpi-value">391</div>
+          <div class="kpi-label">Offers Live</div>
+          <div class="kpi-sub">Across all categories, up to 48% off</div>
+          <div class="kpi-badge">FULL RANGE</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">03</div>
+          <div class="kpi-value">4</div>
+          <div class="kpi-label">Value Adds</div>
+          <div class="kpi-sub">Free accessories with premium purchases</div>
+          <div class="kpi-badge">AOV LIFTERS</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">04</div>
+          <div class="kpi-value">6</div>
+          <div class="kpi-label">Channels Active</div>
+          <div class="kpi-sub">Meta, Google, Email, SMS, Content, POS</div>
+          <div class="kpi-badge">FULL SURROUND</div>
+        </div>
+      </div>
+      <div class="kpi-grid fade-up d4" style="margin-top:2px">
+        <div class="kpi-card">
+          <div class="kpi-num">05</div>
+          <div class="kpi-value">$1.3M</div>
+          <div class="kpi-label">GP Target (June)</div>
+          <div class="kpi-sub">vs $768K May budget</div>
+          <div class="kpi-badge">1.7X LIFT</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">06</div>
+          <div class="kpi-value">340K</div>
+          <div class="kpi-label">Session Target</div>
+          <div class="kpi-sub">vs 199K May target</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">07</div>
+          <div class="kpi-value">1,450</div>
+          <div class="kpi-label">Abandoned Cart Target</div>
+          <div class="kpi-sub">est. from GP lift ratio</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num">08</div>
+          <div class="kpi-value">600</div>
+          <div class="kpi-label">Inbound Calls Target</div>
+          <div class="kpi-sub">est. from GP lift ratio</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GAF HERO OFFERS ═══ -->
+  <section class="section light" id="gaf-offers">
+    <div class="section-inner">
+      <div class="section-split">
+        <div>
+          <div class="eyebrow fade-up">GAF / What We're Selling</div>
+          <h2 class="display-lg fade-up d1">Hero offers.</h2>
+          <p class="subtitle fade-up d2">Category Killers drive traffic. Value Adds lift AOV. These are the products to lead every conversation with.</p>
+          <div class="offer-grid fade-up d3">
+            <div class="offer-card"><span class="offer-name">X20</span><span class="offer-badge">48% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">Bowflex T9</span><span class="offer-badge">40% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">ProForm Carbon Pro</span><span class="offer-badge">37% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">Force USA Glide</span><span class="offer-badge">24% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">F-G3-v2</span><span class="offer-badge">22% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">G15</span><span class="offer-badge">15.9% + Kit</span></div>
+            <div class="offer-card"><span class="offer-name">F-FTR</span><span class="offer-badge">15.6% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">Nike Adj. Dumbbells</span><span class="offer-badge">12.5% OFF</span></div>
+            <div class="offer-card"><span class="offer-name">G4</span><span class="offer-badge">25% OFF</span></div>
+          </div>
+        </div>
+        <div>
+          <div style="margin-top:60px">
+            <div class="eyebrow fade-up d3" style="margin-bottom:20px">Value Adds</div>
+            <div class="value-grid fade-up d4">
+              <div class="value-card"><span class="value-sku">C20</span><span class="value-offer">Free Sliding Bench</span></div>
+              <div class="value-card"><span class="value-sku">C10</span><span class="value-offer">Free Sliding Bench</span></div>
+              <div class="value-card"><span class="value-sku">F-G15</span><span class="value-offer">Free Upgrade Kit</span></div>
+              <div class="value-card"><span class="value-sku">Solitude</span><span class="value-offer">Bulk Buy Pricing</span></div>
+            </div>
+          </div>
+          <div class="callout orange fade-up d5">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+            <p><strong>Sales team:</strong> Lead with Category Killers for price-sensitive buyers, Value Adds for upsell opportunities.</p>
+          </div>
+          <a href="https://docs.google.com/spreadsheets/d/1qZVgfeX5jnkM4AIJ57Y76X7NlbNNqKRMmePSQFrDFS0/edit?usp=sharing" target="_blank" class="cta-btn fade-up d6">View Full Pricing Spreadsheet &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GAF TIMELINE ═══ -->
+  <section class="section dark" id="gaf-timeline">
+    <div class="section-inner">
+      <div class="eyebrow fade-up">GAF / The Plan</div>
+      <h2 class="display-lg fade-up d1">Campaign timeline.</h2>
+      <div class="timeline">
+        <div class="tl-phase fade-up d2">
+          <div class="tl-header">
+            <div class="tl-dot" style="background:#eab308"></div>
+            <div class="tl-phase-name">Pre-Campaign</div>
+            <div class="tl-dates">Now - May 31</div>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Final Pricing Locked</span><span class="tl-item-owner">Todd / May 8</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Campaign Theme Creative</span><span class="tl-item-owner">Joe / May 15</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Meta Ad Plan + Creative</span><span class="tl-item-owner">Joe / May 16</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Content Plan + Videographer</span><span class="tl-item-owner">Lionel / May 16</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text" style="text-decoration:underline;text-underline-offset:3px;color:#FFFFFF">Lead Waitlist Pop-Up Live</span><span class="tl-item-owner">Joe / May 18</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Media Buyer Brief + Google</span><span class="tl-item-owner">Joe / May 19</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Hot Deals Collection Setup</span><span class="tl-item-owner">Levi / May 22</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">EDMs + SMS Built</span><span class="tl-item-owner">Joe / May 28</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Sales Team Group Chat Kickoff</span><span class="tl-item-owner">Todd / May 28</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Website Sale Collection Ready</span><span class="tl-item-owner">Levi / May 28</span></div>
+          </div>
+        </div>
+        <div class="tl-phase fade-up d3">
+          <div class="tl-header">
+            <div class="tl-dot" style="background:var(--gaf-orange)"></div>
+            <div class="tl-phase-name">Launch Day</div>
+            <div class="tl-dates">June 1</div>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text" style="text-decoration:underline;text-underline-offset:3px;color:#FFFFFF">Sale Pricing Go Live</span><span class="tl-item-owner">Levi</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Homepage Creative Swap</span><span class="tl-item-owner">Joe</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Announcement Bar + Mega Menu</span><span class="tl-item-owner">Levi</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Paid Ads Go Live (Meta + Google)</span><span class="tl-item-owner">Daniel</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Launch EDM + SMS</span><span class="tl-item-owner">Joe</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Countdown Timer + Price Guarantee</span><span class="tl-item-owner">Levi</span></div>
+          </div>
+        </div>
+        <div class="tl-phase fade-up d4">
+          <div class="tl-header">
+            <div class="tl-dot" style="background:#3b82f6"></div>
+            <div class="tl-phase-name">Mid-Campaign Check-In</div>
+            <div class="tl-dates">June 15</div>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Performance review vs targets</span><span class="tl-item-owner">Josh</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Price drops / adjustments if needed</span><span class="tl-item-owner">Nick</span></div>
+          </div>
+        </div>
+        <div class="tl-phase fade-up d5">
+          <div class="tl-header">
+            <div class="tl-dot" style="background:#ef4444"></div>
+            <div class="tl-phase-name">Last Push + Close</div>
+            <div class="tl-dates">June 26-30</div>
+          </div>
+          <div class="tl-items">
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Last Chance Ad Creative Swap</span><span class="tl-item-owner">Joe / Jun 26</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Last Chance EDM</span><span class="tl-item-owner">Joe / Jun 26</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text" style="text-decoration:underline;text-underline-offset:3px;color:#FFFFFF">Last Day SMS + HubSpot Blast</span><span class="tl-item-owner">Josh / Jun 30</span></div>
+            <div class="tl-item"><div class="tl-item-dot"></div><span class="tl-item-text">Sales Team Pipeline Blast</span><span class="tl-item-owner">Todd / Jun 30</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GAF CHANNELS ═══ -->
+  <section class="section subtle" id="gaf-channels">
+    <div class="section-inner">
+      <div class="eyebrow fade-up">GAF / The Channels</div>
+      <h2 class="display-lg fade-up d1">How we're reaching them.</h2>
+      <p class="subtitle fade-up d2">Every channel briefed and scheduled. This is what customers will see before, during, and after they talk to you.</p>
+      <div class="channel-grid fade-up d3">
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M3 11l18-5v12L3 13v-2z"/><path d="M11.6 16.8a3 3 0 11-5.8-1.6"/></svg></div>
+          <div class="channel-name">Meta Ads</div>
+          <div class="channel-desc">10-20 ad variations. Weekly creative refresh. Audiences optimised from BCFM learnings.</div>
+          <div class="channel-owner">Joe + Daniel</div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg></div>
+          <div class="channel-name">Google Ads</div>
+          <div class="channel-desc">Display banners + search ad copy updates. Media buyer briefed by May 19.</div>
+          <div class="channel-owner">Joe + Daniel</div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><path d="M22 6l-10 7L2 6"/></svg></div>
+          <div class="channel-name">Email</div>
+          <div class="channel-desc">Launch EDM, mid-campaign brand focus, last-chance urgency, + HubSpot pipeline blast on final day.</div>
+          <div class="channel-owner">Joe</div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+          <div class="channel-name">SMS</div>
+          <div class="channel-desc">Launch morning (Jun 1) + last-day blast (Jun 30). Short, punchy, direct link to sale collection.</div>
+          <div class="channel-owner">Josh</div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"/></svg></div>
+          <div class="channel-name">Organic Content</div>
+          <div class="channel-desc">Full social schedule, video/reel concepts, blog content, UGC opportunities. Videographer booked.</div>
+          <div class="channel-owner">Lionel</div>
+        </div>
+        <div class="channel-card">
+          <div class="channel-icon"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><path d="M3.27 6.96L12 12.01l8.73-5.05"/><path d="M12 22.08V12"/></svg></div>
+          <div class="channel-name">Showroom / POS</div>
+          <div class="channel-desc">A5 tickets, signage, branded collateral. Extended showroom hours during campaign.</div>
+          <div class="channel-owner">Joe + Levi</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ GAF SALES PLAYBOOK ═══ -->
+  <section class="section light" id="gaf-playbook">
+    <div class="section-inner">
+      <div class="eyebrow fade-up">GAF / Your Role</div>
+      <h2 class="display-lg fade-up d1">Sales team playbook.</h2>
+      <p class="subtitle fade-up d2">What the sales team needs to do before, during, and at close.</p>
+      <div class="check-grid">
+        <div class="check-card fade-up d1">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Group Chat Kickoff (May 28) with key offers, talking points, and FAQs</div>
+        </div>
+        <div class="check-card fade-up d2">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Know the hero products and pricing inside out before Jun 1</div>
+        </div>
+        <div class="check-card fade-up d3">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Waitlist leads start flowing May 18. Warm them up early</div>
+        </div>
+        <div class="check-card fade-up d4">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Extended showroom + phone hours for the full campaign period</div>
+        </div>
+        <div class="check-card fade-up d5">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Lead with Category Killers (price), upsell with Value Adds (bundles)</div>
+        </div>
+        <div class="check-card fade-up d6">
+          <div class="check-icon"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+          <div class="check-text">Jun 30: Contact ALL warm/hot pipeline leads. Sale ends tonight</div>
+        </div>
+      </div>
+      <div class="callout orange fade-up d6">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        <p><strong>All hands on deck.</strong> EOFY is a company-wide push. Finance messaging stays live. Price guarantee on all sale pages. Mid-campaign check-in Jun 15. Post-campaign revert Jul 1.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REVEL HERO ═══ -->
+  <section class="section rev-dark" id="rev-hero">
+    <div class="section-inner">
+      <div class="logo-container rev fade-up"><img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102" alt="Revel"></div>
+      <div class="eyebrow rev fade-up">EOFY Campaign</div>
+      <h1 class="display-xl fade-up d1">Upgrade<br>your <span style="color:var(--rev-green)">recovery.</span></h1>
+      <p class="subtitle fade-up d2">Position saunas and ice baths as tax-deductible wellness investments. Four weeks of escalating urgency, from early access to last-chance close.</p>
+      <div class="meta-strip fade-up d3" style="border-top-color:rgba(37,179,75,0.2)">
+        <div class="meta-item"><div class="meta-label">Brand</div><div class="meta-value">Revel</div></div>
+        <div class="meta-item"><div class="meta-label">Window</div><div class="meta-value">May 25 - June 21</div></div>
+        <div class="meta-item"><div class="meta-label">Structure</div><div class="meta-value">4 Weekly Themes</div></div>
+        <div class="meta-item"><div class="meta-label">Lead</div><div class="meta-value">Sasha</div></div>
+      </div>
+      <div class="fade-up d4" style="margin-top:48px;border-radius:var(--radius-lg);overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,0.3)">
+        <img src="assets/revel-eofy-web-banner-desktop.png" alt="Revel EOFY Sale - Save up to 30% on selected saunas and ice baths" style="width:100%;display:block">
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ REVEL OVERVIEW ═══ -->
+  <section class="section rev-dark" id="rev-overview">
+    <div class="section-inner">
+      <div class="eyebrow rev fade-up">Revel / The Campaign</div>
+      <h2 class="display-lg fade-up d1">Recovery as a<br>tax-time investment.</h2>
+      <div class="kpi-grid fade-up d2" style="border-color:rgba(37,179,75,0.15);background:rgba(37,179,75,0.06)">
+        <div class="kpi-card">
+          <div class="kpi-num rev">01</div>
+          <div class="kpi-value">30%</div>
+          <div class="kpi-label">Up To Off</div>
+          <div class="kpi-sub">Recovery systems + bundles</div>
+          <div class="kpi-badge rev">HEADLINE OFFER</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">02</div>
+          <div class="kpi-value">4 WEEKS</div>
+          <div class="kpi-label">Campaign Duration</div>
+          <div class="kpi-sub">Weekly theme escalation</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">03</div>
+          <div class="kpi-value">TAX</div>
+          <div class="kpi-label">Key Conversion Angle</div>
+          <div class="kpi-sub">Business owners: claim it this FY</div>
+          <div class="kpi-badge rev">LEAD WITH THIS</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">04</div>
+          <div class="kpi-value">43</div>
+          <div class="kpi-label">Offers Live</div>
+          <div class="kpi-sub">Saunas, ice baths, bundles</div>
+        </div>
+      </div>
+      <div class="kpi-grid fade-up d3" style="margin-top:2px;border-color:rgba(37,179,75,0.15);background:rgba(37,179,75,0.06)">
+        <div class="kpi-card">
+          <div class="kpi-num rev">05</div>
+          <div class="kpi-value">$1.15M</div>
+          <div class="kpi-label">GP Target (June)</div>
+          <div class="kpi-sub">vs $542K May budget</div>
+          <div class="kpi-badge rev">2.1X LIFT</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">06</div>
+          <div class="kpi-value">367K</div>
+          <div class="kpi-label">Session Target</div>
+          <div class="kpi-sub">est. from GP lift ratio</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">07</div>
+          <div class="kpi-value">360</div>
+          <div class="kpi-label">Abandoned Cart Target</div>
+          <div class="kpi-sub">est. from GP lift ratio</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-num rev">08</div>
+          <div class="kpi-value">330</div>
+          <div class="kpi-label">Inbound Calls Target</div>
+          <div class="kpi-sub">est. from GP lift ratio</div>
+        </div>
+      </div>
+      <div class="callout green fade-up d4">
+        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+        <p><strong>Creative direction:</strong> High-impact "Up to 30% OFF" lockup as the focal point. Mix of lifestyle and product-only imagery. Consistent signature look across all assets.</p>
+      </div>
+      <a href="https://docs.google.com/spreadsheets/d/18GktjutoC_m1OkUKaE9pQtgtOrlppUvUvb76DgriQZM/edit?gid=0#gid=0" target="_blank" class="cta-btn rev fade-up d5">View Full Pricing Spreadsheet &rarr;</a>
+    </div>
+  </section>
+
+  <!-- ═══ REVEL WEEK-BY-WEEK ═══ -->
+  <section class="section rev-dark" id="rev-weeks">
+    <div class="section-inner">
+      <div class="eyebrow rev fade-up">Revel / Week by Week</div>
+      <h2 class="display-lg fade-up d1">The 4-week plan.</h2>
+      <div class="week-grid">
+        <div class="week-card fade-up d2">
+          <div class="week-accent" style="background:var(--rev-sage)"></div>
+          <div class="week-body">
+            <div class="week-meta"><div class="week-num">Week 13</div><div class="week-dates">May 25 - 31</div></div>
+            <div class="week-content">
+              <div class="week-name">EOFY Early Access</div>
+              <div class="week-focus"><strong>Focus:</strong> Start EOFY momentum</div>
+              <div class="week-message">"Upgrade your recovery before the financial year ends."</div>
+            </div>
+            <div class="week-assets"><div class="week-assets-label">Content</div><div class="week-assets-text">Early EOFY offers / Business wellness setups</div></div>
+          </div>
+        </div>
+        <div class="week-card fade-up d3">
+          <div class="week-accent" style="background:var(--rev-green)"></div>
+          <div class="week-body">
+            <div class="week-meta"><div class="week-num">Week 14</div><div class="week-dates">Jun 1 - 7</div></div>
+            <div class="week-content">
+              <div class="week-name">EOFY Wellness Upgrade</div>
+              <div class="week-focus"><strong>Focus:</strong> Sauna + ice bath as tax-deductible business investments</div>
+              <div class="week-message">"Invest in recovery. Claim it this financial year."</div>
+            </div>
+            <div class="week-assets"><div class="week-assets-label">Content</div><div class="week-assets-text">Recovery studio setups / Airbnb wellness upgrades</div></div>
+          </div>
+        </div>
+        <div class="week-card fade-up d4">
+          <div class="week-accent" style="background:var(--rev-green)"></div>
+          <div class="week-body">
+            <div class="week-meta"><div class="week-num">Week 15</div><div class="week-dates">Jun 8 - 14</div></div>
+            <div class="week-content">
+              <div class="week-name">EOFY Stock Sale</div>
+              <div class="week-focus"><strong>Focus:</strong> Clear remaining inventory</div>
+              <div class="week-message">"End of financial year deals on Revel recovery systems."</div>
+            </div>
+            <div class="week-assets"><div class="week-assets-label">Content</div><div class="week-assets-text">Product bundles / Limited stock messaging / Price-led ads</div></div>
+          </div>
+        </div>
+        <div class="week-card fade-up d5">
+          <div class="week-accent" style="background:var(--rev-forest)"></div>
+          <div class="week-body">
+            <div class="week-meta"><div class="week-num">Week 16</div><div class="week-dates">Jun 15 - 21</div></div>
+            <div class="week-content">
+              <div class="week-name">Last Chance EOFY</div>
+              <div class="week-focus"><strong>Focus:</strong> Final urgency push</div>
+              <div class="week-message">"Last chance to claim your recovery upgrade before June 30."</div>
+            </div>
+            <div class="week-assets"><div class="week-assets-label">Content</div><div class="week-assets-text">Countdown messaging / Business owner angle / Bundle offers</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="callout green fade-up d6">
+        <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/></svg>
+        <p><strong>Key sales angle:</strong> Business owners can claim saunas and ice baths as a tax deduction. This is the strongest conversion lever for Revel EOFY. Lead with it on every call.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CLOSING / Q&A ═══ -->
+  <section class="section dark" id="closing" style="min-height:70vh">
+    <div class="section-inner" style="text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center">
+      <div style="display:flex;align-items:center;gap:24px;margin-bottom:48px" class="fade-up">
+        <div class="logo-container"><img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="GAF"></div>
+        <div style="width:1px;height:32px;background:var(--gaf-grey-700)"></div>
+        <div class="logo-container rev"><img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102" alt="Revel"></div>
+      </div>
+      <div class="eyebrow fade-up d1">Over to you</div>
+      <h1 class="display-xl fade-up d2">Q&A</h1>
+      <div style="display:flex;gap:8px;margin-top:32px" class="fade-up d3">
+        <div style="width:32px;height:2px;background:var(--gaf-orange)"></div>
+        <div style="width:32px;height:2px;background:var(--rev-green)"></div>
+      </div>
+      <div style="margin-top:48px;font:700 12px/1 var(--font-display);text-transform:uppercase;letter-spacing:0.2em;color:var(--gaf-grey-500)" class="fade-up d4">EOFY 2026 - Sales Team Briefing</div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+(function() {
+  var container = document.getElementById('scrollContainer');
+  var progressBar = document.getElementById('progressBar');
+  var dotNav = document.getElementById('dotNav');
+  var sections = container.querySelectorAll('.section[id]');
+  var navLinks = dotNav.querySelectorAll('a');
+
+  container.addEventListener('scroll', function() {
+    var scrollTop = container.scrollTop;
+    var scrollHeight = container.scrollHeight - container.clientHeight;
+    var progress = scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+    progressBar.style.width = progress + '%';
+
+    var revSection = container.querySelector('#rev-hero');
+    if (revSection && scrollTop >= revSection.offsetTop - container.clientHeight / 2) {
+      progressBar.style.background = '#25B34B';
+    } else {
+      progressBar.style.background = '#F26422';
+    }
+  });
+
+  var navObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        navLinks.forEach(function(link) {
+          link.classList.toggle('active', link.getAttribute('data-section') === id);
+        });
+      }
+    });
+  }, { root: container, threshold: 0.5 });
+
+  sections.forEach(function(section) { navObserver.observe(section); });
+
+  var fadeObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { root: container, threshold: 0.15 });
+
+  document.querySelectorAll('.fade-up').forEach(function(el) { fadeObserver.observe(el); });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); navigateSection(1); }
+    else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); navigateSection(-1); }
+  });
+
+  function navigateSection(direction) {
+    var sectionArr = Array.from(sections);
+    var scrollTop = container.scrollTop;
+    var viewH = container.clientHeight;
+    var currentIdx = 0;
+    sectionArr.forEach(function(s, i) {
+      if (s.offsetTop <= scrollTop + viewH / 2) currentIdx = i;
+    });
+    var nextIdx = Math.max(0, Math.min(sectionArr.length - 1, currentIdx + direction));
+    sectionArr[nextIdx].scrollIntoView({ behavior: 'smooth' });
+  }
+
+  navLinks.forEach(function(link) {
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var targetId = link.getAttribute('data-section');
+      document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  if (navLinks.length > 0) navLinks[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

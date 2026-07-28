@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stratco x Gym and Fitness — Partnership Proposal</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --accent:#F26422;
+  --accent-dark:#D85418;
+  --accent-deep:#B34213;
+
+  --bg:#FFFFFF;
+  --bg-alt:#F5F3F0;
+  --text:#000000;
+  --text-sec:rgba(0,0,0,.65);
+  --text-mute:rgba(0,0,0,.4);
+  --text-faint:rgba(0,0,0,.18);
+  --card-bg:rgba(0,0,0,.02);
+  --card-border:rgba(0,0,0,.08);
+  --rule:rgba(0,0,0,.06);
+  --accent-subtle:rgba(242,100,34,.06);
+  --accent-border:rgba(242,100,34,.2);
+  --accent-faint:rgba(242,100,34,.08);
+}
+[data-theme="dark"]{
+  --bg:#111111;
+  --bg-alt:#1A1614;
+  --text:#FFFFFF;
+  --text-sec:rgba(255,255,255,.7);
+  --text-mute:rgba(255,255,255,.45);
+  --text-faint:rgba(255,255,255,.18);
+  --card-bg:rgba(255,255,255,.03);
+  --card-border:rgba(255,255,255,.07);
+  --rule:rgba(255,255,255,.06);
+  --accent-subtle:rgba(242,100,34,.06);
+  --accent-border:rgba(242,100,34,.25);
+  --accent-faint:rgba(242,100,34,.05);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Open Sans','Helvetica Neue',Arial,sans-serif;font-weight:400;color:var(--text);background:var(--bg);transition:background .4s ease,color .4s ease}
+
+h1,h2,h3,h4{font-family:'Montserrat',sans-serif}
+h1{font-weight:700;text-transform:uppercase;letter-spacing:.08em;line-height:1.1}
+h2{font-weight:700;text-transform:uppercase;letter-spacing:.06em;line-height:1.15}
+h3{font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.9rem}
+p{font-weight:400;line-height:1.7;color:var(--text-sec)}
+
+.section{min-height:100vh;position:relative;overflow:hidden;display:flex;align-items:center}
+.section-pad{padding:5rem 2rem}
+.bg-main{background:var(--bg);transition:background .4s ease}
+.bg-alt{background:var(--bg-alt);transition:background .4s ease}
+
+.img-cover{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.overlay{position:absolute;inset:0}
+.dot-grid{position:absolute;width:120px;height:120px;background-image:radial-gradient(circle,rgba(242,100,34,.25) 1.2px,transparent 1.2px);background-size:12px 12px}
+.accent-rule{width:60px;height:2px;background:var(--accent);margin:1.5rem 0}
+.badge{display:inline-block;padding:.45rem 1.1rem;font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;border:1px solid var(--accent-border);color:var(--accent);border-radius:2px;font-family:'Montserrat',sans-serif}
+
+.stat{text-align:center;padding:1.5rem}
+.stat-num{font-size:2.5rem;font-weight:700;color:var(--accent);letter-spacing:.05em;font-family:'Montserrat',sans-serif}
+.stat-label{font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--text-mute);margin-top:.5rem;font-family:'Montserrat',sans-serif}
+.stat-source{font-size:.7rem;color:var(--text-faint);margin-top:.3rem;text-transform:uppercase;letter-spacing:.08em}
+
+.benefit{display:flex;gap:1.25rem;align-items:flex-start;margin-bottom:2rem}
+.benefit-num{flex-shrink:0;width:2.5rem;height:2.5rem;border:1px solid var(--accent-border);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--accent);border-radius:4px;font-family:'Montserrat',sans-serif}
+.benefit h4{font-size:1rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text)}
+.benefit p{font-size:.92rem;color:var(--text-mute);margin-top:.25rem;line-height:1.5}
+
+.struct-card{padding:2rem;border:1px solid var(--card-border);border-radius:8px;background:var(--card-bg);transition:background .4s ease,border-color .4s ease}
+.struct-card h4{font-weight:700;font-size:.95rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:1.25rem;color:var(--text)}
+.struct-icon{width:40px;height:40px;border:1px solid var(--accent-border);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:1rem}
+
+.brand-card{padding:2.5rem 2rem;border:1px solid var(--card-border);border-radius:8px;background:var(--card-bg);transition:all .4s ease;position:relative;overflow:hidden}
+.brand-card:hover{border-color:var(--accent-border)}
+.brand-card h4{font-size:1.1rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:.75rem}
+.brand-tag{display:inline-block;padding:.3rem .75rem;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;border:1px solid var(--accent-border);color:var(--accent);border-radius:2px;margin-bottom:1rem;font-family:'Montserrat',sans-serif}
+
+.timeline-item{display:flex;gap:1.5rem;align-items:flex-start;position:relative;padding-bottom:2.5rem}
+.timeline-item:last-child{padding-bottom:0}
+.timeline-line{position:absolute;left:15px;top:2.2rem;width:1px;height:calc(100% - 1rem);background:linear-gradient(to bottom,var(--accent-border),transparent)}
+.timeline-dot{flex-shrink:0;width:32px;height:32px;border:1px solid var(--accent-border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;color:var(--accent);background:var(--bg);position:relative;z-index:1;transition:background .4s ease;font-family:'Montserrat',sans-serif}
+.timeline-content h4{font-size:1rem;font-weight:700;color:var(--text)}
+.timeline-content p{font-size:.92rem;color:var(--text-mute);margin-top:.2rem}
+
+.img-section{min-height:70vh;position:relative;display:flex;align-items:flex-end}
+.img-section .img-cover{z-index:0}
+.img-section .overlay{z-index:1}
+.img-section .content{position:relative;z-index:2;padding:3rem 2rem;width:100%}
+.img-section h2,.img-section h3,.img-section p{color:#FFFFFF}
+
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+.step{text-align:center;padding:1.5rem}
+.step-num{width:48px;height:48px;border-radius:50%;background:var(--accent);color:#FFFFFF;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:700;margin-bottom:1rem;font-family:'Montserrat',sans-serif}
+.step h4{font-size:.95rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text);margin-bottom:.5rem}
+.step p{font-size:.92rem;color:var(--text-mute)}
+.step-arrow{display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:1.5rem;opacity:.4}
+
+.theme-toggle{position:fixed;top:1.25rem;right:1.25rem;z-index:100;width:36px;height:36px;border-radius:50%;border:1px solid var(--card-border);background:var(--bg);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .3s ease;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.theme-toggle:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(242,100,34,.15)}
+
+.vision-card{padding:2.5rem;border-radius:8px;border:1px solid var(--card-border);background:var(--card-bg);transition:all .4s ease}
+.vision-card:hover{border-color:var(--accent-border)}
+.vision-num{font-size:3rem;font-weight:700;color:var(--accent);opacity:.3;font-family:'Montserrat',sans-serif;line-height:1}
+
+@media(min-width:768px){
+  .section-pad{padding:6rem 4rem}
+  .img-section .content{padding:4rem}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:3rem}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:2rem}
+  .grid-4{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;gap:1rem;align-items:center}
+  .grid-2-brands{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+  h1{font-size:4.5rem}
+  h2{font-size:3.2rem}
+  .stat-num{font-size:3rem}
+}
+@media(min-width:1024px){
+  .section-pad{padding:8rem 6rem}
+  .img-section .content{padding:5rem 6rem}
+  h1{font-size:5.5rem}
+  h2{font-size:3.8rem}
+  .max-w-half{max-width:55%}
+}
+@media(max-width:767px){
+  h1{font-size:2.5rem}
+  h2{font-size:2rem}
+  .grid-2,.grid-3,.grid-2-brands{display:flex;flex-direction:column;gap:1.5rem}
+  .grid-4{display:flex;flex-direction:column;gap:1.5rem}
+  .step-arrow{transform:rotate(90deg);margin:.5rem 0}
+  .stat-num{font-size:2rem}
+  .hide-mobile{display:none}
+  .section{min-height:auto}
+}
+
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--accent);border-radius:10px}
+</style>
+</head>
+<body>
+
+<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+  <span id="theme-icon">&#9790;</span>
+</button>
+
+<!-- ===================== HERO ===================== -->
+<section class="section" style="min-height:100vh">
+  <img class="img-cover" src="../images/brand-promise/hero-g3-home-gym.jpg" alt="Force USA home gym setup" style="object-position:center 40%">
+  <div class="overlay" style="background:linear-gradient(135deg,rgba(0,0,0,.92) 40%,rgba(0,0,0,.6) 70%,rgba(0,0,0,.3))"></div>
+  <div class="dot-grid" style="top:2rem;right:2rem"></div>
+
+  <div class="section-pad" style="position:relative;z-index:2;width:100%">
+    <div class="reveal">
+      <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness" style="height:36px;margin-bottom:3rem;filter:brightness(0) invert(1)">
+    </div>
+    <div class="reveal" style="transition-delay:.1s">
+      <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1.5rem">
+        <span class="badge" style="border-color:rgba(255,255,255,.25);color:rgba(255,255,255,.7)">Partnership Proposal</span>
+        <span class="badge" style="border-color:rgba(255,255,255,.15);color:rgba(255,255,255,.4)">Confidential</span>
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.2s">
+      <h1 style="color:#FFFFFF">Stratco<br><span style="color:var(--accent)">x</span> Gym and<br>Fitness</h1>
+    </div>
+    <div class="reveal" style="transition-delay:.3s">
+      <div class="accent-rule"></div>
+      <p style="max-width:540px;font-size:1.1rem;color:rgba(255,255,255,.7)">Turn every Stratco shed into a home gym. Bring Australia's leading fitness and wellness brands to The Block and beyond.</p>
+    </div>
+    <div class="reveal" style="transition-delay:.4s;margin-top:3rem;display:flex;gap:2.5rem;flex-wrap:wrap;font-size:.8rem;text-transform:uppercase;letter-spacing:.2em;color:rgba(255,255,255,.3);font-weight:700;font-family:'Montserrat',sans-serif">
+      <span>May 2026</span>
+      <span style="color:rgba(242,100,34,.4)">|</span>
+      <span>Prepared for Aaron Willis</span>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE OPPORTUNITY ===================== -->
+<section class="section bg-main" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="reveal" style="max-width:1000px">
+      <span class="badge">The Opportunity</span>
+      <h2 style="margin-top:1.5rem">Every shed is a gym<br>waiting to&nbsp;happen.</h2>
+      <div class="accent-rule"></div>
+    </div>
+    <div class="grid-2 reveal" style="transition-delay:.15s;margin-top:1rem;align-items:start">
+      <div>
+        <p style="font-size:1.05rem">
+          Stratco builds the structures. We fill them with purpose. Thousands of Australians are converting their sheds and garages into home gyms every year, and the trend is accelerating.
+        </p>
+        <p style="font-size:1rem;margin-top:1.25rem">
+          Gym and Fitness is Australia's leading home gym destination, with 2,900+ products across four owned brands. We already know the customer. We already have the relationship with The Block through Revel. Now we want to bring the full portfolio to Stratco.
+        </p>
+      </div>
+      <div style="padding:2rem;border-left:3px solid var(--accent);background:var(--accent-faint);border-radius:0 6px 6px 0">
+        <p style="font-size:1.05rem;font-style:italic;color:var(--text-mute)">
+          "92% of Australians own some form of fitness equipment. The home gym isn't a trend. It's a permanent shift."
+        </p>
+        <p style="font-size:.85rem;color:var(--text-faint);margin-top:.75rem;font-weight:700">AFS Health & Fitness Study | n=500</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== IMAGE BREAK: MEET GAF ===================== -->
+<section class="img-section">
+  <img class="img-cover" src="../images/brand-promise/force-usa-g4.jpg" alt="Force USA G4 All-In-One Trainer" style="object-position:center 30%">
+  <div class="overlay" style="background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.4) 40%,transparent 100%)"></div>
+  <div class="content">
+    <div class="reveal">
+      <h3 style="color:var(--accent)">Australia's Home Gym Destination</h3>
+      <h2 style="margin-top:.5rem">Meet Gym and&nbsp;Fitness.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== ABOUT GAF ===================== -->
+<section class="section bg-alt" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="grid-2" style="align-items:center">
+      <div class="reveal">
+        <p style="font-size:1.05rem;max-width:480px">
+          Gym and Fitness is Australia's largest specialist home gym retailer. We design, manufacture, and distribute strength, cardio, and recovery equipment to tens of thousands of Australians each year.
+        </p>
+        <p style="font-size:1rem;margin-top:1.25rem;max-width:480px">
+          Our group owns four brands: Force USA, Revel, STEPR, and Versafit. We also distribute Nike Strength, Assault Fitness, and more. From a single dumbbell to a full commercial fit-out, we cover the entire spectrum.
+        </p>
+      </div>
+      <div class="grid-2-brands reveal" style="transition-delay:.2s">
+        <div class="stat" style="border:1px solid var(--card-border);border-radius:8px">
+          <div class="stat-num">2,900+</div>
+          <div class="stat-label">Products</div>
+          <div class="stat-source">gymandfitness.com.au</div>
+        </div>
+        <div class="stat" style="border:1px solid var(--card-border);border-radius:8px">
+          <div class="stat-num">30+</div>
+          <div class="stat-label">Years in Australia</div>
+        </div>
+        <div class="stat" style="border:1px solid var(--card-border);border-radius:8px">
+          <div class="stat-num">4</div>
+          <div class="stat-label">Owned brands</div>
+          <div class="stat-source">Force USA, Revel, STEPR, Versafit</div>
+        </div>
+        <div class="stat" style="border:1px solid var(--card-border);border-radius:8px">
+          <div class="stat-num">Global</div>
+          <div class="stat-label">AU, US, UK, EU</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== IMAGE BREAK: OUR BRANDS ===================== -->
+<section class="img-section" style="min-height:60vh">
+  <img class="img-cover" src="../images/brand-promise/nike-rack-setup.jpg" alt="Nike Strength rack setup" style="object-position:center center">
+  <div class="overlay" style="background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 40%,transparent 100%)"></div>
+  <div class="content">
+    <div class="reveal">
+      <h3 style="color:var(--accent)">The Portfolio</h3>
+      <h2 style="margin-top:.5rem">Four brands.<br>One partnership.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== BRAND SHOWCASE ===================== -->
+<section class="section bg-main" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <span class="badge">Key Brands</span>
+      <h2 style="margin-top:1.5rem">Built for the<br>home gym.</h2>
+      <div class="accent-rule" style="margin:1.5rem auto"></div>
+    </div>
+
+    <div class="grid-2-brands reveal" style="transition-delay:.15s">
+      <!-- Force USA -->
+      <div class="brand-card">
+        <div class="brand-tag">Flagship</div>
+        <h4>Force USA</h4>
+        <p style="font-size:.95rem;line-height:1.6;color:var(--text-sec)">
+          Our flagship brand. All-in-one trainers that replace an entire gym in a single footprint. Squat rack, cable machine, smith machine, and more in one unit. Perfect for the Stratco shed.
+        </p>
+        <div style="margin-top:1.5rem;padding:1.25rem;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:6px">
+          <p style="font-size:.85rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-family:'Montserrat',sans-serif">The shed solution</p>
+          <p style="font-size:.9rem;color:var(--text-mute);margin-top:.3rem">One machine, one footprint, complete home gym. Designed to fit in a standard garage or shed space.</p>
+        </div>
+        <div style="margin-top:1.25rem;border-radius:8px;overflow:hidden;aspect-ratio:16/9">
+          <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/7_2840a0f7-cef3-4331-a5f6-72392c5e8369.png?v=1759448385" style="width:100%;height:100%;object-fit:cover" alt="Force USA C10 All-In-One Trainer">
+        </div>
+      </div>
+
+      <!-- Nike Strength -->
+      <div class="brand-card">
+        <div class="brand-tag">Global Brand</div>
+        <h4>Nike Strength</h4>
+        <p style="font-size:.95rem;line-height:1.6;color:var(--text-sec)">
+          The world's most recognised sports brand, now in strength equipment. Racks, dumbbells, barbells, and accessories. Distributed exclusively through GAF in Australia.
+        </p>
+        <div style="margin-top:1.5rem;padding:1.25rem;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:6px">
+          <p style="font-size:.85rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-family:'Montserrat',sans-serif">Brand credibility</p>
+          <p style="font-size:.9rem;color:var(--text-mute);margin-top:.3rem">Nike brings instant recognition and trust. A premium addition to any home gym or Block renovation.</p>
+        </div>
+        <div style="margin-top:1.25rem;border-radius:8px;overflow:hidden;aspect-ratio:16/9">
+          <img src="../images/brand-promise/nike-adj-dumbbells.jpg" style="width:100%;height:100%;object-fit:cover" alt="Nike Adjustable Dumbbells">
+        </div>
+      </div>
+
+      <!-- Revel -->
+      <div class="brand-card">
+        <div class="brand-tag" style="border-color:rgba(37,179,75,.3);color:#25B34B">Already on The Block</div>
+        <h4>Revel</h4>
+        <p style="font-size:.95rem;line-height:1.6;color:var(--text-sec)">
+          Australia's fastest-growing recovery and wellness brand. Saunas, ice baths, and recovery products. Already featured on The Block with Marty Fox and trusted by 5,000+ homeowners.
+        </p>
+        <div style="margin-top:1.5rem;padding:1.25rem;background:rgba(37,179,75,.06);border:1px solid rgba(37,179,75,.2);border-radius:6px">
+          <p style="font-size:.85rem;font-weight:700;color:#25B34B;text-transform:uppercase;letter-spacing:.1em;font-family:'Montserrat',sans-serif">The Block proven</p>
+          <p style="font-size:.9rem;color:var(--text-mute);margin-top:.3rem">Revel's existing Block relationship opens the door for the entire GAF portfolio.</p>
+        </div>
+        <div style="margin-top:1.25rem;border-radius:8px;overflow:hidden;aspect-ratio:16/9">
+          <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura2P-24.jpg?v=1769789361" style="width:100%;height:100%;object-fit:cover" alt="Revel Aura Sauna">
+        </div>
+      </div>
+
+      <!-- STEPR -->
+      <div class="brand-card">
+        <div class="brand-tag">Innovation</div>
+        <h4>STEPR</h4>
+        <p style="font-size:.95rem;line-height:1.6;color:var(--text-sec)">
+          The connected stair climber reinvented for the home. Compact, powerful, and built for results. A standout piece for any renovation or home gym feature.
+        </p>
+        <div style="margin-top:1.5rem;padding:1.25rem;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:6px">
+          <p style="font-size:.85rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.1em;font-family:'Montserrat',sans-serif">Cardio meets design</p>
+          <p style="font-size:.9rem;color:var(--text-mute);margin-top:.3rem">Sleek enough for a living room, tough enough for serious training. The Block-ready out of the box.</p>
+        </div>
+        <div style="margin-top:1.25rem;border-radius:8px;overflow:hidden;aspect-ratio:16/9;background:var(--bg-alt);display:flex;align-items:center;justify-content:center">
+          <p style="font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-faint);font-weight:700;font-family:'Montserrat',sans-serif">Product imagery available on request</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MARKET DATA ===================== -->
+<section class="section bg-alt" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="grid-3 reveal">
+      <div style="border-top:2px solid var(--accent);padding-top:1.5rem">
+        <div class="stat-num" style="text-align:left">$19.8B</div>
+        <p style="font-size:1rem;margin-top:.5rem">Global home fitness equipment market by 2032</p>
+        <div class="stat-source" style="margin-top:.75rem">Fortune Business Insights</div>
+      </div>
+      <div style="border-top:2px solid var(--accent);padding-top:1.5rem">
+        <div class="stat-num" style="text-align:left">7.1%</div>
+        <p style="font-size:1rem;margin-top:.5rem">CAGR growth rate. Offline channel growing faster than online (8.5%)</p>
+        <div class="stat-source" style="margin-top:.75rem">FBI Market Report 2019-2032</div>
+      </div>
+      <div style="border-top:2px solid var(--accent);padding-top:1.5rem">
+        <div class="stat-num" style="text-align:left">+10%</div>
+        <p style="font-size:1rem;margin-top:.5rem">Health & wellness spending growth year-on-year in Australia</p>
+        <div class="stat-source" style="margin-top:.75rem">KPMG Retail Outlook 2025</div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--rule);margin:3rem 0"></div>
+
+    <div class="grid-2" style="align-items:start">
+      <div class="reveal">
+        <h3 style="color:var(--accent);opacity:.8;margin-bottom:1.5rem">The Home Gym Builder</h3>
+        <div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Highest average order value of all customer segments</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Investing in their shed, garage, or dedicated fitness space</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Convenience is the #1 motivator, not price sensitivity</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Values quality, brand trust, and expert recommendation</p>
+          </div>
+        </div>
+        <p style="font-size:.8rem;color:var(--text-faint);margin-top:1rem;font-style:italic">*Archetype formed from 1,600+ pre-sale phone calls</p>
+      </div>
+      <div class="reveal" style="transition-delay:.15s">
+        <h3 style="color:var(--accent);opacity:.8;margin-bottom:1.5rem">Why Stratco Customers Are the Perfect Fit</h3>
+        <div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Already investing in their property with sheds and outdoor structures</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Building a new shed is the #1 trigger for a home gym project</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">Cross-demographic: tradies, families, retirees all build home gyms</p>
+          </div>
+          <div style="display:flex;gap:.75rem;align-items:flex-start;margin-bottom:1rem">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:.6rem"></div>
+            <p style="font-size:1rem">The Block audience watches for inspiration, then acts on it</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE BLOCK IMAGE BREAK ===================== -->
+<section class="img-section" style="min-height:60vh">
+  <img class="img-cover" src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aurora-G2-35.jpg?v=1769789458" alt="Revel Aurora barrel sauna outdoor">
+  <div class="overlay" style="background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 40%,transparent 100%)"></div>
+  <div class="content">
+    <div class="reveal">
+      <h3 style="color:var(--accent)">The Block Connection</h3>
+      <h2 style="margin-top:.5rem">Revel is already<br>on The Block.</h2>
+      <p style="margin-top:1rem;max-width:500px;font-size:1rem;color:rgba(255,255,255,.6)">With Marty Fox as ambassador, Revel has proven the model. Now we bring the full fitness portfolio through Stratco's partnership.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== THE VISION ===================== -->
+<section class="section bg-main" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <span class="badge">The Vision</span>
+      <h2 style="margin-top:1.5rem">Four ways<br>to partner.</h2>
+      <div class="accent-rule" style="margin:1.5rem auto"></div>
+    </div>
+
+    <div class="grid-2-brands reveal" style="transition-delay:.15s">
+      <div class="vision-card" style="border-color:var(--accent-border);background:var(--accent-subtle)">
+        <div class="vision-num">01</div>
+        <h4 style="margin-top:.75rem;font-size:1rem;text-transform:uppercase;letter-spacing:.06em">The Gym Pod</h4>
+        <div class="accent-rule" style="margin:1rem 0;width:40px"></div>
+        <p style="font-size:.95rem;line-height:1.6">
+          A turnkey product: Stratco builds the pod, GAF fills it with gym equipment. One purchase, one delivery, one complete home gym. Split the profits 50/50. A brand-new product category for both businesses.
+        </p>
+        <div style="margin-top:1rem;padding:.75rem 1rem;background:var(--accent);border-radius:6px;text-align:center">
+          <p style="font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#FFFFFF;font-family:'Montserrat',sans-serif">Featured concept</p>
+        </div>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-num">02</div>
+        <h4 style="margin-top:.75rem;font-size:1rem;text-transform:uppercase;letter-spacing:.06em">The Block Integration</h4>
+        <div class="accent-rule" style="margin:1rem 0;width:40px"></div>
+        <p style="font-size:.95rem;line-height:1.6">
+          Feature GAF brands in Block renovations. Force USA home gyms in sheds. Revel saunas in wellness zones. Nike and STEPR as premium inclusions. All supplied through Stratco's existing relationship.
+        </p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-num">03</div>
+        <h4 style="margin-top:.75rem;font-size:1rem;text-transform:uppercase;letter-spacing:.06em">Shed-to-Gym Packages</h4>
+        <div class="accent-rule" style="margin:1rem 0;width:40px"></div>
+        <p style="font-size:.95rem;line-height:1.6">
+          Co-branded "Home Gym Shed" concept. Buy a Stratco shed, kit it out with GAF equipment. Curated bundles at every price point. Loyalty program members get exclusive pricing on gym equipment.
+        </p>
+      </div>
+
+      <div class="vision-card">
+        <div class="vision-num">04</div>
+        <h4 style="margin-top:.75rem;font-size:1rem;text-transform:uppercase;letter-spacing:.06em">Database & Cross-Promotion</h4>
+        <div class="accent-rule" style="margin:1rem 0;width:40px"></div>
+        <p style="font-size:.95rem;line-height:1.6">
+          Share customer databases for targeted campaigns. Stratco Loyalty Program members get x% off gym equipment. GAF customers get x% off Stratco sheds. One customer, two purchases.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GYM POD CONCEPT ===================== -->
+<section class="img-section" style="min-height:70vh">
+  <img class="img-cover" src="../images/brand-promise/hero-g3-home-gym.jpg" alt="Force USA home gym in a dedicated space" style="object-position:center 50%">
+  <div class="overlay" style="background:linear-gradient(135deg,rgba(0,0,0,.88) 30%,rgba(0,0,0,.55) 60%,rgba(0,0,0,.3))"></div>
+  <div class="content" style="padding-bottom:4rem">
+    <div class="reveal">
+      <span class="badge" style="border-color:rgba(242,100,34,.5);color:var(--accent)">New Concept</span>
+      <h2 style="margin-top:1rem">The Gym Pod.</h2>
+      <div class="accent-rule" style="margin:1rem 0"></div>
+      <p style="max-width:520px;font-size:1.1rem;color:rgba(255,255,255,.7)">Stratco builds the pod. We fill it with a complete gym. One product, two brands, shared profits.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section bg-main" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="grid-2" style="align-items:start">
+      <div class="reveal">
+        <span class="badge">The Gym Pod</span>
+        <h2 style="margin-top:1.5rem">A new product<br>category.</h2>
+        <div class="accent-rule"></div>
+        <p style="font-size:1.05rem;margin-top:1rem">
+          The Gym Pod is a purpose-built, turnkey product. Stratco designs and manufactures the outdoor pod structure. GAF kits it out with a complete home gym. The customer gets one product, delivered and installed as a single package.
+        </p>
+        <p style="font-size:1rem;margin-top:1.25rem">
+          This isn't a shed with gym equipment bolted in. It's a co-developed product. Dedicated ventilation, rubber flooring, integrated storage, lighting, and a curated equipment package from Force USA, Nike, and Revel.
+        </p>
+      </div>
+      <div class="reveal" style="transition-delay:.15s">
+        <div class="struct-card" style="border-color:var(--accent-border);background:var(--accent-subtle)">
+          <h4 style="color:var(--accent)">How It Works</h4>
+          <div style="height:1px;background:var(--accent-border);margin:1.25rem 0"></div>
+          <div style="display:flex;flex-direction:column;gap:1.25rem">
+            <div style="display:flex;gap:1rem;align-items:flex-start">
+              <div style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;font-family:'Montserrat',sans-serif">S</div>
+              <div>
+                <p style="font-weight:700;color:var(--text);font-size:.95rem">Stratco builds the pod</p>
+                <p style="font-size:.88rem;color:var(--text-mute);margin-top:.2rem">Engineered outdoor structure, weatherproof, insulated, ready for gym use</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start">
+              <div style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;font-family:'Montserrat',sans-serif">G</div>
+              <div>
+                <p style="font-weight:700;color:var(--text);font-size:.95rem">GAF fills the gym</p>
+                <p style="font-size:.88rem;color:var(--text-mute);margin-top:.2rem">Force USA all-in-one trainer, rubber flooring, accessories, optional Revel sauna</p>
+              </div>
+            </div>
+            <div style="display:flex;gap:1rem;align-items:flex-start">
+              <div style="flex-shrink:0;width:2rem;height:2rem;border-radius:50%;background:var(--accent);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:700;font-family:'Montserrat',sans-serif">$</div>
+              <div>
+                <p style="font-weight:700;color:var(--text);font-size:.95rem">Split the profits</p>
+                <p style="font-size:.88rem;color:var(--text-mute);margin-top:.2rem">Joint product, shared revenue. One customer, one purchase, two brands earning</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2-brands" style="margin-top:1.5rem;gap:1rem">
+          <div class="struct-card" style="text-align:center;padding:1.5rem">
+            <div style="font-size:2rem;font-weight:700;color:var(--accent);font-family:'Montserrat',sans-serif">3</div>
+            <p style="font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-mute);margin-top:.3rem;font-weight:700;font-family:'Montserrat',sans-serif">Tiered packages</p>
+            <p style="font-size:.85rem;color:var(--text-faint);margin-top:.3rem">Starter, Pro, Elite</p>
+          </div>
+          <div class="struct-card" style="text-align:center;padding:1.5rem">
+            <div style="font-size:2rem;font-weight:700;color:var(--accent);font-family:'Montserrat',sans-serif">1</div>
+            <p style="font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-mute);margin-top:.3rem;font-weight:700;font-family:'Montserrat',sans-serif">Purchase</p>
+            <p style="font-size:.85rem;color:var(--text-faint);margin-top:.3rem">Pod + gym, delivered</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--rule);margin:3rem 0"></div>
+
+    <div class="reveal">
+      <h3 style="color:var(--accent);opacity:.8;margin-bottom:1.5rem">Gym Pod Package Tiers</h3>
+    </div>
+    <div class="grid-3 reveal" style="transition-delay:.15s">
+      <div class="struct-card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h4>Starter Pod</h4>
+          <span class="brand-tag">Entry</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.92rem;color:var(--text-mute)">
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Stratco shed structure (3m x 4m)</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Force USA MyRack or G3</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Rubber flooring</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Barbell + weight set</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Wall-mounted storage</div>
+        </div>
+      </div>
+      <div class="struct-card" style="border-color:var(--accent-border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h4>Pro Pod</h4>
+          <span class="brand-tag">Most Popular</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.92rem;color:var(--text-mute)">
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Stratco insulated pod (4m x 5m)</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Force USA G10 or C10 All-In-One</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Nike Strength accessories</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Premium rubber flooring</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> LED lighting + ventilation</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Full barbell + dumbbell set</div>
+        </div>
+      </div>
+      <div class="struct-card" style="background:var(--accent-subtle);border-color:var(--accent-border)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+          <h4>Elite Pod</h4>
+          <span class="brand-tag" style="border-color:rgba(242,100,34,.5);color:var(--accent)">Premium</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.6rem;font-size:.92rem;color:var(--text-mute)">
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Stratco premium pod (5m x 6m)</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Force USA C10 Pro All-In-One</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> STEPR stair climber</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Nike Strength full rack setup</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Revel sauna (outdoor, adjacent)</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Climate control + premium finish</div>
+          <div style="display:flex;gap:.5rem;align-items:center"><span style="color:var(--accent)">&#10003;</span> Full accessory package</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS IMAGE ===================== -->
+<section class="img-section" style="min-height:50vh">
+  <img class="img-cover" src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-eden-4P-16.jpg?v=1772380867" alt="Revel Eden barrel sauna outdoor" style="object-position:center 40%">
+  <div class="overlay" style="background:linear-gradient(to top,rgba(0,0,0,.85) 0%,rgba(0,0,0,.45) 40%,transparent 100%)"></div>
+  <div class="content">
+    <div class="reveal">
+      <h3 style="color:var(--accent)">The Plan</h3>
+      <h2 style="margin-top:.5rem">Simple to start.<br>Built to scale.</h2>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== HOW IT WORKS ===================== -->
+<section class="section bg-alt" style="min-height:auto">
+  <div class="section-pad" style="width:100%;max-width:1000px;margin:0 auto">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <span class="badge">How It Works</span>
+      <h2 style="margin-top:1.5rem">Three steps.<br>That's it.</h2>
+      <div class="accent-rule" style="margin:1.5rem auto"></div>
+    </div>
+    <div class="grid-4 reveal" style="transition-delay:.15s">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>We align</h4>
+        <p>Agree on The Block integration, cross-promotion terms, and loyalty program discounts. We handle all product supply and logistics.</p>
+      </div>
+      <div class="step-arrow hide-mobile">&#8594;</div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>We launch</h4>
+        <p>Feature GAF brands on The Block. Launch "Home Gym Shed" packages on Stratco's platform. Cross-promote to both databases.</p>
+      </div>
+      <div class="step-arrow hide-mobile">&#8594;</div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>We scale</h4>
+        <p>Track conversions, refine packages, expand the range. In-store displays at Stratco locations. Monthly reporting on all activity.</p>
+      </div>
+    </div>
+
+    <div class="reveal" style="transition-delay:.3s;margin-top:3rem;text-align:center;padding:1.5rem 2rem;border:1px solid var(--accent-border);border-radius:8px;background:var(--accent-subtle);max-width:650px;margin-left:auto;margin-right:auto">
+      <p style="font-size:1rem;color:var(--text-sec)">
+        <strong style="color:var(--accent)">Stratco's commitment:</strong> Minimal. We supply all products, branding, and collateral. You provide the platform, the customer relationship, and the database access. GAF handles fulfilment, delivery, customer service, and returns.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PRODUCT COLLAGE ===================== -->
+<section class="section bg-main" style="min-height:auto;padding:4rem 2rem">
+  <div style="width:100%;max-width:1200px;margin:0 auto">
+    <div class="reveal" style="text-align:center;margin-bottom:2.5rem">
+      <span class="badge">The Range</span>
+      <h2 style="margin-top:1.5rem">What Stratco customers<br>will discover.</h2>
+      <div class="accent-rule" style="margin:1.5rem auto"></div>
+    </div>
+    <div class="reveal" style="transition-delay:.15s;display:grid;grid-template-columns:1fr 1fr 1fr;gap:.75rem">
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/ForceUSAG3_0001_2.jpg?v=1759448410" style="width:100%;height:100%;object-fit:cover" alt="Force USA G3">
+      </div>
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="../images/brand-promise/nike-squat-rack.jpg" style="width:100%;height:100%;object-fit:cover" alt="Nike Squat Rack">
+      </div>
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-aura2P-24.jpg?v=1769789361" style="width:100%;height:100%;object-fit:cover" alt="Revel Aura Sauna">
+      </div>
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0001_6.jpg?v=1759448398" style="width:100%;height:100%;object-fit:cover" alt="Force USA equipment">
+      </div>
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="../images/brand-promise/nike-shield-barbell.jpg" style="width:100%;height:100%;object-fit:cover" alt="Nike Shield Barbell">
+      </div>
+      <div style="border-radius:8px;overflow:hidden;aspect-ratio:3/4">
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-glacier-duo-07_f34ddd1c-ddac-4fad-bf07-bcffc7c3eccc.jpg?v=1776127377" style="width:100%;height:100%;object-fit:cover" alt="Revel Glacier Duo ice bath">
+      </div>
+    </div>
+    <div class="reveal" style="transition-delay:.3s;text-align:center;margin-top:2rem">
+      <a href="https://www.gymandfitness.com.au" target="_blank" style="display:inline-block;padding:.9rem 2.5rem;font-size:.9rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#FFFFFF;background:var(--accent);border-radius:999px;text-decoration:none;transition:opacity .3s ease;font-family:'Montserrat',sans-serif">Explore the full range at gymandfitness.com.au</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== PARTNERSHIP STRUCTURE ===================== -->
+<section class="section bg-alt" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="reveal" style="text-align:center;margin-bottom:3rem">
+      <span class="badge">Partnership Structure</span>
+      <h2 style="margin-top:1.5rem">What each party<br>brings to the&nbsp;table.</h2>
+    </div>
+
+    <div class="grid-3 reveal" style="transition-delay:.15s">
+      <!-- The Block -->
+      <div class="struct-card" style="border-color:var(--accent-border)">
+        <div class="struct-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"/></svg>
+        </div>
+        <h4>The Block</h4>
+        <p style="font-size:.92rem;color:var(--text-mute);margin-bottom:1rem">Brand integration across The Block renovations</p>
+        <div style="height:1px;background:var(--rule);margin:1rem 0"></div>
+        <div style="display:flex;flex-direction:column;gap:.75rem">
+          <div style="display:flex;justify-content:space-between;font-size:.92rem">
+            <span style="color:var(--text-mute)">Home gym fit-outs</span>
+            <span style="color:var(--accent);font-weight:700">Force USA</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.92rem">
+            <span style="color:var(--text-mute)">Recovery zones</span>
+            <span style="color:var(--accent);font-weight:700">Revel</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.92rem">
+            <span style="color:var(--text-mute)">Premium accessories</span>
+            <span style="color:var(--accent);font-weight:700">Nike</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.92rem">
+            <span style="color:var(--text-mute)">Cardio feature</span>
+            <span style="color:var(--accent);font-weight:700">STEPR</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cross-Promo -->
+      <div class="struct-card">
+        <div class="struct-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <h4>Loyalty & Cross-Promotion</h4>
+        <div style="margin-top:.75rem;padding:1rem;background:var(--accent-subtle);border:1px solid var(--accent-border);border-radius:6px;text-align:center">
+          <p style="font-size:.8rem;text-transform:uppercase;letter-spacing:.15em;color:var(--text-faint);margin-bottom:.3rem;font-family:'Montserrat',sans-serif">Stratco Loyalty Members</p>
+          <p style="font-size:1.4rem;font-weight:700;color:var(--accent);letter-spacing:.04em;line-height:1.3;font-family:'Montserrat',sans-serif">Exclusive Pricing</p>
+          <p style="font-size:.92rem;color:var(--text-sec);margin-top:.4rem">Special rates on gym equipment for Stratco loyalty members</p>
+        </div>
+        <div style="height:1px;background:var(--rule);margin:1rem 0"></div>
+        <p style="font-size:.92rem;color:var(--text-mute);line-height:1.6">Reciprocal: GAF customers receive discounts on Stratco sheds and structures. Two audiences, one ecosystem.</p>
+      </div>
+
+      <!-- Database -->
+      <div class="struct-card" style="background:var(--accent-subtle);border-color:var(--accent-border)">
+        <div class="struct-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5"><path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5"/></svg>
+        </div>
+        <h4>Database Share</h4>
+        <div style="font-size:2rem;font-weight:700;color:var(--accent);margin-top:.5rem;font-family:'Montserrat',sans-serif">2 Databases</div>
+        <p style="font-size:.85rem;color:var(--text-mute);margin-top:.5rem">Targeted cross-promotion to qualified audiences</p>
+        <div style="height:1px;background:var(--rule);margin:1rem 0"></div>
+        <p style="font-size:.95rem;color:var(--text-sec)">Stratco customers who bought sheds see gym equipment. GAF customers who bought gym gear see shed solutions. Data-driven, permission-based, measurable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LIFESTYLE BREAK ===================== -->
+<section class="img-section" style="min-height:50vh">
+  <img class="img-cover" src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/Aura-2P-G2-15.jpg?v=1769789350" alt="Revel sauna interior" style="object-position:center center">
+  <div class="overlay" style="background:linear-gradient(to bottom,rgba(0,0,0,.3) 0%,transparent 30%,transparent 70%,rgba(0,0,0,.3) 100%)"></div>
+</section>
+
+<!-- ===================== STRATCO OUTCOMES ===================== -->
+<section class="section bg-main" style="min-height:auto">
+  <div class="section-pad" style="width:100%">
+    <div class="grid-2" style="align-items:start">
+      <div>
+        <div class="reveal">
+          <span class="badge">The Stratco Advantage</span>
+          <h2 style="margin-top:1.5rem">What this means<br>for Stratco.</h2>
+          <div class="accent-rule"></div>
+        </div>
+
+        <div style="margin-top:2rem">
+          <div class="benefit reveal" style="transition-delay:.1s">
+            <div class="benefit-num">01</div>
+            <div>
+              <h4>Revenue beyond the shed</h4>
+              <p>Earn referral revenue on every gym equipment sale linked to a Stratco customer. No inventory, no logistics, no risk.</p>
+            </div>
+          </div>
+          <div class="benefit reveal" style="transition-delay:.15s">
+            <div class="benefit-num">02</div>
+            <div>
+              <h4>The Block differentiation</h4>
+              <p>Be the only home improvement brand offering a complete lifestyle solution. Shed, gym, and recovery in one package. No competitor can match this.</p>
+            </div>
+          </div>
+          <div class="benefit reveal" style="transition-delay:.2s">
+            <div class="benefit-num">03</div>
+            <div>
+              <h4>Customer retention</h4>
+              <p>The loyalty program gives Stratco customers a reason to come back. Exclusive gym equipment pricing deepens the relationship beyond the initial purchase.</p>
+            </div>
+          </div>
+          <div class="benefit reveal" style="transition-delay:.25s">
+            <div class="benefit-num">04</div>
+            <div>
+              <h4>Premium brand association</h4>
+              <p>Align with Nike, Force USA, and Revel. Globally recognised brands that signal quality and lifestyle aspiration to your customer base.</p>
+            </div>
+          </div>
+          <div class="benefit reveal" style="transition-delay:.3s">
+            <div class="benefit-num">05</div>
+            <div>
+              <h4>Zero operational burden</h4>
+              <p>GAF handles all product supply, fulfilment, delivery, returns, and customer service. Stratco provides the platform and the audience. We do the rest.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hide-mobile reveal" style="transition-delay:.2s">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+          <div style="border-radius:8px;overflow:hidden">
+            <img src="../images/brand-promise/nike-distinct.jpg" style="width:100%;height:200px;object-fit:cover" alt="Nike Strength equipment">
+          </div>
+          <div style="border-radius:8px;overflow:hidden;margin-top:1.5rem">
+            <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/revel-eden-4P-16.jpg?v=1772380867" style="width:100%;height:200px;object-fit:cover" alt="Revel Eden sauna">
+          </div>
+          <div style="grid-column:span 2;border-radius:8px;overflow:hidden">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_f9be46b5-a938-4ba8-ba94-68865b245725.jpg?v=1776683863" style="width:100%;height:240px;object-fit:cover" alt="Force USA home gym lifestyle">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== NEXT STEPS ===================== -->
+<section class="section bg-alt" style="min-height:auto">
+  <div class="dot-grid" style="top:3rem;right:3rem"></div>
+  <div class="section-pad" style="width:100%;position:relative;z-index:2">
+    <div class="reveal">
+      <span class="badge">Next Steps</span>
+      <h2 style="margin-top:1.5rem">Let's build<br>something together.</h2>
+      <div class="accent-rule"></div>
+    </div>
+
+    <div style="max-width:600px;margin-top:2rem">
+      <div class="timeline-item reveal" style="transition-delay:.1s">
+        <div class="timeline-line"></div>
+        <div class="timeline-dot">01</div>
+        <div class="timeline-content">
+          <h4>Align on the vision</h4>
+          <p>Meet to discuss The Block integration, loyalty terms, and database sharing framework.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal" style="transition-delay:.15s">
+        <div class="timeline-line"></div>
+        <div class="timeline-dot">02</div>
+        <div class="timeline-content">
+          <h4>Design the packages</h4>
+          <p>Co-create "Home Gym Shed" bundles at key price points. Define loyalty program discounts for both audiences.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal" style="transition-delay:.2s">
+        <div class="timeline-line"></div>
+        <div class="timeline-dot">03</div>
+        <div class="timeline-content">
+          <h4>Launch pilot</h4>
+          <p>Feature GAF brands on The Block. Activate cross-promotion across databases and loyalty programs.</p>
+        </div>
+      </div>
+      <div class="timeline-item reveal" style="transition-delay:.25s">
+        <div class="timeline-dot">04</div>
+        <div class="timeline-content">
+          <h4>Measure and scale</h4>
+          <p>Track conversions, referral revenue, and customer engagement. Refine approach and explore in-store opportunities.</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:1px;background:var(--accent-border);margin:3rem 0;max-width:600px"></div>
+
+    <div class="reveal">
+      <div>
+        <p style="font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-faint);margin-bottom:.3rem;font-family:'Montserrat',sans-serif">Gym and Fitness Contact</p>
+        <p style="font-size:1rem;font-weight:700;color:var(--text)">Josh Hancock</p>
+        <p style="font-size:.95rem;color:var(--text-mute)">josh@gymandfitness.com.au</p>
+      </div>
+    </div>
+
+    <div style="margin-top:3rem">
+      <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" class="logo-footer" style="height:24px;opacity:.35" alt="Gym and Fitness">
+      <p style="margin-top:.75rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.2em;color:var(--text-faint);font-weight:700;font-family:'Montserrat',sans-serif">Australia's Home Gym Destination</p>
+    </div>
+  </div>
+</section>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const icon = document.getElementById('theme-icon');
+  const logo = document.querySelector('.logo-footer');
+  if (html.getAttribute('data-theme') === 'light') {
+    html.setAttribute('data-theme', 'dark');
+    icon.innerHTML = '&#9788;';
+    if (logo) logo.style.filter = 'none';
+  } else {
+    html.setAttribute('data-theme', 'light');
+    icon.innerHTML = '&#9790;';
+    if (logo) logo.style.filter = 'none';
+  }
+}
+</script>
+</body>
+</html>

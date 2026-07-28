@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Strategy Day Debrief</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================
+   DESIGN SYSTEM — Power Design Principles
+   Scale: 1.25 modular | Grid: 8pt | Color: 60-30-10
+   ============================================ */
+:root {
+  /* Brand palette */
+  --black: #0A0A0A;
+  --white: #FFFFFF;
+  --orange: #F26422;
+  --orange-dim: rgba(242, 100, 34, 0.12);
+  --orange-glow: rgba(242, 100, 34, 0.06);
+
+  /* Neutral scale */
+  --grey-50: #FAFAFA;
+  --grey-100: #F2F2F2;
+  --grey-200: #E4E4E4;
+  --grey-300: #C8C8C8;
+  --grey-400: #9E9E9E;
+  --grey-500: #6E6E6E;
+  --grey-600: #4A4A4A;
+  --grey-800: #1E1E1E;
+  --grey-900: #141414;
+
+  /* Semantic */
+  --success: #22A652;
+  --danger: #D63B2F;
+
+  /* Typography — 1.25 modular scale, base 24px */
+  --font-display: 'Montserrat', 'Helvetica Neue', sans-serif;
+  --font-body: 'Open Sans', 'Helvetica Neue', sans-serif;
+  --text-hero: 80px;
+  --text-display: 56px;
+  --text-h1: 44px;
+  --text-h2: 36px;
+  --text-body-lg: 28px;
+  --text-body: 24px;
+  --text-caption: 18px;
+  --text-eyebrow: 13px;
+
+  /* Spacing — 8pt grid */
+  --sp-2: 8px;
+  --sp-3: 16px;
+  --sp-4: 24px;
+  --sp-5: 32px;
+  --sp-6: 48px;
+  --sp-7: 64px;
+  --sp-8: 96px;
+
+  /* Layout */
+  --safe-zone: 96px;
+  --slide-radius: 0px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font-body); color: var(--black); background: var(--grey-900); -webkit-font-smoothing: antialiased; }
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+}
+
+/* ============================================
+   SLIDE ENGINE
+   ============================================ */
+.deck { position: relative; width: 100%; height: 100%; }
+.slide {
+  position: absolute; top: 0; left: 0;
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; justify-content: center;
+  padding: var(--safe-zone);
+  background: var(--white);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+  overflow: hidden;
+}
+.slide.active { opacity: 1; pointer-events: all; }
+.slide.dark { background: var(--black); color: var(--white); }
+.slide.soft { background: var(--grey-50); }
+
+/* ============================================
+   COMPONENTS
+   ============================================ */
+
+/* Eyebrow — only element allowed below 24px (uppercase + tracking compensates) */
+.eyebrow {
+  font: 700 var(--text-eyebrow)/1 var(--font-display);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  color: var(--orange);
+  margin-bottom: var(--sp-4);
+}
+
+/* Subtitle */
+.subtitle {
+  font: 300 var(--text-body)/1.5 var(--font-body);
+  color: var(--grey-500);
+  max-width: 640px;
+  margin-top: var(--sp-3);
+}
+.dark .subtitle { color: var(--grey-400); }
+
+/* Stat cluster */
+.stats {
+  display: flex; gap: var(--sp-7);
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-5);
+  border-top: 1px solid rgba(128,128,128,0.15);
+}
+.stat .val {
+  font: 800 40px/1 var(--font-display);
+  letter-spacing: -0.02em;
+}
+.stat .val.accent { color: var(--orange); }
+.stat .label {
+  font: 600 var(--text-eyebrow)/1.3 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--grey-400); margin-top: var(--sp-2);
+}
+
+/* Pill */
+.pill {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font: 600 var(--text-caption)/1 var(--font-display);
+  margin: 4px 8px 4px 0;
+}
+.pill.accent { background: var(--orange); color: var(--white); }
+.pill.dark { background: var(--grey-800); color: var(--white); }
+.pill.outline { background: transparent; border: 2px solid var(--grey-200); color: var(--grey-600); }
+.pill.sm { font-size: 14px; padding: 6px 14px; }
+
+/* Card */
+.card {
+  background: var(--white);
+  border-radius: 8px;
+  padding: var(--sp-5);
+  border: 1px solid var(--grey-200);
+}
+.card.elevated {
+  border: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+}
+.card.dark-card {
+  background: var(--grey-800);
+  color: var(--white);
+  border-color: transparent;
+}
+.card.accent-left { border-left: 4px solid var(--orange); }
+.card h3 {
+  font-size: var(--text-body);
+  letter-spacing: -0.01em;
+  margin-bottom: var(--sp-2);
+}
+.card p {
+  font-size: var(--text-caption);
+  color: var(--grey-500);
+  line-height: 1.55;
+}
+.card.dark-card p { color: var(--grey-400); }
+
+/* Layout grids */
+.cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-6); align-items: start; }
+.cols-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--sp-5); align-items: start; }
+
+/* Bar visualization */
+.bar-group { margin-bottom: var(--sp-3); }
+.bar-label {
+  display: flex; justify-content: space-between;
+  font: 600 16px/1 var(--font-body);
+  margin-bottom: 8px;
+}
+.bar-pct { font: 800 16px/1 var(--font-display); color: var(--orange); }
+.bar-track { width: 100%; height: 8px; background: var(--grey-100); border-radius: 4px; }
+.bar-fill { height: 100%; border-radius: 4px; background: var(--black); }
+.bar-fill.accent { background: var(--orange); }
+
+/* Table */
+.strat-table { width: 100%; border-collapse: collapse; }
+.strat-table th {
+  text-align: left;
+  font: 700 var(--text-eyebrow)/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--grey-400);
+  padding: 16px 16px;
+  border-bottom: 2px solid var(--grey-200);
+}
+.strat-table td {
+  padding: 16px;
+  border-bottom: 1px solid var(--grey-100);
+  font-size: var(--text-caption);
+  vertical-align: top;
+  line-height: 1.45;
+}
+.strat-table td:first-child {
+  font: 700 var(--text-caption)/1.45 var(--font-display);
+  white-space: nowrap;
+}
+.strat-table tr:last-child td { border-bottom: none; }
+
+/* Bubble chart */
+.bubble-chart {
+  position: relative; width: 100%; height: 360px;
+  border-left: 2px solid var(--grey-200);
+  border-bottom: 2px solid var(--grey-200);
+}
+.bubble-chart .axis-label {
+  font: 700 var(--text-eyebrow)/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--grey-400); position: absolute;
+}
+.bubble-chart .x-label { bottom: -32px; left: 50%; transform: translateX(-50%); }
+.bubble-chart .y-label { top: 50%; left: -48px; transform: rotate(-90deg) translateX(-50%); transform-origin: left center; white-space: nowrap; }
+.bubble {
+  position: absolute; border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: flex; align-items: center; justify-content: center;
+  font: 700 11px/1.2 var(--font-display);
+  color: var(--white); text-align: center;
+  transition: transform 0.25s ease;
+  cursor: default;
+}
+.bubble:hover { transform: translate(-50%, -50%) scale(1.1); z-index: 10; }
+.bubble .tip {
+  display: none; position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+  background: var(--black); color: var(--white); padding: 8px 16px; border-radius: 6px;
+  font: 600 14px/1.3 var(--font-body); white-space: nowrap; z-index: 20;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.bubble:hover .tip { display: block; }
+
+/* Zone circle */
+.zone {
+  position: absolute; border: 2px dashed var(--orange);
+  border-radius: 50%; transform: translate(-50%, -50%); opacity: 0.35;
+}
+
+/* Timeline */
+.timeline { position: relative; padding-left: 32px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--grey-200); }
+.tl-item { position: relative; margin-bottom: var(--sp-4); }
+.tl-item::before {
+  content: ''; position: absolute; left: -28px; top: 6px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--orange); border: 3px solid var(--white);
+}
+.tl-item .date { font: 700 16px/1 var(--font-display); color: var(--orange); margin-bottom: 6px; }
+.tl-item .desc { font-size: var(--text-caption); line-height: 1.5; }
+
+/* SWOT */
+.swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--sp-3); }
+.swot-box { padding: var(--sp-4); border-radius: 8px; }
+.swot-box h4 {
+  font-size: 16px; text-transform: uppercase;
+  letter-spacing: 0.12em; margin-bottom: var(--sp-3);
+}
+.swot-box ul { list-style: none; font-size: var(--text-caption); line-height: 1.7; }
+.swot-box li { padding-left: 16px; position: relative; }
+.swot-box li::before {
+  content: ''; position: absolute; left: 0; top: 10px;
+  width: 6px; height: 6px; border-radius: 50%;
+}
+.swot-box.s { background: #E8F5E9; } .swot-box.s h4 { color: #2E7D32; } .swot-box.s li::before { background: #2E7D32; }
+.swot-box.w { background: #FFF3E0; } .swot-box.w h4 { color: #E65100; } .swot-box.w li::before { background: #E65100; }
+.swot-box.o { background: #E3F2FD; } .swot-box.o h4 { color: #1565C0; } .swot-box.o li::before { background: #1565C0; }
+.swot-box.t { background: #FCE4EC; } .swot-box.t h4 { color: #C62828; } .swot-box.t li::before { background: #C62828; }
+
+/* Goal card */
+.goal-card {
+  padding: var(--sp-5); border-radius: 8px;
+  border: 1px solid var(--grey-200);
+}
+.goal-card .owner {
+  font: 600 var(--text-eyebrow)/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--grey-400);
+}
+.goal-card h4 { font-size: 22px; margin-top: 8px; margin-bottom: 8px; }
+.goal-card .detail { font-size: var(--text-caption); color: var(--grey-500); line-height: 1.55; }
+
+/* Comparison bars */
+.compare-block { margin-bottom: var(--sp-4); }
+.compare-label {
+  font: 700 16px/1 var(--font-display);
+  margin-bottom: var(--sp-2);
+}
+.compare-label.accent { color: var(--orange); }
+.compare-row-inner { display: flex; gap: var(--sp-3); }
+.compare-metric { flex: 1; }
+.compare-metric-label {
+  font: 600 13px/1 var(--font-display);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--grey-400); margin-bottom: 8px;
+}
+.compare-bar-track { height: 32px; background: var(--grey-100); border-radius: 6px; overflow: hidden; }
+.compare-bar-fill {
+  height: 100%; border-radius: 6px;
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-right: 12px;
+  font: 700 14px/1 var(--font-display); color: var(--white);
+}
+.compare-bar-fill.customers { background: var(--grey-800); }
+.compare-bar-fill.revenue { background: var(--orange); }
+
+/* Progress */
+.progress-bar {
+  position: fixed; bottom: 0; left: 0;
+  width: 100%; height: 3px;
+  background: rgba(128,128,128,0.1); z-index: 100;
+}
+.progress-fill { height: 100%; background: var(--orange); transition: width 0.35s ease; }
+.slide-counter {
+  position: fixed; bottom: 20px; right: 32px;
+  font: 600 14px/1 var(--font-display);
+  color: var(--grey-400); z-index: 100;
+  letter-spacing: 0.04em;
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+<!-- ===================== SLIDE 1: Title ===================== -->
+<div class="slide dark active" data-slide="0">
+  <div class="eyebrow">Marketing Team Briefing</div>
+  <h1 style="font-size: var(--text-hero); line-height: 1.02; letter-spacing: -0.03em;">Strategy Day<br><span style="color: var(--orange)">Debrief.</span></h1>
+  <p class="subtitle">What we decided, why it matters, and what it means for this team.</p>
+  <div class="stats">
+    <div class="stat"><div class="val accent">May 2026</div><div class="label">Strategy Session</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">GAF</div><div class="label">2-Day Brand Session</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">FY27</div><div class="label">Planning Horizon</div></div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 2: Context ===================== -->
+<div class="slide" data-slide="1">
+  <div class="eyebrow">Context</div>
+  <h1 style="font-size: var(--text-display);">Why did we do<br>a strategy day?</h1>
+  <p style="font-size: var(--text-body); color: var(--grey-600); max-width: 720px; line-height: 1.55; margin-top: var(--sp-4);">We needed to answer one question: <strong style="color: var(--black);">who are our best customers, and how do we build the entire business around them?</strong></p>
+  <p style="font-size: var(--text-caption); color: var(--grey-500); max-width: 720px; line-height: 1.6; margin-top: var(--sp-3);">We analysed 678 sales call transcripts, built profitability models by customer archetype, and mapped exactly who makes us money and who doesn't. Then we locked in the strategy for FY27.</p>
+  <div style="margin-top: var(--sp-6); display: flex; gap: 8px; flex-wrap: wrap;">
+    <span class="pill accent">678 calls analysed</span>
+    <span class="pill dark">Profit Per X modelling</span>
+    <span class="pill outline">Customer archetype mapping</span>
+    <span class="pill outline">JTBD deep dive</span>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 3: Best Clients Bubble ===================== -->
+<div class="slide soft" data-slide="2">
+  <div class="eyebrow">Profit Per X Analysis</div>
+  <h2 style="font-size: var(--text-h1);">Who are our best clients?</h2>
+  <p style="font-size: var(--text-caption); color: var(--grey-500); margin-top: var(--sp-2); margin-bottom: var(--sp-5);">Median CAC vs Median Profit Per X. Bubble size = total net profit over 12 months.</p>
+  <div style="position: relative; width: 100%; max-width: 840px;">
+    <div class="bubble-chart">
+      <div class="axis-label x-label">Median Profit Per X &rarr;</div>
+      <div class="axis-label y-label">Median CAC &rarr;</div>
+      <div class="zone" style="width: 260px; height: 200px; left: 78%; top: 55%;"></div>
+      <div class="bubble" style="left: 18%; top: 12%; width: 64px; height: 64px; background: var(--grey-400);">
+        <span class="tip">Budget Conscious (Online) &mdash; High CAC, negative profit</span>
+      </div>
+      <div class="bubble" style="left: 38%; top: 22%; width: 36px; height: 36px; background: var(--grey-300);">
+        <span class="tip">Budget Conscious (Offline)</span>
+      </div>
+      <div class="bubble" style="left: 46%; top: 18%; width: 52px; height: 52px; background: var(--grey-500);">
+        <span class="tip">B2C Online (Unclassified)</span>
+      </div>
+      <div class="bubble" style="left: 42%; top: 24%; width: 24px; height: 24px; background: var(--grey-600);">
+        <span class="tip">Performance Optimiser (Online)</span>
+      </div>
+      <div class="bubble" style="left: 68%; top: 16%; width: 48px; height: 48px; background: var(--grey-800);">
+        <span class="tip">Performance Optimiser (Sales Team) &mdash; High profit, high CAC</span>
+      </div>
+      <div class="bubble" style="left: 62%; top: 50%; width: 44px; height: 44px; background: rgba(242,100,34,0.55);">
+        <span class="tip">Home Gym Builder (Online) &mdash; Good profit, moderate CAC</span>
+      </div>
+      <div class="bubble" style="left: 85%; top: 52%; width: 80px; height: 80px; background: var(--orange);">
+        <span style="font-size:10px; padding: 6px;">HOME GYM<br>BUILDER</span>
+        <span class="tip">Home Gym Builder (Sales Team) &mdash; Highest profit, lowest CAC</span>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: var(--sp-6); display: flex; gap: var(--sp-5); flex-wrap: wrap; font: 600 14px/1 var(--font-display);">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--orange);margin-right:8px;vertical-align:middle;"></span>Home Gym Builder (Sales)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:rgba(242,100,34,0.55);margin-right:8px;vertical-align:middle;"></span>Home Gym Builder (Online)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--grey-800);margin-right:8px;vertical-align:middle;"></span>Perf Optimiser (Sales)</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--grey-400);margin-right:8px;vertical-align:middle;"></span>Budget Conscious</span>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 4: Who's Losing Money ===================== -->
+<div class="slide" data-slide="3">
+  <div class="eyebrow">Profit Per X Analysis</div>
+  <h2 style="font-size: var(--text-h1);">Who's losing us money?</h2>
+  <p style="font-size: var(--text-caption); color: var(--grey-500); margin-top: var(--sp-2); margin-bottom: var(--sp-5);">High CAC, low or negative profit per transaction.</p>
+  <div class="cols-2">
+    <div>
+      <div class="card accent-left" style="margin-bottom: var(--sp-3); border-left-color: var(--danger);">
+        <h3 style="color: var(--danger); font-size: 22px;">Budget Conscious Seeker</h3>
+        <p>69.5% of our customer base but only 29.1% of revenue. High CAC, low AOV, price-sensitive. Only buys on promotion.</p>
+      </div>
+      <div class="card accent-left" style="margin-bottom: var(--sp-3); border-left-color: var(--danger);">
+        <h3 style="color: var(--danger); font-size: 22px;">B2C Online (Unclassified)</h3>
+        <p>Never speak to sales. Lower AOV, no relationship, no Phase 2 upsell.</p>
+      </div>
+      <div class="card accent-left" style="border-left-color: var(--grey-400);">
+        <h3 style="color: var(--grey-600); font-size: 22px;">Performance Optimiser (Online)</h3>
+        <p>Without sales team contact, the unit economics don't work.</p>
+      </div>
+    </div>
+    <div>
+      <div style="background: var(--grey-50); border-radius: 8px; padding: var(--sp-5);">
+        <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.12em; color: var(--grey-400); margin-bottom: var(--sp-5);">The Imbalance</div>
+        <div class="compare-block">
+          <div class="compare-label" style="color: var(--grey-500);">Budget Conscious Seeker</div>
+          <div class="compare-row-inner">
+            <div class="compare-metric">
+              <div class="compare-metric-label">Customers</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill customers" style="width: 100%;">69.5%</div></div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-label">Revenue</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill revenue" style="width: 42%;">29.1%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-block">
+          <div class="compare-label accent">Home Gym Builder</div>
+          <div class="compare-row-inner">
+            <div class="compare-metric">
+              <div class="compare-metric-label">Customers</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill customers" style="width: 13%;">9%</div></div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-label">Revenue</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill revenue" style="width: 39%;">27.3%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="compare-block" style="margin-bottom: 0;">
+          <div class="compare-label" style="color: var(--grey-500);">Performance Optimiser</div>
+          <div class="compare-row-inner">
+            <div class="compare-metric">
+              <div class="compare-metric-label">Customers</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill customers" style="width: 18%;">12.6%</div></div>
+            </div>
+            <div class="compare-metric">
+              <div class="compare-metric-label">Revenue</div>
+              <div class="compare-bar-track"><div class="compare-bar-fill revenue" style="width: 28%;">19.3%</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 5: Home Gym Builder ===================== -->
+<div class="slide dark" data-slide="4">
+  <div class="eyebrow">Customer Archetype</div>
+  <h1 style="font-size: var(--text-display); letter-spacing: -0.03em;">The Home Gym <span style="color:var(--orange)">Builder.</span></h1>
+  <p class="subtitle">Our best customer. Built from 678 sales call transcripts. This is who we're building the business around.</p>
+  <div class="stats">
+    <div class="stat"><div class="val accent">$4,031</div><div class="label">Avg Order Value</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">47%</div><div class="label">Garage-Based</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">$1,271</div><div class="label">Median Profit / Customer</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">2.5x</div><div class="label">Profit vs Online-Only</div></div>
+  </div>
+  <div class="cols-2" style="margin-top: var(--sp-6); gap: var(--sp-6);">
+    <div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.16em; color: var(--orange); margin-bottom: var(--sp-3);">Jobs They Hire Us For</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+        <span class="pill accent sm">Convenience / Efficiency (97%)</span>
+        <span class="pill sm" style="background: var(--grey-800); color: var(--white); border: 1px solid var(--grey-600);">Achievement / Progress (42%)</span>
+        <span class="pill sm" style="background: var(--grey-800); color: var(--white); border: 1px solid var(--grey-600);">Control / Discipline (28%)</span>
+      </div>
+    </div>
+    <div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.16em; color: var(--orange); margin-bottom: var(--sp-3);">Hire &amp; Fire</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.6;">
+        <strong style="color: var(--danger);">Firing:</strong> Commercial gym memberships, driving to gym<br>
+        <strong style="color: var(--success);">Hiring:</strong> All-in-one trainers to replicate gym in garage
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 6: Three JTBDs ===================== -->
+<div class="slide" data-slide="5">
+  <div class="eyebrow">Jobs To Be Done</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">Three jobs they hire us for</h2>
+  <div class="cols-3" style="gap: var(--sp-4);">
+    <div style="background: var(--grey-50); padding: var(--sp-5); border-radius: 8px;">
+      <div style="font: 900 48px/1 var(--font-display); color: var(--orange); letter-spacing: -0.03em;">01</div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-400); margin: 8px 0;">Functional</div>
+      <h3 style="font-size: 22px; margin-bottom: var(--sp-3); letter-spacing: -0.01em;">Convenience / Efficiency</h3>
+      <div class="bar-group"><div class="bar-label"><span>Fit training around family</span><span class="bar-pct">10.6%</span></div><div class="bar-track"><div class="bar-fill accent" style="width:100%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>Session efficiency</span><span class="bar-pct">3.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>Eliminate gym commute</span><span class="bar-pct">3.1%</span></div><div class="bar-track"><div class="bar-fill" style="width:29%"></div></div></div>
+    </div>
+    <div style="padding: var(--sp-5); border-radius: 8px; border: 1px solid var(--grey-200);">
+      <div style="font: 900 48px/1 var(--font-display); color: var(--orange); letter-spacing: -0.03em;">02</div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-400); margin: 8px 0;">Emotional</div>
+      <h3 style="font-size: 22px; margin-bottom: var(--sp-3); letter-spacing: -0.01em;">Achievement / Progress</h3>
+      <div class="bar-group"><div class="bar-label"><span>Lose weight / improve health</span><span class="bar-pct">28.6%</span></div><div class="bar-track"><div class="bar-fill accent" style="width:100%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>Long-term self-investment</span><span class="bar-pct">6.5%</span></div><div class="bar-track"><div class="bar-fill" style="width:23%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>Measurable progress</span><span class="bar-pct">5.9%</span></div><div class="bar-track"><div class="bar-fill" style="width:21%"></div></div></div>
+    </div>
+    <div style="background: var(--grey-50); padding: var(--sp-5); border-radius: 8px;">
+      <div style="font: 900 48px/1 var(--font-display); color: var(--orange); letter-spacing: -0.03em;">03</div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-400); margin: 8px 0;">Emotional</div>
+      <h3 style="font-size: 22px; margin-bottom: var(--sp-3); letter-spacing: -0.01em;">Control / Discipline</h3>
+      <div class="bar-group"><div class="bar-label"><span>Own my schedule</span><span class="bar-pct">9.7%</span></div><div class="bar-track"><div class="bar-fill accent" style="width:100%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>No waiting / queueing</span><span class="bar-pct">4.7%</span></div><div class="bar-track"><div class="bar-fill" style="width:48%"></div></div></div>
+      <div class="bar-group"><div class="bar-label"><span>Privacy / environment</span><span class="bar-pct">3.8%</span></div><div class="bar-track"><div class="bar-fill" style="width:39%"></div></div></div>
+    </div>
+  </div>
+  <div style="margin-top: var(--sp-5); background: var(--black); color: var(--white); padding: var(--sp-4) var(--sp-5); border-radius: 8px;">
+    <span style="font: 700 var(--text-body)/1.35 var(--font-display); letter-spacing: -0.01em;">They're not buying equipment. They're buying back <span style="color:var(--orange)">time</span>, <span style="color:var(--orange)">progress</span> and <span style="color:var(--orange)">control</span>.</span>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 7: BHAG ===================== -->
+<div class="slide dark" data-slide="6">
+  <div class="eyebrow">Big Hairy Audacious Goal</div>
+  <div style="font: 900 clamp(64px,9vw,112px)/1 var(--font-display); color: var(--orange); letter-spacing: -0.04em;">30,000</div>
+  <h1 style="font-size: var(--text-h1); margin-top: var(--sp-2); letter-spacing: -0.02em;">Home Gyms Designed &amp; Built<br>by <span style="color:var(--orange)">2030</span></h1>
+  <p class="subtitle">Tripled from 10,000 at the session. Hybrid delivery: sales-team-led + AI self-serve.</p>
+  <div style="margin-top: var(--sp-7); border-top: 1px solid rgba(255,255,255,0.08); padding-top: var(--sp-5);">
+    <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.16em; color: var(--orange); margin-bottom: var(--sp-4);">Hedgehog Concept</div>
+    <div class="cols-3" style="gap: var(--sp-4);">
+      <div class="card dark-card" style="text-align: center; padding: var(--sp-4);">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Passionate About</h3>
+        <p style="font-size: var(--text-caption); margin-top: 8px;">Creating home gyms</p>
+      </div>
+      <div class="card dark-card" style="text-align: center; padding: var(--sp-4);">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Best In The World At</h3>
+        <p style="font-size: var(--text-caption); margin-top: 8px;">Building fit-for-purpose home gyms</p>
+      </div>
+      <div class="card dark-card" style="text-align: center; padding: var(--sp-4);">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Economic Engine</h3>
+        <p style="font-size: var(--text-caption); margin-top: 8px;">Home gyms built</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 8: 7 Pillars ===================== -->
+<div class="slide" data-slide="7">
+  <div class="eyebrow">Strategic Framework</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-2);">7 Strategic Pillars</h2>
+  <p style="font-size: var(--text-caption); color: var(--grey-500); margin-bottom: var(--sp-5);">Every initiative must serve one of these pillars.</p>
+  <table class="strat-table">
+    <thead><tr><th style="width: 48px;">#</th><th>Pillar</th><th>Strategic Focus</th></tr></thead>
+    <tbody>
+      <tr><td style="color:var(--orange)">1</td><td>Win the Home Gym Builder</td><td>Become the #1 choice for home gym builders in Australia</td></tr>
+      <tr><td style="color:var(--orange)">2</td><td>Own the End-to-End Solution</td><td>Seamless design, packages, purchase and CX experience</td></tr>
+      <tr><td style="color:var(--orange)">3</td><td>High-Performance Growth Engine</td><td>Increase GM%, AOV, conversion, and customer quality</td></tr>
+      <tr><td style="color:var(--orange)">4</td><td>Simplify to Scale</td><td>Reduce complexity across SKUs, categories, and channels</td></tr>
+      <tr><td style="color:var(--orange)">5</td><td>Innovation Strategy</td><td>Product and service development fitted to our core customer's JTBD</td></tr>
+      <tr><td style="color:var(--orange)">6</td><td>Reliable Supply &amp; Data Engine</td><td>Ensure availability, margin, and data-driven decisions</td></tr>
+      <tr><td style="color:var(--orange)">7</td><td>Execution Discipline</td><td>The operational rigor to hit our BHAG and annual targets</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ===================== SLIDE 9: Brand Promises ===================== -->
+<div class="slide soft" data-slide="8">
+  <div class="eyebrow">Brand Direction</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">Brand Promises</h2>
+  <div class="cols-2" style="gap: var(--sp-5);">
+    <div class="card elevated accent-left" style="padding: var(--sp-6);">
+      <div style="font: 900 48px/1 var(--font-display); color: var(--orange); letter-spacing: -0.03em; margin-bottom: var(--sp-2);">01</div>
+      <h3 style="font-size: var(--text-body); line-height: 1.25;">"Your Gym Designed for your space in real time"</h3>
+      <p style="margin-top: var(--sp-3);">The centrepiece promise. Metric: number of gyms designed.</p>
+      <div style="margin-top: var(--sp-3); padding: var(--sp-3); background: var(--grey-50); border-radius: 6px; font-size: 16px; color: var(--grey-600); line-height: 1.5;">
+        <strong>Guarantee:</strong> Love your design or our fitness consultants will re-design it with you until you do.
+      </div>
+    </div>
+    <div class="card elevated accent-left" style="padding: var(--sp-6);">
+      <div style="font: 900 48px/1 var(--font-display); color: var(--orange); letter-spacing: -0.03em; margin-bottom: var(--sp-2);">02</div>
+      <h3 style="font-size: var(--text-body); line-height: 1.25;">"Speak to a certified fitness consultant within the hour"</h3>
+      <p style="margin-top: var(--sp-3);">Human connection as a differentiator. AI does the design; human does the coaching and close.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 10: AI Gym Designer ===================== -->
+<div class="slide dark" data-slide="9">
+  <div class="eyebrow">The Wedge</div>
+  <h1 style="font-size: var(--text-display); letter-spacing: -0.03em;">AI Gym <span style="color:var(--orange)">Designer</span></h1>
+  <p class="subtitle">The front door to the Home Gym Builder strategy. Real-time design tool on the website. Two channels: self-serve + sales-assisted.</p>
+  <div class="cols-2" style="margin-top: var(--sp-6); gap: var(--sp-6);">
+    <div>
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.16em; color: var(--orange); margin-bottom: var(--sp-4);">Why It Matters for Marketing</div>
+      <div style="display: flex; flex-direction: column; gap: var(--sp-3);">
+        <div style="padding-left: var(--sp-3); border-left: 2px solid var(--orange); font-size: var(--text-caption); color: var(--grey-300); line-height: 1.55;">Free design tool brings Home Gym Builders to us</div>
+        <div style="padding-left: var(--sp-3); border-left: 2px solid var(--orange); font-size: var(--text-caption); color: var(--grey-300); line-height: 1.55;">AI scores which designs are worth sales team time</div>
+        <div style="padding-left: var(--sp-3); border-left: 2px solid var(--orange); font-size: var(--text-caption); color: var(--grey-300); line-height: 1.55;">Designs naturally pull customers toward complete solutions</div>
+        <div style="padding-left: var(--sp-3); border-left: 2px solid var(--orange); font-size: var(--text-caption); color: var(--grey-300); line-height: 1.55;">Saved designs become re-engagement triggers</div>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <div class="card dark-card">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Home Gym Builder Toolkit</h3>
+        <p style="font-size: 16px;">Website tool kit, AI fitness coach, lead qualification refinement, G&amp;F Experience Centre showcase</p>
+      </div>
+      <div class="card dark-card">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Targeted Marketing</h3>
+        <p style="font-size: 16px;">Customer journey mapping, shift paid ads to best customers, targeted packages (Apartment Gym: 5k/10k/15k)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 11: FY27 Goals ===================== -->
+<div class="slide" data-slide="10">
+  <div class="eyebrow">FY27 Annual Goals</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">Three finish lines for the year</h2>
+  <div class="cols-3" style="gap: var(--sp-4);">
+    <div class="goal-card" style="border-top: 4px solid var(--grey-300);">
+      <div class="owner">Owner: Chris</div>
+      <h4>Simplify the Catalog</h4>
+      <div class="detail">By 30 June 2027, remove a minimum of <strong>50% of red &amp; blue categorised SKUs</strong>.</div>
+    </div>
+    <div class="goal-card" style="border-top: 4px solid var(--orange); background: var(--orange-glow);">
+      <div class="owner">Owner: Josh</div>
+      <h4>Target the Builder</h4>
+      <div class="detail">Develop marketing strategies and implement a plan to <strong>target Home Gym Builders before 31 October 2026</strong>.</div>
+      <div style="margin-top: var(--sp-3); padding: var(--sp-2) var(--sp-3); background: var(--orange-dim); border-radius: 6px; font: 600 14px/1.4 var(--font-display); color: var(--orange);">This is our goal. The marketing team's primary deliverable for FY27.</div>
+    </div>
+    <div class="goal-card" style="border-top: 4px solid var(--grey-300);">
+      <div class="owner">Owner: Michelle</div>
+      <h4>Optimize Profitability</h4>
+      <div class="detail">Improve <strong>GM ROI (Warehouse/Stock)</strong> by target % by 30 June 2027.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 12: Milestones ===================== -->
+<div class="slide soft" data-slide="11">
+  <div class="eyebrow">Goal 2: Target the Builder</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">Our milestones <span style="color:var(--orange)">Jul &ndash; Sep</span></h2>
+  <div class="cols-2" style="gap: var(--sp-7);">
+    <div>
+      <div class="timeline">
+        <div class="tl-item"><div class="date">31 July</div><div class="desc"><strong>Home Gym Builder core persona</strong> defined and communicated to wider GAF team</div></div>
+        <div class="tl-item"><div class="date">31 July</div><div class="desc"><strong>Customer journey mapped</strong> from first touch to Phase 2</div></div>
+        <div class="tl-item"><div class="date">31 August</div><div class="desc"><strong>Website repositioning plan</strong> developed toward Home Gym Builder archetype</div></div>
+        <div class="tl-item"><div class="date">31 August</div><div class="desc"><strong>AI Gym Designer MVP</strong> shipped live on site</div></div>
+        <div class="tl-item"><div class="date">30 September</div><div class="desc"><strong>Full marketing plan complete</strong></div></div>
+        <div class="tl-item"><div class="date">30 September</div><div class="desc"><strong>100 home gym designs</strong> generated through AI Designer MVP</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="card accent-left" style="margin-bottom: var(--sp-4);">
+        <h3 style="font-size: 22px;">Why this timeline?</h3>
+        <p>All of this needs to be locked before <strong>Black Friday</strong>. Q1 work informs creative direction, pricing strategy, and channel mix for the biggest sales event of the year.</p>
+      </div>
+      <div class="card dark-card">
+        <h3 style="font-size: var(--text-caption); color: var(--orange);">Annual Target</h3>
+        <p style="font-size: 16px;">Full Home Gym Builder marketing strategy developed and executed by <strong style="color: var(--white);">31 October 2026</strong>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 13: Strategic Initiatives ===================== -->
+<div class="slide" data-slide="12">
+  <div class="eyebrow">Execution Engine</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-2);">Strategic Initiatives</h2>
+  <p style="font-size: var(--text-caption); color: var(--grey-500); margin-bottom: var(--sp-5);">The tactical projects to hit our annual goals.</p>
+  <div class="cols-2" style="gap: var(--sp-4);">
+    <div style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <div class="card accent-left">
+        <h3 style="font-size: 22px; color: var(--orange);">Home Gym Builder Toolkit</h3>
+        <ul style="font-size: 16px; color: var(--grey-500); line-height: 1.8; padding-left: var(--sp-3); margin-top: 8px;">
+          <li>Refine lead qualification to drive high AOV</li>
+          <li>G&amp;F Experience Centre for physical showcasing</li>
+          <li>Website toolkit for home gym customers</li>
+          <li>AI fitness coach aligned with equipment purchases</li>
+        </ul>
+      </div>
+      <div class="card accent-left">
+        <h3 style="font-size: 22px; color: var(--orange);">Targeted Marketing &amp; Product Innovation</h3>
+        <ul style="font-size: 16px; color: var(--grey-500); line-height: 1.8; padding-left: var(--sp-3); margin-top: 8px;">
+          <li>Map and improve the home gym buyer journey</li>
+          <li>Shift paid ads to best customers and products</li>
+          <li>Targeted packages: "The Apartment Gym" (5k/10k/15k)</li>
+        </ul>
+      </div>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: var(--sp-3);">
+      <div class="card">
+        <h3 style="font-size: 22px;">SKU &amp; Range Rationalisation</h3>
+        <ul style="font-size: 16px; color: var(--grey-500); line-height: 1.8; padding-left: var(--sp-3); margin-top: 8px;">
+          <li>Identify Hero Products per brand, remove the rest</li>
+          <li>Range plan with planning metrics (SFM, volume)</li>
+          <li>Negotiate Top 5 products by brand</li>
+          <li>Re-align stocked vs non-stocked vs inactive</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3 style="font-size: 22px;">Data &amp; Inventory Planning</h3>
+        <ul style="font-size: 16px; color: var(--grey-500); line-height: 1.8; padding-left: var(--sp-3); margin-top: 8px;">
+          <li>Review stocked vs non-stocked SKUs in NetSuite</li>
+          <li>Improve Critical Product list for planning</li>
+          <li>Receiving schedule improvements</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 14: Critical Numbers ===================== -->
+<div class="slide dark" data-slide="13">
+  <div class="eyebrow">Scorecard</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">Critical Numbers <span style="color:var(--orange)">Q4 FY26</span></h2>
+  <div class="cols-2" style="gap: var(--sp-6);">
+    <div class="card dark-card" style="text-align: center; padding: var(--sp-6);">
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-400); margin-bottom: var(--sp-3);">GAF AOV Growth</div>
+      <div style="font: 900 72px/1 var(--font-display); color: var(--success); letter-spacing: -0.03em;">5%</div>
+      <div style="font: 600 var(--text-caption)/1 var(--font-display); color: var(--grey-400); margin-top: var(--sp-3);">Target: 4%</div>
+      <span class="pill sm" style="background: var(--success); color: var(--white); margin-top: var(--sp-3);">SUPER GREEN</span>
+    </div>
+    <div class="card dark-card" style="text-align: center; padding: var(--sp-6);">
+      <div style="font: 700 var(--text-eyebrow)/1 var(--font-display); text-transform: uppercase; letter-spacing: 0.14em; color: var(--grey-400); margin-bottom: var(--sp-3);">GAF IDC GP%</div>
+      <div style="font: 900 72px/1 var(--font-display); color: var(--success); letter-spacing: -0.03em;">42.6%</div>
+      <div style="font: 600 var(--text-caption)/1 var(--font-display); color: var(--grey-400); margin-top: var(--sp-3);">Target: >40%</div>
+      <span class="pill sm" style="background: var(--success); color: var(--white); margin-top: var(--sp-3);">SUPER GREEN</span>
+    </div>
+  </div>
+  <div class="stats" style="margin-top: var(--sp-6);">
+    <div class="stat"><div class="val" style="color:var(--white)">$25.8M</div><div class="label">FY27 Revenue Target</div></div>
+    <div class="stat"><div class="val" style="color:var(--white)">$11M</div><div class="label">FY27 Gross Profit</div></div>
+    <div class="stat"><div class="val accent">$40.3M</div><div class="label">FY30 Revenue Target</div></div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 15: SWOT ===================== -->
+<div class="slide" data-slide="14">
+  <div class="eyebrow">Strategic Landscape</div>
+  <h2 style="font-size: var(--text-h2); margin-bottom: var(--sp-5);">SWOT Highlights</h2>
+  <div class="swot-grid">
+    <div class="swot-box s">
+      <h4>Strengths</h4>
+      <ul>
+        <li>4.8 rating, 1000s of reviews (social proof)</li>
+        <li>Strength category leadership</li>
+        <li>Global brands: Nike, Assault, REP, Centr, Hyrox</li>
+        <li>Strong sales team for complex, high AOV sales</li>
+        <li>Data + tools to know end buyers</li>
+      </ul>
+    </div>
+    <div class="swot-box o">
+      <h4>Opportunities</h4>
+      <ul>
+        <li>Individual units to complete home gym systems</li>
+        <li>Human, people-centric content vs AI slop</li>
+        <li>AI-powered design tool as front door</li>
+        <li>White glove service for complete solutions</li>
+        <li>Female strength + pilates growth</li>
+      </ul>
+    </div>
+    <div class="swot-box w">
+      <h4>Weaknesses</h4>
+      <ul>
+        <li>Low brand awareness / over-reliance on paid ads</li>
+        <li>Breadth of range not contributing profit</li>
+        <li>No physical retail presence</li>
+        <li>Low purchase frequency</li>
+        <li>High unit cost structure</li>
+      </ul>
+    </div>
+    <div class="swot-box t">
+      <h4>Trends &amp; Threats</h4>
+      <ul>
+        <li>Marketplace pressure at low-entry margins</li>
+        <li>Convenience tech: walking pads, reformers</li>
+        <li>Rise of AI increasing value of human connection</li>
+        <li>Growth in physical retail channel</li>
+        <li>Rise in women's strength training</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== SLIDE 16: What This Means ===================== -->
+<div class="slide dark" data-slide="15">
+  <div class="eyebrow">So What?</div>
+  <h1 style="font-size: var(--text-display); letter-spacing: -0.03em;">What this means<br>for <span style="color:var(--orange)">us.</span></h1>
+  <div style="max-width: 760px; margin-top: var(--sp-6);">
+    <div style="padding: var(--sp-3) 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font: 700 var(--text-caption)/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">Every dollar, every piece of content, every ad</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.55;">Should be measured against: does this serve the Home Gym Builder? If not, why are we doing it?</p>
+    </div>
+    <div style="padding: var(--sp-3) 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font: 700 var(--text-caption)/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">Paid ads: "More good, less bad"</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.55;">Shift spend toward best customers and products. Stop subsidising budget seekers.</p>
+    </div>
+    <div style="padding: var(--sp-3) 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font: 700 var(--text-caption)/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">Content: human, real, transformation stories</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.55;">Counter AI slop and China competition with authenticity.</p>
+    </div>
+    <div style="padding: var(--sp-3) 0; border-bottom: 1px solid rgba(255,255,255,0.08);">
+      <div style="font: 700 var(--text-caption)/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">Brand: #1 Home Gym Builder destination</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.55;">Not "a fitness equipment retailer." We design and build home gyms.</p>
+    </div>
+    <div style="padding: var(--sp-3) 0;">
+      <div style="font: 700 var(--text-caption)/1 var(--font-display); color: var(--orange); margin-bottom: 8px;">The AI Gym Designer is our front door</div>
+      <p style="font-size: var(--text-caption); color: var(--grey-400); line-height: 1.55;">Free tool, on website by end of August. Design first, sell second.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Progress -->
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+<div class="slide-counter" id="counter">1 / 16</div>
+
+<script>
+const slides = document.querySelectorAll('.slide');
+let current = 0;
+const total = slides.length;
+
+function goTo(n) {
+  if (n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  current = n;
+  slides[current].classList.add('active');
+  document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+  document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+  const isDark = slides[current].classList.contains('dark');
+  document.getElementById('counter').style.color = isDark ? 'rgba(255,255,255,0.35)' : 'var(--grey-400)';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+  if (e.key === 'Home') { e.preventDefault(); goTo(0); }
+  if (e.key === 'End') { e.preventDefault(); goTo(total - 1); }
+});
+
+document.addEventListener('click', e => {
+  if (e.clientX < window.innerWidth / 3) goTo(current - 1);
+  else goTo(current + 1);
+});
+
+goTo(0);
+</script>
+
+</body>
+</html>

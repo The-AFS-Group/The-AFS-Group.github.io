@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF March Review & April Plan</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: {
+          orange: '#f26422',
+          black: '#000000',
+          darkGrey: '#424242',
+          paleGrey: '#f0f0f0',
+        }
+      },
+      fontFamily: {
+        sans: ['Montserrat', 'sans-serif'],
+        body: ['Open Sans', 'sans-serif'],
+      },
+      animation: {
+        'fade-in': 'fadeIn 1s ease-out forwards',
+        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+      },
+      keyframes: {
+        fadeIn: { '0%': { opacity: '0' }, '100%': { opacity: '1' } },
+        fadeInUp: { '0%': { opacity: '0', transform: 'translateY(20px)' }, '100%': { opacity: '1', transform: 'translateY(0)' } }
+      }
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+body { font-family: 'Open Sans', sans-serif; background: #111827; margin: 0; }
+h1, h2, h3, h4, h5, h6 { font-family: 'Montserrat', sans-serif; }
+.custom-scrollbar::-webkit-scrollbar { width: 6px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; }
+.custom-scrollbar::-webkit-scrollbar-thumb { background: #f26422; border-radius: 10px; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, createElement as h } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== ICONS (SVG inline to avoid lucide-react dependency) =====
+const Icon = ({ d, size = 20, className = '' }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((path, i) => <path key={i} d={path} />) : <path d={d} />}
+  </svg>
+);
+
+const ChevronLeft = (p) => <Icon {...p} d="M15 18l-6-6 6-6" />;
+const ChevronRight = (p) => <Icon {...p} d="M9 18l6-6-6-6" />;
+const DollarSign = (p) => <Icon {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Percent = (p) => <Icon {...p} d={["M19 5L5 19","M6.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5","M17.5 20a2.5 2.5 0 100-5 2.5 2.5 0 000 5"]} />;
+const TrendingUp = (p) => <Icon {...p} d={["M22 7l-8.5 8.5-5-5L2 17","M16 7h6v6"]} />;
+const Target = (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const Users = (p) => <Icon {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const PhoneIncoming = (p) => <Icon {...p} d={["M16 2v6h6","M22 2l-6 6","M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"]} />;
+const Phone = (p) => <Icon {...p} d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z" />;
+const ShoppingCart = (p) => <Icon {...p} d={["M1 1h4l2.68 13.39a2 2 0 002 1.61h9.72a2 2 0 002-1.61L23 6H6"]} />;
+const Calendar = (p) => <Icon {...p} d={["M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z","M16 2v4","M8 2v4","M3 10h18"]} />;
+const CheckCircle2 = (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>;
+const Zap = (p) => <Icon {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />;
+const Megaphone = (p) => <Icon {...p} d={["M3 11l18-5v12L3 13v-2z","M11.6 16.8a3 3 0 11-5.8-1.6"]} />;
+const Clock = (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>;
+const CreditCard = (p) => <Icon {...p} d={["M21 4H3a2 2 0 00-2 2v12a2 2 0 002 2h18a2 2 0 002-2V6a2 2 0 00-2-2z","M1 10h22"]} />;
+const Info = (p) => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||20} height={p.size||20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>;
+const MousePointer = (p) => <Icon {...p} d={["M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z","M13 13l6 6"]} />;
+const ArrowRight = (p) => <Icon {...p} d={["M5 12h14","M12 5l7 7-7 7"]} />;
+const AlertTriangle = (p) => <Icon {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const FileText = (p) => <Icon {...p} d={["M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z","M14 2v6h6","M16 13H8","M16 17H8","M10 9H8"]} />;
+const MessageCircle = (p) => <Icon {...p} d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />;
+const RefreshCw = (p) => <Icon {...p} d={["M23 4v6h-6","M1 20v-6h6","M3.51 9a9 9 0 0114.85-3.36L23 10","M1 14l4.64 4.36A9 9 0 0020.49 15"]} />;
+
+// ===== LOGO =====
+const Logo = ({ className = "h-12" }) => (
+  <div className={`flex items-center gap-2 ${className}`}>
+    <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness Logo" className="h-full w-auto object-contain" />
+  </div>
+);
+
+// ===== SLIDE LAYOUT =====
+const SlideLayout = ({ children, title, subtitle, slideNumber, totalSlides }) => (
+  <div className="w-full h-full bg-white text-gaf-darkGrey flex flex-col relative overflow-hidden">
+    <div className="absolute top-0 right-0 w-64 h-64 bg-gaf-paleGrey transform rotate-45 translate-x-32 -translate-y-32 z-0 opacity-50"></div>
+    <div className="absolute bottom-0 left-0 w-96 h-96 bg-gaf-paleGrey transform -rotate-12 -translate-x-48 translate-y-48 z-0 opacity-50"></div>
+    <header className="flex justify-between items-center p-8 z-10 shrink-0"><Logo /></header>
+    <main className="flex-1 flex flex-col px-6 md:px-12 pb-12 z-10 overflow-hidden h-full">
+      {title && (
+        <div className="mb-6 border-l-4 border-gaf-orange pl-6 shrink-0">
+          <h1 className="text-3xl md:text-5xl font-extrabold uppercase text-black mb-1 leading-tight">{title}</h1>
+          {subtitle && <h2 className="text-sm md:text-lg text-gray-600 font-semibold">{subtitle}</h2>}
+        </div>
+      )}
+      <div className="flex-1 min-h-0">{children}</div>
+    </main>
+    <footer className="h-10 md:h-12 flex justify-end items-center px-12 bg-gaf-black text-white z-10 shrink-0">
+      <div className="flex gap-1">
+        <span className="text-xs font-bold text-gaf-orange">{slideNumber}</span>
+        <span className="text-xs text-gray-500">/</span>
+        <span className="text-xs text-gray-500">{totalSlides}</span>
+      </div>
+    </footer>
+  </div>
+);
+
+// ===== SLIDE 1: TITLE =====
+const TitleSlide = ({ slideNumber, totalSlides }) => (
+  <div className="w-full h-full bg-white relative flex flex-col items-center justify-center overflow-hidden">
+    <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gaf-orange opacity-10 transform rotate-45 translate-x-1/2 -translate-y-1/2"></div>
+    <div className="z-10 text-center space-y-8 animate-fade-in-up">
+      <div className="scale-150 mb-12 flex justify-center"><Logo /></div>
+      <div className="space-y-4">
+        <h2 className="text-xl md:text-2xl font-bold tracking-[0.2em] text-gray-500 uppercase">Marketing</h2>
+        <h1 className="text-6xl md:text-8xl font-extrabold text-black uppercase leading-tight">
+          March Review &<br/><span className="text-gaf-orange">April Plan</span>
+        </h1>
+      </div>
+      <div className="w-24 h-2 bg-black mx-auto mt-8"></div>
+      <p className="text-xl text-gray-600 font-body max-w-2xl mx-auto mt-8">Your Gym. Your Terms.</p>
+    </div>
+    <div className="absolute bottom-8 left-0 w-full text-center">
+      <p className="text-sm text-gray-400 font-bold tracking-widest">CONFIDENTIAL INTERNAL USE</p>
+    </div>
+  </div>
+);
+
+// ===== SLIDE 2: MARCH AT A GLANCE =====
+const MarchAtAGlanceSlide = ({ slideNumber, totalSlides }) => (
+  <SlideLayout title="Free Shipping Campaign Review" subtitle="Campaign performance: March 2 - 20 (19 days into 30-day campaign)" slideNumber={slideNumber} totalSlides={totalSlides}>
+    <div className="flex flex-col h-full gap-4 md:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-gaf-darkGrey text-white p-4 md:p-6 rounded-xl shadow-md border-l-4 border-gaf-orange">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gaf-orange">Total GP Created</span>
+            <DollarSign size={16} />
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold">$490,559</h3>
+          <p className="text-xs text-gray-400 mt-1 italic">Target: $495,180 (MTD)</p>
+          <div className="mt-4 w-full bg-white/10 rounded-full h-1.5">
+            <div className="bg-gaf-orange h-full rounded-full" style={{ width: '99.1%' }}></div>
+          </div>
+          <p className="text-[10px] text-right mt-1 font-bold">99.1% of MTD Target</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Avg Gross Margin</span>
+            <Percent size={16} className="text-green-500" />
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-gaf-darkGrey">41.3%</h3>
+          <p className="text-xs text-green-600 font-bold mt-1">Target: 38% (Above Target)</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Avg Discount</span>
+            <Percent size={16} className="text-blue-500" />
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-gaf-darkGrey">7.7%</h3>
+          <p className="text-xs text-blue-600 font-bold mt-1">Target: &lt;10% (Healthy)</p>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm">
+          <div className="flex justify-between items-start mb-2">
+            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">Avg Order Value</span>
+            <TrendingUp size={16} className="text-purple-500" />
+          </div>
+          <h3 className="text-2xl md:text-3xl font-extrabold text-gaf-darkGrey">$2,106</h3>
+          <p className="text-xs text-green-600 font-bold mt-1">+21.8% vs Feb ($1,729)</p>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 flex-1 min-h-0">
+        <div className="bg-gray-50 p-4 md:p-6 rounded-xl border border-gray-100 flex flex-col justify-center">
+          <div className="flex items-center gap-2 text-gray-500 mb-1"><TrendingUp size={16} /><span className="text-[10px] font-bold uppercase">Daily Run Rate</span></div>
+          <h4 className="text-xl md:text-2xl font-extrabold text-gaf-darkGrey">$24,528</h4>
+          <span className="text-[10px] text-gray-400 font-bold">Per Day</span>
+        </div>
+        <div className="bg-gaf-orange/5 p-4 md:p-6 rounded-xl border border-gaf-orange/20 flex flex-col justify-center">
+          <div className="flex items-center gap-2 text-gaf-orange mb-1"><Target size={16} /><span className="text-[10px] font-bold uppercase">Projected EOM</span></div>
+          <h4 className="text-xl md:text-2xl font-extrabold text-gaf-darkGrey">$760,367</h4>
+          <span className="text-[10px] text-gaf-orange font-bold uppercase">99.1% of Full Month Target</span>
+        </div>
+        <div className="bg-white p-4 md:p-6 rounded-xl border border-gray-100 shadow-sm col-span-1 md:col-span-2 flex flex-col justify-center">
+          <div className="flex items-center gap-2 text-gray-500 mb-2"><Users size={18} /><span className="text-xs font-bold uppercase">Website Traffic MTD</span></div>
+          <div className="flex items-end gap-4 overflow-hidden">
+            <div>
+              <h4 className="text-2xl md:text-3xl font-extrabold text-gaf-darkGrey">132,554</h4>
+              <p className="text-[10px] text-gray-400 font-bold uppercase">Sessions</p>
+            </div>
+            <div className="flex gap-4">
+              <div className="text-center"><span className="text-green-600 font-bold text-sm">119%</span><p className="text-[8px] uppercase text-gray-400">vs Target</p></div>
+              <div className="text-center"><span className="text-[10px] text-gray-500 font-bold">Target: 111,120</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 shrink-0">
+        <div className="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-6 overflow-hidden">
+          <div className="flex items-center gap-2"><ShoppingCart className="text-gray-400" size={20} /><div><p className="text-sm font-bold text-gaf-darkGrey">545</p><p className="text-[10px] uppercase text-gray-400 font-bold">Abandoned Carts</p></div></div>
+          <div className="h-8 w-px bg-gray-100"></div>
+          <div className="flex items-center gap-2"><PhoneIncoming className="text-gray-400" size={20} /><div><p className="text-sm font-bold text-gaf-darkGrey">110</p><p className="text-[10px] uppercase text-gray-400 font-bold">Inbound Calls</p></div></div>
+          <div className="h-8 w-px bg-gray-100"></div>
+          <div className="flex items-center gap-2"><Phone className="text-gray-400" size={20} /><div><p className="text-sm font-bold text-gaf-darkGrey">200</p><p className="text-[10px] uppercase text-gray-400 font-bold">Outbound Calls</p></div></div>
+        </div>
+        <div className="bg-gray-100 p-4 rounded-xl flex items-center gap-2 text-gray-500 italic text-[10px]">
+          <Calendar size={14} /><span>March is a 31-day month (20 days in, 11 left). Ad spend MTD: $103,846.</span>
+        </div>
+      </div>
+    </div>
+  </SlideLayout>
+);
+
+// ===== SLIDE 3: APRIL TARGETS =====
+const targets = [
+  { label: "GP Created", value: "$384,000", IconComp: DollarSign, color: "text-gaf-orange", note: "Budget: ~$12.8K/day" },
+  { label: "GP Fulfilled", value: "$335,000", IconComp: CheckCircle2, color: "text-green-600", note: "Growth Matrix forecast" },
+  { label: "Revenue Per Visit", value: "$7.00", IconComp: Zap, color: "text-yellow-600", note: "Conservative vs Mar $10.21" },
+  { label: "Store Sessions", value: "136,000", IconComp: Users, color: "text-blue-600", note: "$952K rev / $7 RPV" },
+  { label: "Inbound Sales Calls", value: "120", IconComp: PhoneIncoming, color: "text-purple-600", note: "~0.09% of sessions" },
+  { label: "Abandoned Carts", value: "680", IconComp: ShoppingCart, color: "text-red-500", note: "~0.5% of sessions" },
+  { label: "MER", value: "12%", IconComp: TrendingUp, color: "text-gaf-darkGrey", note: "Maintain March benchmark" },
+];
+
+const AprilTargetsSlide = ({ slideNumber, totalSlides }) => (
+  <SlideLayout title="April Targets" subtitle="Setting benchmarks for the finance-led campaign month." slideNumber={slideNumber} totalSlides={totalSlides}>
+    <div className="flex flex-col h-full gap-4 md:gap-5 overflow-hidden">
+      <div className="bg-gaf-darkGrey text-white p-4 rounded-xl border-l-8 border-gaf-orange shadow-lg shrink-0">
+        <div className="flex items-center gap-3 mb-1"><AlertTriangle size={18} className="text-gaf-orange" /><h3 className="text-sm font-bold uppercase tracking-wide">Monthly Context</h3></div>
+        <p className="text-gray-300 text-[13px] leading-snug">April is historically our slowest month (half the GP budget of March). RPV modelled at $7.00 — conservative vs March's $10.21. Finance campaign designed to reduce conversion barriers and maintain order quality.</p>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 flex-1 min-h-0 overflow-y-auto custom-scrollbar pr-1">
+        {targets.map((t, i) => (
+          <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm flex flex-col justify-between hover:shadow-md transition-shadow">
+            <div className={`p-1.5 rounded-lg bg-gray-50 w-fit mb-2 ${t.color}`}><t.IconComp size={18} /></div>
+            <div>
+              <p className="text-[9px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">{t.label}</p>
+              <h4 className="text-lg md:text-xl font-extrabold text-gaf-darkGrey leading-none">{t.value}</h4>
+              <p className="text-[9px] text-gray-400 mt-1 italic">{t.note}</p>
+            </div>
+          </div>
+        ))}
+        <div className="bg-gaf-orange/10 p-4 rounded-xl border border-gaf-orange/20 flex flex-col justify-center items-center text-center">
+          <Target size={24} className="text-gaf-orange mb-1" /><p className="text-[9px] font-extrabold uppercase text-gaf-orange">Ready for April</p>
+        </div>
+      </div>
+      <div className="shrink-0">
+        <a href="https://app.asana.com/1/12600476210818/project/1212636402708127/task/1213677004838543?focus=true" target="_blank" rel="noopener noreferrer" className="flex items-center justify-between bg-gaf-darkGrey hover:bg-black transition-colors p-3 rounded-xl group border border-gray-700">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/10 p-2 rounded-lg flex items-center justify-center"><Calendar className="text-gaf-orange" size={20} /></div>
+            <div><h4 className="text-white font-bold text-sm uppercase tracking-wide leading-none mb-1">April Finance Campaign Brief</h4><p className="text-gray-400 text-[11px] font-medium leading-none">View full brief in Asana</p></div>
+          </div>
+          <div className="bg-gaf-orange p-1.5 rounded-full text-white shadow-lg group-hover:scale-110 transition-transform"><ArrowRight size={18} /></div>
+        </a>
+      </div>
+    </div>
+  </SlideLayout>
+);
+
+// ===== SLIDE 4: APRIL CAMPAIGN =====
+const AprilCampaignSlide = ({ slideNumber, totalSlides }) => (
+  <SlideLayout title="April Campaign: Finance Push" subtitle="Your Gym. Your Terms. — Latitude interest-free finance." slideNumber={slideNumber} totalSlides={totalSlides}>
+    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 h-full min-h-0 overflow-hidden">
+      <div className="lg:col-span-4 flex flex-col gap-4 min-h-0">
+        <div className="bg-gaf-orange text-white p-6 rounded-2xl shadow-xl relative overflow-hidden group flex-1 flex flex-col justify-center min-h-0">
+          <div className="absolute top-0 right-0 p-8 opacity-10 group-hover:scale-110 transition-transform"><CreditCard size={150} /></div>
+          <div className="relative z-10">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] opacity-80">Primary Offer</span>
+            <h3 className="text-3xl xl:text-4xl font-black mt-2 mb-3 uppercase leading-tight">Interest Free<br/>Finance</h3>
+            <div className="h-1 w-12 bg-white mb-4"></div>
+            <p className="text-lg xl:text-xl font-bold">Latitude Finance</p>
+            <p className="text-sm opacity-80 mt-2 italic">Tiered terms based on cart value</p>
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-4"><div className="bg-gray-100 p-3 rounded-lg text-gaf-darkGrey"><Calendar size={24} /></div><div><p className="text-xs font-bold text-gray-400 uppercase">Duration</p><p className="text-lg font-bold text-gaf-darkGrey">April 8 → May 8</p></div></div>
+          <ArrowRight className="text-gray-200" />
+        </div>
+        <div className="bg-gaf-darkGrey text-white p-5 rounded-xl shadow-lg shrink-0">
+          <div className="flex items-center gap-2 mb-2 text-gaf-orange"><MousePointer size={20} /><h4 className="font-bold text-sm uppercase">Tagline</h4></div>
+          <p className="text-lg xl:text-xl font-bold italic tracking-wide">"Your Gym. Your Terms."</p>
+        </div>
+      </div>
+      <div className="lg:col-span-8 flex flex-col gap-4 min-h-0">
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
+          <div className="bg-gray-50 px-6 py-4 border-b border-gray-200 flex items-center gap-3"><CreditCard className="text-gaf-orange" size={20} /><h4 className="font-bold text-gaf-darkGrey uppercase tracking-wide">Volume Breaks & Terms</h4></div>
+          <div className="overflow-auto flex-1 p-0">
+            <table className="w-full text-left border-collapse">
+              <thead className="bg-white sticky top-0 shadow-sm">
+                <tr>
+                  <th className="py-3 px-6 text-xs font-bold text-gray-500 uppercase border-b border-gray-100">Product Price Range</th>
+                  <th className="py-3 px-6 text-xs font-bold text-gray-500 uppercase border-b border-gray-100">Recommended Plan</th>
+                  <th className="py-3 px-6 text-xs font-bold text-gray-500 uppercase border-b border-gray-100">Customer Sees</th>
+                  <th className="py-3 px-6 text-xs font-bold text-gray-500 uppercase border-b border-gray-100 text-right">GAF Pays</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                {[
+                  ["$250 - $999", "6 months IF", '"From $42/mo for 6 months"', "(on a $250 item)", "0.82%"],
+                  ["$1,000 - $1,999", "12 months IF", '"From $84/mo for 12 months"', "(on a $1,000 item)", "3.85%"],
+                  ["$2,000 - $2,999", "18 months IF", '"From $112/mo for 18 months"', "(on a $2,000 item)", "6.32%"],
+                  ["$3,000 - $5,999", "24 months IF", '"From $125/mo for 24 months"', "(on a $3,000 item)", "9.07%"],
+                  ["$6,000+", "36 months IF", '"From $167/mo for 36 months"', "(on a $6,000 item)", "11.82%"],
+                ].map(([range, plan, sees, note, pays], i) => (
+                  <tr key={i} className="border-b border-gray-50 hover:bg-gray-50">
+                    <td className="py-3 px-6 font-bold text-gaf-darkGrey">{range}</td>
+                    <td className="py-3 px-6 text-gray-700">{plan}</td>
+                    <td className="py-3 px-6 text-gray-600 italic">{sees} <span className="text-xs text-gray-400 not-italic block">{note}</span></td>
+                    <td className="py-3 px-6 font-mono text-right text-gaf-orange font-bold">{pays}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 shrink-0">
+          <div className="bg-blue-50 p-4 rounded-xl border border-blue-100">
+            <div className="flex items-center gap-2 text-blue-800 mb-2"><Info size={18} /><h4 className="font-bold text-sm uppercase">Why Finance?</h4></div>
+            <p className="text-gray-700 text-xs leading-relaxed">Financial friction is the <strong>#1 conversion barrier</strong> — 32% of all pre-sale calls. The lump sum creates hesitation, not inability to pay.</p>
+          </div>
+          <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+            <div className="flex items-center gap-2 text-gaf-darkGrey mb-2"><Users size={18} className="text-gaf-orange" /><h4 className="font-bold text-sm uppercase">Target Audiences</h4></div>
+            <div className="space-y-1 text-[10px] text-gray-600">
+              <p><strong className="text-gaf-darkGrey">Primary:</strong> Home Gym Builders ($4K AOV)</p>
+              <p><strong className="text-gaf-darkGrey">Secondary:</strong> Budget-Conscious ($2.8K AOV)</p>
+              <p><strong className="text-gaf-darkGrey">Tertiary:</strong> Performance Optimisers ($3.3K AOV)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </SlideLayout>
+);
+
+// ===== SLIDE 5: SALES TEAM BRIEF =====
+const SalesTeamBriefSlide = ({ slideNumber, totalSlides }) => (
+  <SlideLayout title="Sales Team Brief" subtitle="What the sales team needs to know for April." slideNumber={slideNumber} totalSlides={totalSlides}>
+    <div className="flex flex-col h-full gap-4 overflow-hidden">
+      <div className="bg-gaf-darkGrey text-white p-5 rounded-xl border-l-8 border-gaf-orange shadow-lg shrink-0">
+        <h3 className="text-sm font-bold uppercase tracking-wide text-gaf-orange mb-2">Core Talking Point</h3>
+        <p className="text-lg font-bold leading-snug">"Your health is the foundation. A home gym is the investment. And with interest-free finance, it costs less than your gym membership."</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 min-h-0">
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+          <div className="flex items-center gap-2 text-gaf-darkGrey mb-3"><Phone size={18} className="text-gaf-orange" /><h4 className="font-bold text-sm uppercase">On Every Call</h4></div>
+          <div className="space-y-2 text-[11px] text-gray-700 flex-1">
+            {["Proactively mention finance for any order above threshold — don't wait for customer to ask",
+              "Frame monthly repayment vs gym membership: \"$65-80/mo membership vs owning it outright\"",
+              "Lead with empowerment: \"We're making quality equipment accessible to everyone\"",
+              "Use the 10-year math: \"$9,600 on memberships vs a $4K home gym paid off and free forever\"",
+              "Lean into consultant role: \"Our team of fitness consultants help you choose the right setup\""
+            ].map((t, i) => (
+              <div key={i} className="flex items-start gap-2"><CheckCircle2 size={14} className="text-green-500 mt-0.5 shrink-0" /><p>{t}</p></div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col">
+          <div className="flex items-center gap-2 text-gaf-darkGrey mb-3"><Users size={18} className="text-gaf-orange" /><h4 className="font-bold text-sm uppercase">Customer Intelligence</h4></div>
+          <div className="space-y-3 text-[11px] text-gray-700 flex-1">
+            <div className="bg-orange-50 p-3 rounded-lg border border-orange-100"><p className="font-bold text-gaf-darkGrey text-xs mb-1">Financial barrier = #1 blocker</p><p>32% of all pre-sale calls. It's not that they can't afford it — the lump sum creates hesitation.</p></div>
+            <div className="bg-blue-50 p-3 rounded-lg border border-blue-100"><p className="font-bold text-gaf-darkGrey text-xs mb-1">Where gear goes</p><p>Garage (47%), Spare Room (37%). They're replacing gym memberships, not adding to them.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </SlideLayout>
+);
+
+// ===== SLIDE 6: APRIL CALENDAR =====
+const phases = [
+  { date: "W/C 8 Apr", title: "Setup Week", color: "bg-blue-100 border-blue-200 text-blue-800", IconComp: Calendar, iconColor: "text-blue-600", items: ["Latitude widgets + 'from $X/month' on PDPs","Finance page updated","Klaviyo campaign emails built","Meta creatives briefed","Google Ads copy updates"] },
+  { date: "W/C 15 Apr", title: "Launch Week", color: "bg-green-100 border-green-200 text-green-800", IconComp: Zap, iconColor: "text-green-600", items: ["Email blast #1: 'Your Gym. Your Terms.'","Homepage hero updated","Meta ads live + Google Ads updated","Organic: 'The 10-Year Math' carousel","Blog: 'Home Gym vs Gym Membership'","Reel: '$80/month over 10 years' video","Stories: Finance FAQ walkthrough"] },
+  { date: "W/C 22 Apr", title: "Nurture Phase", color: "bg-orange-50 border-orange-100 text-orange-800", IconComp: Megaphone, iconColor: "text-gaf-orange", items: ["Email #2: 'The Real Cost Calculator' lead magnet","Blog #2: 'How to Finance Your Home Gym'","Meta: Refresh creative — membership comparison angle"] },
+  { date: "W/C 29 Apr", title: "Social Proof", color: "bg-purple-50 border-purple-100 text-purple-800", IconComp: Users, iconColor: "text-purple-600", items: ["Email #3: Customer stories + finance CTA","Organic: Before/after home gym UGC","Reel: 'Day in the life — home gym owner'"] },
+  { date: "W/C 6 May", title: "Close", color: "bg-red-50 border-red-100 text-red-800", IconComp: Clock, iconColor: "text-red-600", items: ["Email #4: Urgency/evergreen reminder","Campaign review + performance report"] },
+];
+
+const AprilCalendarSlide = ({ slideNumber, totalSlides }) => (
+  <SlideLayout title="Execution Timeline" subtitle="April campaign key dates, owners, and milestones." slideNumber={slideNumber} totalSlides={totalSlides}>
+    <div className="h-full flex flex-col gap-4 relative">
+      <div className="absolute left-[8.5rem] top-4 bottom-4 w-px bg-gray-200 hidden md:block"></div>
+      <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 space-y-5">
+        {phases.map((phase, index) => (
+          <div key={index} className="flex flex-col md:flex-row gap-4 relative z-10">
+            <div className="md:w-32 shrink-0 flex flex-col items-center md:items-end pt-2">
+              <div className={`text-[10px] font-bold px-3 py-1 rounded-full uppercase mb-1 ${phase.color}`}>{phase.date}</div>
+              <div className="hidden md:block w-3 h-3 bg-white border-2 border-gray-300 rounded-full absolute left-[8.5rem] translate-x-[-5px] mt-2"></div>
+            </div>
+            <div className="flex-1 bg-white rounded-xl border border-gray-100 shadow-sm p-4 transition-all hover:shadow-md">
+              <div className="flex items-center gap-3 mb-3 border-b border-gray-50 pb-2">
+                <div className={`p-1.5 rounded-lg bg-gray-50 ${phase.iconColor}`}><phase.IconComp size={16} /></div>
+                <h3 className="text-sm font-bold text-gaf-darkGrey uppercase">{phase.title}</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-2">
+                {phase.items.map((item, i) => (
+                  <div key={i} className="flex items-start gap-2 group">
+                    <CheckCircle2 size={14} className="text-gray-300 mt-0.5 group-hover:text-gaf-orange transition-colors shrink-0" />
+                    <p className="text-[11px] font-medium text-gray-700 leading-snug">{item}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-auto bg-gray-50 p-3 rounded-xl border border-gray-100 flex flex-wrap gap-4 items-center justify-end shrink-0">
+        <div className="text-[10px] text-gray-400 italic">*All times are ACDT</div>
+      </div>
+    </div>
+  </SlideLayout>
+);
+
+// ===== SLIDE 7: SUMMARY =====
+const SummarySlide = () => (
+  <div className="w-full h-full bg-[#3d3d3d] flex flex-col items-center justify-center p-12 overflow-hidden">
+    <h2 className="text-white text-7xl md:text-[10rem] font-black uppercase tracking-[0.1em] text-center drop-shadow-sm select-none">Questions</h2>
+  </div>
+);
+
+// ===== APP =====
+const SLIDES = [TitleSlide, MarchAtAGlanceSlide, AprilTargetsSlide, AprilCampaignSlide, SalesTeamBriefSlide, AprilCalendarSlide, SummarySlide];
+
+function App() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const nextSlide = () => { if (currentSlide < SLIDES.length - 1) setCurrentSlide(c => c + 1); };
+  const prevSlide = () => { if (currentSlide > 0) setCurrentSlide(c => c - 1); };
+
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+      else if (e.key === 'ArrowLeft') prevSlide();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentSlide]);
+
+  const CurrentSlideComponent = SLIDES[currentSlide];
+
+  return (
+    <div className="relative w-full min-h-screen bg-gray-900 flex items-center justify-center p-0 sm:p-4 lg:p-6 overflow-x-hidden">
+      <div className="w-full max-w-[1600px] h-full min-h-[650px] md:max-h-[92vh] md:aspect-video bg-white shadow-2xl relative overflow-hidden flex flex-col rounded-none sm:rounded-xl">
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <CurrentSlideComponent slideNumber={currentSlide + 1} totalSlides={SLIDES.length} />
+        </div>
+        <div className="absolute bottom-16 right-12 flex gap-4 z-50">
+          <button onClick={prevSlide} disabled={currentSlide === 0} className={`p-3 rounded-full transition-all border-2 border-transparent ${currentSlide === 0 ? 'bg-gray-100 text-gray-300 cursor-not-allowed opacity-50' : 'bg-gaf-black text-white hover:bg-gaf-orange hover:shadow-lg active:scale-95'}`}>
+            <ChevronLeft size={24} />
+          </button>
+          <button onClick={nextSlide} disabled={currentSlide === SLIDES.length - 1} className={`p-3 rounded-full transition-all border-2 border-transparent ${currentSlide === SLIDES.length - 1 ? 'bg-gray-100 text-gray-300 cursor-not-allowed opacity-50' : 'bg-gaf-black text-white hover:bg-gaf-orange hover:shadow-lg active:scale-95'}`}>
+            <ChevronRight size={24} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ===== MOUNT =====
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

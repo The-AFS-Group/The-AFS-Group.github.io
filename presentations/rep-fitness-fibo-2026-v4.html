@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rep Fitness — Supplier Update v4</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: { orange: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt: { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body: ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.font-heading{font-family:'Montserrat',sans-serif}
+
+/* grain overlay — dark only */
+.grain-dark::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:9999}
+
+.slide-enter{animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.stagger>*{opacity:0;animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}
+.stagger>*:nth-child(2){animation-delay:.12s}
+.stagger>*:nth-child(3){animation-delay:.19s}
+.stagger>*:nth-child(4){animation-delay:.26s}
+.stagger>*:nth-child(5){animation-delay:.33s}
+.stagger>*:nth-child(6){animation-delay:.4s}
+.stagger>*:nth-child(7){animation-delay:.47s}
+.stagger>*:nth-child(8){animation-delay:.54s}
+
+.bar-grow{animation:barGrow .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+.fill-anim{animation:fillWidth 1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes fillWidth{from{width:0}to{width:var(--target-w)}}
+
+.donut-animate{animation:donutDraw 1.2s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes donutDraw{from{stroke-dashoffset:var(--circumference)}to{stroke-dashoffset:var(--dash-offset)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
+
+.slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== THEME =====
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-gaf-orange/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted',
+    textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    slashColor: 'rgba(242,100,34,0.06)', grainClass: '',
+    bodyBg: '#f0f0f0', logoFilter: '', titleText: 'text-lt-text',
+    donutTrack: '#eeeef0', barBg: 'linear-gradient(to top, #ddd, #ccc)',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-lt-text',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-600', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    progressBg: 'bg-emerald-500', progressWarn: 'bg-amber-500',
+    expOverlay: 'from-white via-white/70 to-transparent',
+    expOverlayR: 'from-white/80 to-transparent',
+    expText: 'text-lt-text', expSub: 'text-lt-sub',
+    expCard: 'bg-black/5 border-black/10',
+    footerText: 'text-lt-muted',
+  },
+  dark: {
+    bg: 'bg-gaf-black', bg2: 'bg-gaf-dark', bg3: 'bg-gaf-mid',
+    border: 'border-gaf-steel/20', borderAccent: 'border-gaf-orange/20',
+    text: 'text-white', sub: 'text-gaf-ash', muted: 'text-gaf-steel',
+    textInv: 'text-gaf-black',
+    cardBg: 'bg-gaf-dark', cardBorder: 'border-gaf-steel/20',
+    slashColor: 'rgba(242,100,34,0.15)', grainClass: 'grain-dark',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert', titleText: 'text-white',
+    donutTrack: '#1e1e1e', barBg: 'linear-gradient(to top, #333, #555)',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-gaf-dark',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange',
+    navDisabled: 'bg-gaf-steel/20 text-gaf-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-400', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    progressBg: 'bg-emerald-400', progressWarn: 'bg-amber-400',
+    expOverlay: 'from-gaf-black via-gaf-black/50 to-transparent',
+    expOverlayR: 'from-gaf-black/70 to-transparent',
+    expText: 'text-white', expSub: 'text-white/80',
+    expCard: 'bg-white/5 border-white/10',
+    footerText: 'text-gaf-steel',
+  }
+};
+
+// ===== ICONS =====
+const I = ({ d, size = 18, className = '', sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+  </svg>
+);
+const ChevL = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR = p => <I {...p} d="M9 18l6-6-6-6" />;
+const ArrowUp = p => <I {...p} d={["M22 7l-8.5 8.5-5-5L2 17","M16 7h6v6"]} />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Box = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Bolt = p => <I {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />;
+const Eye = p => <I {...p} d={["M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"]} />;
+const Users = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Check = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>;
+const Warn = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Target = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const Award = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>;
+const Globe = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
+const Msg = p => <I {...p} d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />;
+const Pct = p => <I {...p} d={["M19 5L5 19","M6.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5","M17.5 20a2.5 2.5 0 100-5 2.5 2.5 0 000 5"]} />;
+const Cam = p => <I {...p} d={["M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"]} />;
+const Wrench = p => <I {...p} d={["M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z"]} />;
+const Sun = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+
+const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
+
+// ===== DONUT CHART =====
+const Donut = ({ data, size = 220, thickness = 28 }) => {
+  const th = useTheme();
+  const r = (size - thickness) / 2;
+  const c = 2 * Math.PI * r;
+  const total = data.reduce((s, d) => s + d.value, 0);
+  let cum = 0;
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{transform:'rotate(-90deg)'}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={th.donutTrack} strokeWidth={thickness} />
+      {data.map((d, i) => {
+        const pct = d.value / total;
+        const offset = c * (1 - pct);
+        const rotation = cum * 360;
+        cum += pct;
+        return <circle key={i} cx={size/2} cy={size/2} r={r} fill="none" stroke={d.color} strokeWidth={thickness}
+          strokeDasharray={c} style={{'--circumference': c, '--dash-offset': offset}}
+          className="donut-animate" strokeDashoffset={c}
+          transform={`rotate(${rotation} ${size/2} ${size/2})`} />;
+      })}
+    </svg>
+  );
+};
+
+// ===== LOGO =====
+const Logo = () => {
+  const th = useTheme();
+  return <img src={GAF_LOGO} alt="GAF" className={`h-8 w-auto object-contain opacity-60 ${th.logoFilter}`} />;
+};
+
+// ===== SLIDE WRAPPER =====
+const Slide = ({ children, num, total, noPad }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} ${th.text} flex flex-col relative overflow-hidden`}>
+    <div className="slash" style={{top:'30%',left:'-50%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <div className="slash" style={{top:'60%',left:'-30%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <header className="flex justify-between items-center px-10 pt-5 pb-3 z-10 shrink-0">
+      <Logo />
+      <div className="flex items-center gap-3">
+        <span className={`text-[14px] font-heading font-light tracking-[.3em] ${th.sub} uppercase`}>Rep Fitness</span>
+        <div className={`w-px h-4 ${th.bg3}`}></div>
+        <span className={`text-[14px] font-body ${th.sub}`}>{num}<span className={`${th.muted} mx-1`}>/</span>{total}</span>
+      </div>
+    </header>
+    <main className={`flex-1 flex flex-col z-10 overflow-hidden ${noPad ? '' : 'px-10 pb-8'}`}>
+      {children}
+    </main>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width: `${(num/total)*100}%`}}></footer>
+  </div>
+  );
+};
+
+// ===== KPI CARD =====
+const Kpi = ({ label, value, sub, accent }) => {
+  const th = useTheme();
+  return (
+  <div className={`p-4 rounded-lg border ${accent ? `${th.kpiAccentBg} ${th.borderAccent}` : `${th.cardBg} ${th.cardBorder}`}`}>
+    <p className={`text-[13px] font-heading font-medium tracking-[.25em] uppercase mb-3 ${accent ? 'text-gaf-orange' : th.sub}`}>{label}</p>
+    <p className={`text-3xl font-heading font-bold ${accent ? 'text-gaf-orange' : th.text}`}>{value}</p>
+    {sub && <p className={`text-[14px] ${th.sub} mt-1.5 font-body`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== SECTION TITLE =====
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+  <div className="mb-4 shrink-0 stagger">
+    {pre && <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">{pre}</p>}
+    <h1 className={`font-display text-5xl md:text-7xl ${th.text} leading-[0.9] tracking-wide`}>{title}</h1>
+    {sub && <p className={`text-[15px] ${th.sub} mt-3 font-body max-w-2xl leading-snug`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== DATA =====
+const monthlyData = [
+  { month: "Jul '25", rev: 136074, gp: 31896 },
+  { month: "Aug", rev: 88893, gp: 24353 },
+  { month: "Sep", rev: 78404, gp: 22359 },
+  { month: "Oct", rev: 93675, gp: 21099 },
+  { month: "Nov", rev: 140889, gp: 38263 },
+  { month: "Dec", rev: 148134, gp: 36050 },
+  { month: "Jan '26", rev: 108000, gp: 29093 },
+  { month: "Feb", rev: 92706, gp: 31453 },
+  { month: "Mar", rev: 131132, gp: 39853 },
+  { month: "Apr", rev: 87939, gp: 28613 },
+  { month: "May", rev: 144212, gp: 51729 },
+  { month: "Jun", rev: 137460, gp: 48902 },
+];
+
+const categories = [
+  { name: 'Rigs & Racks', rev: 344853, gp: 29.7, color: '#f26422' },
+  { name: 'Benches', rev: 333624, gp: 29.5, color: '#e8520d' },
+  { name: 'Dumbbells & Kettlebells', rev: 278216, gp: 24.3, color: '#d4410a' },
+  { name: 'Power Racks', rev: 196442, gp: 34.7, color: '#c03008' },
+  { name: 'Barbells & Weight Plates', rev: 98985, gp: 29.0, color: '#8a8a8a' },
+  { name: 'Home Gyms & Multi-Station', rev: 44515, gp: 36.3, color: '#666' },
+  { name: 'Storage', rev: 39797, gp: 28.8, color: '#999' },
+  { name: 'All-In-One Trainers', rev: 34036, gp: 20.2, color: '#bbb' },
+];
+
+const departments = [
+  { name: 'GAF Retail + Online', value: 1351844, color: '#f26422' },
+  { name: 'GAF Commercial', value: 33043, color: '#888' },
+  { name: 'GAF Wholesale', value: 2632, color: '#bbb' },
+];
+
+const trafficChannels = [
+  { name: "Paid Shopping", sessions: 15354, color: "#f26422" },
+  { name: "Paid Search", sessions: 13242, color: "#e8520d" },
+  { name: "Paid Social", sessions: 13920, color: "#d4410a" },
+  { name: "Organic Search", sessions: 12642, color: "#c03008" },
+  { name: "Cross-network", sessions: 10367, color: "#888" },
+  { name: "Direct", sessions: 5425, color: "#999" },
+  { name: "Referral", sessions: 3708, color: "#aaa" },
+  { name: "Other", sessions: 5139, color: "#bbb" },
+];
+
+const monthlyTraffic = [
+  { m: "Jul '25", v: 16996 }, { m: 'Aug', v: 25409 }, { m: 'Sep', v: 24098 },
+  { m: 'Oct', v: 30360 }, { m: 'Nov', v: 43061 }, { m: 'Dec', v: 32863 },
+  { m: "Jan '26", v: 34645 }, { m: 'Feb', v: 27114 }, { m: 'Mar', v: 30149 },
+  { m: 'Apr', v: 27385 }, { m: 'May', v: 25813 }, { m: 'Jun', v: 20909 },
+];
+
+// ===== SLIDE 1: TITLE =====
+const TitleSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex flex-col justify-end overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className="absolute -right-[25%] top-[15%] w-[60%] h-[130%] border border-gaf-orange/10 transform rotate-[-18deg]"></div>
+    <div className="flex-1 flex items-center px-16 z-10">
+      <div className="stagger">
+        <div className="flex items-center gap-5 mb-10">
+          <img src={GAF_LOGO} alt="Gym and Fitness" className={`h-14 w-auto object-contain ${th.logoFilter}`} />
+          <div className={`w-px h-10 ${th.bg3}`}></div>
+          <span className={`text-[14px] font-heading tracking-[.4em] ${th.sub} uppercase`}>Supplier Update</span>
+        </div>
+        <h1 className={`font-display text-[8rem] md:text-[11rem] leading-[0.85] tracking-wider ${th.titleText}`}>
+          REP<br/><span className="text-gaf-orange">FITNESS</span>
+        </h1>
+        <div className="flex items-center gap-6 mt-10">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>ANZ Performance Review — FY26 · July 2025 to June 2026</p>
+        </div>
+      </div>
+    </div>
+    <div className="px-16 pb-8 z-10">
+      <p className={`text-[14px] font-heading tracking-[.5em] ${th.muted} uppercase`}>Confidential Internal Use</p>
+    </div>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:'10%'}}></footer>
+  </div>
+  );
+};
+
+// ===== SLIDE 2: PERFORMANCE =====
+const PerfSlide = ({ n, t }) => {
+  const th = useTheme();
+  const max = Math.max(...monthlyData.map(d => d.rev));
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Performance" title="YEAR TO DATE" sub="Rep Fitness sales: July 2025 — June 2026" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
+        <Kpi label="Total Revenue" value="$1.39M" sub="12 months trading" />
+        <Kpi label="Gross Profit" value="$403,662" sub="29.1% average margin" />
+        <Kpi label="Peak Month" value="$148K" sub="December '25" />
+        <Kpi label="Margin Trend" value="35.6%" sub="Jun GP% — up from 23% Jul" accent />
+      </div>
+      <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0`}>
+        <div className="flex items-center justify-between mb-3">
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Monthly Revenue</p>
+          <p className={`text-[14px] ${th.sub} font-body`}>GP% improving: <span className="text-gaf-orange font-semibold">23.4%</span> (Jul) → <span className="text-gaf-orange font-semibold">35.6%</span> (Jun)</p>
+        </div>
+        <div className="flex items-end gap-[6px] h-[calc(100%-36px)]">
+          {monthlyData.map((d, i) => (
+            <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+              <span className={`text-[10px] font-body font-semibold ${th.sub} mb-1`}>${(d.rev/1000).toFixed(0)}K</span>
+              <div className="w-full rounded-sm bar-grow origin-bottom" style={{
+                height: `${(d.rev / max) * 88}%`, minHeight: '3px',
+                background: `linear-gradient(to top, #f26422, ${d.rev === max ? '#ff8a50' : '#c03008'})`,
+                animationDelay: `${i * 0.06}s`
+              }}></div>
+              <span className={`text-[10px] ${th.muted} mt-2 font-body`}>{d.month}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 3: SALES BREAKDOWN =====
+const SalesSlide = ({ n, t }) => {
+  const th = useTheme();
+  const maxRev = categories[0].rev;
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Revenue" title="SALES BREAKDOWN" sub="Category performance and department distribution" />
+    <div className="flex flex-1 gap-6 min-h-0">
+      <div className="flex-1 flex flex-col gap-2.5 stagger">
+        {categories.map((c, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3.5 flex items-center gap-4`}>
+            <div className="w-1 h-10 rounded-full" style={{backgroundColor: c.color}}></div>
+            <div className="flex-1">
+              <div className="flex justify-between items-baseline mb-2">
+                <span className={`text-[15px] font-heading font-semibold ${th.text}`}>{c.name}</span>
+                <div className="flex items-baseline gap-3">
+                  <span className={`text-[14px] font-body font-semibold ${c.gp < 15 ? th.amber : th.green}`}>{c.gp}% GP</span>
+                  <span className={`text-lg font-heading font-bold ${th.text}`}>${(c.rev/1000).toFixed(0)}K</span>
+                </div>
+              </div>
+              <div className={`w-full ${th.bg3} rounded-full h-1.5`}>
+                <div className="h-full rounded-full fill-anim" style={{'--target-w': `${(c.rev/maxRev)*100}%`, backgroundColor: c.color}}></div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-[320px] flex flex-col items-center justify-center gap-6 shrink-0">
+        <div className="relative">
+          <Donut data={departments} size={200} thickness={24} />
+          <div className="absolute inset-0 flex flex-col items-center justify-center" style={{transform:'rotate(0deg)'}}>
+            <span className={`text-3xl font-heading font-bold ${th.text}`}>97.4%</span>
+            <span className={`text-[13px] ${th.sub} font-body`}>Retail + Online</span>
+          </div>
+        </div>
+        <div className="w-full space-y-2">
+          {departments.map((d, i) => (
+            <div key={i} className="flex items-center gap-3">
+              <div className="w-3 h-3 rounded-sm" style={{backgroundColor: d.color}}></div>
+              <span className={`text-[14px] font-body ${th.sub} flex-1`}>{d.name}</span>
+              <span className={`text-[15px] font-heading font-semibold ${th.text}`}>${(d.value/1000).toFixed(0)}K</span>
+            </div>
+          ))}
+        </div>
+        <div className={`w-full mt-2 pt-3 border-t ${th.cardBorder}`}>
+          <p className={`text-[14px] ${th.sub} font-body leading-snug`}>Rigs &amp; Racks ($345K) and Benches ($334K) drive <span className="text-gaf-orange font-semibold">49%</span> of total revenue. Commercial and Wholesale represent growth opportunities.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 4: DIGITAL =====
+const DigitalSlide = ({ n, t }) => {
+  const th = useTheme();
+  const maxV = Math.max(...monthlyTraffic.map(d => d.v));
+  const totalSess = trafficChannels.reduce((s, c) => s + c.sessions, 0);
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Digital" title="PERFORMANCE" sub="GA4 website analytics — Rep Fitness pages | July 2025 — June 2026" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
+        <Kpi label="Page Views" value="338,802" sub="Rep Fitness pages" />
+        <Kpi label="Sessions" value="78,959" sub="6,580/month avg" />
+        <Kpi label="Collection Page" value="37,677" sub="/collections/rep-fitness views" />
+        <Kpi label="Session Growth" value="+12%" sub="Jul 5.7K → Jun 6.3K" accent />
+      </div>
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4`}>
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-3`}>Monthly Page Views</p>
+          <div className="flex items-end gap-[5px] h-[calc(100%-28px)]">
+            {monthlyTraffic.map((d, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                <span className={`text-[10px] font-body font-semibold ${th.sub} mb-1`}>{(d.v/1000).toFixed(0)}K</span>
+                <div className="w-full rounded-sm bar-grow origin-bottom" style={{
+                  height: `${(d.v / maxV) * 85}%`, minHeight: '3px',
+                  background: th.barBg,
+                  animationDelay: `${i * 0.06}s`
+                }}></div>
+                <span className={`text-[10px] ${th.muted} mt-1.5 font-body`}>{d.m}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`w-[300px] ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 shrink-0 flex flex-col`}>
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-3`}>Traffic Sources</p>
+          <div className="flex-1 flex flex-col gap-1.5 justify-center">
+            {trafficChannels.map((c, i) => {
+              const pct = (c.sessions / totalSess * 100);
+              return (
+              <div key={i} className="flex items-center gap-2">
+                <div className="w-2 h-2 rounded-sm shrink-0" style={{backgroundColor: c.color}}></div>
+                <span className={`text-[14px] font-body ${th.sub} flex-1 truncate`}>{c.name}</span>
+                <div className={`w-20 ${th.bg3} rounded-full h-1.5`}>
+                  <div className="h-full rounded-full fill-anim" style={{'--target-w': `${pct*2.5}%`, backgroundColor: c.color}}></div>
+                </div>
+                <span className={`text-[14px] font-heading font-semibold w-8 text-right ${th.text}`}>{pct.toFixed(0)}%</span>
+              </div>
+              );
+            })}
+          </div>
+          <div className={`mt-3 pt-3 border-t ${th.cardBorder}`}>
+            <p className={`text-[13px] ${th.sub} font-body leading-snug`}><span className="text-gaf-orange font-semibold">67% paid</span> · 18% organic · 7% direct · 9% other</p>
+          </div>
+        </div>
+      </div>
+      {/* Top Pages */}
+      <div className={`${th.cardBg} rounded-lg border ${th.cardBorder} px-4 py-2 shrink-0`}>
+        <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-2`}>Top Pages by Views</p>
+        <div className="flex gap-3">
+          {[
+            { page: "Rep x Pepin Dumbbell", views: "43,147" },
+            { page: "/collections/rep-fitness", views: "37,677" },
+            { page: "Ares 2.0 5000 Series", views: "17,483" },
+            { page: "PR-5000 Power Rack", views: "14,050" },
+            { page: "AB-4100 Adj. Bench", views: "6,361" },
+          ].map((p, i) => (
+            <div key={i} className={`flex-1 ${th.bg3} rounded-lg p-2 text-center`}>
+              <p className={`text-[13px] font-heading font-semibold ${th.text} leading-tight mb-1`}>{p.page}</p>
+              <p className="text-[15px] font-heading font-bold text-gaf-orange">{p.views}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 5: WINS =====
+const WinsSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Highlights" title="WINS" sub="Key highlights from the last 12 months" />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex-1 flex flex-col gap-2 stagger">
+        {[
+          { title: "Coaches Congress Representation", desc: "GAF exhibited as Rep Fitness at the inaugural Coaches Congress event in Wollongong, with REP providing $4,237 in MDF support — strong partnership signal" },
+          { title: "339K page views (AU)", desc: "Strong organic search presence at 16% of sessions — better brand recognition than some peer brands in the portfolio" },
+          { title: "Margin improvement trend", desc: "GP% climbing from 23.4% (Jul) to 35.6% (Jun) — showing pricing discipline, improved product mix, and reduced discounting as brand matures" },
+        ].map((w, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex items-start gap-2 ${th.greenBorder} transition-colors`}>
+            <div className={`w-5 h-5 rounded-full ${th.greenBg} flex items-center justify-center shrink-0 mt-0.5`}>
+              <Check size={12} className={th.green} />
+            </div>
+            <div>
+              <p className={`text-[14px] font-heading font-semibold ${th.text} mb-1`}>{w.title}</p>
+              <p className={`text-[13px] ${th.sub} font-body leading-snug`}>{w.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="w-[380px] shrink-0 flex flex-col">
+        <div className={`flex-1 rounded-lg overflow-hidden border ${th.cardBorder} relative`}>
+          <img src="assets/coaches-congress-rep.jpeg" alt="Rep Fitness — Coaches Congress Exhibition" style={{maxHeight:'100%', maxWidth:'100%', objectFit:'contain', margin:'auto', display:'block', padding:'8px'}} />
+          <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${th.expOverlay} p-4`}>
+            <p className="text-[14px] font-heading tracking-[.2em] text-gaf-orange uppercase">Coaches Congress — Wollongong, NSW</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 6: CHALLENGES =====
+const ChallengesSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Attention Areas" title="CHALLENGES" sub="Key areas requiring attention and support" />
+    <div className="flex gap-6 flex-1 min-h-0">
+      <div className="flex-1 flex flex-col gap-2 stagger">
+        {[
+          { title: "Online friction of rack building", desc: "Rep's rack configurator and customisation creates complexity for online buyers. Many SKUs, attachments, and compatibility questions reduce conversion rates. Customers often need hand-holding through the build process — a barrier for pure online sales." },
+          { title: "Brand awareness in AU market", desc: "While organic search (16%) is healthier than some portfolio brands, paid channels still drive 67% of AU traffic. Continued brand investment needed to shift mix toward earned traffic." },
+          { title: "Dumbbell margin pressure", desc: "Dumbbell category drives 24% of revenue ($306K) but only 21.6% GP due to freight costs on heavy items. Domestic delivery of 15-50kg dumbbells compresses margins — need pricing support or freight efficiencies." },
+        ].map((c, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex items-start gap-2 ${th.amberBorder} transition-colors`}>
+            <div className={`w-5 h-5 rounded-full ${th.amberBg} flex items-center justify-center shrink-0 mt-0.5`}>
+              <Warn size={12} className={th.amber} />
+            </div>
+            <div>
+              <p className={`text-[14px] font-heading font-semibold ${th.text} mb-1`}>{c.title}</p>
+              <p className={`text-[13px] ${th.sub} font-body leading-snug`}>{c.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`w-[340px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col`}>
+        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-3">Rack Builder Complexity</p>
+        <div className="flex-1 flex flex-col gap-3 justify-center">
+          {[
+            { label: 'Power Racks (PR-4000, PR-5000)', issue: 'Multiple colour/height/config options', severity: 'high' },
+            { label: 'Rack Attachments', issue: '50+ compatible accessories', severity: 'high' },
+            { label: 'Ares 2.0 Functional Trainer', issue: 'Integrated rack + cable — complex specs', severity: 'medium' },
+            { label: 'Bench Compatibility', issue: 'Footprint matching with different racks', severity: 'low' },
+          ].map((m, i) => (
+            <div key={i} className={`${th.bg3} rounded-lg p-3 flex items-start gap-3`}>
+              <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${m.severity === 'high' ? 'bg-red-400' : m.severity === 'medium' ? 'bg-amber-400' : 'bg-emerald-400'}`}></div>
+              <div>
+                <p className={`text-[12px] font-heading font-semibold ${th.text}`}>{m.label}</p>
+                <p className={`text-[14px] ${th.sub} font-body`}>{m.issue}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={`mt-4 pt-3 border-t ${th.cardBorder}`}>
+          <p className={`text-[14px] ${th.sub} font-body leading-snug`}>Rack Attachments ($260K, 20% of revenue) shows strong demand, but online friction means many buyers need <span className="text-gaf-orange font-semibold">phone/in-store support</span> to complete builds.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE: GROWING REP IN 2026 =====
+const Tag = p => <I {...p} d={["M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z","M7 7h.01"]} />;
+
+const GrowingRepSlide = ({ n, t }) => {
+  const th = useTheme();
+  const funnelStages = [
+    { label: 'Brand Awareness', metric: '16% organic', issue: '67% of traffic is paid', width: '100%', op: 0.12 },
+    { label: 'Website Traffic', metric: '339K page views', sub: '79K sessions across 12 months', width: '80%', op: 0.22 },
+    { label: 'Engagement', metric: '43K top product views', sub: 'Rep x Pepin Dumbbell leads', width: '58%', op: 0.45 },
+    { label: 'Conversion', metric: '$1.39M revenue', sub: '29.1% GP average', width: '38%', op: 1 },
+  ];
+  const heroes = [
+    { name: 'PR-5000 Power Rack', eofy: 1362, was: 1676 },
+    { name: 'FB-5000 Flat Bench', eofy: 290, was: 419 },
+    { name: 'Ares 2.0 5000 Series', eofy: 5219, was: 5774 },
+  ];
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Growth" title="GROWING REP IN 2026" sub="Expanding the funnel from brand awareness to conversion" />
+    <div className="flex flex-1 gap-6 min-h-0">
+      <div className="flex-1 flex flex-col gap-2">
+        <div className="flex-1 flex flex-col items-center justify-center gap-2 stagger">
+          {funnelStages.map((s, i) => (
+            <div key={i} className="w-full flex justify-center">
+              <div className="rounded-lg px-5 py-3 flex items-center justify-between transition-all"
+                style={{width: s.width, backgroundColor: `rgba(242,100,34,${s.op})`, border: '1px solid rgba(242,100,34,0.2)'}}>
+                <div>
+                  <p className={`text-[15px] font-heading font-bold ${s.op >= 0.4 ? 'text-white' : th.text}`}>{s.label}</p>
+                  {s.sub && <p className={`text-[12px] ${s.op >= 0.4 ? 'text-white/70' : th.sub} font-body`}>{s.sub}</p>}
+                </div>
+                <div className="text-right">
+                  <p className={`text-[17px] font-heading font-bold ${s.op >= 0.4 ? 'text-white' : 'text-gaf-orange'}`}>{s.metric}</p>
+                  {s.issue && <p className={`text-[11px] font-body ${s.op >= 0.4 ? 'text-white/70' : th.amber}`}>{s.issue}</p>}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className={`${th.cardBg} border-2 border-dashed border-gaf-orange/30 rounded-lg p-3 text-center shrink-0`}>
+          <p className={`text-[14px] font-body ${th.text} leading-snug`}>
+            <span className="text-gaf-orange font-semibold">Brand awareness is the bottleneck.</span> We convert well at the bottom through competitive pricing, but 66% paid traffic dependency limits scale. Investment in AU brand-building will grow the top and reduce cost per acquisition.
+          </p>
+        </div>
+      </div>
+      <div className="w-[420px] shrink-0 flex flex-col gap-3">
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`} style={{borderLeft: '3px solid #f26422'}}>
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <span className="text-[10px] font-heading tracking-wider uppercase text-gaf-orange bg-gaf-orange/10 rounded px-2 py-0.5">June 2026</span>
+              <h4 className={`text-[16px] font-heading font-bold ${th.text} mt-1`}>EOFY Sale</h4>
+              <p className={`text-[11px] ${th.sub} font-body mt-0.5`}>Top 3 of 12 product offers</p>
+            </div>
+            <Tag size={18} className="text-gaf-orange" />
+          </div>
+          <div className="space-y-2">
+            {heroes.map((h, j) => {
+              const save = h.was - h.eofy;
+              return (
+              <div key={j} className={`flex items-center justify-between ${th.bg3} rounded-lg px-3 py-2`}>
+                <span className={`text-[13px] font-body ${th.text} font-medium`}>{h.name}</span>
+                <div className="flex items-center gap-3">
+                  <span className={`text-[12px] ${th.muted} font-body line-through`}>${h.was.toLocaleString()}</span>
+                  <span className="text-[15px] font-heading font-bold text-gaf-orange">${h.eofy.toLocaleString()}</span>
+                  <span className="text-[11px] font-heading text-gaf-orange bg-gaf-orange/10 rounded px-1.5 py-0.5">-${save}</span>
+                </div>
+              </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4`} style={{borderLeft: '3px solid #f26422'}}>
+          <div className="flex items-center justify-between mb-2">
+            <div>
+              <span className={`text-[10px] font-heading tracking-wider uppercase ${th.sub} ${th.bg3} rounded px-2 py-0.5`}>November 2026</span>
+              <h4 className={`text-[16px] font-heading font-bold ${th.text} mt-1`}>Black Friday / Cyber Monday</h4>
+            </div>
+            <Tag size={18} className={th.sub} />
+          </div>
+          <p className={`text-[13px] ${th.sub} font-body leading-snug`}>Full range sale pricing across Rep Fitness. Whitelisted ads through Rep social accounts. Email + retargeting blitz across the full portfolio.</p>
+        </div>
+        <div className="bg-gaf-orange rounded-lg p-4 flex-1 flex flex-col justify-center">
+          <ArrowUp size={20} className="text-white mb-2" />
+          <h4 className="text-[15px] font-heading font-bold text-white uppercase tracking-wider mb-2">The Opportunity</h4>
+          <p className="text-[14px] text-white/90 font-body leading-snug">Pricing events drive strong conversion, but we need brand awareness support to fill the top of the funnel. With co-investment in AU brand building, we can reduce paid dependency and grow organic demand for Rep Fitness in Australia.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE: WHITELISTED ADS =====
+const WhitelabelSlide = ({ n, t }) => {
+  const th = useTheme();
+  const ads = [
+    { brand: 'Force USA', img: 'assets/whitelisted-ad-9.png' },
+    { brand: 'Force USA', img: 'assets/whitelisted-ad-10.png' },
+    { brand: 'STEPR', img: 'assets/whitelisted-ad-11.png' },
+    { brand: 'STEPR', img: 'assets/whitelisted-ad-12.png' },
+  ];
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Proven Model" title="WHITELISTED ADS" sub="Partnership ads running through brand social accounts outperform standard GAF ads" />
+    <div className="flex flex-1 gap-5 min-h-0">
+      <div className="w-[300px] shrink-0 flex flex-col gap-3 stagger">
+        <div className={`${th.kpiAccentBg} border-2 ${th.borderAccent} rounded-lg p-4 text-center`}>
+          <p className="text-[12px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-1">Top ROAS in GAF Ad Account</p>
+          <div className="flex items-baseline justify-center gap-2">
+            <span className="text-[5.5rem] font-display text-gaf-orange leading-none">4</span>
+            <span className={`text-[2rem] font-heading font-bold ${th.sub}`}>of 5</span>
+          </div>
+          <p className={`text-[14px] ${th.text} font-heading font-semibold mt-1`}>are whitelisted ads</p>
+          <p className={`text-[12px] ${th.sub} font-body mt-1.5 leading-snug`}>Four of the top five performing ads by ROAS in the GAF ad account run through brand social accounts</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3.5 flex flex-col gap-1.5`}>
+          <h4 className={`text-[12px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>Why Whitelisted Ads Win</h4>
+          {["Appear from the brand's own social profile with higher trust",
+            "Leverage the brand's established audience and social proof",
+            "Outperform standard retailer ads on engagement and ROAS",
+            "Customer sees the brand, not the retailer, building equity"
+          ].map((item, j) => (
+            <div key={j} className="flex items-start gap-2">
+              <Check size={11} className={`${th.green} mt-0.5 shrink-0`} />
+              <p className={`text-[12px] ${th.sub} font-body leading-snug`}>{item}</p>
+            </div>
+          ))}
+        </div>
+        <div className="bg-gaf-orange rounded-lg p-3.5">
+          <h4 className="text-[13px] font-heading font-bold text-white uppercase tracking-wider mb-1">The Ask</h4>
+          <p className="text-[12px] text-white/90 font-body leading-snug">Replicate this proven model for Rep Fitness. Grant GAF Meta Partnership Ad access to run whitelisted campaigns through Rep's social accounts in the AU market.</p>
+        </div>
+      </div>
+      <div className="flex-1 flex gap-3 min-h-0">
+        {ads.map((ad, i) => (
+          <div key={i} className={`flex-1 ${th.cardBg} border ${th.cardBorder} rounded-lg overflow-hidden flex flex-col`}>
+            <div className="flex items-center justify-between px-2 pt-2 pb-1 shrink-0">
+              <div className="flex items-center gap-1.5">
+                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-heading font-bold bg-black text-white">{ad.brand[0]}</div>
+                <span className={`text-[11px] font-heading font-semibold ${th.text}`}>{ad.brand}</span>
+              </div>
+              <span className="text-[9px] font-heading tracking-wider uppercase bg-gaf-orange/10 text-gaf-orange rounded px-1.5 py-0.5">Top ROAS</span>
+            </div>
+            <div className="flex-1 mx-2 mb-2 rounded overflow-hidden relative">
+              <img src={ad.img} alt={`${ad.brand} whitelisted ad`} className="w-full h-full object-cover object-top" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div className={`flex items-center justify-between ${th.cardBg} border ${th.cardBorder} rounded-lg px-5 py-2 mt-3 shrink-0`}>
+      <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase">Proven Across Portfolio</p>
+      <div className={`flex gap-8 text-[14px] font-body ${th.sub}`}>
+        <span>Force USA: <span className="text-gaf-orange font-semibold">Whitelisted</span></span>
+        <span>STEPR: <span className="text-gaf-orange font-semibold">Whitelisted</span></span>
+        <span>Rep Fitness: <span className={`${th.amber} font-semibold`}>Requesting access</span></span>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 9: PLANS =====
+const PlansSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Strategy" title="PLANS & PRIORITIES" sub="Rep Fitness growth strategy — next 6 months" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className={`${th.cardBg} border-l-2 border-gaf-orange rounded-lg p-4 shrink-0`}>
+        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-2">Strategic Focus</p>
+        <p className={`text-[15px] font-body ${th.text} leading-snug`}>Leverage the strong referral pipeline from repfitness.com while investing in local brand-building to create independent AU demand. Expand commercial channel and improve online rack-buying experience.</p>
+      </div>
+      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 stagger">
+        {[
+          { title: "Digital Strategy", icon: Bolt, items: [
+            "Invest in Australian paid social and content to build independent brand search volume",
+            "Improve on-site conversion for rack products — guided configurator or simplified bundles",
+            "Continue balanced paid media mix across Shopping, Search and Social channels"
+          ]},
+          { title: "Content & Experience", icon: Eye, items: [
+            "Experience Centre for local content production — Rep Fitness product showcase and athlete shoots",
+            "Event activations (Coaches Congress, fitness expos) — continue building grassroots brand presence",
+            "Local AU content: product reviews, rack build guides, comparison content for SEO",
+            "UGC and influencer partnerships to build social proof in the AU fitness community"
+          ]},
+          { title: "Commercial", icon: Dollar, items: [
+            "Build B2B/commercial channel — currently only $33K (2.4%) — significant room to grow with gym fit-outs",
+            "Rack builder UX improvement — reduce online friction for customised rack purchases",
+            "Dumbbell pricing strategy — address margin pressure on high-freight heavy products",
+            "Explore wholesale partnerships to expand distribution beyond GAF direct"
+          ]},
+        ].map((s, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
+            <div className="flex items-center gap-2 mb-3">
+              <s.icon size={16} className="text-gaf-orange" />
+              <h4 className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{s.title}</h4>
+            </div>
+            <div className="space-y-2 flex-1">
+              {s.items.map((item, j) => (
+                <div key={j} className="flex items-start gap-2">
+                  <div className="w-1 h-1 rounded-full bg-gaf-orange mt-1.5 shrink-0"></div>
+                  <p className={`text-[14px] ${th.sub} font-body leading-snug`}>{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 8: EXPERIENCE CENTRE =====
+const ExpSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t} noPad>
+    <div className="flex-1 relative">
+      <img src="assets/experience-centre.jpg" alt="GAF Experience Centre" className="w-full h-full object-cover" />
+      <div className={`absolute inset-0 bg-gradient-to-t ${th.expOverlay}`}></div>
+      <div className={`absolute inset-0 bg-gradient-to-r ${th.expOverlayR}`}></div>
+      <div className="absolute bottom-0 left-0 right-0 p-8">
+        <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">Facility</p>
+        <h2 className={`font-display text-5xl md:text-7xl ${th.expText} tracking-wide mb-3`}>EXPERIENCE<br/>CENTRE</h2>
+        <p className={`text-[15px] ${th.expSub} font-body max-w-xl leading-snug mb-6`}>Purpose-built Rep Fitness showroom at GAF HQ — local content production studio, product showcase for B2B buyers, and immersive brand experience for athlete collaborations and rack configuration consultations.</p>
+        <div className="flex gap-4">
+          {[
+            { icon: Cam, label: "Content Studio", desc: "In-house photo & video with full Rep Fitness product lineup — racks, benches, dumbbells" },
+            { icon: Users, label: "B2B Showroom", desc: "Walk-through for commercial buyers, gym owners — solve rack configuration in person" },
+            { icon: Bolt, label: "Athlete Hub", desc: "Dedicated space for influencer and athlete collaboration shoots and event content capture" },
+          ].map((item, i) => (
+            <div key={i} className={`backdrop-blur-sm border rounded-lg p-3 flex-1 ${th.expCard}`}>
+              <item.icon size={16} className="text-gaf-orange mb-1.5" />
+              <h4 className={`text-[14px] font-heading font-semibold tracking-wider uppercase mb-1 ${th.expText}`}>{item.label}</h4>
+              <p className={`text-[13px] ${th.expSub} font-body leading-snug opacity-70`}>{item.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 9: SUPPORT =====
+const SupportSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Partnership" title="SUPPORT NEEDED" sub="Key requests to accelerate ANZ growth" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="bg-gaf-orange rounded-lg p-4 flex items-center gap-4 shrink-0">
+        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0"><Dollar size={20} className="text-white" /></div>
+        <div>
+          <h3 className="font-heading font-bold text-white uppercase tracking-wider text-[15px]">MDF Support — Priority Request</h3>
+          <p className="text-[14px] text-white/90 font-body mt-1 leading-snug">Marketing Development Funds to co-invest in AU brand-building. The Coaches Congress MDF ($4,237) was a great start — looking to expand this model across digital campaigns, event activations, and content production to build independent AU demand beyond repfitness.com referral traffic.</p>
+        </div>
+      </div>
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className="flex-1 flex flex-col gap-3 stagger">
+          <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3.5 flex flex-col`}>
+            <div className="flex items-center gap-2 mb-2">
+              <Pct size={14} className="text-gaf-orange" />
+              <h4 className={`text-[13px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>Pricing & Margin</h4>
+            </div>
+            <div className="space-y-1.5">
+              {["Dumbbell pricing relief — 24% of revenue at only 21.6% GP, freight compresses margins",
+                "Volume-based pricing tiers as AU volume grows",
+                "Competitive pricing support on PR-5000, Pepin dumbbells",
+                "Freight cost collaboration on heavy product delivery"
+              ].map((item, j) => (
+                <div key={j} className="flex items-start gap-2">
+                  <Msg size={9} className={`${th.muted} mt-1 shrink-0`} />
+                  <p className={`text-[13px] ${th.sub} font-body leading-snug`}>{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3.5 flex flex-col`}>
+            <div className="flex items-center gap-2 mb-2">
+              <Target size={14} className="text-gaf-orange" />
+              <h4 className={`text-[13px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>Strategic Partnership</h4>
+            </div>
+            <div className="space-y-1.5">
+              {["Joint business plan with aligned ANZ revenue targets",
+                "New product roadmap visibility — first-mover on AU launches",
+                "Quarterly review cadence for brand growth tracking",
+                "B2B/commercial channel support — gym fit-out case studies"
+              ].map((item, j) => (
+                <div key={j} className="flex items-start gap-2">
+                  <Msg size={9} className={`${th.muted} mt-1 shrink-0`} />
+                  <p className={`text-[13px] ${th.sub} font-body leading-snug`}>{item}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="w-[520px] shrink-0 flex flex-col gap-3">
+          <div className={`${th.cardBg} border-2 border-gaf-orange/30 rounded-lg p-4 flex flex-col`}>
+            <div className="flex items-center gap-2 mb-3">
+              <Globe size={16} className="text-gaf-orange" />
+              <h4 className={`text-[14px] font-heading font-bold tracking-[.2em] uppercase text-gaf-orange`}>Whitelisted Ads — Partnership Model</h4>
+            </div>
+            <p className={`text-[13px] ${th.sub} font-body leading-snug mb-3`}>GAF requests Meta Partnership Ad access to run targeted AU campaigns through Rep Fitness social accounts — a proven model already delivering results for Force USA in the AU market.</p>
+            <div className="space-y-2">
+              {[
+                { label: "How It Works", desc: "Rep Fitness grants GAF advertising access via Meta Business Suite. GAF runs paid campaigns that appear from Rep's social profiles, targeting AU audiences." },
+                { label: "Proven Model", desc: "Successfully deployed for Force USA — whitelisted ads outperform standard brand ads with higher trust signals and engagement from the supplier's established audience." },
+                { label: "What We Need", desc: "Meta Business Partner access to Rep Fitness AU social accounts, plus approval workflow for creative assets and campaign briefs." },
+              ].map((item, j) => (
+                <div key={j} className={`${th.bg3} rounded-lg p-2.5`}>
+                  <p className={`text-[12px] font-heading font-semibold ${th.text} mb-0.5`}>{item.label}</p>
+                  <p className={`text-[12px] ${th.sub} font-body leading-snug`}>{item.desc}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className={`flex items-center justify-between ${th.cardBg} border ${th.cardBorder} rounded-lg px-5 py-2 shrink-0`}>
+        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase">Financial Context</p>
+        <div className={`flex gap-8 text-[14px] font-body ${th.sub}`}>
+          <span>12-Month Revenue: <span className="text-gaf-orange font-semibold">$1.39M</span></span>
+          <span>Gross Profit: <span className={`${th.green} font-semibold`}>$404K</span></span>
+          <span>GP Trend: <span className={`${th.text} font-semibold`}>19% → 32%</span> (improving)</span>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 10: QUESTIONS =====
+const QSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex items-center justify-center overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className={`absolute -left-[20%] bottom-[10%] w-[50%] h-[120%] border ${th.cardBorder} opacity-30 transform rotate-[-18deg]`}></div>
+    <div className="z-10 text-center stagger">
+      <p className="text-[14px] font-heading tracking-[.5em] text-gaf-orange uppercase mb-6">Thank You</p>
+      <h1 className={`font-display text-[10rem] md:text-[14rem] ${th.text} leading-[0.85] tracking-wider`}>Q&A</h1>
+      <div className="w-16 h-[2px] bg-gaf-orange mx-auto mt-8"></div>
+    </div>
+    <footer className="absolute bottom-0 left-0 h-1 bg-gaf-orange z-10 w-full"></footer>
+  </div>
+  );
+};
+
+// ===== APP =====
+const SLIDES = [TitleSlide, PerfSlide, SalesSlide, DigitalSlide, WinsSlide, ChallengesSlide, SupportSlide, GrowingRepSlide, WhitelabelSlide, PlansSlide, ExpSlide, QSlide];
+
+function App() {
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    const next = idx + dir;
+    if (next >= 0 && next < SLIDES.length) { setIdx(next); setKey(k => k + 1); }
+  }, [idx]);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const h = e => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'd' || e.key === 'D') setDark(d => !d);
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [go]);
+
+  useEffect(() => {
+    document.body.style.background = th.bodyBg;
+    document.body.className = th.grainClass;
+  }, [dark]);
+
+  const C = SLIDES[idx];
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen overflow-hidden flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div key={key} className="overflow-hidden slide-enter rounded-lg shrink-0" style={{width: 1600, height: 900, zoom, boxShadow: dark ? '0 0 80px rgba(0,0,0,.6)' : '0 4px 60px rgba(0,0,0,.12)'}}>
+          <C n={idx + 1} t={SLIDES.length} />
+          {/* Nav + theme toggle */}
+          <div className="absolute bottom-6 right-8 flex gap-2 z-50">
+            <button onClick={() => setDark(d => !d)} title="Toggle theme (D)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+              {dark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+            <div className="w-px h-9 bg-gaf-orange/20"></div>
+            <button onClick={() => go(-1)} disabled={idx===0}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===0 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevL size={16} />
+            </button>
+            <button onClick={() => go(1)} disabled={idx===SLIDES.length-1}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===SLIDES.length-1 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevR size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

@@ -1,0 +1,18 @@
+# Dependencies — installed by CI, never committed.
+# The old repo committed these for revel-customer-intelligence-july-2026,
+# which shipped ~60MB of macOS arm64 binaries that break on Linux runners.
+node_modules/
+
+# Vite build output. The published copy lives in the top-level dashboard
+# folders; the intermediate dist/ is regenerated on every build.
+_src/*/dist/
+
+# Local tooling
+.wrangler/
+.env
+.env.local
+*.log
+
+# OS noise
+.DS_Store
+Thumbs.db

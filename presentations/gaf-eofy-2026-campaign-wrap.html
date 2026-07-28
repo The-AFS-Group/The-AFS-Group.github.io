@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF EOFY 2026 — Campaign Wrap</title>
+<meta name="description" content="Gym and Fitness EOFY 2026 campaign performance — executive summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gaf-orange:#F26422; --gaf-orange-hover:#D85418; --gaf-orange-soft:#FDE9DD;
+  --g50:#FAFAFA;--g100:#F0F0F0;--g200:#E2E2E2;--g300:#C9C9C9;--g400:#A0A0A0;--g500:#717171;
+  --g600:#555;--g700:#424242;--g800:#2B2B2B;--g900:#1A1A1A;
+  --bg:#fff;--fg-1:#000;--fg-2:#555;--fg-3:#717171;--border-1:#E2E2E2;
+  --font-display:'Montserrat','Helvetica Neue',Arial,sans-serif;
+  --font-sans:'Open Sans','Helvetica Neue',Arial,sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font:400 16px/1.55 var(--font-sans);color:var(--fg-1);background:var(--g900);overflow-x:hidden}
+h1,h2,h3,h4,h5{font-family:var(--font-display);line-height:1.04;letter-spacing:-.01em}
+img{display:block;max-width:100%}
+.progress-bar{position:fixed;top:0;left:0;height:3px;z-index:100;background:var(--gaf-orange);width:0}
+.scroll-container{height:100vh;overflow-y:auto;scroll-snap-type:y proximity;scroll-behavior:smooth}
+.section{min-height:100vh;scroll-snap-align:start;display:flex;flex-direction:column;justify-content:center;padding:72px 60px;position:relative;overflow:hidden}
+.section.dark{background:var(--g900);color:#fff}
+.section.light{background:var(--bg);color:var(--fg-1)}
+.section.subtle{background:var(--g50);color:var(--fg-1)}
+.section.orange{background:var(--gaf-orange);color:#fff}
+.inner{max-width:1240px;margin:0 auto;width:100%}
+.eyebrow{font:700 12px/1 var(--font-display);text-transform:uppercase;letter-spacing:.16em;color:var(--gaf-orange);margin-bottom:22px;display:flex;align-items:center;gap:12px}
+.eyebrow.on-orange{color:#fff}
+.eyebrow::before{content:"";width:34px;height:2px;background:currentColor;display:inline-block}
+/* dot nav */
+.dot-nav{position:fixed;right:22px;top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;align-items:flex-end;gap:13px}
+.dot-nav a{display:flex;align-items:center;gap:10px;text-decoration:none}
+.dot-nav a .dot{width:9px;height:9px;border-radius:50%;background:var(--g500);transition:all .2s var(--ease)}
+.dot-nav a.active .dot{background:var(--gaf-orange);transform:scale(1.35);box-shadow:0 0 0 3px rgba(242,100,34,.3)}
+.dot-nav a .lbl{font:700 9px/1 var(--font-display);text-transform:uppercase;letter-spacing:.1em;color:var(--g400);opacity:0;transform:translateX(6px);transition:all .2s var(--ease);white-space:nowrap}
+.dot-nav a.active .lbl,.dot-nav a:hover .lbl{opacity:1;transform:translateX(0)}
+.dot-nav a.active .lbl{color:var(--gaf-orange)}
+/* cover */
+.cover-brand{font:900 15px/1 var(--font-display);letter-spacing:.28em;text-transform:uppercase;color:#fff}
+.cover-brand em{color:var(--gaf-orange);font-style:normal}
+.cover h1{font-weight:900;font-size:clamp(48px,8vw,116px);text-transform:uppercase;margin:26px 0 8px}
+.cover h1 .yr{color:var(--gaf-orange)}
+.cover .sub{font:600 clamp(18px,2.2vw,26px)/1.3 var(--font-display);color:var(--g300)}
+.cover-meta{margin-top:54px;display:flex;gap:46px;flex-wrap:wrap;border-top:1px solid var(--g700);padding-top:26px}
+.cover-meta div .kk{font:700 11px/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:var(--g500);margin-bottom:8px}
+.cover-meta div .vv{font:600 17px/1.2 var(--font-display);color:#fff}
+.glow{position:absolute;border-radius:50%;filter:blur(120px);opacity:.5;pointer-events:none}
+/* headline hero numbers */
+.h-title{font-size:clamp(30px,4vw,52px);font-weight:800;margin-bottom:8px}
+.h-title .em{color:var(--gaf-orange)}
+.lede{font:400 clamp(17px,1.7vw,21px)/1.5 var(--font-sans);color:var(--fg-2);max-width:760px;margin-bottom:44px}
+.section.dark .lede{color:var(--g300)}
+.big-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.big{background:rgba(255,255,255,.04);border:1px solid var(--g700);border-radius:14px;padding:30px 26px;position:relative;overflow:hidden}
+.section.light .big,.section.subtle .big{background:#fff;border:1px solid var(--border-1);box-shadow:0 6px 20px rgba(0,0,0,.05)}
+.big .num{font:800 clamp(34px,4.4vw,52px)/1 var(--font-display);letter-spacing:-.02em}
+.big .num .u{font-size:.5em;color:var(--gaf-orange);margin-left:2px}
+.big .lab{font:600 13px/1.3 var(--font-display);text-transform:uppercase;letter-spacing:.06em;color:var(--g400);margin-top:14px}
+.section.light .big .lab,.section.subtle .big .lab{color:var(--g600)}
+.big .foot{font:400 13px/1.4 var(--font-sans);color:var(--g500);margin-top:8px}
+.big.accent{background:var(--gaf-orange);border-color:var(--gaf-orange)}
+.big.accent .num,.big.accent .lab,.big.accent .foot{color:#fff}
+.big.accent .num .u{color:rgba(255,255,255,.75)}
+/* two-col */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center}
+.cols.mech{grid-template-columns:.9fr 1.1fr}
+h2.big-h{font-size:clamp(30px,4.4vw,56px);font-weight:800;text-transform:uppercase;margin-bottom:20px}
+h2.big-h .em{color:var(--gaf-orange)}
+.mech-list{list-style:none;display:flex;flex-direction:column;gap:18px}
+.mech-list li{display:flex;gap:16px;align-items:flex-start}
+.mech-list .ic{flex:0 0 40px;height:40px;border-radius:10px;background:var(--gaf-orange-soft);color:var(--gaf-orange);display:flex;align-items:center;justify-content:center;font:800 17px/1 var(--font-display)}
+.mech-list .mt{font:700 17px/1.2 var(--font-display);margin-bottom:3px}
+.mech-list .md{font:400 14.5px/1.45 var(--font-sans);color:var(--fg-2)}
+/* chart */
+.chart-wrap{background:#fff;border:1px solid var(--border-1);border-radius:14px;padding:30px 30px 20px;box-shadow:0 8px 26px rgba(0,0,0,.06)}
+.chart-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap;gap:12px}
+.legend{display:flex;gap:20px;font:600 12px/1 var(--font-display);color:var(--g600)}
+.legend span{display:flex;align-items:center;gap:7px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.chart{display:flex;align-items:flex-end;gap:3px;height:280px;border-bottom:2px solid var(--g200);position:relative}
+.bar{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative}
+.bar .fill{width:100%;max-width:22px;background:linear-gradient(180deg,var(--gaf-orange),var(--gaf-orange-hover));border-radius:3px 3px 0 0;transition:height .6s var(--ease)}
+.bar .budline{position:absolute;left:12%;right:12%;height:2px;background:var(--g800);opacity:.55}
+.bar:hover .fill{filter:brightness(1.12)}
+.bar .tip{position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--g900);color:#fff;font:600 11px/1.3 var(--font-sans);padding:6px 9px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .15s;z-index:5}
+.bar:hover .tip{opacity:1}
+.xaxis{display:flex;gap:3px;margin-top:8px}
+.xaxis span{flex:1;text-align:center;font:600 9px/1 var(--font-display);color:var(--g400)}
+.callout{display:inline-flex;align-items:center;gap:9px;background:var(--g900);color:#fff;border-radius:999px;padding:9px 18px;font:600 13px/1 var(--font-display);margin-top:22px}
+.callout b{color:var(--gaf-orange)}
+/* products */
+.prod-list{display:flex;flex-direction:column;gap:11px;margin-top:8px}
+.prod-row{display:grid;grid-template-columns:44px 1fr auto;gap:20px;align-items:center;background:#fff;border:1px solid var(--border-1);border-radius:11px;padding:15px 22px;transition:transform .2s var(--ease)}
+.prod-row:hover{transform:translateX(4px)}
+.prod-row.hero{border-color:var(--gaf-orange);background:linear-gradient(90deg,var(--gaf-orange-soft),#fff 60%)}
+.prod-rank{font:800 24px/1 var(--font-display);color:var(--g300)}
+.prod-row.hero .prod-rank{color:var(--gaf-orange)}
+.prod-name{font:700 15.5px/1.25 var(--font-display);margin-bottom:9px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.gwp-tag{font:800 9px/1 var(--font-display);text-transform:uppercase;letter-spacing:.08em;background:var(--gaf-orange);color:#fff;padding:4px 8px;border-radius:5px}
+.prod-bar{height:8px;background:var(--g100);border-radius:5px;overflow:hidden}
+.prod-bar span{display:block;height:100%;background:linear-gradient(90deg,var(--gaf-orange),var(--gaf-orange-hover));border-radius:5px}
+.prod-rev{font:800 19px/1 var(--font-display);text-align:right;white-space:nowrap}
+.prod-rev em{display:block;font:400 12px/1 var(--font-sans);color:var(--g500);margin-top:6px;font-style:normal}
+/* media split */
+.split-bar{display:flex;height:56px;border-radius:12px;overflow:hidden;margin:10px 0 6px;box-shadow:var(--shadow-md)}
+.split-bar div{display:flex;align-items:center;justify-content:center;color:#fff;font:700 14px/1 var(--font-display)}
+.split-key{display:flex;gap:26px;flex-wrap:wrap;font:600 13px/1 var(--font-display);color:var(--g600);margin-top:8px}
+.split-key span{display:flex;align-items:center;gap:8px}
+.split-key i{width:12px;height:12px;border-radius:3px}
+.note{font:400 14.5px/1.55 var(--font-sans);color:var(--fg-2);margin-top:22px;padding:16px 20px;border-left:3px solid var(--gaf-orange);background:var(--g50);border-radius:0 8px 8px 0}
+/* creative gallery */
+.gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:8px}
+.creative-card{background:var(--g800);border-radius:13px;overflow:hidden;border:1px solid var(--g700)}
+.creative-img{aspect-ratio:1/1;overflow:hidden;background:var(--g900)}
+.creative-img img{width:100%;height:100%;object-fit:cover;transition:transform .4s var(--ease)}
+.creative-card:hover .creative-img img{transform:scale(1.06)}
+.creative-card figcaption{padding:14px 15px 16px}
+.cc-name{font:700 13px/1.25 var(--font-display);color:#fff;margin-bottom:9px;min-height:32px}
+.cc-stats{display:flex;flex-direction:column;gap:3px}
+.cc-roas{font:800 16px/1 var(--font-display);color:var(--gaf-orange)}
+.cc-sub{font:400 11.5px/1.3 var(--font-sans);color:var(--g400)}
+/* takeaways */
+.take-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:10px}
+.take{background:rgba(255,255,255,.04);border:1px solid var(--g700);border-radius:14px;padding:26px 24px}
+.take .tn{font:800 15px/1 var(--font-display);color:var(--gaf-orange);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+.take .tn .no{width:28px;height:28px;border-radius:8px;background:var(--gaf-orange);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px}
+.take h4{font-size:18px;color:#fff;margin-bottom:9px}
+.take p{font:400 14px/1.5 var(--font-sans);color:var(--g300)}
+.foot-note{margin-top:40px;font:400 12.5px/1.5 var(--font-sans);color:var(--g500);border-top:1px solid var(--g700);padding-top:18px}
+@media(max-width:900px){
+  .section{padding:60px 26px}
+  .big-grid{grid-template-columns:repeat(2,1fr)}
+  .cols,.cols.mech{grid-template-columns:1fr;gap:32px}
+  .gallery{grid-template-columns:repeat(2,1fr)}
+  .take-grid{grid-template-columns:1fr}
+  .dot-nav{display:none}
+  .cover h1{font-size:52px}
+  .prod-rev{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="pbar"></div>
+<nav class="dot-nav" id="dotnav"></nav>
+<div class="scroll-container" id="scroller">
+
+  <!-- COVER -->
+  <section class="section dark cover" data-nav="Cover">
+    <div class="glow" style="width:520px;height:520px;background:var(--gaf-orange);top:-120px;right:-100px"></div>
+    <div class="glow" style="width:420px;height:420px;background:#7a2d0e;bottom:-160px;left:-120px;opacity:.4"></div>
+    <div class="inner" style="position:relative">
+      <div class="cover-brand">GYM AND <em>FITNESS</em></div>
+      <h1>EOFY <span class="yr">2026</span><br>Campaign Wrap</h1>
+      <div class="sub">The end-of-financial-year sale, by the numbers.</div>
+      <div class="cover-meta">
+        <div><div class="kk">Period</div><div class="vv">1&ndash;30 June 2026</div></div>
+        <div><div class="kk">Prepared for</div><div class="vv">Executive Team</div></div>
+        <div><div class="kk">Revenue</div><div class="vv">$3.41M</div></div>
+        <div><div class="kk">Gross Profit</div><div class="vv">$1.24M</div></div>
+        <div><div class="kk">Blended MER</div><div class="vv">10.5x</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEADLINE -->
+  <section class="section dark" data-nav="Headline">
+    <div class="inner">
+      <div class="eyebrow">The headline</div>
+      <h2 class="big-h">A <span class="em">$3.41M</span> month.</h2>
+      <p class="lede">EOFY 2026 delivered $3.41M in revenue across 1,905 orders and landed 95% of the gross-profit budget &mdash; on a blended marketing efficiency of 10.5x. Flagship Force USA all-in-one trainers, anchored by the C20 + C10 gift-with-purchase, did the heavy lifting.</p>
+      <div class="big-grid">
+        <div class="big accent"><div class="num">$3.41M</div><div class="lab">Revenue</div><div class="foot">1,905 orders &middot; $1,789 AOV</div></div>
+        <div class="big"><div class="num">$1.24M</div><div class="lab">Gross Profit (created)</div><div class="foot">95% of $1,304,799 budget</div></div>
+        <div class="big"><div class="num">10.5<span class="u">x</span></div><div class="lab">Blended MER</div><div class="foot">$324.8K total ad spend</div></div>
+        <div class="big"><div class="num">250K</div><div class="lab">Website sessions</div><div class="foot">42% avg margin &middot; 6.7% avg discount</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MECHANICS -->
+  <section class="section light" data-nav="The play">
+    <div class="inner cols mech">
+      <div>
+        <div class="eyebrow">The play</div>
+        <h2 class="big-h">What we <span class="em">ran</span>.</h2>
+        <p class="lede">A focused EOFY sale built around the flagship all-in-one trainers, a curated deal landing page, and always-on tax-deadline urgency.</p>
+      </div>
+      <ul class="mech-list">
+        <li><span class="ic">GWP</span><div><div class="mt">Gift-with-purchase on the C20 + C10</div><div class="md">The proven conversion lever on our flagship all-in-ones &mdash; both finished the month in the top three products.</div></div></li>
+        <li><span class="ic">&#9733;</span><div><div class="mt">&ldquo;Hot Deals&rdquo; collection</div><div class="md">A single curated Shopify landing page concentrating demand on the sale range and simplifying the path to purchase.</div></div></li>
+        <li><span class="ic">$</span><div><div class="mt">Instant asset write-off angle</div><div class="md">EOFY tax-deadline urgency framed the offer &mdash; peaking on 30 June, the final purchase day of the financial year.</div></div></li>
+        <li><span class="ic">&#9200;</span><div><div class="mt">Full-funnel media</div><div class="md">Google + Meta + AppLovin driving traffic, with phone sales closing the high-consideration trainer purchases offline.</div></div></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PERFORMANCE VS BUDGET -->
+  <section class="section subtle" data-nav="vs Budget">
+    <div class="inner">
+      <div class="eyebrow">Gross profit vs budget</div>
+      <h2 class="big-h">95% to budget, <span class="em">building to 30 June</span>.</h2>
+      <div class="chart-wrap">
+        <div class="chart-head">
+          <div style="font:700 15px/1 var(--font-display)">Daily gross profit created &mdash; June 2026</div>
+          <div class="legend"><span><i style="background:var(--gaf-orange)"></i>GP created</span><span><i style="background:var(--g800)"></i>Daily budget</span></div>
+        </div>
+        <div class="chart" id="chart"></div>
+        <div class="xaxis" id="xaxis"></div>
+      </div>
+      <div class="callout">Peak day &mdash; <b>Tue 30 June, $140,810</b> &nbsp;the EOFY deadline surge</div>
+    </div>
+  </section>
+
+  <!-- PRODUCTS -->
+  <section class="section light" data-nav="Products">
+    <div class="inner">
+      <div class="eyebrow">Where the revenue came from</div>
+      <h2 class="big-h">Flagship trainers <span class="em">led</span>.</h2>
+      <p class="lede">The Force USA all-in-one range dominated &mdash; the C20 and C10 gift-with-purchase heroes took two of the top three spots, with the G4 close behind.</p>
+      <div class="prod-list">
+        <div class="prod-row hero">
+        <div class="prod-rank">1</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA C20 All-In-One Trainer <span class="gwp-tag">GWP hero</span></div>
+          <div class="prod-bar"><span style="width:100.0%"></span></div>
+        </div>
+        <div class="prod-rev">$294,372<em>36 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">2</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA G4 All-In-One Trainer </div>
+          <div class="prod-bar"><span style="width:72.5%"></span></div>
+        </div>
+        <div class="prod-rev">$213,366<em>75 units</em></div>
+      </div>
+<div class="prod-row hero">
+        <div class="prod-rank">3</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA C10 All-In-One Trainer <span class="gwp-tag">GWP hero</span></div>
+          <div class="prod-bar"><span style="width:55.0%"></span></div>
+        </div>
+        <div class="prod-rev">$161,987<em>29 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">4</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA FID Bench with Arm and Leg Developer </div>
+          <div class="prod-bar"><span style="width:31.1%"></span></div>
+        </div>
+        <div class="prod-rev">$91,637<em>239 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">5</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA Functional Trainer Rack </div>
+          <div class="prod-bar"><span style="width:30.8%"></span></div>
+        </div>
+        <div class="prod-rev">$90,527<em>25 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">6</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA M10 All-In-One Trainer </div>
+          <div class="prod-bar"><span style="width:25.9%"></span></div>
+        </div>
+        <div class="prod-rev">$76,323<em>19 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">7</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA G3® All-In-One Trainer </div>
+          <div class="prod-bar"><span style="width:23.2%"></span></div>
+        </div>
+        <div class="prod-rev">$68,371<em>32 units</em></div>
+      </div>
+<div class="prod-row">
+        <div class="prod-rank">8</div>
+        <div class="prod-main">
+          <div class="prod-name">Force USA Functional Trainer </div>
+          <div class="prod-bar"><span style="width:21.4%"></span></div>
+        </div>
+        <div class="prod-rev">$63,003<em>32 units</em></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEDIA -->
+  <section class="section dark" data-nav="Media">
+    <div class="inner">
+      <div class="eyebrow">How we drove it</div>
+      <h2 class="big-h">$324.8K of media, <span class="em">10.5x</span> back.</h2>
+      <div class="big-grid" style="margin-bottom:34px">
+        <div class="big"><div class="num">10.5<span class="u">x</span></div><div class="lab">Blended MER</div><div class="foot">Revenue &divide; all-channel spend</div></div>
+        <div class="big accent"><div class="num">32<span class="u">x</span></div><div class="lab">Meta ROAS</div><div class="foot">1,085 purchases attributed</div></div>
+        <div class="big"><div class="num">5.3<span class="u">M</span></div><div class="lab">Meta impressions</div><div class="foot">1.17M people reached</div></div>
+        <div class="big"><div class="num">439</div><div class="lab">Inbound sales calls</div><div class="foot">High-value trainers close offline</div></div>
+      </div>
+      <div style="font:700 14px/1 var(--font-display);color:var(--g400);margin-bottom:4px">Blended ad spend by channel</div>
+      <div class="split-bar">
+        <div style="width:68.4%;background:var(--gaf-orange)">Google $222,088</div>
+        <div style="width:23.3%;background:var(--g600)">Meta $75,780</div>
+        <div style="width:8.3%;background:var(--g800)">Other</div>
+      </div>
+      <div class="split-key"><span><i style="background:var(--gaf-orange)"></i>Google Ads &mdash; 68%</span><span><i style="background:var(--g600)"></i>Meta &mdash; 23%</span><span><i style="background:var(--g800)"></i>AppLovin + other &mdash; 8%</span></div>
+      <div class="note"><strong>Read ROAS as directional, not the verdict.</strong> Platform ROAS (Meta 32x) captures only on-site conversions. A large share of trainer sales close by phone &mdash; 439 inbound calls this month &mdash; so blended MER (10.5x) is the truer efficiency read.</div>
+    </div>
+  </section>
+
+  <!-- CREATIVE -->
+  <section class="section dark" data-nav="Creative">
+    <div class="inner">
+      <div class="eyebrow">The creative that worked</div>
+      <h2 class="big-h">Top-performing <span class="em">ads</span>.</h2>
+      <p class="lede">The winning Meta creative from the EOFY campaign &mdash; ranked by spend, with platform-attributed ROAS. Product-led offers and brand storytelling both delivered.</p>
+      <div class="gallery">
+        <figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/00-power-pole-poster-static.jpg" alt="EOFY 2026 — Power Pole"></div>
+        <figcaption>
+          <div class="cc-name">EOFY 2026 — Power Pole</div>
+          <div class="cc-stats"><span class="cc-roas">34x ROAS</span><span class="cc-sub">$5,418 spend &middot; 65 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/02-nolan-reel.jpg" alt="C20 Launch — Nolan Reel"></div>
+        <figcaption>
+          <div class="cc-name">C20 Launch — Nolan Reel</div>
+          <div class="cc-stats"><span class="cc-roas">51x ROAS</span><span class="cc-sub">$2,671 spend &middot; 74 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/03-low-impact-high-results.jpg" alt="STEPR Brand Campaign"></div>
+        <figcaption>
+          <div class="cc-name">STEPR Brand Campaign</div>
+          <div class="cc-stats"><span class="cc-roas">78x ROAS</span><span class="cc-sub">$2,367 spend &middot; 75 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/05-all-in-one-trainer-offer.jpg" alt="EOFY 2026 — All-In-One Offer"></div>
+        <figcaption>
+          <div class="cc-name">EOFY 2026 — All-In-One Offer</div>
+          <div class="cc-stats"><span class="cc-roas">38x ROAS</span><span class="cc-sub">$1,776 spend &middot; 22 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/12-fits-your-life.jpg" alt="Treadmill — Fits Your Life"></div>
+        <figcaption>
+          <div class="cc-name">Treadmill — Fits Your Life</div>
+          <div class="cc-stats"><span class="cc-roas">44x ROAS</span><span class="cc-sub">$1,454 spend &middot; 31 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/07-g1-gains-on-a-budget.jpg" alt="G1 — Gains On A Budget"></div>
+        <figcaption>
+          <div class="cc-name">G1 — Gains On A Budget</div>
+          <div class="cc-stats"><span class="cc-roas">40x ROAS</span><span class="cc-sub">$1,571 spend &middot; 18 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/06-jono-sale-announcement.jpg" alt="EOFY Sale Announcement — Jono"></div>
+        <figcaption>
+          <div class="cc-name">EOFY Sale Announcement — Jono</div>
+          <div class="cc-stats"><span class="cc-roas">29x ROAS</span><span class="cc-sub">$1,588 spend &middot; 25 purchases</span></div>
+        </figcaption>
+      </figure>
+<figure class="creative-card">
+        <div class="creative-img"><img loading="lazy" src="assets/eofy-creative/04-dynamic-carousel.jpg" alt="Overflow Clearance — Carousel"></div>
+        <figcaption>
+          <div class="cc-name">Overflow Clearance — Carousel</div>
+          <div class="cc-stats"><span class="cc-roas">25x ROAS</span><span class="cc-sub">$2,198 spend &middot; 42 purchases</span></div>
+        </figcaption>
+      </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAKEAWAYS -->
+  <section class="section dark" data-nav="Takeaways">
+    <div class="inner">
+      <div class="eyebrow">What we learned</div>
+      <h2 class="big-h">Takeaways &amp; <span class="em">next</span>.</h2>
+      <div class="take-grid">
+        <div class="take"><div class="tn"><span class="no">1</span>What worked</div><h4>GWP on the flagships</h4><p>The C20 + C10 gift-with-purchase again proved the strongest conversion lever &mdash; concentrating the offer on hero AIOs drove $456,359+ across the two SKUs.</p></div>
+        <div class="take"><div class="tn"><span class="no">2</span>Watch</div><h4>Margin held at 42%</h4><p>Average discount stayed disciplined at 6.7%, protecting gross margin through a heavy-promotion month. GP landed 95% of budget without buying the number.</p></div>
+        <div class="take"><div class="tn"><span class="no">3</span>Next</div><h4>Bank the deadline surge</h4><p>The 30 June spike shows tax-deadline urgency converts. Lock the &ldquo;Hot Deals&rdquo; + GWP playbook and creative winners as the repeatable EOFY template for FY27.</p></div>
+      </div>
+      <div class="foot-note">Sources: GP dashboard (finance), Shopify orders, Meta Ads &amp; Google Ads APIs &middot; GAF (Gym and Fitness), 1&ndash;30 June 2026 &middot; Prepared by Gary for the executive team. Meta ROAS is platform-attributed; blended MER uses all-channel spend and Shopify revenue.</div>
+    </div>
+  </section>
+
+</div>
+<script>
+const chartData = [{"d": "01", "dow": "Mon", "gpc": 36189, "bud": 43493, "sess": 10098}, {"d": "02", "dow": "Tue", "gpc": 44370, "bud": 43493, "sess": 9186}, {"d": "03", "dow": "Wed", "gpc": 32307, "bud": 43493, "sess": 8622}, {"d": "04", "dow": "Thu", "gpc": 43220, "bud": 43493, "sess": 7982}, {"d": "05", "dow": "Fri", "gpc": 38084, "bud": 43493, "sess": 7714}, {"d": "06", "dow": "Sat", "gpc": 25277, "bud": 43493, "sess": 7588}, {"d": "07", "dow": "Sun", "gpc": 24083, "bud": 43493, "sess": 8345}, {"d": "08", "dow": "Mon", "gpc": 53216, "bud": 43493, "sess": 9168}, {"d": "09", "dow": "Tue", "gpc": 46707, "bud": 43493, "sess": 8715}, {"d": "10", "dow": "Wed", "gpc": 43757, "bud": 43493, "sess": 8143}, {"d": "11", "dow": "Thu", "gpc": 42219, "bud": 43493, "sess": 8253}, {"d": "12", "dow": "Fri", "gpc": 29393, "bud": 43493, "sess": 7814}, {"d": "13", "dow": "Sat", "gpc": 35532, "bud": 43493, "sess": 8204}, {"d": "14", "dow": "Sun", "gpc": 24274, "bud": 43493, "sess": 7903}, {"d": "15", "dow": "Mon", "gpc": 40701, "bud": 43493, "sess": 8318}, {"d": "16", "dow": "Tue", "gpc": 47170, "bud": 43493, "sess": 8313}, {"d": "17", "dow": "Wed", "gpc": 46842, "bud": 43493, "sess": 8000}, {"d": "18", "dow": "Thu", "gpc": 23668, "bud": 43493, "sess": 7929}, {"d": "19", "dow": "Fri", "gpc": 38013, "bud": 43493, "sess": 6655}, {"d": "20", "dow": "Sat", "gpc": 13148, "bud": 43493, "sess": 7793}, {"d": "21", "dow": "Sun", "gpc": 12226, "bud": 43493, "sess": 8836}, {"d": "22", "dow": "Mon", "gpc": 46151, "bud": 43493, "sess": 8812}, {"d": "23", "dow": "Tue", "gpc": 34305, "bud": 43493, "sess": 8654}, {"d": "24", "dow": "Wed", "gpc": 74880, "bud": 43493, "sess": 6854}, {"d": "25", "dow": "Thu", "gpc": 44193, "bud": 43493, "sess": 7378}, {"d": "26", "dow": "Fri", "gpc": 29968, "bud": 43493, "sess": 8468}, {"d": "27", "dow": "Sat", "gpc": 18137, "bud": 43493, "sess": 7855}, {"d": "28", "dow": "Sun", "gpc": 22842, "bud": 43493, "sess": 9305}, {"d": "29", "dow": "Mon", "gpc": 88593, "bud": 43493, "sess": 9475}, {"d": "30", "dow": "Tue", "gpc": 140810, "bud": 43493, "sess": 9665}];
+const peakDate = "30";
+(function(){
+  const c=document.getElementById('chart'), x=document.getElementById('xaxis');
+  const maxv=Math.max(...chartData.map(d=>Math.max(d.gpc,d.bud)));
+  chartData.forEach(d=>{
+    const bar=document.createElement('div'); bar.className='bar';
+    const h=(d.gpc/maxv*100);
+    const budh=(d.bud/maxv*100);
+    bar.innerHTML=`<div class="tip">${d.dow} ${d.d} Jun<br>GP $${d.gpc.toLocaleString()}<br>Budget $${d.bud.toLocaleString()}</div><div class="fill" style="height:${h}%"></div><div class="budline" style="bottom:${budh}%"></div>`;
+    if(d.d===peakDate) bar.querySelector('.fill').style.filter='brightness(1.15) saturate(1.2)';
+    c.appendChild(bar);
+    const xs=document.createElement('span'); xs.textContent=(d.d%5===0||d.d==="1")?d.d:''; x.appendChild(xs);
+  });
+  // nav + progress
+  const scroller=document.getElementById('scroller');
+  const secs=[...document.querySelectorAll('.section')];
+  const nav=document.getElementById('dotnav');
+  secs.forEach((sec,i)=>{
+    const a=document.createElement('a'); a.href='#';
+    a.innerHTML=`<span class="lbl">${sec.dataset.nav}</span><span class="dot"></span>`;
+    a.onclick=e=>{e.preventDefault();sec.scrollIntoView({behavior:'smooth'});};
+    nav.appendChild(a);
+  });
+  const links=[...nav.children];
+  scroller.addEventListener('scroll',()=>{
+    const st=scroller.scrollTop, h=scroller.scrollHeight-scroller.clientHeight;
+    document.getElementById('pbar').style.width=(st/h*100)+'%';
+    let idx=0; secs.forEach((sec,i)=>{ if(sec.offsetTop<=st+scroller.clientHeight*0.45) idx=i; });
+    links.forEach((l,i)=>l.classList.toggle('active',i===idx));
+  });
+  links[0].classList.add('active');
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Winnings SAP Order Entry — SOP | The AFS Group</title>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #0e2a44;
+      --off-white: #edeae3;
+      --deep-orange: #f26422;
+      --medium-grey: #424242;
+      --dark-grey: #232323;
+      --white: #ffffff;
+      --line: #d8d3c8;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: 'Lato', Tahoma, sans-serif; background: var(--off-white); color: var(--dark-grey); line-height: 1.6; }
+    h1, h2, h3, h4 { font-family: 'Archivo', Tahoma, sans-serif; color: var(--navy); line-height: 1.2; }
+    a { color: var(--deep-orange); }
+    .wrap { max-width: 960px; margin: 0 auto; padding: 0 28px; }
+
+    /* Header */
+    header { background: var(--navy); color: var(--white); padding: 56px 0 48px; position: relative; overflow: hidden; }
+    header .wrap { position: relative; z-index: 2; }
+    header img { height: 40px; margin-bottom: 32px; }
+    header .eyebrow { font-family: 'Archivo', sans-serif; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; font-size: 12px; color: var(--deep-orange); margin: 0 0 14px; }
+    header h1 { color: var(--white); font-size: 42px; font-weight: 800; margin: 0 0 14px; max-width: 760px; }
+    header p.sub { font-size: 18px; color: #c7d2dd; margin: 0; max-width: 680px; }
+    .tri { position: absolute; right: -60px; top: -40px; width: 0; height: 0; border-left: 220px solid transparent; border-bottom: 320px solid rgba(242,100,34,.12); z-index: 1; }
+
+    /* Meta bar */
+    .meta { background: var(--dark-grey); color: #cfcfcf; font-size: 13px; }
+    .meta .wrap { display: flex; flex-wrap: wrap; gap: 8px 32px; padding: 14px 28px; }
+    .meta strong { color: var(--white); font-family: 'Archivo', sans-serif; font-weight: 600; }
+
+    main { padding: 48px 0 24px; }
+    section { margin-bottom: 44px; }
+    h2 { font-size: 26px; font-weight: 700; margin: 0 0 6px; padding-bottom: 10px; border-bottom: 3px solid var(--deep-orange); display: inline-block; }
+    section > p { margin-top: 14px; }
+    h3 { font-size: 18px; font-weight: 700; margin: 26px 0 8px; }
+
+    /* Step cards */
+    .steps { display: grid; gap: 16px; margin-top: 20px; }
+    .step { background: var(--white); border: 1px solid var(--line); border-left: 5px solid var(--navy); border-radius: 6px; padding: 20px 22px; }
+    .step .n { font-family: 'Archivo', sans-serif; font-weight: 800; color: var(--deep-orange); font-size: 13px; letter-spacing: .1em; text-transform: uppercase; }
+    .step h4 { margin: 4px 0 6px; font-size: 18px; }
+    .step p { margin: 0; color: var(--medium-grey); }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; background: var(--white); border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 15px; }
+    th { background: var(--navy); color: var(--white); text-align: left; font-family: 'Archivo', sans-serif; font-weight: 600; padding: 12px 16px; font-size: 14px; }
+    td { padding: 11px 16px; border-top: 1px solid var(--line); vertical-align: top; }
+    tr:nth-child(even) td { background: #faf9f6; }
+    code { background: #e7e2d8; padding: 1px 6px; border-radius: 4px; font-size: 13px; color: var(--navy); }
+
+    /* Callout */
+    .alert { background: #fff3ec; border: 1px solid var(--deep-orange); border-left: 6px solid var(--deep-orange); border-radius: 6px; padding: 20px 22px; margin-top: 20px; }
+    .alert h3 { margin: 0 0 8px; color: var(--deep-orange); display: flex; align-items: center; gap: 10px; }
+    .alert ol { margin: 10px 0 0; padding-left: 20px; }
+    .alert li { margin-bottom: 6px; }
+    .note { background: var(--navy); color: #e8eef4; border-radius: 6px; padding: 20px 22px; margin-top: 20px; }
+    .note h3 { color: var(--white); margin: 0 0 8px; }
+    .note p { margin: 0; color: #c7d2dd; }
+
+    ul.clean { margin: 14px 0 0; padding-left: 20px; }
+    ul.clean li { margin-bottom: 7px; }
+
+    footer { background: var(--navy); color: #9fb0bf; font-size: 13px; padding: 28px 0; margin-top: 40px; }
+    footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; }
+    footer strong { color: var(--white); font-family: 'Archivo', sans-serif; }
+    .pill { display: inline-block; background: var(--deep-orange); color: var(--white); font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="tri"></div>
+    <div class="wrap">
+      <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
+      <p class="eyebrow">Standard Operating Procedure</p>
+      <h1>Winnings SAP Order Entry</h1>
+      <p class="sub">How Revel sales orders flow from NetSuite into the Winnings 3PL SAP system for dispatch — the process, the rules, and the safeguards.</p>
+    </div>
+  </header>
+
+  <div class="meta">
+    <div class="wrap">
+      <span><strong>Owner:</strong> AFS Group</span>
+      <span><strong>Operated by:</strong> Gary (AI Assistant) + CSR / Logistics</span>
+      <span><strong>Systems:</strong> NetSuite → Winnings SAP (VA01)</span>
+      <span><strong>Last updated:</strong> 17 June 2026</span>
+      <span><span class="pill">Live process</span></span>
+    </div>
+  </div>
+
+  <main class="wrap">
+
+    <section>
+      <h2>Purpose</h2>
+      <p>Revel orders are created in <strong>NetSuite</strong> (the source of truth) and must be re-keyed into the <strong>Winnings 3PL SAP system</strong> as Standard Orders so the warehouse can pick, pack and dispatch. This SOP documents how that transfer is done accurately and safely, and mirrors the automation skill Gary runs. It is a transparent reflection of the process so the team can see exactly what is happening at each step.</p>
+    </section>
+
+    <section>
+      <h2>How it works</h2>
+      <p>The work is split so that the thinking is automated and the production system write stays supervised.</p>
+      <div class="steps">
+        <div class="step">
+          <span class="n">Step 1 — Request</span>
+          <h4>An order list is raised in Asana</h4>
+          <p>The CSR team tags Gary in an Asana card with the NetSuite sales orders that need entering into Winnings. Gary can also compile the list directly from NetSuite.</p>
+        </div>
+        <div class="step">
+          <span class="n">Step 2 — Prepare (automated)</span>
+          <h4>Gary reads and validates each order</h4>
+          <p>For every order, Gary pulls the details from NetSuite, pre-resolves the routine decisions, checks for duplicates, and flags any exceptions back on the card. No SAP access is needed for this stage.</p>
+        </div>
+        <div class="step">
+          <span class="n">Step 3 — Execute (supervised)</span>
+          <h4>Orders are keyed into SAP, then checked</h4>
+          <p>In a logged-in SAP session, Gary keys the batch one order at a time, pausing only on genuine exceptions. Every order is built and left for a person to review and save. Gary never saves to the production system on its own.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>What gets mapped</h2>
+      <p>Each NetSuite order becomes a SAP Standard Order (type ZWSO). The customer is never the SAP account — they are entered as a one-time delivery address.</p>
+      <table>
+        <thead><tr><th>SAP field</th><th>Where it comes from</th></tr></thead>
+        <tbody>
+          <tr><td>Sold-To Party</td><td>Fixed Revel account (pre-filled) — not the customer</td></tr>
+          <tr><td>Ship-To Party</td><td>One-time delivery address built from the NetSuite shipping address</td></tr>
+          <tr><td>Customer Reference</td><td>The NetSuite sales order number — the link between the two systems</td></tr>
+          <tr><td>Requested Delivery Date</td><td>The order's expected delivery date (EDC)</td></tr>
+          <tr><td>Line items</td><td>Physical goods only (SKU + quantity); freight, deposit and balance lines are excluded</td></tr>
+          <tr><td>Weight / Volume / Plant / Pricing</td><td>Derived automatically by SAP — used as a cross-check, never overridden</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Decision rules</h2>
+      <table>
+        <thead><tr><th>Question</th><th>Rule</th></tr></thead>
+        <tbody>
+          <tr><td>Delivery date</td><td>Default to the <strong>next available delivery date</strong>. If the NetSuite memo notes a <strong>customer-requested date</strong>, use that. If that date <strong>isn't available, flag it on the Asana card</strong> rather than guessing. The date is set before items are added.</td></tr>
+          <tr><td>Is installation required?</td><td><strong>Yes</strong> only if the order has a <code>Winnings Install</code> line item. Otherwise <strong>No</strong>.</td></tr>
+          <tr><td>Australian phone number</td><td>Use as entered; normalise to local format if it carries the AU country code.</td></tr>
+          <tr><td>Which email?</td><td>Use the main order email on the sales order.</td></tr>
+          <tr><td>Address format</td><td>Split the street line into house number and street name (separate SAP fields).</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Critical safeguard — incorrect contact numbers</h2>
+      <div class="alert">
+        <h3>▲ Foreign contact number (e.g. Hong Kong +852) — do not complete the order</h3>
+        <p>A foreign phone number on an Australian Revel delivery is treated as an <strong>incorrect contact number</strong>. The order must not be keyed or saved into SAP with that number.</p>
+        <ol>
+          <li>Stop — do not complete the SAP entry.</li>
+          <li>Flag it to the <strong>CSR team on the Asana card</strong>, noting that the contact number on the order is incorrect.</li>
+          <li>CSR sources the correct Australian contact number.</li>
+          <li>The order is only finished once a valid number is supplied. It is tracked as "blocked — awaiting contact number" so it is never lost.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2>Built-in checks</h2>
+      <ul class="clean">
+        <li><strong>Ready to Send only:</strong> only orders flagged "Ready to Send" in NetSuite are in scope; orders not yet marked ready are left out of the work-list.</li>
+        <li><strong>Ship Complete respected:</strong> orders flagged ship-complete are held out of the work-list until every line is available, so they are only entered when the whole order can ship together.</li>
+        <li><strong>Duplicate guard:</strong> SAP blocks a sales order whose reference has already been entered, preventing double-keying. If flagged, the order is already in SAP and is skipped.</li>
+        <li><strong>System prompts:</strong> expected SAP messages (oversized items, a known time-zone notice, installation question) are handled to a defined rule rather than guessed.</li>
+        <li><strong>Cross-check:</strong> the weight, volume and warehouse SAP derives are compared back to NetSuite before the order is handed over for review.</li>
+        <li><strong>No silent saves:</strong> orders are built and left at the save step for a person to confirm. Writing to the production system always has a human in the loop.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>After an order is saved</h2>
+      <p>Once an order is confirmed and saved, SAP issues an order number. That number is recorded against the original NetSuite order — this is both the record of completion and the marker that prevents the order being entered twice.</p>
+    </section>
+
+    <div class="note">
+      <h3>Kept in sync</h3>
+      <p>This page is the human-readable companion to Gary's working skill file. Both are updated together whenever the process changes, so what is published here always reflects how orders are actually being entered.</p>
+    </div>
+
+  </main>
+
+  <footer>
+    <div class="wrap">
+      <span>The AFS Group — Operations</span>
+      <span>Maintained by <strong>Gary</strong> · Reflects the live Winnings SAP order-entry process · Last updated 17 June 2026</span>
+    </div>
+  </footer>
+</body>
+</html>

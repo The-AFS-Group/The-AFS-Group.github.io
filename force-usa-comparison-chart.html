@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Force USA All-In-One Comparison Chart</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sofia+Sans:ital,wght@0,400;0,600;0,700;0,800;0,900;1,900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --force-blue: #185787;
+      --force-black: #081C28;
+      --light-blue: #008BCE;
+      --green: #00AC75;
+      --white: #FFFFFF;
+      --n-50: #F6F8FB;
+      --n-100: #E6EAF1;
+      --n-200: #CDD4DD;
+      --n-300: #A5AEB7;
+      --n-400: #7A8690;
+      --n-500: #5A6770;
+      --n-600: #425660;
+      --n-700: #2B3A44;
+      --n-800: #142430;
+      --n-900: #081C28;
+      --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      --font-display: 'Sofia Sans', 'Inter', ui-sans-serif, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--white);
+      color: var(--force-black);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 32px;
+      page-break-after: always;
+    }
+
+    .page:last-child { page-break-after: auto; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 3px solid var(--force-blue);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .logo-img {
+      height: 32px;
+      width: auto;
+    }
+
+    .range-badge {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--force-blue);
+      background: rgba(24, 87, 135, 0.08);
+      padding: 6px 16px;
+      border-radius: 999px;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 28px;
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+      color: var(--force-black);
+    }
+
+    .comparison-wrapper {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid var(--n-200);
+      box-shadow: 0 2px 12px rgba(8, 28, 40, 0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 900px;
+    }
+
+    thead th {
+      background: var(--white);
+      color: var(--force-black);
+      padding: 0;
+      vertical-align: bottom;
+      border-bottom: 2px solid var(--n-200);
+    }
+
+    thead th:first-child {
+      border-radius: 11px 0 0 0;
+    }
+
+    thead th:last-child {
+      border-radius: 0 11px 0 0;
+    }
+
+    .product-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 8px 14px;
+      gap: 10px;
+      position: relative;
+    }
+
+    .product-image {
+      width: 100px;
+      height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+
+    .product-image img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .product-image-placeholder {
+      width: 100px;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: var(--n-100);
+      border-radius: 6px;
+      gap: 6px;
+    }
+
+    .product-image-placeholder .placeholder-icon {
+      width: 36px;
+      height: 36px;
+      opacity: 0.5;
+    }
+
+    .product-image-placeholder .placeholder-text {
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--force-blue);
+    }
+
+    .handle-badge {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      background: var(--force-blue);
+      color: var(--white);
+      padding: 8px 24px;
+      border-radius: 999px;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .bestseller {
+      position: relative;
+    }
+
+    .bestseller::after {
+      content: 'BEST SELLER';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-family: var(--font-sans);
+      font-weight: 800;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: #C9A84C;
+      color: var(--white);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .new-badge {
+      position: relative;
+    }
+
+    .new-badge::after {
+      content: 'COMING SOON';
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-family: var(--font-sans);
+      font-weight: 800;
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: var(--force-blue);
+      color: var(--white);
+      padding: 3px 8px;
+      border-radius: 999px;
+    }
+
+    .feature-header {
+      padding: 20px 16px 16px;
+      vertical-align: bottom;
+      text-align: left;
+    }
+
+    .feature-header .section-label {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--n-400);
+      text-align: left;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--n-100);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:nth-child(even) {
+      background: var(--n-50);
+    }
+
+    tbody tr:hover {
+      background: rgba(24, 87, 135, 0.03);
+    }
+
+    td {
+      padding: 14px 12px;
+      text-align: center;
+      font-weight: 500;
+      color: var(--n-700);
+      font-size: 13px;
+      vertical-align: middle;
+    }
+
+    td:first-child {
+      text-align: left;
+      padding-left: 20px;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--force-blue);
+      min-width: 160px;
+      white-space: nowrap;
+    }
+
+    td:first-child .sub {
+      display: block;
+      font-weight: 500;
+      font-size: 10px;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      color: var(--n-400);
+      margin-top: 2px;
+    }
+
+    .sku-cell {
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--n-600);
+    }
+
+    .dim-cell {
+      font-size: 11px;
+      color: var(--n-500);
+      font-weight: 500;
+    }
+
+    .check {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--force-blue);
+      color: var(--white);
+    }
+
+    .check svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .empty-cell {
+      color: var(--n-200);
+      font-size: 18px;
+    }
+
+    .pill {
+      display: inline-block;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 5px 12px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .pill-plate {
+      background: rgba(24, 87, 135, 0.08);
+      color: var(--force-blue);
+    }
+
+    .pill-stack {
+      background: var(--force-blue);
+      color: var(--white);
+    }
+
+    .weight-value {
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--force-black);
+    }
+
+    .attachment-count {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 20px;
+      color: var(--force-black);
+    }
+
+    .metric {
+      display: block;
+      font-size: 10px;
+      color: var(--n-400);
+      font-weight: 400;
+      margin-top: 2px;
+    }
+
+    .upright-badge {
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--force-black);
+    }
+
+    .upright-3x3 {
+      color: var(--force-blue);
+      font-weight: 800;
+    }
+
+    .ratio-value {
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--n-700);
+    }
+
+    .footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid var(--n-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: var(--n-400);
+      font-weight: 500;
+    }
+
+    .commercial-row td:first-child {
+      color: var(--green);
+    }
+
+    .tbd-cell {
+      font-size: 11px;
+      color: var(--n-300);
+      font-style: italic;
+      font-weight: 500;
+    }
+
+    @page {
+      size: landscape;
+      margin: 20mm;
+    }
+
+    @media print {
+      body { font-size: 10px; }
+      .page { padding: 24px 16px; max-width: 100%; }
+      .comparison-wrapper { box-shadow: none; border: 1px solid #ddd; overflow: visible; }
+      table { font-size: 10px; min-width: 0; width: 100%; }
+      td { padding: 8px 6px; font-size: 11px; }
+      td:first-child { min-width: 120px; font-size: 9px; }
+      .handle-badge { font-size: 13px; padding: 5px 14px; }
+      .product-image { height: 80px; width: 72px; }
+      .product-image-placeholder { height: 80px; width: 72px; }
+      .sku-cell { font-size: 10px; }
+      .dim-cell { font-size: 9px; }
+      .pill { font-size: 9px; padding: 4px 8px; }
+      .attachment-count { font-size: 16px; }
+      .metric { font-size: 8px; }
+      .header { margin-bottom: 24px; padding-bottom: 16px; }
+      .footer { margin-top: 16px; }
+    }
+
+    @media (max-width: 768px) {
+      .page { padding: 24px 16px; }
+      .header { flex-direction: column; gap: 16px; align-items: flex-start; }
+      .logo-img { height: 26px; }
+      td:first-child { min-width: 120px; padding-left: 12px; font-size: 10px; }
+      td { padding: 10px 8px; font-size: 12px; }
+    }
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-sans);
+      font-weight: 700;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--white);
+      background: var(--force-blue);
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .download-btn:hover {
+      background: var(--force-black);
+    }
+
+    .download-btn svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media print {
+      .download-btn { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    async function downloadPage(pageEl, filename) {
+      const btn = pageEl.querySelector('.download-btn');
+      btn.style.display = 'none';
+
+      const canvas = await html2canvas(pageEl, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: '#FFFFFF',
+        logging: false
+      });
+
+      btn.style.display = '';
+
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+
+  <!-- PAGE 1: CURRENT RANGE -->
+  <div class="page">
+    <div class="header">
+      <div class="header-left">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIyIiB2aWV3Qm94PSIwIDAgMTAwIDIyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxnIGlkPSJsb2dvIiBjbGlwLXBhdGg9InVybCgjY2xpcDBfMTBfMTMpIj4KICA8cGF0aCBpZD0iVmVjdG9yIiBkPSJNNzMuNzIgMjAuNjJIODguNzdWMTcuMjZINzkuMzlWMTUuNDFIODguNzdWMTIuMDRINzkuMzlWMTAuMTlIODguNzdWNi44MjAwMUg3My43MlYyMC42MloiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl8yIiBkPSJNMjQuNTUwMSA2LjUxMDAxQzIxLjE4MDEgNi41MTAwMSAxNC45MzAxIDYuNzQwMDEgMTQuOTMwMSAxMy44NEMxNC45MzAxIDIwLjk0IDIxLjE4MDEgMjEuMTcgMjQuNTUwMSAyMS4xN0MyNy45MjAxIDIxLjE3IDM0LjE3MDEgMjAuOTQgMzQuMTcwMSAxMy44NEMzNC4xNzAxIDYuNzQwMDEgMjcuOTIwMSA2LjUxMDAxIDI0LjU1MDEgNi41MTAwMVpNMjQuNTUwMSAxNy43MUMyMi4yODAxIDE3LjcxIDIwLjg1MDEgMTYuNjIgMjAuODUwMSAxMy44M0MyMC44NTAxIDExLjA0IDIyLjI5MDEgOS45NTAwMSAyNC41NTAxIDkuOTUwMDFDMjYuODEwMSA5Ljk1MDAxIDI4LjI1MDEgMTEuMDQgMjguMjUwMSAxMy44M0MyOC4yNTAxIDE2LjYyIDI2LjgyMDEgMTcuNzEgMjQuNTUwMSAxNy43MVoiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl8zIiBkPSJNNTEuOTggMTYuMDJDNTEuODggMTQuODIgNTEuMjEgMTQuMTMgNTAuMzkgMTMuODlWMTMuODVDNTIuMDEgMTMuMzkgNTIuNTYgMTEuOTkgNTIuNTYgMTAuNjlDNTIuNTYgOS4xNyA1MS42OSA3Ljg0IDUwLjY1IDcuMzRDNDkuODggNi45OCA0OC45MiA2Ljg0IDQ3LjMzIDYuODRIMzUuNjNWMjAuNjhINDEuMTlWMTYuNDFINDUuMTNDNDYuMTYgMTYuNDEgNDYuNTEgMTcuMDQgNDYuNTcgMTguMDVDNDYuNjcgMTkuNjYgNDYuNjcgMjAuMjYgNDYuODcgMjAuNjdINTIuOTRDNTIuNTUgMjAuMjEgNTIuMzEgMTkuNjQgNTIuMjUgMTkuMDRMNTEuOTkgMTYuMDJINTEuOThaTTQ1LjA5IDEyLjkySDQxLjE1VjEwLjMySDQ1LjAxQzQ1Ljk0IDEwLjMyIDQ2LjYzIDEwLjU3IDQ2LjYzIDExLjYyQzQ2LjYzIDEyLjQ5IDQ2LjE4IDEyLjkgNDUuMDkgMTIuOTEiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl80IiBkPSJNOTYuOTggMTQuMjVIOTAuMzRWMTcuMDZIOTcuMjNDOTcuNjggMTcuMDYgOTcuOTggMTcuMDkgOTcuOTggMTcuNDRDOTcuOTggMTcuNzkgOTcuNjUgMTcuODQgOTcuMjMgMTcuODRIOTAuMzRWMjAuNjNIOTYuOTVDOTkuMjEgMjAuNjMgMTAwIDE5LjQ4IDEwMCAxNy41M0M5OS45OSAxNS43MSA5OS4zNCAxNC4yNiA5Ni45OCAxNC4yNiIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzUiIGQ9Ik05Mi45NSAxMy40Qzk0LjI5IDEzLjQgOTUuMDcgMTIuOCA5Ni4wNCAxMS4xN0M5Ni42MyAxMC4xOCA5Ni45MiA5Ljk0IDk3LjQ1IDkuOTRDOTcuODQgOS45NCA5OC4wOSAxMC4wMyA5OC4wOSAxMC4zNEM5OC4wOSAxMC42NSA5Ny44MSAxMC43OCA5Ni45NiAxMC43OFYxMy41Qzk4Ljg5IDEzLjQ3IDEwMCAxMi43MSAxMDAgMTAuM0MxMDAgOC4wNSA5OC43OCA3LjE5IDk3LjA2IDcuMTlDOTUuNTMgNy4xOSA5NC44IDcuODMgOTMuNzQgOS42N0M5My4yMSAxMC41OSA5Mi45NSAxMC42NiA5Mi41NyAxMC42NkM5Mi4xOSAxMC42NiA5Mi4wNCAxMC41NiA5Mi4wNCAxMC4zMkM5Mi4wNCAxMC4wMSA5Mi4zIDkuOTMgOTMuMTQgOS45M1Y3LjMxQzkxLjMzIDcuMzEgOTAuMTMgOC4xMyA5MC4xMyAxMC4zM0M5MC4xMyAxMi40NCA5MS4yNSAxMy4zOSA5Mi45NSAxMy4zOSIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzYiIGQ9Ik02Mi45Mjk5IDE3LjcxQzYwLjcxOTkgMTcuNzEgNTkuMzI5OSAxNi42MiA1OS4zMjk5IDEzLjgzQzU5LjMyOTkgMTEuMDQgNjAuNzM5OSA5Ljk1IDYyLjkyOTkgOS45NUM2NC41Njk5IDkuOTUgNjUuNzQ5OSAxMC41OCA2Ni4yNDk5IDEyLjAzSDcyLjExOTlDNzEuMTY5OSA2LjY5IDY1Ljg5OTkgNi41IDYyLjkxOTkgNi41QzU5LjY0OTkgNi41IDUzLjU2OTkgNi43MyA1My41Njk5IDEzLjgzQzUzLjU2OTkgMjAuOTMgNTkuNjM5OSAyMS4xNiA2Mi45MTk5IDIxLjE2QzY1LjkyOTkgMjEuMTYgNzEuMjk5OSAyMC45NiA3Mi4xNDk5IDE1LjQxSDY2LjMyOTlDNjUuODY5OSAxNy4wMyA2NC42Mzk5IDE3LjcxIDYyLjkxOTkgMTcuNzEiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl83IiBkPSJNMCAyMC42N0g2Ljc5VjEzLjI5SDEzLjQ2QzEzLjQ3IDExLjIxIDE0LjExIDkuNzEgMTQuOTMgOC42Mkg2Ljc3VjUuMjdIODguNzdWMEgwVjIwLjY3WiIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzgiIGQ9Ik05OS43OTk5IDQuNkw5OC4xMjk5IDQuMzJWMi42TDk5Ljc5OTkgMi4zMlYwLjA4OTk5NjNMOTAuMzE5OSAxLjU4VjUuMzNMOTkuNzk5OSA2Ljg1VjQuNlpNOTUuODY5OSAzLjk2TDkyLjg2OTkgMy40N0w5NS44Njk5IDIuOThWMy45NloiIGZpbGw9ImJsYWNrIi8+CiAgPC9nPgogIDxkZWZzPgogIDxjbGlwUGF0aCBpZD0iY2xpcDBfMTBfMTMiPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjEuMTYiIGZpbGw9ImJsYWNrIi8+CiAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPC9zdmc+CiAg" alt="Force USA" class="logo-img">
+        <div class="range-badge">All-In-One Comparison Chart</div>
+      </div>
+      <div class="section-title">Current Range</div>
+    </div>
+
+    <div class="comparison-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="feature-header">
+              <div class="section-label">Specifications</div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0018_2.jpg?v=1759448420" alt="G1 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G1</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/ForceUSAG3_0001_2.jpg?v=1759448410" alt="G3 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G3</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0004_3.jpg?v=1759448399" alt="G12 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G12</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/3_f19c680a-6458-4aeb-84f5-f7bcb2f64d29.jpg?v=1759448368" alt="G15 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G15</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0017_4_5d87452f-55d7-42ba-9b15-f8069828d19e.jpg?v=1759448433" alt="G20 Pro All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G20</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header bestseller">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/7_2840a0f7-cef3-4331-a5f6-72392c5e8369.png?v=1759448385" alt="C10 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">C10</div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SKU</td>
+            <td class="sku-cell">F-G1-V2</td>
+            <td class="sku-cell">F-G3-V2</td>
+            <td class="sku-cell">F-G12-V2</td>
+            <td class="sku-cell">F-G15-BASE</td>
+            <td class="sku-cell">F-G20-V2-BASE</td>
+            <td class="sku-cell">F-C10</td>
+          </tr>
+          <tr>
+            <td>Dimensions<span class="sub">H x W x D (inches)</span></td>
+            <td class="dim-cell">87.01 &times; 55.98 &times; 60.51<span class="metric">(221 &times; 142 &times; 154 cm)</span></td>
+            <td class="dim-cell">87.01 &times; 77.99 &times; 60.51<span class="metric">(221 &times; 198 &times; 154 cm)</span></td>
+            <td class="dim-cell">87.99 &times; 75.98 &times; 55.98<span class="metric">(224 &times; 193 &times; 142 cm)</span></td>
+            <td class="dim-cell">87.48 &times; 79.49 &times; 52.99<span class="metric">(222 &times; 202 &times; 135 cm)</span></td>
+            <td class="dim-cell">90.98 &times; 79.02 &times; 67.01<span class="metric">(231 &times; 201 &times; 170 cm)</span></td>
+            <td class="dim-cell">87.01 &times; 76.50 &times; 51.50<span class="metric">(221 &times; 194 &times; 131 cm)</span></td>
+          </tr>
+          <tr class="commercial-row">
+            <td>Commercial</td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+          </tr>
+          <tr>
+            <td>Upright Size</td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+          </tr>
+          <tr>
+            <td>Functional Trainer<span class="sub">Resistance Type</span></td>
+            <td><span class="pill pill-plate">Plate Weight</span></td>
+            <td><span class="pill pill-plate">Plate Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+          </tr>
+          <tr>
+            <td>Weight Stack<span class="sub">(lbs)</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td class="weight-value">2 x 220<span class="metric">(2 x 100 kg)</span></td>
+            <td class="weight-value">2 x 289<span class="metric">(2 x 131 kg)</span></td>
+            <td class="weight-value">2 x 289<span class="metric">(2 x 131 kg)</span></td>
+            <td class="weight-value">2 x 220<span class="metric">(2 x 100 kg)</span></td>
+          </tr>
+          <tr>
+            <td>Cable Pulley Ratio</td>
+            <td class="ratio-value">2:1</td>
+            <td class="ratio-value">2:1</td>
+            <td class="ratio-value">1:1</td>
+            <td class="ratio-value">2:1 &amp; 4:1</td>
+            <td class="ratio-value">2:1</td>
+            <td class="ratio-value">2:1</td>
+          </tr>
+          <tr>
+            <td>Smith Machine</td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Counter Balanced<span class="sub">Smith Machine</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+          </tr>
+          <tr>
+            <td>Included Attachments</td>
+            <td class="attachment-count">11</td>
+            <td class="attachment-count">12</td>
+            <td class="attachment-count">18</td>
+            <td class="attachment-count">17</td>
+            <td class="attachment-count">25</td>
+            <td class="attachment-count">15</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <div class="footer-note">Specifications subject to change. Visit forceusa.com for the latest information.</div>
+      <button class="download-btn" onclick="downloadPage(this.closest('.page'), 'force-usa-current-range.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PNG
+      </button>
+    </div>
+  </div>
+
+  <!-- PAGE 2: NEW RANGE -->
+  <div class="page">
+    <div class="header">
+      <div class="header-left">
+        <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjIyIiB2aWV3Qm94PSIwIDAgMTAwIDIyIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxnIGlkPSJsb2dvIiBjbGlwLXBhdGg9InVybCgjY2xpcDBfMTBfMTMpIj4KICA8cGF0aCBpZD0iVmVjdG9yIiBkPSJNNzMuNzIgMjAuNjJIODguNzdWMTcuMjZINzkuMzlWMTUuNDFIODguNzdWMTIuMDRINzkuMzlWMTAuMTlIODguNzdWNi44MjAwMUg3My43MlYyMC42MloiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl8yIiBkPSJNMjQuNTUwMSA2LjUxMDAxQzIxLjE4MDEgNi41MTAwMSAxNC45MzAxIDYuNzQwMDEgMTQuOTMwMSAxMy44NEMxNC45MzAxIDIwLjk0IDIxLjE4MDEgMjEuMTcgMjQuNTUwMSAyMS4xN0MyNy45MjAxIDIxLjE3IDM0LjE3MDEgMjAuOTQgMzQuMTcwMSAxMy44NEMzNC4xNzAxIDYuNzQwMDEgMjcuOTIwMSA2LjUxMDAxIDI0LjU1MDEgNi41MTAwMVpNMjQuNTUwMSAxNy43MUMyMi4yODAxIDE3LjcxIDIwLjg1MDEgMTYuNjIgMjAuODUwMSAxMy44M0MyMC44NTAxIDExLjA0IDIyLjI5MDEgOS45NTAwMSAyNC41NTAxIDkuOTUwMDFDMjYuODEwMSA5Ljk1MDAxIDI4LjI1MDEgMTEuMDQgMjguMjUwMSAxMy44M0MyOC4yNTAxIDE2LjYyIDI2LjgyMDEgMTcuNzEgMjQuNTUwMSAxNy43MVoiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl8zIiBkPSJNNTEuOTggMTYuMDJDNTEuODggMTQuODIgNTEuMjEgMTQuMTMgNTAuMzkgMTMuODlWMTMuODVDNTIuMDEgMTMuMzkgNTIuNTYgMTEuOTkgNTIuNTYgMTAuNjlDNTIuNTYgOS4xNyA1MS42OSA3Ljg0IDUwLjY1IDcuMzRDNDkuODggNi45OCA0OC45MiA2Ljg0IDQ3LjMzIDYuODRIMzUuNjNWMjAuNjhINDEuMTlWMTYuNDFINDUuMTNDNDYuMTYgMTYuNDEgNDYuNTEgMTcuMDQgNDYuNTcgMTguMDVDNDYuNjcgMTkuNjYgNDYuNjcgMjAuMjYgNDYuODcgMjAuNjdINTIuOTRDNTIuNTUgMjAuMjEgNTIuMzEgMTkuNjQgNTIuMjUgMTkuMDRMNTEuOTkgMTYuMDJINTEuOThaTTQ1LjA5IDEyLjkySDQxLjE1VjEwLjMySDQ1LjAxQzQ1Ljk0IDEwLjMyIDQ2LjYzIDEwLjU3IDQ2LjYzIDExLjYyQzQ2LjYzIDEyLjQ5IDQ2LjE4IDEyLjkgNDUuMDkgMTIuOTEiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl80IiBkPSJNOTYuOTggMTQuMjVIOTAuMzRWMTcuMDZIOTcuMjNDOTcuNjggMTcuMDYgOTcuOTggMTcuMDkgOTcuOTggMTcuNDRDOTcuOTggMTcuNzkgOTcuNjUgMTcuODQgOTcuMjMgMTcuODRIOTAuMzRWMjAuNjNIOTYuOTVDOTkuMjEgMjAuNjMgMTAwIDE5LjQ4IDEwMCAxNy41M0M5OS45OSAxNS43MSA5OS4zNCAxNC4yNiA5Ni45OCAxNC4yNiIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzUiIGQ9Ik05Mi45NSAxMy40Qzk0LjI5IDEzLjQgOTUuMDcgMTIuOCA5Ni4wNCAxMS4xN0M5Ni42MyAxMC4xOCA5Ni45MiA5Ljk0IDk3LjQ1IDkuOTRDOTcuODQgOS45NCA5OC4wOSAxMC4wMyA5OC4wOSAxMC4zNEM5OC4wOSAxMC42NSA5Ny44MSAxMC43OCA5Ni45NiAxMC43OFYxMy41Qzk4Ljg5IDEzLjQ3IDEwMCAxMi43MSAxMDAgMTAuM0MxMDAgOC4wNSA5OC43OCA3LjE5IDk3LjA2IDcuMTlDOTUuNTMgNy4xOSA5NC44IDcuODMgOTMuNzQgOS42N0M5My4yMSAxMC41OSA5Mi45NSAxMC42NiA5Mi41NyAxMC42NkM5Mi4xOSAxMC42NiA5Mi4wNCAxMC41NiA5Mi4wNCAxMC4zMkM5Mi4wNCAxMC4wMSA5Mi4zIDkuOTMgOTMuMTQgOS45M1Y3LjMxQzkxLjMzIDcuMzEgOTAuMTMgOC4xMyA5MC4xMyAxMC4zM0M5MC4xMyAxMi40NCA5MS4yNSAxMy4zOSA5Mi45NSAxMy4zOSIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzYiIGQ9Ik02Mi45Mjk5IDE3LjcxQzYwLjcxOTkgMTcuNzEgNTkuMzI5OSAxNi42MiA1OS4zMjk5IDEzLjgzQzU5LjMyOTkgMTEuMDQgNjAuNzM5OSA5Ljk1IDYyLjkyOTkgOS45NUM2NC41Njk5IDkuOTUgNjUuNzQ5OSAxMC41OCA2Ni4yNDk5IDEyLjAzSDcyLjExOTlDNzEuMTY5OSA2LjY5IDY1Ljg5OTkgNi41IDYyLjkxOTkgNi41QzU5LjY0OTkgNi41IDUzLjU2OTkgNi43MyA1My41Njk5IDEzLjgzQzUzLjU2OTkgMjAuOTMgNTkuNjM5OSAyMS4xNiA2Mi45MTk5IDIxLjE2QzY1LjkyOTkgMjEuMTYgNzEuMjk5OSAyMC45NiA3Mi4xNDk5IDE1LjQxSDY2LjMyOTlDNjUuODY5OSAxNy4wMyA2NC42Mzk5IDE3LjcxIDYyLjkxOTkgMTcuNzEiIGZpbGw9ImJsYWNrIi8+CiAgPHBhdGggaWQ9IlZlY3Rvcl83IiBkPSJNMCAyMC42N0g2Ljc5VjEzLjI5SDEzLjQ2QzEzLjQ3IDExLjIxIDE0LjExIDkuNzEgMTQuOTMgOC42Mkg2Ljc3VjUuMjdIODguNzdWMEgwVjIwLjY3WiIgZmlsbD0iYmxhY2siLz4KICA8cGF0aCBpZD0iVmVjdG9yXzgiIGQ9Ik05OS43OTk5IDQuNkw5OC4xMjk5IDQuMzJWMi42TDk5Ljc5OTkgMi4zMlYwLjA4OTk5NjNMOTAuMzE5OSAxLjU4VjUuMzNMOTkuNzk5OSA2Ljg1VjQuNlpNOTUuODY5OSAzLjk2TDkyLjg2OTkgMy40N0w5NS44Njk5IDIuOThWMy45NloiIGZpbGw9ImJsYWNrIi8+CiAgPC9nPgogIDxkZWZzPgogIDxjbGlwUGF0aCBpZD0iY2xpcDBfMTBfMTMiPgogIDxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMjEuMTYiIGZpbGw9ImJsYWNrIi8+CiAgPC9jbGlwUGF0aD4KICA8L2RlZnM+CiAgPC9zdmc+CiAg" alt="Force USA" class="logo-img">
+        <div class="range-badge">All-In-One Comparison Chart</div>
+      </div>
+      <div class="section-title">New Range</div>
+    </div>
+
+    <div class="comparison-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th class="feature-header">
+              <div class="section-label">Specifications</div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/02_f4d03508-f759-4ffa-9d00-fed28592c2c4.jpg?v=1759448346" alt="C20 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">C20</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1963/1339/files/F-TT-02.jpg?v=1758058409" alt="Tandem Tower">
+                </div>
+                <div class="handle-badge">TT</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1963/1339/files/F-FTR-01.jpg?v=1761068008" alt="Functional Trainer Rack">
+                </div>
+                <div class="handle-badge">FTR</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_F-M10-200-IG_b334f170-f5a3-459e-ad04-c4a6baaa7c51.jpg?v=1780376952" alt="M10 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">M10</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header">
+                <div class="product-image">
+                  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/745EF284-A945-4AC9-BB7C-D20495316082.jpg?v=1759448333" alt="G4 All-In-One Trainer">
+                </div>
+                <div class="handle-badge">G4</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header new-badge">
+                <div class="product-image-placeholder">
+                  <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="#185787" stroke-width="1.5"/>
+                    <path d="M12 8v8M8 12h8" stroke="#185787" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="placeholder-text">Coming Soon</span>
+                </div>
+                <div class="handle-badge">M20</div>
+              </div>
+            </th>
+            <th>
+              <div class="product-header new-badge">
+                <div class="product-image-placeholder">
+                  <svg class="placeholder-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="3" y="3" width="18" height="18" rx="2" stroke="#185787" stroke-width="1.5"/>
+                    <path d="M12 8v8M8 12h8" stroke="#185787" stroke-width="1.5" stroke-linecap="round"/>
+                  </svg>
+                  <span class="placeholder-text">Coming Soon</span>
+                </div>
+                <div class="handle-badge">C10-V2</div>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>SKU</td>
+            <td class="sku-cell">F-C20</td>
+            <td class="sku-cell">F-TT</td>
+            <td class="sku-cell">F-FTR</td>
+            <td class="sku-cell">F-M10</td>
+            <td class="sku-cell">F-G4</td>
+            <td class="sku-cell">F-M20</td>
+            <td class="sku-cell">F-C10-V2</td>
+          </tr>
+          <tr>
+            <td>Dimensions<span class="sub">H x W x D (inches)</span></td>
+            <td class="dim-cell">88.39 &times; 76.22 &times; 78.66<span class="metric">(225 &times; 194 &times; 200 cm)</span></td>
+            <td class="dim-cell">86.77 &times; 52.72 &times; 53.54<span class="metric">(220 &times; 134 &times; 136 cm)</span></td>
+            <td class="dim-cell">86.89 &times; 55.12 &times; 52.32<span class="metric">(221 &times; 140 &times; 133 cm)</span></td>
+            <td class="dim-cell">75.6 &times; 60.6 &times; 86.6<span class="metric">(192 &times; 154 &times; 220 cm)</span></td>
+            <td class="dim-cell">86.89 &times; 55.12 &times; 52.32<span class="metric">(221 &times; 140 &times; 133 cm)</span></td>
+            <td class="tbd-cell">TBD</td>
+            <td class="tbd-cell">TBD</td>
+          </tr>
+          <tr class="commercial-row">
+            <td>Commercial</td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+          </tr>
+          <tr>
+            <td>Upright Size</td>
+            <td class="upright-badge upright-3x3">3" x 3"<span class="metric">(75 x 75mm)</span></td>
+            <td class="upright-badge upright-3x3">3" x 3"<span class="metric">(75 x 75mm)</span></td>
+            <td class="upright-badge upright-3x3">3" x 3"<span class="metric">(75 x 75mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+            <td class="upright-badge upright-3x3">3" x 3"<span class="metric">(75 x 75mm)</span></td>
+            <td class="upright-badge">2" x 2"<span class="metric">(50 x 50mm)</span></td>
+          </tr>
+          <tr>
+            <td>Functional Trainer<span class="sub">Resistance Type</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+            <td><span class="pill pill-stack">Stack Weight</span></td>
+          </tr>
+          <tr>
+            <td>Weight Stack<span class="sub">(lbs)</span></td>
+            <td class="weight-value">198 / Max 300<span class="metric">(90 / Max 136 kg)</span></td>
+            <td class="weight-value">198 / Max 250<span class="metric">(90 / Max 113 kg)</span></td>
+            <td class="weight-value">198 / Max 300<span class="metric">(90 / Max 136 kg)</span></td>
+            <td class="weight-value">198 / Max 300<span class="metric">(90 / Max 136 kg)</span></td>
+            <td class="weight-value">198 / Max 300<span class="metric">(90 / Max 136 kg)</span></td>
+            <td class="weight-value">198 / Max 300<span class="metric">(90 / Max 136 kg)</span></td>
+            <td class="weight-value">2 x 220<span class="metric">(2 x 100 kg)</span></td>
+          </tr>
+          <tr>
+            <td>Cable Pulley Ratio</td>
+            <td class="ratio-value">2:1 &amp; 1:1</td>
+            <td class="ratio-value">2:1 &amp; 1:1</td>
+            <td class="ratio-value">2:1</td>
+            <td class="ratio-value">2:1 &amp; 1:1</td>
+            <td class="ratio-value">2:1</td>
+            <td class="ratio-value">2:1 &amp; 1:1</td>
+            <td class="ratio-value">2:1</td>
+          </tr>
+          <tr>
+            <td>Smith Machine</td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></td>
+          </tr>
+          <tr>
+            <td>Counter Balanced<span class="sub">Smith Machine</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+            <td><span class="empty-cell">&mdash;</span></td>
+          </tr>
+          <tr>
+            <td>Included Attachments</td>
+            <td class="attachment-count">21</td>
+            <td class="attachment-count">10</td>
+            <td class="attachment-count">9</td>
+            <td class="attachment-count">19</td>
+            <td class="attachment-count">19</td>
+            <td class="tbd-cell">TBD</td>
+            <td class="tbd-cell">TBD</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      <div class="footer-note">Specifications subject to change. Visit forceusa.com for the latest information. M20 and C10-V2 dimensions and attachment counts to be confirmed.</div>
+      <button class="download-btn" onclick="downloadPage(this.closest('.page'), 'force-usa-new-range.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PNG
+      </button>
+    </div>
+  </div>
+
+</body>
+</html>

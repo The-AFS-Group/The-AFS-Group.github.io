@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Revel Kora 2 Person Far Infrared Sauna — PDP Mockup (Proposed Changes)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #25B34B;
+      --sage: #ABB99C;
+      --forest: #485D4D;
+      --black: #000000;
+      --white: #FFFFFF;
+      --light-bg: #f7f7f5;
+      --border: #e0e0e0;
+      --red-accent: #e74c3c;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Montserrat', sans-serif; font-weight: 400; background: var(--white); color: var(--black); font-size: 15px; line-height: 1.6; }
+
+    /* === CHANGE ANNOTATION BANNER === */
+    .change-banner {
+      background: #1a1a2e;
+      color: #fff;
+      text-align: center;
+      padding: 14px 20px;
+      font-size: 13px;
+      letter-spacing: 1px;
+      font-weight: 600;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .change-banner span { color: var(--green); }
+
+    /* === ANNOTATION MARKERS === */
+    .annotation {
+      border: 3px dashed var(--green);
+      border-radius: 8px;
+      position: relative;
+      margin: 0;
+    }
+    .annotation-label {
+      position: absolute;
+      top: -14px;
+      left: 20px;
+      background: var(--green);
+      color: white;
+      padding: 4px 14px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      border-radius: 4px;
+      z-index: 10;
+    }
+    .annotation-note {
+      background: rgba(37, 179, 75, 0.08);
+      border-top: 1px solid rgba(37, 179, 75, 0.2);
+      padding: 12px 20px;
+      font-size: 12px;
+      color: var(--forest);
+      line-height: 1.5;
+    }
+    .annotation-note strong { color: var(--green); }
+
+    /* === TOP BAR === */
+    .topbar {
+      background: var(--forest);
+      color: var(--white);
+      text-align: center;
+      padding: 10px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* === NAV === */
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { height: 28px; }
+    .nav-links { display: flex; gap: 28px; font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; }
+    .nav-links a { color: var(--black); text-decoration: none; }
+    .nav-right { display: flex; gap: 16px; align-items: center; font-size: 13px; font-weight: 600; }
+
+    /* === HERO / PRODUCT SECTION === */
+    .product-hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .product-gallery {
+      background: var(--light-bg);
+      border-radius: 8px;
+      min-height: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .product-gallery img {
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+    }
+    .gallery-placeholder {
+      color: #999;
+      font-size: 14px;
+      text-align: center;
+    }
+    .product-info { display: flex; flex-direction: column; gap: 16px; }
+    .product-title {
+      font-size: 28px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .product-price {
+      font-size: 24px;
+      font-weight: 700;
+    }
+    .product-price .compare {
+      text-decoration: line-through;
+      color: #999;
+      font-weight: 400;
+      font-size: 18px;
+      margin-left: 8px;
+    }
+    .product-desc {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    /* === NEW: ELECTRICAL BADGE === */
+    .electrical-badge {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: linear-gradient(135deg, #f0faf2, #e8f5ea);
+      border: 2px solid var(--green);
+      border-radius: 10px;
+      padding: 14px 18px;
+    }
+    .electrical-badge .badge-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--green);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .electrical-badge .badge-text h4 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--forest);
+      margin-bottom: 2px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .electrical-badge .badge-text p {
+      font-size: 13px;
+      color: #555;
+      margin: 0;
+    }
+
+    /* === TRUST ICONS === */
+    .trust-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      padding: 20px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .trust-item {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--forest);
+    }
+    .trust-item .trust-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--forest);
+      border-radius: 50%;
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    /* === BUTTONS === */
+    .btn-primary {
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      padding: 16px 40px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .btn-secondary {
+      background: #7b61ff;
+      color: var(--white);
+      border: none;
+      padding: 16px 40px;
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .btn-consult {
+      background: var(--forest);
+      color: var(--white);
+      border: none;
+      padding: 16px 40px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      border-radius: 30px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 600px;
+      margin: 30px auto;
+      display: block;
+    }
+
+    /* === NEW: BEFORE YOU BUY SECTION === */
+    .before-you-buy {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 40px;
+    }
+    .byb-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .byb-subtitle {
+      font-size: 15px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .byb-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    .byb-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .byb-card:hover {
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    }
+    .byb-card-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 18px 20px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .byb-card-header .card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .byb-card-header .toggle {
+      margin-left: auto;
+      font-size: 20px;
+      color: #999;
+    }
+    .byb-card-body {
+      padding: 0 20px 20px;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+    .byb-card-body ul {
+      margin: 10px 0;
+      padding-left: 20px;
+    }
+    .byb-card-body li {
+      margin-bottom: 6px;
+    }
+
+    /* Electrical card special styling */
+    .byb-card.electrical {
+      border-color: var(--green);
+      border-width: 2px;
+    }
+    .byb-card.electrical .card-icon {
+      background: rgba(37, 179, 75, 0.12);
+      color: var(--green);
+    }
+    .byb-card.space .card-icon {
+      background: rgba(72, 93, 77, 0.1);
+      color: var(--forest);
+    }
+    .byb-card.delivery .card-icon {
+      background: rgba(171, 185, 156, 0.3);
+      color: var(--forest);
+    }
+    .byb-card.faq .card-icon {
+      background: rgba(0, 0, 0, 0.06);
+      color: var(--black);
+    }
+
+    /* Electrical detail box */
+    .elec-specs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .elec-spec-item {
+      background: var(--light-bg);
+      border-radius: 8px;
+      padding: 14px 16px;
+      text-align: center;
+    }
+    .elec-spec-item .spec-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--forest);
+    }
+    .elec-spec-item .spec-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #888;
+      margin-top: 2px;
+    }
+    .elec-callout {
+      background: linear-gradient(135deg, #f0faf2, #e8f5ea);
+      border-radius: 8px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .elec-callout .check {
+      color: var(--green);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+
+    /* === NEW: ELECTRICAL COMPARISON WIDGET === */
+    .comparison-section {
+      background: var(--light-bg);
+      padding: 50px 40px;
+    }
+    .comparison-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .comparison-title {
+      font-size: 24px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+    .comparison-subtitle {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 30px;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .comparison-table th {
+      padding: 16px 20px;
+      text-align: left;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      font-weight: 600;
+      border-bottom: 2px solid var(--border);
+    }
+    .comparison-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+    .comparison-table tr.highlight-row {
+      background: rgba(37, 179, 75, 0.06);
+    }
+    .comparison-table tr.highlight-row td {
+      font-weight: 600;
+    }
+    .comparison-table .tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-easy { background: rgba(37, 179, 75, 0.12); color: var(--green); }
+    .tag-moderate { background: rgba(255, 165, 0, 0.12); color: #e68a00; }
+    .tag-viewing { background: rgba(37, 179, 75, 0.08); color: var(--green); font-size: 11px; padding: 2px 8px; border-radius: 4px; margin-left: 8px; }
+
+    /* === EXISTING PAGE SECTIONS (simplified) === */
+    .feature-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 40px;
+      align-items: center;
+    }
+    .feature-section.reverse { direction: rtl; }
+    .feature-section.reverse > * { direction: ltr; }
+    .feature-image {
+      background: var(--light-bg);
+      border-radius: 8px;
+      min-height: 300px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #bbb;
+      font-size: 13px;
+    }
+    .feature-text { padding: 0 40px; }
+    .feature-text h3 {
+      font-size: 22px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      line-height: 1.3;
+    }
+    .feature-text p {
+      font-size: 14px;
+      color: #444;
+      line-height: 1.7;
+    }
+
+    /* === SPECS ACCORDION === */
+    .specs-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 40px;
+    }
+    .specs-title {
+      font-size: 32px;
+      font-weight: 700;
+      font-style: italic;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 30px;
+    }
+    .specs-accordion {
+      border-top: 1px solid var(--border);
+    }
+    .specs-item {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .specs-item-header {
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .specs-item-header .toggle { color: #999; font-size: 20px; }
+
+    /* === REVIEWS === */
+    .reviews-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 50px 40px;
+      text-align: center;
+    }
+    .reviews-label {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .reviews-title {
+      font-size: 36px;
+      font-weight: 700;
+      font-family: 'Playfair Display', serif;
+      margin-bottom: 30px;
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      text-align: left;
+    }
+    .review-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+    }
+    .review-stars { color: var(--green); margin-bottom: 10px; font-size: 14px; }
+    .review-name { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+    .review-verified { font-size: 11px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+    .review-text { font-size: 13px; color: #555; line-height: 1.6; }
+
+    /* === FOOTER === */
+    .footer {
+      background: var(--forest);
+      color: var(--white);
+      padding: 50px 40px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    /* === RESPONSIVE === */
+    @media (max-width: 768px) {
+      .product-hero, .feature-section, .byb-grid, .reviews-grid, .elec-specs {
+        grid-template-columns: 1fr;
+      }
+      .feature-section.reverse { direction: ltr; }
+      .product-hero, .before-you-buy, .specs-section, .reviews-section, .feature-section {
+        padding: 30px 20px;
+      }
+      .comparison-section { padding: 30px 20px; }
+      .comparison-table { font-size: 12px; }
+      .comparison-table th, .comparison-table td { padding: 10px 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- CHANGE ANNOTATION BANNER -->
+<div class="change-banner">
+  📋 PDP Mockup — <span>Green dashed borders = proposed new components</span> — Revel Kora 2P Far Infrared
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  Order Now — Lock in Current Shipping Before Rates Rise April 1 &nbsp; | &nbsp; The Home of Wellness &nbsp; | &nbsp; Buy Now Pay Later
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <svg class="nav-logo" viewBox="0 0 120 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="12" cy="15" r="11" stroke="#485D4D" stroke-width="2" fill="none"/>
+    <path d="M12 6 Q16 12 12 22 Q8 12 12 6Z" fill="#485D4D"/>
+    <text x="30" y="21" font-family="Montserrat" font-weight="700" font-size="16" fill="#000" letter-spacing="3">REVEL</text>
+  </svg>
+  <div class="nav-links">
+    <a href="#">Saunas</a>
+    <a href="#">Ice Baths</a>
+    <a href="#">Accessories</a>
+    <a href="#">Contrast Packages</a>
+    <a href="#">Sale</a>
+    <a href="#">Contact</a>
+  </div>
+  <div class="nav-right">
+    📞 1800 849 284
+  </div>
+</div>
+
+<!-- PRODUCT HERO -->
+<div class="product-hero">
+  <div class="product-gallery">
+    <img src="https://revelsaunas.com.au/cdn/shop/files/revel-kora-2P-G2-1.png?v=1771491638&width=800" alt="Revel Kora 2 Person Far Infrared Sauna">
+  </div>
+  <div class="product-info">
+    <h1 class="product-title">Revel Kora 2 Person Far Infrared Sauna — Next Gen</h1>
+    <div class="product-price">$3,749.00 <span class="compare">$4,249.00</span></div>
+
+    <!-- ★ NEW COMPONENT 1: ELECTRICAL BADGE -->
+    <div class="annotation" style="padding: 4px;">
+      <div class="annotation-label">New — Component 1</div>
+      <div class="electrical-badge">
+        <div class="badge-icon">⚡</div>
+        <div class="badge-text">
+          <h4>Plug & Play — No Electrician Needed</h4>
+          <p>Standard 10A plug · 1960W · Just plug in and go</p>
+        </div>
+      </div>
+      <div class="annotation-note">
+        <strong>Why:</strong> Electrical is the #2 barrier from 1,182 sales calls (208 mentions). Customers need to know this BEFORE they scroll. This badge answers the question immediately — no hunting through specs.
+        <br><strong>Adapts per product:</strong> Traditional saunas would show "15A Dedicated Circuit — Electrician Required" in amber instead of green.
+      </div>
+    </div>
+
+    <p class="product-desc">
+      Meet the Revel Kora, your at-home sanctuary for deep muscle recovery, stress relief and daily reset. Designed with 7 low EMF carbon infrared heaters for consistent, full-body warmth (even around the legs), the Kora delivers powerful far infrared therapy in a sleek, Scandinavian-inspired cabin. With immersive chromotherapy lighting, Bluetooth audio, red light therapy compatibility and true plug-and-play setup, it's built for busy professionals who want premium wellness without the hassle.
+    </p>
+
+    <button class="btn-primary">ADD TO CART</button>
+    <button class="btn-secondary">Buy with Shop</button>
+
+    <div class="trust-row">
+      <div class="trust-item">
+        <div class="trust-icon">🚚</div>
+        Fast & Reliable Nationwide Delivery
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🛡️</div>
+        Exceptional After-Sales Support
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">🇦🇺</div>
+        Australian Owned & Operated
+      </div>
+      <div class="trust-item">
+        <div class="trust-icon">✅</div>
+        Premium Quality, Backed by Warranty
+      </div>
+    </div>
+
+    <button class="btn-consult">Book a Consultation With Our Experts</button>
+  </div>
+</div>
+
+<!-- ★ NEW COMPONENT 2: BEFORE YOU BUY SECTION -->
+<div class="annotation" style="margin: 0 40px;">
+  <div class="annotation-label">New — Component 2</div>
+
+  <div class="before-you-buy" style="padding: 50px 20px;">
+    <h2 class="byb-title">Before You Buy</h2>
+    <p class="byb-subtitle">Everything you need to know before your sauna arrives — no surprises.</p>
+
+    <div class="byb-grid">
+
+      <!-- Electrical Card (expanded) -->
+      <div class="byb-card electrical">
+        <div class="byb-card-header">
+          <div class="card-icon">⚡</div>
+          Electrical Requirements
+          <span class="toggle">−</span>
+        </div>
+        <div class="byb-card-body">
+          <div class="elec-specs">
+            <div class="elec-spec-item">
+              <div class="spec-value">10A</div>
+              <div class="spec-label">Standard Plug</div>
+            </div>
+            <div class="elec-spec-item">
+              <div class="spec-value">1,960W</div>
+              <div class="spec-label">Power Draw</div>
+            </div>
+            <div class="elec-spec-item">
+              <div class="spec-value">220–240V</div>
+              <div class="spec-label">Voltage</div>
+            </div>
+            <div class="elec-spec-item">
+              <div class="spec-value">No</div>
+              <div class="spec-label">Electrician Required</div>
+            </div>
+          </div>
+          <div class="elec-callout">
+            <span class="check">✓</span>
+            <div>
+              <strong>This sauna plugs into any standard Australian power point.</strong>
+              No electrician, no rewiring, no additional costs. SAA® certified.
+            </div>
+          </div>
+          <p style="margin-top: 14px; font-size: 13px; color: #888;">
+            <em>Note: Ensure the power point is on its own circuit for optimal performance. Avoid using extension leads or double adapters.</em>
+          </p>
+        </div>
+      </div>
+
+      <!-- Space & Clearances Card -->
+      <div class="byb-card space">
+        <div class="byb-card-header">
+          <div class="card-icon">📐</div>
+          Space & Clearances
+          <span class="toggle">−</span>
+        </div>
+        <div class="byb-card-body">
+          <p>The Kora requires the following minimum clearances:</p>
+          <ul>
+            <li><strong>100mm</strong> — Rear and both sides</li>
+            <li><strong>300mm</strong> — Above (overhead)</li>
+            <li><strong>Unobstructed</strong> — Front access for door opening</li>
+          </ul>
+          <p style="margin-top: 10px;"><strong>Sauna footprint:</strong> 1080mm (W) × 1000mm (D) × 1950mm (H)</p>
+          <p style="margin-top: 10px;"><strong>Total space needed:</strong> ~1280mm × 1200mm floor area with clearances</p>
+          <p style="margin-top: 10px; font-size: 13px; color: var(--red-accent);">⚠️ Residential use only. Do not install in enclosed spaces or commercial environments.</p>
+        </div>
+      </div>
+
+      <!-- Delivery & Setup Card -->
+      <div class="byb-card delivery">
+        <div class="byb-card-header">
+          <div class="card-icon">🚚</div>
+          Delivery & Setup
+          <span class="toggle">−</span>
+        </div>
+        <div class="byb-card-body">
+          <ul>
+            <li><strong>Delivery:</strong> Nationwide curbside delivery included</li>
+            <li><strong>Assembly:</strong> Flat-pack, 2-person assembly in approximately 45–60 minutes</li>
+            <li><strong>Tools required:</strong> Phillips head screwdriver only</li>
+            <li><strong>Weight:</strong> Check Dimensions & Weight in specs below</li>
+          </ul>
+          <p style="margin-top: 10px;">No tradesperson required. Assembly instructions and video guide included. Our after-sales team is available if you need help.</p>
+        </div>
+      </div>
+
+      <!-- Common Questions Card -->
+      <div class="byb-card faq">
+        <div class="byb-card-header">
+          <div class="card-icon">❓</div>
+          Common Questions
+          <span class="toggle">−</span>
+        </div>
+        <div class="byb-card-body">
+          <p><strong>Can I put it under a pergola or outdoors?</strong><br>
+          Infrared saunas are designed for indoor use only. For outdoor options, see our Traditional Sauna range.</p>
+
+          <p style="margin-top: 14px;"><strong>Will it increase my electricity bill?</strong><br>
+          At 1,960W, a 30-minute session costs approximately $0.30–$0.40 (based on avg. AU electricity rates). Less than a coffee.</p>
+
+          <p style="margin-top: 14px;"><strong>Do I need a dedicated circuit?</strong><br>
+          Not for this model — it runs on a standard 10A outlet. We recommend using a power point that isn't shared with other high-draw appliances.</p>
+
+          <p style="margin-top: 14px;"><strong>What's the difference between infrared and traditional saunas electrically?</strong><br>
+          Infrared saunas (like the Kora) use a standard 10A plug. Traditional saunas require a 15A dedicated circuit installed by a licensed electrician (~$200–$400).</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="annotation-note">
+    <strong>Why:</strong> Addresses the top 4 barriers from call data in one scannable section, placed BEFORE the customer commits. Electrical (208 mentions), space (85), installation (50), plus FAQs drawn directly from real customer questions. This section alone should reduce call volume on these topics significantly.
+  </div>
+</div>
+
+<!-- EXISTING: Feature sections (simplified representation) -->
+<div class="feature-section">
+  <div class="feature-image">
+    <span>[Heater diagram — existing content]</span>
+  </div>
+  <div class="feature-text">
+    <h3>Even Full-Body Low EMF Far Infrared Heat</h3>
+    <p>The Kora is powered by 7 low EMF carbon infrared heaters, designed to create a smooth, consistent heat profile throughout the entire cabin. That means a comfortable, all-encompassing warmth that feels balanced and natural.</p>
+  </div>
+</div>
+
+<div class="feature-section reverse">
+  <div class="feature-image">
+    <span>[Timber interior — existing content]</span>
+  </div>
+  <div class="feature-text">
+    <h3>Premium Spruce & Thermally Treated Poplar Timber</h3>
+    <p>The Kora blends the best of both worlds: a light-toned spruce exterior and a thermally treated poplar interior for true spa-level comfort.</p>
+  </div>
+</div>
+
+<div class="feature-section">
+  <div class="feature-image">
+    <span>[Chromotherapy — existing content]</span>
+  </div>
+  <div class="feature-text">
+    <h3>Immersive Lighting Experience With Revel Starlight + Chromotherapy</h3>
+    <p>Wellness is more than heat, it's atmosphere. The Kora features Revel Starlight fibre optic ceiling lighting, integrated LED lighting and full chromotherapy functionality.</p>
+  </div>
+</div>
+
+<!-- ★ NEW COMPONENT 3: ELECTRICAL COMPARISON WIDGET -->
+<div class="annotation" style="margin: 0;">
+  <div class="annotation-label" style="left: 60px;">New — Component 3</div>
+
+  <div class="comparison-section">
+    <div class="comparison-inner">
+      <h2 class="comparison-title">Which Sauna Suits Your Setup?</h2>
+      <p class="comparison-subtitle">Not sure about electrical requirements? Here's a quick comparison across our range.</p>
+
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th>Sauna Type</th>
+            <th>Plug Type</th>
+            <th>Power</th>
+            <th>Electrician?</th>
+            <th>Typical Install Cost</th>
+            <th>Ease</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight-row">
+            <td>
+              Far Infrared (e.g. Kora)
+              <span class="tag-viewing">← You're viewing</span>
+            </td>
+            <td>Standard 10A</td>
+            <td>1,960W</td>
+            <td>❌ No</td>
+            <td>$0 — plug and play</td>
+            <td><span class="tag tag-easy">Easy</span></td>
+          </tr>
+          <tr>
+            <td>Full Spectrum Infrared</td>
+            <td>Standard 10A</td>
+            <td>2,200–2,800W</td>
+            <td>❌ No</td>
+            <td>$0 — plug and play</td>
+            <td><span class="tag tag-easy">Easy</span></td>
+          </tr>
+          <tr>
+            <td>Hybrid (Infrared + Traditional)</td>
+            <td>15A Dedicated</td>
+            <td>3,500–4,500W</td>
+            <td>✅ Yes</td>
+            <td>$200–$400</td>
+            <td><span class="tag tag-moderate">Moderate</span></td>
+          </tr>
+          <tr>
+            <td>Traditional Finnish</td>
+            <td>15A Dedicated</td>
+            <td>4,500–9,000W</td>
+            <td>✅ Yes</td>
+            <td>$200–$400</td>
+            <td><span class="tag tag-moderate">Moderate</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p style="margin-top: 16px; font-size: 13px; color: #888; text-align: center;">
+        All Revel saunas are SAA® certified for Australian standards. A licensed electrician can install a 15A circuit in 1–2 hours.
+        <br>Not sure? <a href="#" style="color: var(--green); font-weight: 600;">Book a free consultation</a> and we'll help you choose.
+      </p>
+    </div>
+  </div>
+
+  <div class="annotation-note">
+    <strong>Why:</strong> 60+ calls showed customers comparing infrared vs traditional and getting confused about electrical differences. This table lets cross-shoppers self-serve the answer. The "You're viewing" tag anchors them. Reduces calls where the question is simply "do I need an electrician?"
+  </div>
+</div>
+
+<!-- EXISTING: Specs accordion (simplified) -->
+<div class="specs-section">
+  <h2 class="specs-title">Specifications</h2>
+  <div class="specs-accordion">
+    <div class="specs-item">
+      <div class="specs-item-header">General Features <span class="toggle">+</span></div>
+    </div>
+    <div class="specs-item">
+      <div class="specs-item-header">Dimensions and Weight <span class="toggle">+</span></div>
+    </div>
+    <div class="specs-item">
+      <div class="specs-item-header">Electrical <span class="toggle">+</span></div>
+    </div>
+    <div class="specs-item">
+      <div class="specs-item-header">Warranty <span class="toggle">+</span></div>
+    </div>
+  </div>
+  <div style="text-align: center; margin-top: 20px;">
+    <button class="btn-consult" style="max-width: 300px;">Product Manual →</button>
+  </div>
+</div>
+
+<!-- EXISTING: Reviews (simplified) -->
+<div class="reviews-section">
+  <div class="reviews-label">Real People, Real Results</div>
+  <h2 class="reviews-title">See what the Revel community are saying.</h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-name">Matt Lingard</div>
+      <div class="review-verified">Verified Buyer</div>
+      <div class="review-text">We've been getting plenty of use from our new traditional sauna. It was quite easy to set up, it looks great, and I was surprised how hot it can get. Very happy with it.</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-name">Peter Mcveigh</div>
+      <div class="review-verified">Verified Buyer</div>
+      <div class="review-text">The best investment for our health. Works really well. Heats up quickly. Plenty of room. It's finite.</div>
+    </div>
+    <div class="review-card">
+      <div class="review-stars">★★★★★</div>
+      <div class="review-name">Andrew Tratt</div>
+      <div class="review-verified">Verified Buyer</div>
+      <div class="review-text">I've had in the past a three person sauna, and we found that we hardly ever put more than one person in the sauna. This time having a single is perfect, but it has lots of space.</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>© 2026 Revel Saunas — All Rights Reserved</p>
+  <p style="margin-top: 10px; font-size: 11px; opacity: 0.7;">PDP Mockup — Proposed changes for Q4 Electrical Requirements priority. Prepared by Gary for Tristan.</p>
+</div>
+
+</body>
+</html>

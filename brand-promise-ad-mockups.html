@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Brand Promise - Static Ad Mockups</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black: #000000;
+  --white: #ffffff;
+  --dark-grey: #424242;
+  --pale-grey: #f0f0f0;
+  --orange: #f26422;
+  --light-orange: rgba(242, 100, 34, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Open Sans', Arial, sans-serif;
+  background: var(--pale-grey);
+  color: var(--dark-grey);
+  line-height: 1.6;
+}
+
+.header {
+  background: var(--black);
+  color: var(--white);
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.header img { height: 40px; margin-bottom: 16px; }
+
+.header h1 {
+  font-family: 'Montserrat', Arial Black, sans-serif;
+  font-weight: 800;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.header p {
+  font-size: 14px;
+  opacity: 0.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.nav-bar {
+  background: var(--white);
+  border-bottom: 1px solid #e0e0e0;
+  padding: 12px 24px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  padding: 8px 16px;
+  border: 2px solid var(--pale-grey);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--dark-grey);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover { border-color: var(--orange); color: var(--orange); }
+.nav-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+.container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+.insights-panel {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 32px;
+  border-left: 4px solid var(--orange);
+}
+
+.insights-panel h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 16px;
+  color: var(--black);
+}
+
+.insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+}
+
+.insight-card {
+  background: var(--pale-grey);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.insight-card .label {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--orange);
+  margin-bottom: 4px;
+}
+
+.insight-card .value {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--black);
+}
+
+.insight-card .desc {
+  font-size: 12px;
+  color: var(--dark-grey);
+  margin-top: 4px;
+}
+
+.section {
+  margin-bottom: 48px;
+  display: none;
+}
+
+.section.active { display: block; }
+
+.section-header {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.section-header .promise-tag {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--orange);
+  margin-bottom: 8px;
+}
+
+.section-header h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  color: var(--black);
+  margin-bottom: 8px;
+}
+
+.section-header .promise-statement {
+  font-size: 15px;
+  color: var(--dark-grey);
+  margin-bottom: 12px;
+}
+
+.section-header .guarantee {
+  background: var(--light-orange);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--black);
+}
+
+.guarantee strong { color: var(--orange); }
+
+.ads-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.ad-card {
+  background: var(--white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.2s;
+}
+
+.ad-card:hover { transform: translateY(-2px); }
+
+.ad-card-label {
+  padding: 12px 20px 0;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark-grey);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ad-card-label .variant-badge {
+  background: var(--orange);
+  color: var(--white);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+}
+
+.ad-preview {
+  margin: 12px 20px;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ad-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.ad-preview-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: var(--white);
+}
+
+.ad-preview-meta { flex: 1; }
+
+.ad-preview-meta .name {
+  font-weight: 600;
+  font-size: 13px;
+  color: var(--black);
+}
+
+.ad-preview-meta .sub {
+  font-size: 11px;
+  color: #999;
+}
+
+.ad-primary-text {
+  padding: 0 12px 12px;
+  font-size: 13px;
+  color: var(--dark-grey);
+  line-height: 1.5;
+  white-space: pre-line;
+}
+
+.ad-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.ad-image.dark-bg { background: var(--black); }
+.ad-image.light-bg { background: var(--pale-grey); }
+
+.ad-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ad-image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 24px;
+}
+
+.ad-image-overlay.gradient { background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%); color: var(--white); }
+.ad-image-overlay.dark { background: rgba(0,0,0,0.65); color: var(--white); }
+
+.ad-headline {
+  font-family: 'Montserrat', Arial Black, sans-serif;
+  font-weight: 800;
+  font-size: 22px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+
+.ad-subhead {
+  font-family: 'Open Sans', sans-serif;
+  font-size: 13px;
+  line-height: 1.4;
+  opacity: 0.9;
+  max-width: 280px;
+}
+
+.ad-accent-line {
+  width: 40px;
+  height: 3px;
+  background: var(--orange);
+  margin: 12px auto;
+  border-radius: 2px;
+}
+
+.ad-cta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.ad-cta-bar .link-preview {
+  font-size: 11px;
+  color: #999;
+  text-transform: uppercase;
+}
+
+.ad-cta-bar .headline-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--black);
+  flex: 1;
+  margin: 0 12px;
+}
+
+.ad-cta-btn {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  padding: 6px 16px;
+  background: var(--pale-grey);
+  border: none;
+  border-radius: 4px;
+  color: var(--black);
+  white-space: nowrap;
+}
+
+.creative-notes {
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--pale-grey);
+}
+
+.creative-notes h4 {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--dark-grey);
+  margin-bottom: 8px;
+}
+
+.creative-notes ul {
+  list-style: none;
+  padding: 0;
+}
+
+.creative-notes li {
+  font-size: 12px;
+  color: var(--dark-grey);
+  padding: 3px 0;
+  padding-left: 16px;
+  position: relative;
+}
+
+.creative-notes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+
+.footer {
+  text-align: center;
+  padding: 40px 24px;
+  font-size: 12px;
+  color: #999;
+}
+
+@media (max-width: 768px) {
+  .ads-grid { grid-template-columns: 1fr; }
+  .nav-bar { padding: 8px 12px; }
+  .container { padding: 16px; }
+  .ad-headline { font-size: 18px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="GAF">
+  <h1>Brand Promise Ad Mockups</h1>
+  <p>Static ad concepts for testing brand promise messaging across 6 strategic angles. Informed by top-performing creatives from the last 90 days.</p>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn active" onclick="showSection('overview')">Overview</button>
+  <button class="nav-btn" onclick="showSection('fast-track')">1. Fast-Track Design</button>
+  <button class="nav-btn" onclick="showSection('perfect-fit')">2. Perfect Fit</button>
+  <button class="nav-btn" onclick="showSection('membership-killer')">3. Membership Killer</button>
+  <button class="nav-btn" onclick="showSection('zero-guesswork')">4. Zero-Guesswork</button>
+  <button class="nav-btn" onclick="showSection('elite-partner')">5. Elite Partner</button>
+  <button class="nav-btn" onclick="showSection('aspirational')">6. Aspirational Outcome</button>
+</div>
+
+<div class="container">
+
+  <!-- OVERVIEW -->
+  <div class="section active" id="overview">
+    <div class="insights-panel">
+      <h2>Top Performer Insights (Last 90 Days)</h2>
+      <p style="font-size:13px; margin-bottom:16px; color: var(--dark-grey);">
+        These patterns were drawn from the highest-CTR and highest-conversion static image ads in the GAF account. Each mockup below is built to mirror what's already working.
+      </p>
+      <div class="insights-grid">
+        <div class="insight-card">
+          <div class="label">Highest CTR (Image)</div>
+          <div class="value">13.9%</div>
+          <div class="desc">Centr x HYROX UGC - community event imagery with aspirational tone</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Highest ATC (Image)</div>
+          <div class="value">277 ATCs</div>
+          <div class="desc">Force USA G12 UGC - "Rule Them All" with lifestyle imagery</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Best Conversion</div>
+          <div class="value">33 purchases</div>
+          <div class="desc">Force USA G12 - product-in-space UGC with aspirational copy</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Top Copy Pattern</div>
+          <div class="value">Pain + Fix</div>
+          <div class="desc">"Cancel the commute", "No Babysitter Needed" - relatable pain then solution</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights-panel" style="border-left-color: var(--black);">
+      <h2>Creative Playbook</h2>
+      <div class="insights-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+        <div class="insight-card">
+          <div class="label">Format</div>
+          <div class="value" style="font-size:14px;">Single Image</div>
+          <div class="desc">1080 x 1080px square. Bold headline overlay on lifestyle/product imagery.</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">CTA</div>
+          <div class="value" style="font-size:14px;">Shop Now</div>
+          <div class="desc">Consistent across all top performers. Direct, low-friction.</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Primary Text</div>
+          <div class="value" style="font-size:14px;">3-5 lines</div>
+          <div class="desc">Hook line, 2-3 benefit sentences, soft CTA. Conversational.</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Headline</div>
+          <div class="value" style="font-size:14px;">Under 8 words</div>
+          <div class="desc">Punchy. Emotional. Identity-driven ("Your", "You").</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Imagery</div>
+          <div class="value" style="font-size:14px;">UGC + Lifestyle</div>
+          <div class="desc">Real setups in garages/spare rooms outperform studio shots.</div>
+        </div>
+        <div class="insight-card">
+          <div class="label">Tone</div>
+          <div class="value" style="font-size:14px;">Coach, Not Sales</div>
+          <div class="desc">Helpful personal trainer energy. Benefits over features.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. FAST-TRACK DESIGN -->
+  <div class="section" id="fast-track">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 1</div>
+      <h2>The "Fast-Track Design" Model</h2>
+      <p class="promise-statement">Your tailored home gym plan designed by an expert in 24 hours.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> If your tailored plan takes longer than 24 hours, we will give you a $100 gift card.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Speed + Expertise</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">You've been staring at gear online for weeks. We get it.
+
+What if a certified fitness consultant designed your entire home gym, tailored to your space and goals, in under 24 hours? No guessing. No regrets. Just a plan you can trust.
+
+And if we take longer than 24 hours? You get $100 on us.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/hero-g3-home-gym.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0001_6.jpg?v=1759448398" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Your Dream Gym.<br>Designed in 24 Hours.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Expert-designed. Tailored to your space. Guaranteed fast.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Free Expert Gym Design</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Hero image: split-screen showing blank garage on left, finished gym on right</li>
+            <li>Overlay a subtle "24h" clock graphic near the headline</li>
+            <li>Draws on "Blank canvas to Work of art" pattern (top performer: Force USA G3, 6.6% CTR)</li>
+            <li>Pain-point opening mirrors "No Babysitter Needed" copy style (top AIOT ad)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Guarantee-Led</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">24 hours. That's all we need.
+
+Tell us your space, your goals, and your budget. Our certified fitness consultants will design a tailored home gym plan within 24 hours, or you get a $100 gift card.
+
+No algorithms. A real human expert who's done this thousands of times.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-rack-setup.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/02_f4d03508-f759-4ffa-9d00-fed28592c2c4.jpg?v=1759448346" alt="Product">
+            <div class="ad-image-overlay dark">
+              <div class="ad-headline">$100 If We're Late.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Your custom gym plan. Designed by an expert. Delivered in 24 hours or you get $100.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Get Your Free Gym Design</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Bold "$100" in orange on black background creates pattern interrupt in feed</li>
+            <li>Show a consultant on a video call with a customer's garage measurements visible</li>
+            <li>Guarantee-forward hook drives curiosity click (proven in DTC ads)</li>
+            <li>Real human emphasis combats AI/chatbot fatigue</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PERFECT FIT -->
+  <div class="section" id="perfect-fit">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 2</div>
+      <h2>The "Perfect Fit" Model</h2>
+      <p class="promise-statement">A cohesive home gym tailored perfectly to your space and fitness needs.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> Love your design, or our fitness consultants will redesign it with you until you do.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Space Anxiety</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">"Will it even fit?"
+
+That's the question that stops most home gym builds before they start. Our fitness consultants design around YOUR space, not the other way around. Every piece guaranteed to fit, work together, and look like it belongs.
+
+Don't love the design? We'll redesign it with you until you do.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/force-usa-g4.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/3_f19c680a-6458-4aeb-84f5-f7bcb2f64d29.jpg?v=1759448368" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Designed To Fit.<br>Guaranteed.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Every piece chosen for your space. If you don't love it, we redesign it. Free.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Your Space. Perfectly Equipped.</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: overhead/plan-view of a garage with equipment arranged perfectly, measuring tape visible</li>
+            <li>"Will it even fit?" opens with the #1 objection from sales call data</li>
+            <li>Mirrors "C20 Small Footprint" ad approach (space efficiency = proven angle)</li>
+            <li>UGC variant: customer photo of their finished garage gym with dimensions overlay</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Redesign Promise</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">Most people buy gym equipment piece by piece. Random rack here, mismatched bench there. It works, but it doesn't flow.
+
+We design cohesive home gyms where every piece complements the next, fits your space, and matches how you actually train.
+
+Love your design or we redesign it with you. No extra cost. No time limit.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/g4-payment-static.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/ForceUSAG3_0001_2.jpg?v=1759448410" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Stop Guessing.<br>Start Designing.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">A cohesive gym tailored to your space. Love it or we redesign it. Free.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Free Expert Gym Design</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Side-by-side: messy/random gym setup vs clean, cohesive GAF-designed space</li>
+            <li>"Piece by piece" narrative addresses the common DIY approach</li>
+            <li>Draws on the "Home Gym Setup" ad pattern (7.4% CTR, 93 ATCs) - lifestyle in-situ imagery</li>
+            <li>Warm lighting, real garage/spare room setting</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. MEMBERSHIP KILLER -->
+  <div class="section" id="membership-killer">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 3</div>
+      <h2>The "Membership Killer" Model</h2>
+      <p class="promise-statement">Elevating your in-home experience to rival any premier 24/7 facility.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> Your new gym will be cost-neutral compared to a commercial gym membership over [X] years.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Cost Comparison</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">Your gym membership costs you ~$1,200/year. In 3 years, that's $3,600 spent with nothing to show for it.
+
+A Force USA All-In-One Trainer pays for itself. No monthly fees. No contracts. No 6am commute to fight for a squat rack. Just your gym, always open, always empty.
+
+The math doesn't lie.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/blackwing.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0017_4_5d87452f-55d7-42ba-9b15-f8069828d19e.jpg?v=1759448433" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Cancel Your<br>Membership.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Your home gym pays for itself. Zero monthly fees. Zero commute. Zero excuses.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">All-In-One Home Trainers</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: clean home gym with a cancelled gym membership card or torn-up contract in foreground</li>
+            <li>Cost comparison angle proven in "Big Gains. Small Budget." ad (review-led, high conversion)</li>
+            <li>Mirrors "Excuses End Here" G15 ad energy - decisive, empowering</li>
+            <li>Consider an infographic variant showing $/month breakdown over 3 years</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Commute Killer</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">"I just don't feel like driving to the gym today."
+
+Sound familiar? That thought costs you 2-3 sessions a week. With a home setup that rivals any commercial gym, the only commute is down the hallway.
+
+Same machines. Same intensity. No crowds, no waiting, no wasted time.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-distinct.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0004_3.jpg?v=1759448399" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Same Workout.<br>Zero Commute.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Commercial gym quality. In your garage. Open 24/7.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Build Your Home Gym</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Directly reuses the winning hook from "Excuses End Here" G15 ad (8.7% CTR)</li>
+            <li>Image: person training in a well-lit garage gym at 5am, phone showing 5:02am</li>
+            <li>"Train At Home" momentum angle from Nike Strength ad (7.4% CTR) - proven copy structure</li>
+            <li>UGC variant: customer testimonial about ditching their membership</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. ZERO-GUESSWORK SANCTUARY -->
+  <div class="section" id="zero-guesswork">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 4</div>
+      <h2>The "Zero-Guesswork Sanctuary" Model</h2>
+      <p class="promise-statement">We eradicate the guesswork to build your flawless home gym.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> The "No Clothes-Hanger Guarantee" - Every complete gym design comes with Virtual PT for [X] months so you actually use the gear, and we guarantee every piece is compatible before it ships.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Clothes Hanger</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">We've all seen it. The treadmill collecting dust. The rack holding towels. The bench that's now a laundry station.
+
+We don't just sell you equipment. We design your gym AND give you Virtual PT sessions so you actually use it. Every. Single. Piece.
+
+The "No Clothes-Hanger Guarantee." If you don't use it, we failed.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-adj-dumbbells.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_e3fae009-e1d3-4b82-9198-02b98908341a.jpg?v=1759448346" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">No More<br>Expensive<br>Clothes Hangers.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">We design your gym AND make sure you use it. Virtual PT included.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Gym Design + Virtual PT</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: humorous split - left side shows equipment draped in clothes/towels, right side shows someone actually training</li>
+            <li>Self-aware humor cuts through - "we've all seen it" builds instant relatability</li>
+            <li>The guarantee name itself is shareable/memorable - potential for organic reach</li>
+            <li>This is the most distinctive angle - nothing else in the market sounds like this</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Compatibility</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">Ever ordered something that looked perfect online, only to find it doesn't fit, doesn't match, or doesn't work with what you already have?
+
+We check every single piece for compatibility before it ships. If it doesn't work together, it doesn't leave the warehouse.
+
+Zero guesswork. Zero surprises. Zero returns.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-squat-rack.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/FUTA_Listing-Carousel-Image_1_7b4f0a1b-3ca1-42aa-9fab-b3ba98de5ae6.jpg?v=1759448368" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">If It Doesn't Fit,<br>It Doesn't Ship.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Every piece compatibility-checked before it leaves the warehouse.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Zero-Guesswork Gym Design</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: warehouse team checking equipment fitment, or a 3D gym plan with compatibility checkmarks</li>
+            <li>Addresses the "online shopping anxiety" that's real for big-ticket fitness purchases</li>
+            <li>Draws on "C20 Compact & Versatile" ad's space-efficiency messaging (proven conversion driver)</li>
+            <li>Clean, confidence-building visuals - no lifestyle here, just trust signals</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ELITE PARTNER -->
+  <div class="section" id="elite-partner">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 5</div>
+      <h2>The "Elite Partner" Model</h2>
+      <p class="promise-statement">Elite equipment for your space, expertly guided by 20+ years of trust.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> Book a free 30-minute space design consult with a real human expert before you spend a single cent, guaranteed.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Trust + Heritage</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">20 years. Thousands of home gyms. Zero cookie-cutter solutions.
+
+We've been helping Australians build serious training spaces since before "home gym" was a trend. Our consultants don't just know equipment; they know how real people train.
+
+Book a free 30-minute consult. No purchase required. Just expert advice from people who've been doing this for two decades.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-shield-barbell.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0020_HERO_93a13782-d628-4c74-a79e-86f6021d0a8d.jpg?v=1759448433" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">20 Years.<br>Your Gym.<br>Our Expertise.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Free 30-minute expert consult. No strings. Just 20 years of knowledge.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Free Expert Consultation</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: experienced consultant in a showroom or on a video call, genuine and approachable</li>
+            <li>Heritage angle builds trust - "before home gym was a trend" positions GAF as the original</li>
+            <li>"Real human expert" differentiates from chatbot/AI configurators</li>
+            <li>Free consult = zero-risk CTA, should drive high click-through</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Expert Access</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">Thinking about building a home gym? Before you spend a cent, talk to someone who's designed thousands of them.
+
+Our certified fitness consultants will review your space, understand your goals, and give you a tailored recommendation. 30 minutes. Completely free. No obligation.
+
+Because the best home gyms start with the right advice.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/nike-weight-plate-tree.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/products/HERO_082958da-a85a-45ea-a9f8-496f9837ee02.jpg?v=1649650131" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Talk To An Expert.<br>Before You Buy.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Free 30-min consult with a certified fitness consultant. Zero obligation.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Book Free Consultation</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: split-screen video call - consultant on one side, customer's empty garage on the other</li>
+            <li>"Before you spend a cent" removes all friction - mirrors the guarantee language</li>
+            <li>Draws on the "Train Hard at Home" ad's coach energy (proven Nike Strength creative)</li>
+            <li>This is a lead-gen ad - consider running to a booking page rather than shop</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. ASPIRATIONAL OUTCOME -->
+  <div class="section" id="aspirational">
+    <div class="section-header">
+      <div class="promise-tag">Brand Promise 6</div>
+      <h2>The Aspirational Outcome</h2>
+      <p class="promise-statement">Your space. Your goals. Perfectly equipped.</p>
+      <div class="guarantee"><strong>Guarantee:</strong> Let our experts design your cohesive, custom home gym in 24 hours. Fit and compatibility guaranteed.</div>
+    </div>
+
+    <div class="ads-grid">
+      <div class="ad-card">
+        <div class="ad-card-label">Concept A <span class="variant-badge">Transformation</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">You already have the space. You already have the drive. You just need the right plan.
+
+We turn spare rooms, garages, and sheds into training spaces that feel as good as any commercial gym. Designed by experts. Built around you.
+
+Your space. Your goals. Perfectly equipped.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/free-shipping-static.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/0006_1.jpg?v=1759448398" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Your Space.<br>Perfected.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">Expert-designed home gyms tailored to your space, goals, and budget.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Design Your Home Gym</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Image: stunning finished garage gym, warm lighting, clean lines - aspirational but achievable</li>
+            <li>Directly mirrors the highest-converting UGC pattern: real setup, real space, real results</li>
+            <li>"Blank canvas to Work of art" energy from Force USA G3 ad (top performer)</li>
+            <li>This is the umbrella message - works as a brand awareness play across all audiences</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="ad-card">
+        <div class="ad-card-label">Concept B <span class="variant-badge">Identity</span></div>
+        <div class="ad-preview">
+          <div class="ad-preview-header">
+            <img class="ad-preview-avatar" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png?v=1738497572" alt="GAF">
+            <div class="ad-preview-meta">
+              <div class="name">Gym and Fitness</div>
+              <div class="sub">Sponsored</div>
+            </div>
+          </div>
+          <div class="ad-primary-text">This isn't about starting over. It's about keeping momentum.
+
+If you already train, a home gym lets you keep pushing without the commute, crowds, or compromises. Same intent. Same effort. Better location.
+
+We design the right home gym for you, guaranteed to fit your space, goals, budget, and life.</div>
+          <div class="ad-image dark-bg">
+            <img src="images/brand-promise/centr-power-up.jpg" alt="Ad creative from GAF top performers">
+            <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_f9be46b5-a938-4ba8-ba94-68865b245725.jpg?v=1776683863" alt="Product">
+            <div class="ad-image-overlay gradient">
+              <div class="ad-headline">Keep Pushing.<br>From Home.</div>
+              <div class="ad-accent-line"></div>
+              <div class="ad-subhead">We design the right home gym for you. Guaranteed to fit your space, goals, budget, and life.</div>
+            </div>
+          </div>
+          <div class="ad-cta-bar">
+            <span class="link-preview">gymandfitness.com.au</span>
+            <span class="headline-text">Your Gym. Designed For You.</span>
+            <button class="ad-cta-btn">Shop Now</button>
+          </div>
+        </div>
+        <div class="creative-notes">
+          <h4>Creative Direction</h4>
+          <ul>
+            <li>Adapts the exact copy structure from "Train At Home | Nike Strength" (7.4% CTR, 93 ATCs)</li>
+            <li>Claire's tagline woven into the body text as the anchor statement</li>
+            <li>Image: person mid-workout in their home gym, focused, purposeful - not posing</li>
+            <li>Identity messaging ("if you already train") targets the active gym-goer, not beginners</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  GAF Brand Promise Ad Mockups | Prepared by Gary | May 2026<br>
+  Informed by Meta Ads performance data (last 90 days) | All concepts require final creative production
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: document.querySelector('.nav-bar').offsetTop, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

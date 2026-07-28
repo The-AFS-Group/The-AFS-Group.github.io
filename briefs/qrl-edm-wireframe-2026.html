@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRL EDM Wireframe - Money Can't Buy 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --maroon: #6B0F24;
+      --maroon-light: #8A1E3A;
+      --maroon-dark: #4A0A19;
+      --gold: #C4A84D;
+      --gold-light: #E8D48A;
+      --white: #FFFFFF;
+      --off-white: #F5F3F0;
+      --grey-light: #E8E8E8;
+      --grey-mid: #999999;
+      --grey-dark: #333333;
+      --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+      --font-body: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      background: #E0E0E0;
+      color: var(--grey-dark);
+      padding: 40px 20px;
+    }
+
+    .page-header {
+      max-width: 700px;
+      margin: 0 auto 24px;
+      text-align: center;
+    }
+
+    .page-header h1 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--grey-dark);
+      margin-bottom: 4px;
+    }
+
+    .page-header p {
+      font-size: 13px;
+      color: var(--grey-mid);
+    }
+
+    .email-container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+    }
+
+    /* Header bar */
+    .email-header {
+      background: var(--maroon);
+      padding: 20px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo-placeholder {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--white);
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+    }
+
+    .logo-box {
+      width: 40px;
+      height: 40px;
+      border: 2px solid rgba(255,255,255,0.5);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+    }
+
+    .partner-divider {
+      color: rgba(255,255,255,0.3);
+      font-size: 18px;
+      margin: 0 4px;
+    }
+
+    /* Hero image area */
+    .hero-image {
+      width: 100%;
+      height: 280px;
+      background: linear-gradient(135deg, var(--maroon-dark) 0%, var(--maroon) 50%, var(--maroon-light) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--white);
+      position: relative;
+    }
+
+    .hero-image .image-label {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      opacity: 0.5;
+      margin-bottom: 12px;
+    }
+
+    .hero-image .image-desc {
+      font-family: var(--font-body);
+      font-size: 14px;
+      opacity: 0.7;
+      text-align: center;
+      max-width: 300px;
+      line-height: 1.5;
+    }
+
+    .hero-image .photo-icon {
+      width: 48px;
+      height: 48px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+
+    .hero-image .photo-icon svg {
+      width: 24px;
+      height: 24px;
+      fill: rgba(255,255,255,0.5);
+    }
+
+    /* Content sections */
+    .section {
+      padding: 32px;
+    }
+
+    .section + .section {
+      border-top: 1px solid var(--grey-light);
+    }
+
+    .section-label {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--maroon);
+      margin-bottom: 12px;
+    }
+
+    .section h2 {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--grey-dark);
+      margin-bottom: 12px;
+      line-height: 1.3;
+    }
+
+    .section p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 16px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: var(--maroon);
+      color: var(--white);
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 14px 32px;
+      border-radius: 4px;
+      text-decoration: none;
+      margin-top: 8px;
+    }
+
+    .cta-button.secondary {
+      background: var(--gold);
+      color: var(--maroon-dark);
+    }
+
+    /* Product image placeholder */
+    .product-image {
+      width: 100%;
+      height: 200px;
+      background: var(--off-white);
+      border: 2px dashed var(--grey-light);
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .product-image .image-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--grey-mid);
+      margin-top: 8px;
+    }
+
+    .product-image .image-desc {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+
+    /* Prize list */
+    .prize-list {
+      background: var(--off-white);
+      border-radius: 8px;
+      padding: 20px 24px;
+      margin-bottom: 20px;
+    }
+
+    .prize-list h3 {
+      font-family: var(--font-display);
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--maroon);
+      margin-bottom: 12px;
+    }
+
+    .prize-item {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #555;
+      padding-left: 16px;
+      position: relative;
+      margin-bottom: 4px;
+    }
+
+    .prize-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 8px;
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    /* Divider */
+    .section-divider {
+      text-align: center;
+      padding: 0 32px;
+    }
+
+    .section-divider hr {
+      border: none;
+      border-top: 1px solid var(--grey-light);
+    }
+
+    /* Footer */
+    .email-footer {
+      background: var(--maroon-dark);
+      padding: 24px 32px;
+      text-align: center;
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      line-height: 1.8;
+    }
+
+    .email-footer a {
+      color: rgba(255,255,255,0.7);
+      text-decoration: underline;
+    }
+
+    .footer-logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 16px;
+    }
+
+    .footer-logo {
+      width: 60px;
+      height: 30px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 700;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* Wireframe annotation */
+    .annotation {
+      max-width: 700px;
+      margin: 24px auto 0;
+      padding: 16px 20px;
+      background: #FFF9E6;
+      border: 1px solid #E8D48A;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.6;
+      color: #666;
+    }
+
+    .annotation strong {
+      color: var(--grey-dark);
+    }
+
+    .annotation ul {
+      margin: 8px 0 0 16px;
+    }
+
+    .annotation li {
+      margin-bottom: 4px;
+    }
+
+    /* Brief Section */
+    .brief-container {
+      max-width: 700px;
+      margin: 0 auto 40px;
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    }
+
+    .brief-header {
+      background: var(--maroon);
+      padding: 28px 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brief-header h2 {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin: 0;
+    }
+
+    .brief-header .brief-tag {
+      font-family: var(--font-display);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--gold);
+      background: rgba(196,168,77,0.15);
+      padding: 5px 12px;
+      border-radius: 3px;
+    }
+
+    .brief-body {
+      padding: 36px;
+    }
+
+    .brief-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--grey-light);
+    }
+
+    .brief-meta-item {
+      font-size: 12px;
+    }
+
+    .brief-meta-item .meta-label {
+      font-family: var(--font-display);
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--grey-mid);
+      margin-bottom: 4px;
+    }
+
+    .brief-meta-item .meta-value {
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--grey-dark);
+    }
+
+    .brief-section {
+      margin-bottom: 28px;
+    }
+
+    .brief-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .brief-section-title {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--maroon);
+      margin-bottom: 10px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid var(--maroon);
+      display: inline-block;
+    }
+
+    .brief-section p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: #555;
+      margin-bottom: 10px;
+    }
+
+    .brief-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .brief-section p strong {
+      color: var(--grey-dark);
+    }
+
+    .brief-callout {
+      background: #FFF5F5;
+      border-left: 3px solid var(--maroon);
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--maroon-dark);
+    }
+
+    .subject-lines {
+      list-style: none;
+      padding: 0;
+      margin: 8px 0;
+    }
+
+    .subject-lines li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #555;
+      padding: 6px 0 6px 28px;
+      position: relative;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .subject-lines li:last-child {
+      border-bottom: none;
+    }
+
+    .subject-lines li .sl-num {
+      position: absolute;
+      left: 0;
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--maroon);
+    }
+
+    .messaging-block {
+      background: var(--off-white);
+      border-radius: 6px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+
+    .messaging-block:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .messaging-block h4 {
+      font-family: var(--font-display);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--maroon);
+      margin-bottom: 8px;
+    }
+
+    .messaging-block p {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .messaging-block .cta-label {
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      background: var(--maroon);
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 3px;
+      margin-top: 4px;
+      letter-spacing: 0.06em;
+    }
+
+    .brief-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .brief-list li {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #555;
+      padding: 4px 0 4px 18px;
+      position: relative;
+    }
+
+    .brief-list li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 11px;
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    .brief-divider {
+      max-width: 700px;
+      margin: 0 auto 32px;
+      text-align: center;
+      position: relative;
+    }
+
+    .brief-divider::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      height: 1px;
+      background: var(--grey-light);
+    }
+
+    .brief-divider span {
+      position: relative;
+      background: #E0E0E0;
+      padding: 0 20px;
+      font-family: var(--font-display);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--grey-mid);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header">
+    <h1>QRL EDM Brief + Wireframe - Money Can't Buy 2026</h1>
+    <p>Brief and layout reference for QRL design team. Content and imagery to be adapted to QRL email template.</p>
+  </div>
+
+  <!-- BRIEF SECTION -->
+  <div class="brief-container">
+    <div class="brief-header">
+      <h2>EDM Brief for QRL Team</h2>
+      <div class="brief-tag">Maroons Members Database</div>
+    </div>
+    <div class="brief-body">
+
+      <div class="brief-meta" style="grid-template-columns: 1fr 1fr 1fr 1fr;">
+        <div class="brief-meta-item">
+          <div class="meta-label">Prepared By</div>
+          <div class="meta-value">Gym and Fitness / Revel</div>
+        </div>
+        <div class="brief-meta-item">
+          <div class="meta-label">Send To</div>
+          <div class="meta-value">QLD Maroons Members Database</div>
+        </div>
+        <div class="brief-meta-item">
+          <div class="meta-label">Send Date</div>
+          <div class="meta-value">Week of June 16, 2026</div>
+        </div>
+        <div class="brief-meta-item">
+          <div class="meta-label">Designed By</div>
+          <div class="meta-value">QRL Design Team</div>
+        </div>
+      </div>
+
+      <!-- Background -->
+      <div class="brief-section">
+        <div class="brief-section-title">Background / Objective</div>
+        <p>As part of the Gym and Fitness / Revel partnership with the Queensland Maroons, we have one EDM feature to promote our products and competition to the Maroons Members database. This brief outlines the content, messaging, and structure for your design team to work from.</p>
+        <p>The suggested angle is introducing Gym and Fitness (Official Gym Equipment Supplier) and Revel (Official Recovery Partner) as official partners, with key focus on the official QRL bumper plates with CTA to buy on the Gym and Fitness website, plus entry into our Money Can't Buy competition.</p>
+        <p>We'll provide imagery and product shots for use in the email. Camp photography of players using the plates is preferred where available.</p>
+        <div class="brief-callout">
+          <strong>Important:</strong> The Money Can't Buy giveaway is run by Gym and Fitness and Revel, not QRL. QRL is providing some of the prizes. Please frame accordingly in the email.
+        </div>
+      </div>
+
+      <!-- Subject Lines -->
+      <div class="brief-section">
+        <div class="brief-section-title">Subject Line Options</div>
+        <ol class="subject-lines">
+          <li><span class="sl-num">1.</span> Meet the official partners behind the Maroons' training gear</li>
+          <li><span class="sl-num">2.</span> Exclusive Queensland Maroons Bumper Plates - now available</li>
+          <li><span class="sl-num">3.</span> The gear behind the Maroons' Origin campaign</li>
+        </ol>
+      </div>
+
+      <!-- Purpose -->
+      <div class="brief-section">
+        <div class="brief-section-title">Purpose</div>
+        <p>Introduce Gym and Fitness (Official Gym Equipment Supplier) and Revel (Official Recovery Partner) as official partners of the Queensland Maroons. Drive traffic to the QRL Bumper Plates product listing and the Gym and Fitness / Revel Money Can't Buy competition entry.</p>
+      </div>
+
+      <!-- Key Messaging -->
+      <div class="brief-section">
+        <div class="brief-section-title">Suggested Copy (adapt to your template and tone)</div>
+
+        <div class="messaging-block">
+          <h4>Section 1 - Partner Introduction</h4>
+          <p>Gym and Fitness and Revel are proud official partners of the Queensland Maroons for the 2026 Origin Campaign. As the Official Gym Equipment Supplier and Official Recovery Partner, they're helping the squad prepare for battle on and off the field.</p>
+        </div>
+
+        <div class="messaging-block">
+          <h4>Section 2 - Queensland Maroons Bumper Plates (Hero Product)</h4>
+          <p>Train with the same plates the boys use at Camp Maroon. The official Queensland Maroons Bumper Plates are now available to pre-order exclusively through Gym and Fitness. Limited run, once they're gone, they're gone.</p>
+          <div class="cta-label">CTA: PRE-ORDER NOW [GAF product listing URL - TBC]</div>
+        </div>
+
+        <div class="messaging-block">
+          <h4>Section 3 - Revel Recovery (Official Recovery Partner)</h4>
+          <p>As the Official Recovery Partner to the Queensland Maroons, Revel is helping the squad recover faster between sessions with infrared saunas and ice baths. The same recovery tools used by the Maroons are available for your home.</p>
+          <div class="cta-label">CTA: SHOP REVEL [Revel website URL - TBC]</div>
+        </div>
+
+        <div class="messaging-block">
+          <h4>Section 4 - Money Can't Buy Experience (GAF + Revel Giveaway)</h4>
+          <p>Gym and Fitness and Revel are giving fans the chance to win the kind of Origin experience that no amount of money can get you. Gold seats at the final game. Sideline access at Camp Maroon. Signed memorabilia. This is as close to the action as it gets.</p>
+          <p><strong>Grand Prize:</strong> 4x Gold Tickets to Game III in Brisbane (July 8th), signed match ball, signed jersey, and a set of QRL bumper plates.</p>
+          <p><strong>Runner-Up Prizes:</strong> 2x Camp Maroon Sideline Experience Tickets each for two runners-up.</p>
+          <p>Free to enter. Competition closes June 23. Winners drawn June 24th.</p>
+          <div class="cta-label">CTA: ENTER TO WIN [Gleam competition link - TBC]</div>
+        </div>
+      </div>
+
+      <!-- Images -->
+      <div class="brief-section">
+        <div class="brief-section-title">Images (Gym and Fitness / Revel will provide)</div>
+        <ul class="brief-list">
+          <li>Early product shots of the Queensland Maroons Bumper Plates</li>
+          <li>Camp photos of players using the plates (pending availability from camp content)</li>
+          <li>Revel recovery imagery (Female Maroons team using Revel saunas at Camp Maroon)</li>
+        </ul>
+      </div>
+
+      <!-- Notes -->
+      <div class="brief-section">
+        <div class="brief-section-title">Notes for QRL Design Team</div>
+        <ul class="brief-list">
+          <li>Please include both Gym and Fitness and Revel logos</li>
+          <li>Both CTAs should be prominent buttons</li>
+          <li>The Money Can't Buy giveaway is run by Gym and Fitness and Revel, not QRL. Please frame accordingly</li>
+          <li>Happy for QRL to adapt the copy to fit their email template and tone</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="brief-divider">
+    <span>Wireframe Reference Below</span>
+  </div>
+
+  <div class="page-header" style="margin-bottom: 24px;">
+    <h1>EDM Wireframe</h1>
+    <p>Visual layout reference. Content and imagery to be adapted to QRL email template.</p>
+  </div>
+
+  <div class="email-container">
+
+    <!-- HEADER -->
+    <div class="email-header">
+      <div style="display: flex; align-items: center; gap: 20px;">
+        <div style="background: #fff; border-radius: 6px; padding: 6px 12px; display: flex; align-items: center;">
+          <img src="gaf-logo-white.png" alt="Gym and Fitness" style="height: 32px;">
+        </div>
+        <span class="partner-divider">|</span>
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102" alt="Revel" style="height: 28px;">
+      </div>
+    </div>
+
+    <!-- HERO IMAGE -->
+    <div class="hero-image" style="height: auto; padding: 0;">
+      <img src="qrl-hero-image.jpg" alt="Queensland Maroons Bumper Plates on the field at Camp Maroon" style="width: 100%; display: block; object-fit: cover; max-height: 400px;">
+    </div>
+
+    <!-- SECTION 1: PARTNER INTRO -->
+    <div class="section">
+      <div class="section-label">Official Partners</div>
+      <h2>Meet the Team Behind the Maroons' Training Gear</h2>
+      <p>Gym and Fitness and Revel are proud official partners of the Queensland Maroons for the 2026 Origin Campaign. As the Official Gym Equipment Supplier and Official Recovery Partner, we're helping the squad prepare for battle on and off the field.</p>
+    </div>
+
+    <!-- SECTION 2: BUMPER PLATES -->
+    <div class="section" style="background: var(--off-white);">
+      <div class="section-label">Exclusive Product</div>
+      <h2>Queensland Maroons Bumper Plates</h2>
+      <div style="margin-bottom: 20px;">
+        <img src="qrl-product-image.jpg" alt="Queensland Maroons Bumper Plates loaded on Force USA rack at Camp Maroon" style="width: 100%; display: block; border-radius: 8px; object-fit: cover; max-height: 300px;">
+      </div>
+      <p>Train with the same plates the boys use at Camp Maroon. The official Queensland Maroons Bumper Plates are now available to pre-order exclusively through Gym and Fitness. Limited run, once they're gone, they're gone.</p>
+      <a href="#" class="cta-button">PRE-ORDER NOW</a>
+    </div>
+
+    <!-- SECTION 3: REVEL RECOVERY -->
+    <div class="section">
+      <div class="section-label">Official Recovery Partner</div>
+      <h2>Recovery That Keeps the Maroons Ready</h2>
+      <div style="margin-bottom: 20px;">
+        <div class="product-image" style="height: 260px;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="#ccc"><path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/></svg>
+          <div class="image-label">Photography</div>
+          <div class="image-desc">Female Maroons team using Revel saunas at Camp Maroon</div>
+        </div>
+      </div>
+      <p>As the Official Recovery Partner to the Queensland Maroons, Revel is helping the squad recover faster between sessions with our infrared saunas and ice baths. The same recovery tools used by the Maroons are available for your home.</p>
+      <a href="#" class="cta-button" style="background: var(--grey-dark);">SHOP REVEL</a>
+    </div>
+
+    <!-- SECTION 4: COMPETITION -->
+    <div class="section">
+      <div class="section-label">Giveaway</div>
+      <h2>Win a Money Can't Buy Maroons Experience</h2>
+      <p>Gym and Fitness and Revel are giving you the chance to win the kind of Origin experience that no amount of money can get you. Gold seats at the final game. Sideline access at Camp Maroon. Signed memorabilia. This is as close to the action as it gets.</p>
+
+      <div class="prize-list">
+        <h3>Grand Prize</h3>
+        <div class="prize-item">4x Gold Tickets to State of Origin Game III in Brisbane - July 8th (18+)</div>
+        <div class="prize-item">1x Signed Queensland Maroons Match Ball</div>
+        <div class="prize-item">1x Signed Queensland Maroons Jersey</div>
+        <div class="prize-item">1x Set of Exclusive Queensland Maroons Bumper Plates</div>
+      </div>
+
+      <div class="prize-list">
+        <h3>Runner-Up Prizes</h3>
+        <div class="prize-item">2x Camp Maroon Sideline Experience Tickets (Runner-Up #1)</div>
+        <div class="prize-item">2x Camp Maroon Sideline Experience Tickets (Runner-Up #2)</div>
+      </div>
+
+      <p>Whether you're a die-hard Queenslander or just love a great night of footy, this is one you don't want to miss. Free to enter. Competition closes June 23, 2026. Winners drawn June 24th.</p>
+      <a href="#" class="cta-button secondary">ENTER TO WIN</a>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="email-footer">
+      <div class="footer-logos">
+        <div style="background: #fff; border-radius: 4px; padding: 4px 10px; display: flex; align-items: center;">
+          <img src="gaf-logo-white.png" alt="Gym and Fitness" style="height: 24px;">
+        </div>
+        <img src="https://cdn.shopify.com/s/files/1/0802/6279/1481/files/REVEL_Logo-White-02.png?v=1691241102" alt="Revel" style="height: 22px;">
+      </div>
+      <div>
+        Official Gym Equipment Supplier &amp; Official Recovery Partner<br>
+        to the Queensland Maroons<br><br>
+        <a href="#">Unsubscribe</a> &nbsp;|&nbsp; <a href="#">Privacy Policy</a>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="annotation">
+    <strong>Notes for QRL Design Team:</strong>
+    <ul>
+      <li>Please include Gym and Fitness, Revel, and QRL logos in header and footer</li>
+      <li>Hero image: Camp 1 photography of players using bumper plates (we can provide early product shots of the plates as well)</li>
+      <li>Revel section image: Female Maroons team using Revel saunas at Camp Maroon (we'll provide)</li>
+      <li>CTA #1 (PRE-ORDER NOW) links to GAF product listing [URL TBC]</li>
+      <li>CTA #2 (ENTER TO WIN) links to Gleam competition page [URL TBC]</li>
+      <li><strong>The Money Can't Buy giveaway is run by Gym and Fitness and Revel, not QRL.</strong> QRL is providing some of the prizes. Please frame accordingly.</li>
+      <li>Happy for QRL to adapt copy and layout to fit your email template and tone</li>
+    </ul>
+  </div>
+
+</body>
+</html>

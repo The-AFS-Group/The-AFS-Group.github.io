@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Experimentation Engine</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --orange: #F26422;
+    --orange-soft: #FDE9DD;
+    --orange-light: #FEF4ED;
+    --orange-hover: #D85418;
+    --black: #1e1f21;
+    --white: #FFFFFF;
+    --bg: #f8f8fa;
+    --grey-50: #FAFAFA;
+    --grey-100: #F0F0F0;
+    --grey-200: #E2E2E2;
+    --grey-300: #C9C9C9;
+    --grey-400: #A0A0A0;
+    --grey-500: #717171;
+    --grey-600: #555555;
+    --grey-700: #424242;
+    --grey-800: #2B2B2B;
+    --grey-900: #1A1A1A;
+    --success: #2E8B4A;
+    --success-soft: #E7F3EB;
+    --success-light: #dcfce7;
+    --warning: #D99100;
+    --warning-soft: #FAF1DA;
+    --danger: #C23B22;
+    --danger-soft: #F8E3DE;
+    --info: #2F6BAF;
+    --info-soft: #E4EEF8;
+    --font-display: 'Montserrat', 'Helvetica Neue', Arial, sans-serif;
+    --font-sans: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
+    --shadow-sm: 0 1px 3px 0 rgba(0,0,0,0.06), 0 1px 2px -1px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--black);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--white);
+    border-bottom: 1px solid var(--grey-200);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .header h1 {
+    font: 800 18px/1 var(--font-display);
+    color: var(--black);
+    letter-spacing: -0.01em;
+  }
+  .header h1 span { color: var(--orange); }
+  .header-meta {
+    font: 400 12px/1 var(--font-sans);
+    color: var(--grey-500);
+    margin-top: 3px;
+  }
+  .gaf-logo { height: 32px; }
+  .refresh-btn {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    color: var(--grey-600);
+    font: 600 12px/1 var(--font-display);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .refresh-btn:hover { background: var(--grey-50); border-color: var(--grey-300); }
+  .refresh-btn.loading { opacity: 0.5; pointer-events: none; }
+
+  .container { max-width: 1280px; margin: 0 auto; padding: 24px 32px; }
+
+  /* CARDS */
+  .card {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--grey-100);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .card-header-left { display: flex; align-items: center; gap: 10px; }
+  .card-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+  .card-icon.orange { background: var(--orange); color: var(--white); }
+  .card-icon.green { background: var(--success); color: var(--white); }
+  .card-icon.blue { background: var(--info); color: var(--white); }
+  .card-icon.grey { background: var(--grey-700); color: var(--white); }
+  .card-title {
+    font: 700 15px/1.2 var(--font-display);
+    color: var(--black);
+  }
+  .card-body { padding: 20px; }
+
+  /* STAT ROW */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  .stat-card {
+    background: var(--white);
+    border: 1px solid var(--grey-200);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat-label {
+    font: 400 12px/1.3 var(--font-sans);
+    color: var(--grey-500);
+    margin-bottom: 6px;
+  }
+  .stat-value {
+    font: 800 32px/1 var(--font-display);
+    color: var(--black);
+    letter-spacing: -0.02em;
+  }
+  .stat-value.orange { color: var(--orange); }
+  .stat-sub {
+    font: 400 11px/1 var(--font-sans);
+    color: var(--grey-400);
+    margin-top: 4px;
+  }
+
+  /* LAYOUT */
+  .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .grid-equal { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+
+  /* PIPELINE */
+  .pipeline {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 2px;
+    background: var(--grey-200);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .pipe-col {
+    background: var(--white);
+    padding: 20px 12px;
+    text-align: center;
+  }
+  .pipe-label {
+    font: 600 10px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--grey-500);
+    margin-bottom: 8px;
+  }
+  .pipe-count {
+    font: 900 32px/1 var(--font-display);
+    color: var(--black);
+  }
+  .pipe-col.active { background: var(--orange-light); }
+  .pipe-col.active .pipe-label { color: var(--orange); }
+  .pipe-col.active .pipe-count { color: var(--orange); }
+
+  /* PILLS */
+  .pill {
+    display: inline-block;
+    font: 600 10px/1 var(--font-display);
+    letter-spacing: 0.04em;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .pill-orange { background: var(--orange-soft); color: var(--orange); }
+  .pill-green { background: var(--success-light); color: var(--success); }
+  .pill-grey { background: var(--grey-100); color: var(--grey-600); }
+  .pill-red { background: var(--danger-soft); color: var(--danger); }
+  .pill-blue { background: var(--info-soft); color: var(--info); }
+
+  /* TASK LIST */
+  .task-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .task-item:last-child { border-bottom: none; }
+  .task-name {
+    font: 600 13px/1.3 var(--font-display);
+    color: var(--black);
+    margin-bottom: 6px;
+  }
+  .task-pills { display: flex; gap: 4px; flex-wrap: wrap; }
+
+  /* OWNER BARS */
+  .owner-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .owner-row:last-child { border-bottom: none; }
+  .owner-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: 700 11px/1 var(--font-display);
+    color: var(--white);
+    flex-shrink: 0;
+  }
+  .owner-name {
+    font: 600 13px/1 var(--font-display);
+    color: var(--black);
+    min-width: 60px;
+  }
+  .owner-bar-track {
+    flex: 1;
+    height: 6px;
+    background: var(--grey-100);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .owner-bar-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.5s ease;
+  }
+  .owner-count {
+    font: 700 13px/1 var(--font-display);
+    color: var(--grey-500);
+    min-width: 20px;
+    text-align: right;
+  }
+
+  /* FUNNEL ROWS */
+  .funnel-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 0;
+  }
+  .funnel-label {
+    font: 600 11px/1 var(--font-display);
+    color: var(--grey-500);
+    min-width: 90px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .funnel-bar-track {
+    flex: 1;
+    height: 20px;
+    background: var(--grey-100);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .funnel-bar-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding-right: 8px;
+    transition: width 0.5s ease;
+  }
+  .funnel-count {
+    font: 700 10px/1 var(--font-display);
+    color: var(--white);
+  }
+
+  /* CHANNEL GRID */
+  .channel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+  }
+  .channel-tile {
+    background: var(--grey-50);
+    border: 1px solid var(--grey-200);
+    border-radius: 10px;
+    padding: 16px 12px;
+    text-align: center;
+    transition: all 0.15s;
+  }
+  .channel-tile.active {
+    border-color: var(--orange);
+    background: var(--orange-light);
+  }
+  .channel-count {
+    font: 800 24px/1 var(--font-display);
+    color: var(--grey-400);
+    margin-bottom: 4px;
+  }
+  .channel-tile.active .channel-count { color: var(--orange); }
+  .channel-name {
+    font: 600 10px/1 var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--grey-500);
+  }
+
+  /* ICE ROWS */
+  .ice-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--grey-100);
+  }
+  .ice-row:last-child { border-bottom: none; }
+  .ice-score {
+    font: 900 16px/1 var(--font-display);
+    color: var(--orange);
+    min-width: 32px;
+    text-align: center;
+    background: var(--orange-light);
+    padding: 6px 8px;
+    border-radius: 6px;
+  }
+  .ice-name {
+    font: 600 13px/1.3 var(--font-display);
+    color: var(--black);
+    flex: 1;
+  }
+
+  /* LEARNINGS */
+  .learning-card {
+    background: var(--grey-50);
+    border: 1px solid var(--grey-200);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 10px;
+    border-left: 3px solid var(--grey-300);
+  }
+  .learning-card.win { border-left-color: var(--success); background: #f0fdf4; }
+  .learning-card.loss { border-left-color: var(--danger); background: #fef2f2; }
+  .learning-title {
+    font: 700 13px/1.3 var(--font-display);
+    color: var(--black);
+    margin-bottom: 4px;
+  }
+  .learning-body {
+    font: 400 12px/1.5 var(--font-sans);
+    color: var(--grey-600);
+  }
+
+  /* EMPTY STATE */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--grey-400);
+  }
+  .empty-icon { font-size: 28px; margin-bottom: 10px; opacity: 0.3; }
+  .empty-state p { font: 400 13px/1.5 var(--font-sans); color: var(--grey-500); }
+
+  /* GAP ALERT */
+  .gap-alert {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--warning-soft);
+    border: 1px solid #f0d68a;
+    border-radius: 8px;
+    font: 400 12px/1.4 var(--font-sans);
+    color: var(--grey-700);
+  }
+  .gap-alert strong { color: var(--warning); font-weight: 600; }
+
+  /* LINK */
+  .asana-link {
+    font: 600 11px/1 var(--font-display);
+    color: var(--orange);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .asana-link:hover { color: var(--orange-hover); text-decoration: underline; }
+
+  /* LOADING */
+  .loading-state {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 80px;
+    color: var(--grey-400);
+    font: 600 14px/1 var(--font-display);
+  }
+
+  @media (max-width: 900px) {
+    .stats-grid { grid-template-columns: repeat(3, 1fr); }
+    .grid-2, .grid-equal { grid-template-columns: 1fr; }
+    .channel-grid { grid-template-columns: repeat(2, 1fr); }
+    .container { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" class="gaf-logo" alt="Gym and Fitness">
+    <div>
+      <h1>Experimentation <span>Engine</span></h1>
+      <div class="header-meta" id="lastUpdated">Loading...</div>
+    </div>
+  </div>
+  <button class="refresh-btn" id="refreshBtn" onclick="loadData()">Refresh</button>
+</div>
+
+<div class="container">
+  <div id="dashboard">
+    <div class="loading-state">Loading experiment data...</div>
+  </div>
+</div>
+
+<script>
+const API = 'https://asana-api-proxy.josh-03c.workers.dev';
+const PROJECT = '1215988556469556';
+
+const OWNER_COLORS = {
+  'Levi': '#2E8B4A',
+  'Joe': '#E65100',
+  'Lionel': '#1565C0',
+};
+const OWNER_INITIALS = {
+  'Levi': 'LF',
+  'Joe': 'JS',
+  'Lionel': 'LG',
+};
+
+const SECTION_ORDER = ['Backlog', 'This Sprint', 'Running', 'Analysing', 'Learnings'];
+
+async function fetchJSON(path) {
+  const r = await fetch(`${API}/${path}`);
+  if (!r.ok) throw new Error(`API error: ${r.status}`);
+  return (await r.json()).data;
+}
+
+function getField(task, name) {
+  const cf = (task.custom_fields || []).find(f => f.name === name);
+  if (!cf) return null;
+  if (cf.enum_value) return cf.enum_value.name;
+  if (cf.number_value !== null && cf.number_value !== undefined) return cf.number_value;
+  return null;
+}
+
+function getSection(task) {
+  const m = task.memberships || [];
+  return m.length > 0 && m[0].section ? m[0].section.name : 'Unknown';
+}
+
+function render(tasks) {
+  const sections = {};
+  SECTION_ORDER.forEach(s => sections[s] = []);
+  tasks.forEach(t => {
+    const s = getSection(t);
+    if (sections[s]) sections[s].push(t);
+  });
+
+  const total = tasks.length;
+  const backlog = sections['Backlog'].length;
+  const sprint = sections['This Sprint'].length;
+  const running = sections['Running'].length;
+  const analysing = sections['Analysing'].length;
+  const learnings = sections['Learnings'].length;
+  const active = sprint + running;
+  const completed = analysing + learnings;
+
+  const ownerCounts = {};
+  tasks.forEach(t => {
+    const o = getField(t, 'Owner') || 'Unassigned';
+    ownerCounts[o] = (ownerCounts[o] || 0) + 1;
+  });
+
+  const FUNNEL_ORDER = ['Discovery', 'Interest', 'Appraisal', 'Confirmation', 'Conversion', 'Advocacy'];
+  const funnelCounts = {};
+  FUNNEL_ORDER.forEach(f => funnelCounts[f] = 0);
+  tasks.forEach(t => {
+    const f = getField(t, 'Funnel Stage');
+    if (f) funnelCounts[f] = (funnelCounts[f] || 0) + 1;
+  });
+
+  const channelCounts = {};
+  tasks.forEach(t => {
+    const c = getField(t, 'Channel') || 'Other';
+    channelCounts[c] = (channelCounts[c] || 0) + 1;
+  });
+
+  const backlogSorted = [...sections['Backlog']].sort((a, b) =>
+    (getField(b, 'ICE Score') || 0) - (getField(a, 'ICE Score') || 0)
+  );
+
+  const activeTasks = [...sections['This Sprint'], ...sections['Running']];
+  const learningTasks = [...sections['Analysing'], ...sections['Learnings']];
+  const maxFunnel = Math.max(...Object.values(funnelCounts), 1);
+  const gaps = FUNNEL_ORDER.filter(f => !funnelCounts[f]);
+
+  document.getElementById('dashboard').innerHTML = `
+    <!-- STATS -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-label">Total Experiments</div>
+        <div class="stat-value">${total}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Active Now</div>
+        <div class="stat-value orange">${active}</div>
+        <div class="stat-sub">Sprint + Running</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">In Backlog</div>
+        <div class="stat-value">${backlog}</div>
+        <div class="stat-sub">Queued for future sprints</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Completed</div>
+        <div class="stat-value">${completed}</div>
+        <div class="stat-sub">Analysing + Learnings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Team Members</div>
+        <div class="stat-value">${Object.keys(ownerCounts).length}</div>
+      </div>
+    </div>
+
+    <!-- PIPELINE -->
+    <div class="card" style="margin-bottom: 20px;">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon orange">&#9654;</div>
+          <div class="card-title">Pipeline</div>
+        </div>
+        <a href="https://app.asana.com/1/12600476210818/project/${PROJECT}" target="_blank" class="asana-link">Open in Asana &#8599;</a>
+      </div>
+      <div class="card-body" style="padding: 0;">
+        <div class="pipeline">
+          ${SECTION_ORDER.map(s => {
+            const count = sections[s].length;
+            const isActive = s === 'This Sprint' || s === 'Running';
+            return `<div class="pipe-col ${isActive ? 'active' : ''}">
+              <div class="pipe-label">${s}</div>
+              <div class="pipe-count">${count}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- ACTIVE -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon green">&#9889;</div>
+            <div class="card-title">Active Experiments</div>
+          </div>
+          <span class="pill pill-orange">${active} running</span>
+        </div>
+        <div class="card-body">
+          ${activeTasks.length > 0 ? activeTasks.map(t => {
+            const owner = getField(t, 'Owner') || '?';
+            const channel = getField(t, 'Channel') || '';
+            const funnel = getField(t, 'Funnel Stage') || '';
+            const section = getSection(t);
+            const pillClass = section === 'Running' ? 'pill-green' : 'pill-orange';
+            return `<div class="task-item">
+              <div class="task-name">${t.name}</div>
+              <div class="task-pills">
+                <span class="pill ${pillClass}">${section}</span>
+                <span class="pill pill-grey">${owner}</span>
+                <span class="pill pill-grey">${channel}</span>
+                <span class="pill pill-blue">${funnel}</span>
+              </div>
+            </div>`;
+          }).join('') : `<div class="empty-state">
+            <div class="empty-icon">&#9881;</div>
+            <p>No active experiments. Move cards from Backlog to This Sprint to begin.</p>
+          </div>`}
+        </div>
+      </div>
+
+      <!-- BY OWNER -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon grey">&#9787;</div>
+            <div class="card-title">By Owner</div>
+          </div>
+        </div>
+        <div class="card-body">
+          ${Object.entries(ownerCounts).sort((a,b) => b[1]-a[1]).map(([name, count]) => {
+            const pct = Math.round((count / total) * 100);
+            const color = OWNER_COLORS[name] || '#717171';
+            const initials = OWNER_INITIALS[name] || name.charAt(0);
+            return `<div class="owner-row">
+              <div class="owner-avatar" style="background: ${color};">${initials}</div>
+              <div class="owner-name">${name}</div>
+              <div class="owner-bar-track">
+                <div class="owner-bar-fill" style="width: ${pct}%; background: ${color};"></div>
+              </div>
+              <div class="owner-count">${count}</div>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-equal">
+      <!-- FUNNEL -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon orange">&#9660;</div>
+            <div class="card-title">Funnel Coverage</div>
+          </div>
+        </div>
+        <div class="card-body">
+          ${FUNNEL_ORDER.map(f => {
+            const count = funnelCounts[f] || 0;
+            const pct = Math.round((count / maxFunnel) * 100);
+            return `<div class="funnel-row">
+              <div class="funnel-label">${f}</div>
+              <div class="funnel-bar-track">
+                <div class="funnel-bar-fill" style="width: ${count > 0 ? Math.max(pct, 15) : 0}%;">
+                  ${count > 0 ? `<span class="funnel-count">${count}</span>` : ''}
+                </div>
+              </div>
+            </div>`;
+          }).join('')}
+          ${gaps.length > 0 ? `<div class="gap-alert">
+            <strong>Gap:</strong> ${gaps.join(', ')} ${gaps.length === 1 ? 'has' : 'have'} no experiments yet.
+          </div>` : ''}
+        </div>
+      </div>
+
+      <!-- CHANNELS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon blue">&#9673;</div>
+            <div class="card-title">Channel Spread</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="channel-grid">
+            ${['Website', 'Ads', 'Social', 'Email', 'Blog', 'Video', 'SEO', 'Community'].map(c => {
+              const count = channelCounts[c] || 0;
+              return `<div class="channel-tile ${count > 0 ? 'active' : ''}">
+                <div class="channel-count">${count}</div>
+                <div class="channel-name">${c}</div>
+              </div>`;
+            }).join('')}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- ICE BACKLOG -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon orange">&#9733;</div>
+            <div class="card-title">Backlog (ICE Ranked)</div>
+          </div>
+          <span class="pill pill-grey">${backlog} queued</span>
+        </div>
+        <div class="card-body">
+          ${backlogSorted.length > 0 ? backlogSorted.map(t => {
+            const ice = getField(t, 'ICE Score') || 0;
+            const owner = getField(t, 'Owner') || '?';
+            const channel = getField(t, 'Channel') || '';
+            return `<div class="ice-row">
+              <div class="ice-score">${ice}</div>
+              <div class="ice-name">${t.name}</div>
+              <div style="display: flex; gap: 4px;">
+                <span class="pill pill-grey">${owner}</span>
+                <span class="pill pill-grey">${channel}</span>
+              </div>
+            </div>`;
+          }).join('') : `<div class="empty-state"><p>Backlog empty. Time to brainstorm.</p></div>`}
+        </div>
+      </div>
+
+      <!-- LEARNINGS -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="card-icon green">&#9998;</div>
+            <div class="card-title">Learnings</div>
+          </div>
+          <span class="pill pill-grey">${learningTasks.length} recorded</span>
+        </div>
+        <div class="card-body">
+          ${learningTasks.length > 0 ? learningTasks.map(t => {
+            const owner = getField(t, 'Owner') || '?';
+            return `<div class="learning-card ${t.completed ? 'win' : ''}">
+              <div class="learning-title">${t.name}</div>
+              <div class="learning-body">Awaiting write-up...</div>
+              <div style="margin-top: 6px;"><span class="pill pill-grey">${owner}</span></div>
+            </div>`;
+          }).join('') : `<div class="empty-state">
+            <div class="empty-icon">&#128218;</div>
+            <p>No learnings yet. Complete your first experiments to build the knowledge base.</p>
+          </div>`}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+async function loadData() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('loading');
+  btn.textContent = 'Loading...';
+  try {
+    const tasks = await fetchJSON(
+      `projects/${PROJECT}/tasks?opt_fields=name,completed,notes,html_notes,custom_fields,memberships.section.name,created_at,modified_at`
+    );
+    render(tasks);
+    document.getElementById('lastUpdated').textContent =
+      `Last updated: ${new Date().toLocaleString('en-AU', { timeZone: 'Australia/Adelaide' })}`;
+  } catch (e) {
+    document.getElementById('dashboard').innerHTML =
+      `<div class="loading-state" style="color: #C23B22;">Failed to load: ${e.message}</div>`;
+  }
+  btn.classList.remove('loading');
+  btn.textContent = 'Refresh';
+}
+
+loadData();
+</script>
+</body>
+</html>

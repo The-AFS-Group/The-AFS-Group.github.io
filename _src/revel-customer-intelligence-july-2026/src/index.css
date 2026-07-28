@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --font-editorial: "Playfair Display", Georgia, serif;
+}
+
+:root {
+  /* Revel brand tokens */
+  --revel-green: #25B34B;
+  --revel-green-hover: #1E9A3F;
+  --revel-green-700: #177E33;
+  --revel-sage: #ABB99C;
+  --revel-forest: #485D4D;
+  --revel-success: #2E8B4A;
+  --revel-warning: #D99100;
+  --revel-danger: #C23B22;
+  --revel-info: #2F6BAF;
+
+  /* light (default): white-dominant per 60-30-10 */
+  --color-bg: #FFFFFF;
+  --color-bg-subtle: #FAFAFA;
+  --color-card: #FFFFFF;
+  --color-text: #000000;
+  --color-muted: #555555;
+  --color-faint: #9E9E9E;
+  --color-border: #E2E2E2;
+  --color-nav-bg: rgba(255, 255, 255, 0.96);
+  --color-tooltip-bg: #FFFFFF;
+  --color-chip-bg: #F0F0F0;
+  --color-green-soft: #EAFAEF;
+  --color-green-body: #177E33; /* accessible green at body sizes */
+  --shadow-card: 0 2px 4px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+}
+
+.dark {
+  --color-bg: #000000;
+  --color-bg-subtle: #121212;
+  --color-card: #1F1F1F;
+  --color-text: #FFFFFF;
+  --color-muted: #9E9E9E;
+  --color-faint: #717171;
+  --color-border: #383838;
+  --color-nav-bg: rgba(0, 0, 0, 0.94);
+  --color-tooltip-bg: #1F1F1F;
+  --color-chip-bg: #2A2A2A;
+  --color-green-soft: rgba(37, 179, 75, 0.14);
+  --color-green-body: #2EC45A;
+  --shadow-card: none;
+}

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>VoiceType — Chrome Dictation Extension | The AFS Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2a44; --off-white:#edeae3; --orange:#f26422;
+    --mgrey:#424242; --dgrey:#232323; --white:#fff;
+    --line:#dcd8cf; --muted:#6f6a61;
+    --good-soft:#e7f1ea; --warn-soft:#fdeee4; --info-soft:#e7edf3;
+    --code-bg:#0e2a44; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--off-white);color:var(--dgrey);
+    font-family:'Lato',Tahoma,sans-serif;line-height:1.62;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:'Archivo',Tahoma,sans-serif;color:var(--navy);margin:0}
+  .wrap{max-width:840px;margin:0 auto;padding:0 20px 60px}
+  .topbar{background:var(--white);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;justify-content:space-between;padding:14px 20px}
+  .topbar img{height:34px;display:block}
+  .topbar .tag{font-family:'Archivo';font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange)}
+  header.hero{position:relative;background:var(--navy);color:#fff;padding:52px 0 44px;overflow:hidden}
+  header.hero::after{content:"";position:absolute;right:-60px;bottom:-70px;width:240px;height:240px;
+    background:var(--orange);opacity:.13;clip-path:polygon(100% 0,0 100%,100% 100%)}
+  .hero .wrap{padding-bottom:0;position:relative;z-index:1}
+  .eyebrow{font-family:'Archivo';text-transform:uppercase;letter-spacing:.16em;font-size:12px;font-weight:700;color:var(--orange);margin:0 0 12px}
+  .hero h1{color:#fff;font-size:31px;line-height:1.18;font-weight:800;margin:0 0 12px}
+  .hero p{margin:0 0 22px;color:#cdd6e0;font-size:16.5px;max-width:62ch}
+  .jump{display:flex;flex-wrap:wrap;gap:10px}
+  .jump a{font-family:'Archivo';font-size:13px;font-weight:700;text-decoration:none;color:#fff;
+    background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:7px 15px}
+  .jump a:hover{background:var(--orange);border-color:var(--orange)}
+  .part{margin:40px 0 4px;padding:0}
+  .part .wrap{padding-bottom:0}
+  .part-label{font-family:'Archivo';font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--orange);margin:0 0 4px}
+  .part h2.part-title{font-size:25px;font-weight:800;margin:0;padding-bottom:10px;border-bottom:3px solid var(--orange);display:inline-block}
+  .card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);
+    padding:24px 28px;margin:20px 0;box-shadow:0 1px 3px rgba(14,42,68,.05)}
+  h2{font-size:20px;font-weight:700;margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  h2 .n{width:27px;height:27px;border-radius:7px;background:var(--orange);color:#fff;font-size:14px;
+    display:inline-flex;align-items:center;justify-content:center;font-weight:800;font-family:'Archivo'}
+  h3{font-size:14.5px;margin:20px 0 6px;font-weight:700;color:var(--mgrey)}
+  p{margin:0 0 12px}
+  .lead{font-size:16px;color:var(--mgrey)}
+  ul,ol{margin:0 0 6px;padding-left:22px}
+  li{margin:7px 0}
+  code{background:#f1eee8;border:1px solid var(--line);border-radius:6px;padding:1px 6px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px;color:var(--navy)}
+  pre{background:var(--code-bg);color:#e7eefc;border-radius:10px;padding:15px 16px;overflow-x:auto;
+    font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.8px;line-height:1.55;margin:10px 0}
+  pre .c{color:#8aa0b6}
+  .steps{counter-reset:step;list-style:none;padding:0;margin:8px 0 0}
+  .steps li{counter-increment:step;position:relative;padding:0 0 16px 46px;margin:0}
+  .steps li::before{content:counter(step);position:absolute;left:0;top:-2px;width:30px;height:30px;
+    border-radius:50%;background:var(--orange);color:#fff;font-family:'Archivo';font-weight:700;font-size:14px;
+    display:flex;align-items:center;justify-content:center}
+  .steps li:not(:last-child)::after{content:"";position:absolute;left:15px;top:30px;bottom:0;width:2px;background:var(--line)}
+  .note{border-radius:12px;padding:14px 16px;margin:16px 0;font-size:14.5px;border:1px solid}
+  .note.good{background:var(--good-soft);border-color:#bfddcc;color:#155c40}
+  .note.warn{background:var(--warn-soft);border-color:#f6cbb0;color:#a8430f}
+  .note.info{background:var(--info-soft);border-color:#c5d2df;color:#1d3b59}
+  .note strong{font-weight:700}
+  .pill{display:inline-block;background:var(--info-soft);color:var(--navy);border-radius:999px;
+    padding:2px 11px;font-family:'Archivo';font-size:12px;font-weight:700;margin-left:6px}
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:14px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:'Archivo';color:var(--muted);font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  td code{font-size:12.5px}
+  .ex{background:#f6f4ef;border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;margin:8px 0;font-style:italic;color:var(--mgrey)}
+  details{border:1px solid var(--line);border-radius:10px;padding:4px 16px;margin:12px 0;background:#faf9f5}
+  summary{cursor:pointer;font-weight:700;padding:10px 0;color:var(--mgrey)}
+  .kbd{font-size:13px;color:var(--muted)}
+  .diagram{margin:6px 0 2px}
+  .row{display:flex;align-items:center;gap:14px}
+  .box{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:13px 15px;background:#faf9f5}
+  .box .t{font-family:'Archivo';font-weight:700;font-size:14.5px;margin-bottom:2px;color:var(--navy)}
+  .box .s{font-size:12.5px;color:var(--muted)}
+  .box.client{border-color:#c5d2df;background:var(--info-soft)}
+  .box.worker{border-color:#f6cbb0;background:var(--warn-soft)}
+  .box.shop{border-color:#cfe0d6;background:var(--good-soft)}
+  .arrow{display:flex;flex-direction:column;align-items:center;color:var(--muted);font-size:12px;flex:0 0 auto}
+  .arrow .line{font-size:20px;line-height:1;color:var(--orange)}
+  .tagchip{background:#f1eee8;border:1px solid var(--line);color:var(--navy);border-radius:999px;padding:3px 11px;font-family:'Archivo';font-size:12px;font-weight:600}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 0}
+  .dl-btn{display:inline-flex;align-items:center;gap:8px;background:var(--orange);color:#fff;
+    font-family:'Archivo';font-weight:700;font-size:15px;text-decoration:none;
+    padding:12px 24px;border-radius:10px;margin:12px 0 4px;transition:background .15s}
+  .dl-btn:hover{background:#d9571b}
+  .dl-btn svg{width:20px;height:20px;fill:currentColor}
+  footer{background:var(--navy);color:#c3ccd6;font-size:13px;text-align:center;padding:26px 20px;margin-top:40px;line-height:1.7}
+  footer a{color:#fff}
+  @media(max-width:560px){.row{flex-direction:column}.arrow{transform:rotate(90deg)}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
+  <span class="tag">Internal Tool</span>
+</div></div>
+
+<header class="hero">
+  <div class="wrap">
+    <p class="eyebrow">The AFS Group</p>
+    <h1>VoiceType</h1>
+    <p>Push-to-talk dictation anywhere in Chrome. Free transcription with AI-powered formatting. Press Alt+Q, speak, and clean text drops in.</p>
+    <nav class="jump">
+      <a href="#install">Install &amp; use</a>
+      <a href="#tech">How it works</a>
+      <a href="#download-section">Download</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ PART 1 ============ -->
+<section class="part" id="install"><div class="wrap">
+  <p class="part-label">Part 1</p>
+  <h2 class="part-title">Install &amp; use</h2>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>What this is</h2>
+    <p class="lead">A Chrome extension that lets you dictate into any text field. Press <strong>Alt+Q</strong>, speak naturally, and formatted text appears at your cursor. It handles punctuation, capitalisation, bullet points, and tone automatically.</p>
+    <table>
+      <tr><th>Feature</th><th>Detail</th></tr>
+      <tr><td>Trigger</td><td><strong>Alt+Q</strong> to start / stop dictation</td></tr>
+      <tr><td>Transcription</td><td>Chrome's built-in speech engine (free, no API cost)</td></tr>
+      <tr><td>Formatting</td><td>Gemini Flash cleans up the text (fractions of a cent)</td></tr>
+      <tr><td>Language</td><td>Australian English by default</td></tr>
+      <tr><td>Works in</td><td>Gmail, Google Docs, forms, comment boxes, WhatsApp Web, Slack, anywhere with a text field</td></tr>
+    </table>
+    <div class="note good"><strong>Why is it so cheap?</strong> Most dictation tools (like Whisperflow) pay per minute of audio transcription. VoiceType flips that: the expensive audio step uses Chrome's free built-in engine. Only the cheap text-cleanup step goes through Gemini, costing fractions of a cent per use.</div>
+  </div>
+
+  <div class="card" id="download-section">
+    <h2>Download</h2>
+    <p>Grab the extension zip below.</p>
+    <a class="dl-btn" href="voice-dictation-extension.zip" download>
+      <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+      Download VoiceType v1.2
+    </a>
+    <p class="kbd" style="margin-top:8px">voice-dictation-extension.zip (~20 KB)</p>
+    <div class="note good" style="margin-top:14px"><strong>What's new in v1.2.</strong> Fixed focus loss after dictation: the cursor now stays in your text field once the text is inserted, so you can press Enter straight away without clicking back in. The clipboard backup now only kicks in when direct insertion fails (e.g. Google Docs).</div>
+  </div>
+
+  <div class="card">
+    <h2>Install on your Chromebook</h2>
+    <ol class="steps">
+      <li>Open <strong>Files</strong>, find <code>voice-dictation-extension.zip</code>, right-click it and choose <strong>Extract</strong>. You should get a folder with files like <code>manifest.json</code>, <code>background.js</code>, etc. directly inside it (no nested subfolder).</li>
+      <li><strong>Move the unzipped folder somewhere permanent</strong> before loading it into Chrome. Chrome reads the extension files directly from the folder you point it at &mdash; it does not copy them. If that folder gets deleted or cleaned up, the extension breaks.<br><br>
+        <strong>Where to put it:</strong><br>
+        <strong>ChromeOS / Chromebook:</strong> Open <strong>Files</strong>, go to <strong>My Files</strong>, and create a folder called <strong>Extensions</strong>. Move the unzipped folder there so the path is <code>My Files &rsaquo; Extensions &rsaquo; VoiceType</code>. Do not leave it in Downloads &mdash; ChromeOS can clean that folder out automatically.<br>
+        <strong>Mac:</strong> Move it to your home folder, e.g. <code>~/VoiceType</code>.<br>
+        <strong>Windows:</strong> Move it to <code>Documents\VoiceType</code>.</li>
+      <li>Open Chrome and go to <strong><code>chrome://extensions</code></strong>.</li>
+      <li>Turn on <strong>Developer mode</strong> (top-right toggle).</li>
+      <li>Click <strong>Load unpacked</strong> (top-left) and select the extracted folder (the one containing <code>manifest.json</code>).</li>
+      <li>The <strong>VoiceType</strong> tile appears. You can pin it to the toolbar if you like (puzzle-piece icon, then pin).</li>
+    </ol>
+    <div class="note warn"><strong>Important: set the shortcut scope.</strong> After loading, go to <strong><code>chrome://extensions/shortcuts</code></strong>. Find VoiceType's "Start / stop voice dictation" entry. The shortcut box should show <strong>Alt+Q</strong>, but the <strong>scope dropdown</strong> next to it may be blank. Change it to <strong>"In Chrome"</strong> and click <strong>Update</strong>. Without this, the shortcut won't fire.</div>
+  </div>
+
+  <div class="card">
+    <h2>Set your Gemini key <span class="pill">one time</span></h2>
+    <ol class="steps">
+      <li>Grab the <strong>Gemini API key</strong> from the VoiceType card in <strong>LastPass</strong>. It looks like <code>AIza...</code></li>
+      <li>On the VoiceType tile in <code>chrome://extensions</code>, click <strong>Details</strong>, then <strong>Extension options</strong>. (Or right-click the toolbar icon and choose <strong>Options</strong>.)</li>
+      <li>Paste the key and click <strong>Save</strong>.</li>
+    </ol>
+    <div class="note info"><strong>Don't have access to the Asana task?</strong> You can also create your own free key at <a href="https://aistudio.google.com" style="color:var(--orange);font-weight:600">aistudio.google.com</a> &rarr; <strong>Get API key</strong>.</div>
+    <div class="note warn"><strong>Make sure the key starts with <code>AIza</code>.</strong> Keys that start with <code>AQ.</code> or other prefixes are OAuth tokens and won't work. You need a Google AI Studio API key specifically.</div>
+  </div>
+
+  <div class="card">
+    <h2>How to use it</h2>
+    <ol class="steps">
+      <li>Click into any text field (Gmail compose, a form, a comment box, WhatsApp Web, etc.).</li>
+      <li>Press <strong>Alt+Q</strong>. A small "Listening..." pill appears at the bottom-right of the page.</li>
+      <li>Speak naturally. Say things like "new line" or "bullet point" and the formatter will handle them.</li>
+      <li>Press <strong>Alt+Q</strong> again to stop (or just pause speaking for a moment). The cleaned, formatted text is inserted at your cursor.</li>
+    </ol>
+    <div class="note info"><strong>Clipboard backup.</strong> The formatted text is also copied to your clipboard. If a particular editor doesn't accept the direct insertion (e.g. Google Docs' canvas), just press <strong>Ctrl+V</strong> to paste.</div>
+    <h3>Good to know</h3>
+    <ul>
+      <li><strong>First time on a new website:</strong> Chrome will ask to allow the microphone. Click <strong>Allow</strong> once and it's remembered for that site.</li>
+      <li><strong>Reload any tabs</strong> that were already open before you installed the extension.</li>
+      <li>Won't work on Chrome's own pages (<code>chrome://...</code>, the new-tab page, Chrome Web Store). That's a Chrome restriction, not a bug.</li>
+      <li>Needs an internet connection (the speech engine is cloud-based).</li>
+      <li>You can change the shortcut any time at <code>chrome://extensions/shortcuts</code>.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>Customise formatting</h2>
+    <p>Open the extension's <strong>Options</strong> page (right-click toolbar icon, or via <code>chrome://extensions</code> Details).</p>
+    <h3>Formatting style</h3>
+    <p>The large text box controls how your dictation is cleaned up. The default behaves like Wispr Flow: fixes grammar, removes filler words ("um", "uh"), and formats lists when you're clearly listing things. Edit it freely to change the tone, add specific instructions, or adjust the formatting rules.</p>
+    <h3>Per-site tweaks</h3>
+    <p>Add rules that only apply on specific websites. Each rule has a <strong>match</strong> (any part of the web address) and extra formatting instructions. Two examples are included out of the box:</p>
+    <table>
+      <tr><th>Match</th><th>Behaviour</th></tr>
+      <tr><td><code>whatsapp</code></td><td>Casual, conversational tone like a text message</td></tr>
+      <tr><td><code>mail.google</code></td><td>Professional email tone with courtesies</td></tr>
+    </table>
+    <p class="kbd">Add your own for Slack, Asana, LinkedIn, or any site where you want a different voice.</p>
+    <h3>Model</h3>
+    <p>Choose between Gemini models in the dropdown. <code>gemini-2.5-flash</code> is recommended (best quality). <code>gemini-2.5-flash-lite</code> is the cheapest option if you want to minimise costs.</p>
+  </div>
+
+  <div class="card">
+    <h2>Troubleshooting</h2>
+    <h3>Alt+Q does nothing</h3>
+    <p>Go to <code>chrome://extensions/shortcuts</code>. Find VoiceType and make sure the scope dropdown is set to <strong>"In Chrome"</strong> (not blank). Click <strong>Update</strong>. This is the most common issue on ChromeOS.</p>
+    <h3>Raw text appears instead of formatted text</h3>
+    <p>The extension falls back to raw (unformatted) transcription if the Gemini key is missing or invalid. Check your key in Options. It should start with <code>AIza...</code> and come from <a href="https://aistudio.google.com" style="color:var(--orange)">aistudio.google.com</a>.</p>
+    <h3>Microphone not working</h3>
+    <p>Chrome prompts for mic access per site. If you accidentally blocked it, click the lock/tune icon in the address bar, find Microphone, and change it to <strong>Allow</strong>. Then reload the page.</p>
+    <h3>Text doesn't appear in Google Docs</h3>
+    <p>Google Docs uses a custom canvas editor that can reject direct text insertion. The text is on your clipboard. Press <strong>Ctrl+V</strong> to paste it.</p>
+    <h3>Extension disappeared after an update</h3>
+    <p>If you reload the extension from a new folder path, ChromeOS gives it a new internal ID and clears its saved settings. You'll need to re-enter your Gemini key in Options.</p>
+    <details>
+      <summary>Still stuck?</summary>
+      <p>Message Gary or Josh and we'll sort it out.</p>
+    </details>
+  </div>
+
+</div>
+
+<!-- ============ PART 2 ============ -->
+<section class="part" id="tech"><div class="wrap">
+  <p class="part-label">Part 2</p>
+  <h2 class="part-title">How it works</h2>
+  <div class="chips">
+    <span class="tagchip">Chrome Extension (MV3)</span>
+    <span class="tagchip">webkitSpeechRecognition</span>
+    <span class="tagchip">Gemini Flash</span>
+    <span class="tagchip">ChromeOS</span>
+  </div>
+</div></section>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2><span class="n">1</span> Architecture</h2>
+    <div class="diagram">
+      <div class="row">
+        <div class="box client"><div class="t">Alt+Q</div><div class="s">keyboard command</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>triggers</span></div>
+        <div class="box worker"><div class="t">Content Script</div><div class="s">webkitSpeechRecognition<br>(free, in-browser)</div></div>
+        <div class="arrow"><span class="line">&rarr;</span><span>raw text</span></div>
+        <div class="box shop"><div class="t">Background + Gemini</div><div class="s">text cleanup<br>(fractions of a cent)</div></div>
+      </div>
+    </div>
+    <p style="margin-top:16px">The extension has four files that do everything:</p>
+    <table>
+      <tr><th>File</th><th>Role</th></tr>
+      <tr><td><code>manifest.json</code></td><td>Wiring: permissions, Alt+Q command binding, content script injection</td></tr>
+      <tr><td><code>background.js</code></td><td>Catches the hotkey, calls Gemini with the raw text, returns formatted text</td></tr>
+      <tr><td><code>content.js</code></td><td>Captures speech via the browser engine, shows the listening pill, inserts the result</td></tr>
+      <tr><td><code>options.html/js</code></td><td>Settings page: Gemini key, model, formatting style, per-site rules</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span> Cost model</h2>
+    <p>Traditional dictation tools like Whisperflow charge per minute of audio transcription (the expensive step). VoiceType inverts this:</p>
+    <table>
+      <tr><th>Step</th><th>Provider</th><th>Cost</th></tr>
+      <tr><td>Audio to text</td><td>Chrome's built-in <code>webkitSpeechRecognition</code></td><td><strong>Free</strong></td></tr>
+      <tr><td>Text cleanup</td><td>Gemini Flash (text-only, ~100 tokens per dictation)</td><td>Fractions of a cent</td></tr>
+    </table>
+    <div class="note good"><strong>The free tier is generous.</strong> Google AI Studio gives you a free API key with a per-minute rate limit. For normal dictation use, you'll likely never hit it.</div>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span> Privacy &amp; security</h2>
+    <ul>
+      <li><strong>Microphone audio</strong> goes to Google's speech service (the same one behind ChromeOS dictation). It is not recorded or stored by the extension.</li>
+      <li>Only the resulting <strong>text</strong> is sent to Gemini for formatting. No audio leaves the browser.</li>
+      <li>Your <strong>API key</strong> is stored locally on the device in <code>chrome.storage.local</code>. It is never written into the extension's code files or sent anywhere except to Google's Gemini API.</li>
+      <li>The Gemini formatting prompt includes a <strong>prompt-injection guard</strong>: the model is instructed to treat dictated text as content to format only, not as instructions to follow.</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span> Limitations</h2>
+    <ul>
+      <li>No effect on Chrome system pages (<code>chrome://...</code>, new-tab, Chrome Web Store).</li>
+      <li>Requires internet (the speech engine is cloud-based).</li>
+      <li>The free speech engine is good but not perfect. The Gemini pass cleans most errors.</li>
+      <li>Google Docs insertion may rely on the clipboard fallback (Ctrl+V).</li>
+      <li>Chrome asks for microphone permission once per website (remembered after that). An "ask once globally" upgrade is possible in a future version.</li>
+      <li>Reloading the extension from a new folder clears saved settings (Gemini key must be re-entered).</li>
+    </ul>
+  </div>
+
+</div>
+<footer>
+  The AFS Group &middot; VoiceType v1.2 &middot; Built 16 Jun 2026 &middot; Updated 18 Jun 2026 &middot; Managed by Josh / Gary<br>
+  Questions &rarr; <a href="mailto:josh@gymandfitness.com.au">josh@gymandfitness.com.au</a>
+</footer>
+</body>
+</html>

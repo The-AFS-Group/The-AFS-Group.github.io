@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Revel — 180°</title>
+<meta name="description" content="Revel Saunas — Recovery, refined. Heat that resets. Cold that wakes. Trusted for 20 years." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --forest:#485D4D; --forest-deep:#2F3529; --forest-2:#4E5844;
+    --sage:#737F63; --sage-2:#8F9E7C; --sage-3:#ABB99C;
+    --mist:#C1CCB6; --mist-2:#D3DBCC; --paper:#E9EDE5; --paper-2:#F4F6F2;
+    --ink:#20261e;
+    --ease:cubic-bezier(.22,1,.36,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+  body{
+    font-family:'Open Sans',system-ui,sans-serif;
+    background:#100a06; color:#fff; overflow-x:hidden;
+    letter-spacing:.01em;
+  }
+  ::selection{background:var(--sage-3);color:var(--forest-deep)}
+
+  /* ---------- Loader ---------- */
+  #loader{position:fixed;inset:0;z-index:200;background:#100a06;display:flex;
+    align-items:center;justify-content:center;flex-direction:column;gap:22px;
+    transition:opacity .8s var(--ease),visibility .8s}
+  #loader.done{opacity:0;visibility:hidden;pointer-events:none}
+  .l-mark{font-family:'Montserrat';font-weight:800;letter-spacing:.42em;
+    font-size:15px;text-indent:.42em;color:#f0e6dc;opacity:.85}
+  .l-bar{width:120px;height:1px;background:rgba(255,255,255,.14);overflow:hidden}
+  .l-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff7a3d,#ffce9a);transition:width .3s linear}
+
+  /* ---------- The film (fixed behind everything) ---------- */
+  #film{position:fixed;inset:0;z-index:0}
+  #bg,#fx{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.06;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+  #vignette{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(120% 90% at 50% 45%,transparent 52%,rgba(0,0,0,.55) 100%)}
+
+  /* ---------- Fixed chrome ---------- */
+  #chrome{position:fixed;top:0;left:0;right:0;z-index:20;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:26px clamp(20px,4vw,54px);color:#fff;
+    transition:color .5s ease;mix-blend-mode:difference}
+  #chrome .brand{font-family:'Montserrat';font-weight:800;letter-spacing:.34em;
+    font-size:15px;text-indent:.34em}
+  #chrome .meta{display:flex;align-items:center;gap:clamp(14px,3vw,40px);
+    font-family:'Montserrat';font-weight:500;font-size:11px;letter-spacing:.18em;text-transform:uppercase}
+  #temp{font-variant-numeric:tabular-nums;min-width:66px;text-align:right}
+  #temp b{font-weight:700}
+  .chapline{display:flex;align-items:center;gap:12px}
+  #chapbar{width:64px;height:1px;background:currentColor;opacity:.28;position:relative}
+  #chapbar i{position:absolute;left:0;top:0;height:100%;width:0;background:currentColor;opacity:1}
+  #chaplabel{opacity:.8;min-width:96px}
+
+  /* scroll cue */
+  #cue{position:fixed;left:50%;bottom:34px;transform:translateX(-50%);z-index:20;
+    font-family:'Montserrat';font-size:10px;letter-spacing:.34em;text-transform:uppercase;
+    color:rgba(255,255,255,.7);display:flex;flex-direction:column;align-items:center;gap:10px;
+    transition:opacity .6s ease}
+  #cue .line{width:1px;height:38px;background:linear-gradient(#fff,transparent);
+    animation:cue 2.4s var(--ease) infinite}
+  @keyframes cue{0%{transform:scaleY(.2);transform-origin:top;opacity:0}
+    40%{opacity:1}100%{transform:scaleY(1);transform-origin:top;opacity:0}}
+
+  /* ---------- Film beats ---------- */
+  main{position:relative;z-index:10}
+  .beat{min-height:100vh;display:flex;flex-direction:column;align-items:center;
+    justify-content:center;text-align:center;padding:0 24px;position:relative}
+  .hero{min-height:100vh}
+  .wordmark{font-family:'Montserrat';font-weight:800;line-height:.9;
+    font-size:clamp(76px,20vw,280px);letter-spacing:.02em;
+    display:flex;overflow:hidden}
+  .wordmark span{display:inline-block;transform:translateY(115%)}
+  .hero .sub{margin-top:26px;overflow:hidden}
+  .hero .sub span{display:inline-block;transform:translateY(120%);
+    font-family:'Montserrat';font-weight:300;letter-spacing:.5em;text-indent:.5em;
+    font-size:clamp(11px,1.4vw,15px);text-transform:uppercase;color:rgba(255,255,255,.82)}
+
+  .kicker{font-family:'Montserrat';font-weight:600;font-size:11px;letter-spacing:.4em;
+    text-transform:uppercase;color:rgba(255,255,255,.62);margin-bottom:22px}
+  .headline{font-family:'Montserrat';font-weight:700;line-height:1.02;
+    font-size:clamp(40px,7.2vw,104px);letter-spacing:-.01em;max-width:14ch}
+  .headline em{font-style:normal;font-weight:300}
+  .say{margin-top:26px;font-size:clamp(15px,1.5vw,19px);font-weight:400;
+    max-width:44ch;line-height:1.7;color:rgba(255,255,255,.78)}
+
+  /* reveal helper */
+  .rise{opacity:0;transform:translateY(38px)}
+
+  /* plunge temperature */
+  .plunge .bignum{font-family:'Montserrat';font-weight:800;
+    font-size:clamp(120px,30vw,420px);line-height:.86;letter-spacing:-.03em;
+    font-variant-numeric:tabular-nums;
+    background:linear-gradient(180deg,#ffd9a8,#bfe4f5);-webkit-background-clip:text;
+    background-clip:text;color:transparent}
+  .plunge .deg{font-family:'Montserrat';font-weight:400;font-size:clamp(12px,1.6vw,16px);
+    letter-spacing:.42em;text-transform:uppercase;color:rgba(255,255,255,.7);margin-top:8px}
+
+  /* trust */
+  .trust .years{font-family:'Montserrat';font-weight:800;
+    font-size:clamp(120px,26vw,360px);line-height:.85;letter-spacing:-.02em;
+    font-variant-numeric:tabular-nums;color:#fff}
+  .trust .years small{font-size:.28em;font-weight:600;vertical-align:top;letter-spacing:0}
+
+  /* ---------- After-film content ---------- */
+  #after{position:relative;z-index:15}
+  .seam{height:1px}
+  .band{padding:clamp(90px,13vh,170px) clamp(22px,6vw,90px)}
+  .b-intro{background:linear-gradient(180deg,var(--forest) 0%,var(--forest-2) 30%,var(--paper-2) 100%);color:var(--forest-deep)}
+  .b-intro .lead{max-width:20ch;font-family:'Montserrat';font-weight:600;line-height:1.14;
+    font-size:clamp(30px,5vw,68px);letter-spacing:-.015em;color:#fff}
+  .b-intro .lead .g{color:var(--mist)}
+  .b-intro .note{margin-top:28px;max-width:52ch;font-size:clamp(15px,1.5vw,18px);
+    line-height:1.75;color:rgba(255,255,255,.86)}
+
+  .b-range{background:var(--paper-2);color:var(--forest-deep)}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+    flex-wrap:wrap;margin-bottom:clamp(34px,5vw,60px)}
+  .sec-head h2{font-family:'Montserrat';font-weight:700;font-size:clamp(28px,4vw,52px);
+    letter-spacing:-.01em;line-height:1}
+  .sec-head .idx{font-family:'Montserrat';font-weight:600;font-size:11px;letter-spacing:.34em;
+    text-transform:uppercase;color:var(--sage)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:clamp(16px,2vw,26px)}
+  .card{position:relative;border-radius:18px;overflow:hidden;min-height:clamp(360px,46vh,520px);
+    display:flex;flex-direction:column;justify-content:flex-end;padding:34px;color:#fff;
+    clip-path:inset(0 0 100% 0)}
+  .card .t{font-family:'Montserrat';font-weight:700;font-size:clamp(24px,2.6vw,34px);letter-spacing:-.01em}
+  .card .d{margin-top:12px;font-size:15px;line-height:1.6;color:rgba(255,255,255,.85);max-width:34ch}
+  .card .tag{position:absolute;top:26px;left:26px;font-family:'Montserrat';font-weight:600;
+    font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:rgba(255,255,255,.8)}
+  .card::after{content:"";position:absolute;inset:0;z-index:-1}
+  .c-heat{background:radial-gradient(120% 120% at 30% 20%,#3a1c0c,#160a05)}
+  .c-heat::after{background:radial-gradient(90% 70% at 70% 90%,rgba(255,120,50,.5),transparent 60%)}
+  .c-cold{background:radial-gradient(120% 120% at 70% 20%,#123044,#08161f)}
+  .c-cold::after{background:radial-gradient(80% 70% at 30% 90%,rgba(120,190,230,.45),transparent 60%)}
+  .c-ritual{background:radial-gradient(120% 120% at 50% 15%,var(--forest-2),var(--forest-deep))}
+  .c-ritual::after{background:radial-gradient(90% 70% at 50% 95%,rgba(171,185,156,.4),transparent 62%)}
+
+  .b-pillars{background:var(--forest-deep);color:#fff}
+  .pillars{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:clamp(28px,4vw,64px)}
+  .pillar{border-top:1px solid rgba(255,255,255,.16);padding-top:28px}
+  .pillar .n{font-family:'Montserrat';font-weight:600;font-size:11px;letter-spacing:.3em;color:var(--sage-3)}
+  .pillar h3{font-family:'Montserrat';font-weight:700;font-size:clamp(26px,3vw,40px);margin:16px 0 14px}
+  .pillar p{font-size:15px;line-height:1.7;color:rgba(255,255,255,.72);max-width:32ch}
+
+  .b-cta{background:linear-gradient(180deg,var(--forest-deep),var(--forest));color:#fff;text-align:center}
+  .b-cta .big{font-family:'Montserrat';font-weight:700;font-size:clamp(38px,7vw,110px);
+    line-height:1;letter-spacing:-.02em;max-width:16ch;margin:0 auto}
+  .b-cta .big em{font-style:normal;font-weight:300;color:var(--sage-3)}
+  .btn{display:inline-flex;align-items:center;gap:12px;margin-top:44px;
+    padding:19px 40px;border-radius:100px;background:var(--paper-2);color:var(--forest-deep);
+    font-family:'Montserrat';font-weight:700;font-size:14px;letter-spacing:.06em;
+    text-decoration:none;transition:transform .4s var(--ease),background .4s ease}
+  .btn:hover{transform:translateY(-3px);background:#fff}
+  .btn svg{width:16px;height:16px}
+
+  footer{background:var(--forest-deep);color:rgba(255,255,255,.6);
+    padding:56px clamp(22px,6vw,90px);display:flex;align-items:center;
+    justify-content:space-between;gap:24px;flex-wrap:wrap;
+    border-top:1px solid rgba(255,255,255,.1);font-size:13px}
+  footer .fb{font-family:'Montserrat';font-weight:800;letter-spacing:.3em;color:#fff;font-size:15px}
+  footer .soc{display:flex;gap:20px}
+  footer .soc a{color:rgba(255,255,255,.6);transition:color .3s}
+  footer .soc a:hover{color:#fff}
+  footer .soc svg{width:19px;height:19px;display:block}
+
+  @media (max-width:640px){
+    #chrome .brand{font-size:12px}
+    #chaplabel{display:none}
+    .card{clip-path:none}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    .wordmark span,.hero .sub span{transform:none!important}
+    .rise{opacity:1!important;transform:none!important}
+    .card{clip-path:none!important}
+    #cue{display:none}
+  }
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="l-mark">REVEL</div>
+  <div class="l-bar"><i id="lbar"></i></div>
+</div>
+
+<div id="film">
+  <canvas id="bg"></canvas>
+  <canvas id="fx"></canvas>
+</div>
+<div id="grain"></div>
+<div id="vignette"></div>
+
+<header id="chrome">
+  <div class="brand">REVEL</div>
+  <div class="meta">
+    <div class="chapline"><span id="chaplabel">The Heat</span><span id="chapbar"><i></i></span></div>
+    <div id="temp"><b>90</b>°C</div>
+  </div>
+</header>
+
+<div id="cue"><span>Scroll</span><span class="line"></span></div>
+
+<main>
+  <section class="hero beat" data-chap="The Heat">
+    <h1 class="wordmark" aria-label="Revel">
+      <span>R</span><span>E</span><span>V</span><span>E</span><span>L</span>
+    </h1>
+    <div class="sub"><span>Recovery, refined</span></div>
+  </section>
+
+  <section class="beat" data-chap="I · Heat">
+    <div class="kicker rise">Chapter I — The Heat</div>
+    <h2 class="headline rise">Heat that <em>resets</em> you.</h2>
+    <p class="say rise">Step into the warmth. Muscles let go, the mind quiets, the day burns off. This is where the ritual begins — at ninety degrees.</p>
+  </section>
+
+  <section class="beat plunge" data-chap="The Plunge">
+    <div class="bignum"><span id="plnum">90</span>°</div>
+    <div class="deg rise">The plunge</div>
+  </section>
+
+  <section class="beat" data-chap="II · Cold">
+    <div class="kicker rise">Chapter II — The Cold</div>
+    <h2 class="headline rise">Cold that <em>wakes</em> you.</h2>
+    <p class="say rise">Then the shock of the plunge. Breath sharpens, the body floods with clarity. Three degrees of pure, electric awake.</p>
+  </section>
+
+  <section class="beat" data-chap="III · Stillness">
+    <div class="kicker rise">Chapter III — Stillness</div>
+    <h2 class="headline rise">The space <em>between.</em></h2>
+    <p class="say rise">Heat and cold are only the edges. What Revel is really made for is the calm that arrives after — steady, restored, wholly yourself.</p>
+  </section>
+
+  <section class="beat trust" data-chap="Trusted">
+    <div class="kicker rise">Backed by AFS</div>
+    <div class="years rise"><span id="yrnum">0</span></div>
+    <p class="say rise" style="margin-top:8px">Trusted for twenty years. The recovery brand built on two decades of doing right by its people.</p>
+  </section>
+</main>
+
+<div id="after">
+  <div class="seam"></div>
+
+  <section class="band b-intro">
+    <p class="lead reveal">Two extremes.<br><span class="g">One</span> ritual of renewal.</p>
+    <p class="note reveal">Revel builds saunas and ice baths for people who take recovery seriously — the contrast of heat and cold, engineered for the home, made to last, and trusted for twenty years.</p>
+  </section>
+
+  <section class="band b-range">
+    <div class="sec-head reveal">
+      <h2>The range</h2>
+      <span class="idx">Saunas · Ice Baths · The Ritual</span>
+    </div>
+    <div class="cards">
+      <article class="card c-heat"><span class="tag">Heat</span><div class="t">Saunas</div><p class="d">Cabin and infrared saunas engineered for deep, even heat — the core of the Revel recovery ritual.</p></article>
+      <article class="card c-cold"><span class="tag">Cold</span><div class="t">Ice Baths</div><p class="d">A single, all-in-one plunge built to do one thing beautifully: cold, clean, and ready when you are.</p></article>
+      <article class="card c-ritual"><span class="tag">Together</span><div class="t">The Contrast</div><p class="d">Hot then cold, session after session. The pairing that turns recovery into a daily practice.</p></article>
+    </div>
+  </section>
+
+  <section class="band b-pillars">
+    <div class="sec-head reveal"><h2>Why Revel</h2><span class="idx">Trust · Proof · Lifestyle</span></div>
+    <div class="pillars">
+      <div class="pillar reveal"><div class="n">01 — TRUST</div><h3>Backed by clinicians</h3><p>Credentialled doctors and advisors guide the protocols behind every Revel product. Recovery you can stand behind.</p></div>
+      <div class="pillar reveal"><div class="n">02 — PROOF</div><h3>Made to perform</h3><p>Built and tested with the athletes and everyday people who live in cold water and heat. Real results, not claims.</p></div>
+      <div class="pillar reveal"><div class="n">03 — LIFESTYLE</div><h3>Designed for the home</h3><p>Objects you actually want in your space — quiet, considered design that earns its place in the everyday.</p></div>
+    </div>
+  </section>
+
+  <section class="band b-cta">
+    <p class="big reveal">Begin the <em>contrast.</em></p>
+    <a class="btn" href="https://revelsaunas.com.au" target="_blank" rel="noopener">
+      Explore the collection
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </section>
+
+  <footer>
+    <div class="fb">REVEL</div>
+    <div class="soc">
+      <a href="https://www.instagram.com/revelsaunas" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.16c3.2 0 3.58.01 4.85.07 1.17.05 1.8.25 2.23.41.56.22.96.48 1.38.9.42.42.68.82.9 1.38.16.42.36 1.06.41 2.23.06 1.27.07 1.65.07 4.85s-.01 3.58-.07 4.85c-.05 1.17-.25 1.8-.41 2.23-.22.56-.48.96-.9 1.38-.42.42-.82.68-1.38.9-.42.16-1.06.36-2.23.41-1.27.06-1.65.07-4.85.07s-3.58-.01-4.85-.07c-1.17-.05-1.8-.25-2.23-.41a3.7 3.7 0 01-1.38-.9 3.7 3.7 0 01-.9-1.38c-.16-.42-.36-1.06-.41-2.23C2.17 15.58 2.16 15.2 2.16 12s.01-3.58.07-4.85c.05-1.17.25-1.8.41-2.23.22-.56.48-.96.9-1.38.42-.42.82-.68 1.38-.9.42-.16 1.06-.36 2.23-.41C8.42 2.17 8.8 2.16 12 2.16zm0 1.62c-3.15 0-3.5.01-4.74.07-1.14.05-1.76.24-2.17.4-.55.21-.94.47-1.35.88-.41.41-.67.8-.88 1.35-.16.41-.35 1.03-.4 2.17-.06 1.24-.07 1.59-.07 4.74s.01 3.5.07 4.74c.05 1.14.24 1.76.4 2.17.21.55.47.94.88 1.35.41.41.8.67 1.35.88.41.16 1.03.35 2.17.4 1.24.06 1.59.07 4.74.07s3.5-.01 4.74-.07c1.14-.05 1.76-.24 2.17-.4.55-.21.94-.47 1.35-.88.41-.41.67-.8.88-1.35.16-.41.35-1.03.4-2.17.06-1.24.07-1.59.07-4.74s-.01-3.5-.07-4.74c-.05-1.14-.24-1.76-.4-2.17a3.6 3.6 0 00-.88-1.35 3.6 3.6 0 00-1.35-.88c-.41-.16-1.03-.35-2.17-.4-1.24-.06-1.59-.07-4.74-.07zm0 2.76a5.3 5.3 0 110 10.6 5.3 5.3 0 010-10.6zm0 1.62a3.68 3.68 0 100 7.36 3.68 3.68 0 000-7.36zm5.5-1.44a1.24 1.24 0 110 2.48 1.24 1.24 0 010-2.48z"/></svg></a>
+      <a href="https://www.facebook.com/revelsaunas" target="_blank" rel="noopener" aria-label="Facebook"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg></a>
+      <a href="https://revelsaunas.com.au" target="_blank" rel="noopener" aria-label="Website">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9.5"/><path d="M2.5 12h19M12 2.5c2.6 2.6 3.8 6 3.8 9.5S14.6 18.9 12 21.5C9.4 18.9 8.2 15.5 8.2 12S9.4 5.1 12 2.5z"/></svg>
+      </a>
+    </div>
+    <div>© Revel Saunas · Backed by AFS · Trusted for 20 years</div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script>
+(function(){
+  "use strict";
+  const REDUCED = matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const JUMP = new URLSearchParams(location.search).get('jump');
+  const bg = document.getElementById('bg'), fx = document.getElementById('fx');
+  const bx = bg.getContext('2d'), fxc = fx.getContext('2d');
+  let W=0,H=0,DPR=1;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 1.5);
+    W = innerWidth; H = innerHeight;
+    [bg,fx].forEach(c=>{ c.width=W*DPR; c.height=H*DPR; c.style.width=W+'px'; c.style.height=H+'px'; });
+    bx.setTransform(DPR,0,0,DPR,0,0); fxc.setTransform(DPR,0,0,DPR,0,0);
+  }
+  resize();
+
+  /* ---------- thermal keyframes: p -> {sky, glow color, glow x/y, temperature} ---------- */
+  const KF = [
+    { p:0.00, top:[26,15,9],  bot:[10,6,4],   gl:[255,120,50], gx:.5, gy:.72, t:90 },
+    { p:0.22, top:[42,22,10], bot:[16,8,5],   gl:[255,140,60], gx:.5, gy:.66, t:88 },
+    { p:0.36, top:[46,26,12], bot:[20,10,6],  gl:[255,150,70], gx:.5, gy:.6,  t:82 },
+    { p:0.46, top:[30,26,26], bot:[14,14,18], gl:[210,150,120],gx:.5, gy:.5,  t:52 },  // plunge start
+    { p:0.55, top:[10,28,40], bot:[6,16,24],  gl:[120,190,230],gx:.5, gy:.42, t:9  },  // cold
+    { p:0.63, top:[12,34,46], bot:[8,20,28],  gl:[150,205,235],gx:.5, gy:.4,  t:3  },  // coldest
+    { p:0.74, top:[47,58,50], bot:[26,32,28], gl:[171,185,156],gx:.5, gy:.5,  t:18 },  // stillness (forest)
+    { p:0.88, top:[72,84,72], bot:[47,58,50], gl:[171,185,156],gx:.5, gy:.55, t:21 },
+    { p:1.00, top:[72,93,78], bot:[47,58,50], gl:[195,205,180],gx:.5, gy:.6,  t:21 }
+  ];
+  const lerp=(a,b,t)=>a+(b-a)*t;
+  function sample(p){
+    p=Math.max(0,Math.min(1,p));
+    let a=KF[0],b=KF[KF.length-1];
+    for(let i=0;i<KF.length-1;i++){ if(p>=KF[i].p && p<=KF[i+1].p){a=KF[i];b=KF[i+1];break;} }
+    const k=(b.p-a.p)?(p-a.p)/(b.p-a.p):0;
+    const mix=(x,y)=>[Math.round(lerp(x[0],y[0],k)),Math.round(lerp(x[1],y[1],k)),Math.round(lerp(x[2],y[2],k))];
+    return {
+      top:mix(a.top,b.top), bot:mix(a.bot,b.bot), gl:mix(a.gl,b.gl),
+      gx:lerp(a.gx,b.gx,k), gy:lerp(a.gy,b.gy,k), t:lerp(a.t,b.t,k)
+    };
+  }
+  const rgb=a=>`rgb(${a[0]},${a[1]},${a[2]})`;
+
+  function drawBG(s){
+    const g=bx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,rgb(s.top)); g.addColorStop(1,rgb(s.bot));
+    bx.fillStyle=g; bx.fillRect(0,0,W,H);
+    const r=Math.max(W,H)*0.9;
+    const rg=bx.createRadialGradient(W*s.gx,H*s.gy,0,W*s.gx,H*s.gy,r);
+    rg.addColorStop(0,`rgba(${s.gl[0]},${s.gl[1]},${s.gl[2]},.42)`);
+    rg.addColorStop(.5,`rgba(${s.gl[0]},${s.gl[1]},${s.gl[2]},.12)`);
+    rg.addColorStop(1,'rgba(0,0,0,0)');
+    bx.fillStyle=rg; bx.fillRect(0,0,W,H);
+  }
+
+  /* ---------- particles: embers (warm, rise) -> frost (cold, fall) -> motes (calm) ---------- */
+  const N = REDUCED?0:Math.round(Math.min(120, W/12));
+  const P=[];
+  function seed(){ P.length=0; for(let i=0;i<N;i++) P.push(mk(Math.random()*H)); }
+  function mk(y){ return {x:Math.random()*W,y:(y===undefined?Math.random()*H:y),
+    r:0.6+Math.random()*2.2,sp:0.2+Math.random()*1.1,dr:(Math.random()-.5)*0.5,
+    tw:Math.random()*Math.PI*2,tws:0.02+Math.random()*0.05}; }
+  seed();
+
+  function drawFX(p,s){
+    fxc.clearRect(0,0,W,H);
+    if(!N) return;
+    // warm 0 .. cold 1, then fade out in green zone
+    const cold=Math.max(0,Math.min(1,(p-0.4)/0.18));
+    const life=p<0.8?1:Math.max(0,1-(p-0.8)/0.2); // fade particles as we settle
+    if(life<=0) return;
+    const dir = cold<0.5 ? -1 : 1; // warm rise, cold fall
+    for(const q of P){
+      q.tw+=q.tws;
+      q.y += q.sp*dir*(0.5+cold*0.9);
+      q.x += q.dr + Math.sin(q.tw)*0.3;
+      if(dir<0 && q.y<-6){ q.y=H+6; q.x=Math.random()*W; }
+      if(dir>0 && q.y>H+6){ q.y=-6; q.x=Math.random()*W; }
+      if(q.x<-6)q.x=W+6; if(q.x>W+6)q.x=-6;
+      const tw=0.5+0.5*Math.sin(q.tw);
+      let col,a;
+      if(cold<0.5){ col=[255,150+Math.round(60*tw),70]; a=(0.35+0.5*tw); }
+      else{ col=[220,238,250]; a=(0.25+0.45*tw); }
+      a*=life;
+      fxc.beginPath();
+      fxc.arc(q.x,q.y,q.r*(cold<0.5?1:0.8),0,6.2832);
+      fxc.fillStyle=`rgba(${col[0]},${col[1]},${col[2]},${a})`;
+      fxc.fill();
+    }
+  }
+
+  /* ---------- global progress + render loop ---------- */
+  const main=document.querySelector('main');
+  const after=document.getElementById('after');
+  const tempEl=document.getElementById('temp').querySelector('b');
+  const chapLabel=document.getElementById('chaplabel');
+  const chapBar=document.querySelector('#chapbar i');
+  const chrome=document.getElementById('chrome');
+  const meta=document.querySelector('#chrome .meta');
+  const cue=document.getElementById('cue');
+  const beats=[...document.querySelectorAll('main .beat')];
+  let filmSpan=1, curScroll=0, lastChap='';
+
+  function measure(){ filmSpan=Math.max(1, after.offsetTop - innerHeight); }
+  measure();
+
+  function progress(){ return Math.max(0,Math.min(1,curScroll/filmSpan)); }
+
+  function currentChap(p){
+    // find beat whose center is nearest viewport center
+    const vc=curScroll+innerHeight/2; let best=beats[0],bd=1e9;
+    for(const b of beats){ const c=b.offsetTop+b.offsetHeight/2; const d=Math.abs(c-vc);
+      if(d<bd){bd=d;best=b;} }
+    return best.dataset.chap;
+  }
+
+  function render(){
+    const p=progress();
+    const s=sample(p);
+    drawBG(s);
+    drawFX(p,s);
+    tempEl.textContent=Math.round(s.t);
+    chapBar.style.width=(p*100).toFixed(1)+'%';
+    const ch=currentChap(p);
+    if(ch!==lastChap){ chapLabel.textContent=ch; lastChap=ch; }
+    // chrome fades to dark ink when the film goes light near the end
+    const lum=(s.top[0]*0.299+s.top[1]*0.587+s.top[2]*0.114);
+    chrome.style.color = lum>150 ? 'var(--ink)' : '#fff';
+    cue.style.opacity = p>0.04?0:0.9;
+    // retire the temp/chapter readout once we leave the film into content
+    meta.style.opacity = p>=0.995 ? 0 : 1;
+    meta.style.transition = 'opacity .5s ease';
+  }
+
+  /* Lenis smooth scroll wired to GSAP + our render */
+  let lenis=null;
+  if(!REDUCED && window.Lenis){
+    lenis=new Lenis({lerp:0.1,smoothWheel:true});
+    lenis.on('scroll',({scroll})=>{ curScroll=scroll; if(window.ScrollTrigger)ScrollTrigger.update(); });
+    gsap.ticker.add(t=>{ lenis.raf(t*1000); render(); });
+    gsap.ticker.lagSmoothing(0);
+  } else {
+    // reduced-motion / no-lenis fallback: native scroll + rAF render
+    addEventListener('scroll',()=>{curScroll=window.scrollY;},{passive:true});
+    (function loop(){ curScroll=window.scrollY; render(); requestAnimationFrame(loop); })();
+  }
+
+  addEventListener('resize',()=>{ resize(); seed(); measure(); if(window.ScrollTrigger)ScrollTrigger.refresh(); });
+
+  /* ---------- entrances ---------- */
+  function boot(){
+    document.getElementById('loader').classList.add('done');
+    if(REDUCED){ window.__ready=true; return; }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    // hero char-split + sub
+    gsap.to('.wordmark span',{yPercent:-115,duration:1.25,ease:'power4.out',stagger:0.07,delay:0.15});
+    gsap.to('.hero .sub span',{yPercent:-120,duration:1,ease:'power4.out',delay:0.75});
+
+    // beat copy rises (pinned scenes would be created first; we have none, so order is safe)
+    document.querySelectorAll('main .rise').forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:1,ease:'power3.out',
+        scrollTrigger:{trigger:el,start:'top 82%'}});
+    });
+
+    // plunge number races 90 -> 3 as its section scrubs
+    const pl={v:90}, plEl=document.getElementById('plnum');
+    gsap.to(pl,{v:3,ease:'none',
+      scrollTrigger:{trigger:'.plunge',start:'top 80%',end:'bottom 40%',scrub:0.6,
+        onUpdate:()=>{plEl.textContent=Math.round(pl.v);}}});
+
+    // trust years counter 0 -> 20
+    const yr={v:0}, yrEl=document.getElementById('yrnum');
+    gsap.to(yr,{v:20,ease:'none',
+      scrollTrigger:{trigger:'.trust',start:'top 75%',end:'center 55%',scrub:0.5,
+        onUpdate:()=>{yrEl.textContent=Math.round(yr.v);}}});
+
+    // after-film reveals
+    gsap.utils.toArray('#after .reveal').forEach(el=>{
+      gsap.from(el,{opacity:0,y:44,duration:1,ease:'power3.out',
+        scrollTrigger:{trigger:el,start:'top 85%'}});
+    });
+    // card clip-path reveals (staggered per grid)
+    gsap.utils.toArray('.cards').forEach(grid=>{
+      gsap.to(grid.querySelectorAll('.card'),{clipPath:'inset(0 0 0% 0)',
+        duration:1.1,ease:'power3.out',stagger:0.14,
+        scrollTrigger:{trigger:grid,start:'top 78%'}});
+    });
+
+    measure(); ScrollTrigger.refresh();
+
+    // ---- dev contract ----
+    if(JUMP!==null){
+      history.scrollRestoration='manual';
+      const y=+JUMP||0;
+      if(lenis) lenis.scrollTo(y,{immediate:true});
+      window.scrollTo(0,y); curScroll=y;
+      ScrollTrigger.update(); render();
+      requestAnimationFrame(()=>{ render(); window.__ready=true; });
+    } else {
+      window.__ready=true;
+    }
+
+    // ---- jank meter (console; judge p95/max, never average) ----
+    let last=performance.now(),mx=0,acc=0,n=0,samples=[];
+    (function jank(now){ const d=now-last; last=now; if(d<200){mx=Math.max(mx,d);acc+=d;n++;samples.push(d);}
+      if(acc>=2000){ samples.sort((a,b)=>a-b); const p95=samples[Math.floor(samples.length*0.95)]||0;
+        console.log(`[jank] max ${mx.toFixed(1)}ms · p95 ${p95.toFixed(1)}ms · frames ${n}`);
+        mx=0;acc=0;n=0;samples=[]; }
+      requestAnimationFrame(jank);
+    })(last);
+  }
+
+  // loader progress then boot
+  let prog=0; const lbar=document.getElementById('lbar');
+  const li=setInterval(()=>{ prog=Math.min(100,prog+18+Math.random()*22); lbar.style.width=prog+'%';
+    if(prog>=100){ clearInterval(li); setTimeout(boot,260); } },90);
+
+  // initial paint before boot
+  curScroll = window.scrollY||0; render();
+})();
+</script>
+</body>
+</html>

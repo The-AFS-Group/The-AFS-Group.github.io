@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Target, Flag } from 'lucide-react';
-// import CallInsightsDashboard from './CallInsightsDashboard';
+import CallInsightsDashboard from './CallInsightsDashboard';
 import SalesDashboard from './SalesDashboard';
 import ProductInsightsDashboard from './ProductInsightsDashboard';
 import OPSPDashboard from './OPSPDashboard';
@@ -114,6 +114,19 @@ const Dashboard: React.FC = () => {
             <ShoppingBag size={20} className="shrink-0" />
             {!isCollapsed && <span>Product Insights</span>}
           </button>
+
+          <button
+            onClick={() => { setActiveView('call-insights'); setIsSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
+              activeView === 'call-insights'
+                ? 'bg-[#ffebe3] text-[#F26422] shadow-sm border border-[#ffdbcc]'
+                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            } ${isCollapsed ? 'justify-center' : ''}`}
+            title={isCollapsed ? "Call Insights" : ""}
+          >
+            <Phone size={20} className="shrink-0" />
+            {!isCollapsed && <span>Call Insights</span>}
+          </button>
         </nav>
       </aside>
 
@@ -139,6 +152,8 @@ const Dashboard: React.FC = () => {
             <OPSPDashboard />
           ) : activeView === 'initiatives' ? (
             <StrategicInitiativesDashboard />
+          ) : activeView === 'call-insights' ? (
+            <CallInsightsDashboard />
           ) : (
             <SalesDashboard />
           )}

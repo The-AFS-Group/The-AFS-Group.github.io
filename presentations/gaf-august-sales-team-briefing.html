@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Sales Team Briefing · August 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: { orange: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt: { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body: ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.font-heading{font-family:'Montserrat',sans-serif}
+
+.grain-dark::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:9999}
+
+.slide-enter{animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.stagger>*{opacity:0;animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}
+.stagger>*:nth-child(2){animation-delay:.12s}
+.stagger>*:nth-child(3){animation-delay:.19s}
+.stagger>*:nth-child(4){animation-delay:.26s}
+.stagger>*:nth-child(5){animation-delay:.33s}
+.stagger>*:nth-child(6){animation-delay:.4s}
+.stagger>*:nth-child(7){animation-delay:.47s}
+.stagger>*:nth-child(8){animation-delay:.54s}
+
+.bar-grow{animation:barGrow .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
+
+.slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== THEME =====
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-gaf-orange/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted',
+    textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    slashColor: 'rgba(242,100,34,0.06)', grainClass: '',
+    bodyBg: '#f0f0f0', logoFilter: '', titleText: 'text-lt-text',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-lt-text',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-600', amberBg: 'bg-amber-500/10', amberBorder: 'border-amber-500/25',
+    red: 'text-rose-600', redBg: 'bg-rose-500/10', redBorder: 'border-rose-500/25',
+    imgBg: 'bg-white',
+    footerText: 'text-lt-muted',
+  },
+  dark: {
+    bg: 'bg-gaf-black', bg2: 'bg-gaf-dark', bg3: 'bg-gaf-mid',
+    border: 'border-gaf-steel/20', borderAccent: 'border-gaf-orange/20',
+    text: 'text-white', sub: 'text-gaf-ash', muted: 'text-gaf-steel',
+    textInv: 'text-gaf-black',
+    cardBg: 'bg-gaf-dark', cardBorder: 'border-gaf-steel/20',
+    slashColor: 'rgba(242,100,34,0.15)', grainClass: 'grain-dark',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert', titleText: 'text-white',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-gaf-dark',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange',
+    navDisabled: 'bg-gaf-steel/20 text-gaf-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-400', amberBg: 'bg-amber-500/10', amberBorder: 'border-amber-500/25',
+    red: 'text-rose-400', redBg: 'bg-rose-500/10', redBorder: 'border-rose-500/25',
+    imgBg: 'bg-white',
+    footerText: 'text-gaf-steel',
+  }
+};
+
+// ===== ICONS =====
+const I = ({ d, size = 18, className = '', sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+  </svg>
+);
+const ChevL = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Bolt = p => <I {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />;
+const Users = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Check = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>;
+const Warn = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Target = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const Cal = p => <I {...p} d={["M19 4H5a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2V6a2 2 0 00-2-2z","M16 2v4","M8 2v4","M3 10h18"]} />;
+const Megaphone = p => <I {...p} d={["M3 11l18-5v12L3 13v-2z","M11.6 16.8a3 3 0 11-5.8-1.6"]} />;
+const Pkg = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const HomeIcon = p => <I {...p} d={["M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z","M9 22V12h6v10"]} />;
+const Film = p => <I {...p} d={["M19.82 2H4.18A2.18 2.18 0 002 4.18v15.64A2.18 2.18 0 004.18 22h15.64A2.18 2.18 0 0022 19.82V4.18A2.18 2.18 0 0019.82 2z","M7 2v20","M17 2v20","M2 12h20"]} />;
+const TrendUp = p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
+const Sun = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Flame = p => <I {...p} d={["M8.5 14.5A2.5 2.5 0 0011 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 11-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 002.5 2.5z"]} />;
+const Store = p => <I {...p} d={["M3 9l1.5-5h15L21 9","M3 9h18v11a1 1 0 01-1 1H4a1 1 0 01-1-1z","M9 21v-7h6v7"]} />;
+const Mail = p => <I {...p} d={["M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z","M22 6l-10 7L2 6"]} />;
+
+const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
+
+// ===== PRODUCT IMAGES (live Shopify CDN, verified 29 Jul 2026) =====
+const IMG = {
+  hg100:   "https://cdn.shopify.com/s/files/1/1950/1891/products/0008_HG100HERO.jpg",
+  arcadia: "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_12ae8f46-0e39-4be7-ada2-e8e4ce353da1.jpg",
+  glide:   "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_9b91017f-2c18-4b7e-a133-b6648129f34d.jpg",
+  altitude: "assets/rep-altitude-banner.jpg",
+  g20:     "https://cdn.shopify.com/s/files/1/1950/1891/files/0017_4_5d87452f-55d7-42ba-9b15-f8069828d19e.jpg",
+  pr4000:  "https://cdn.shopify.com/s/files/1/1950/1891/products/01_HERO_131addf7-71dd-4de4-8326-8c4c3128f3b8.jpg",
+  pr5000:  "https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_1_45038f44-5a9e-43cc-b952-669ccd8f3540.jpg",
+};
+
+// ===== LOGO =====
+const Logo = () => {
+  const th = useTheme();
+  return <img src={GAF_LOGO} alt="GAF" className={`h-8 w-auto object-contain opacity-60 ${th.logoFilter}`} />;
+};
+
+// ===== SLIDE WRAPPER =====
+const Slide = ({ children, num, total, noPad }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} ${th.text} flex flex-col relative overflow-hidden`}>
+    <div className="slash" style={{top:'30%',left:'-50%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <div className="slash" style={{top:'60%',left:'-30%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <header className="flex justify-between items-center px-10 pt-5 pb-3 z-10 shrink-0">
+      <Logo />
+      <div className="flex items-center gap-3">
+        <span className={`text-[14px] font-heading font-light tracking-[.3em] ${th.sub} uppercase`}>August · Sales Team Briefing</span>
+        <div className={`w-px h-4 ${th.bg3}`}></div>
+        <span className={`text-[14px] font-body ${th.sub}`}>{num}<span className={`${th.muted} mx-1`}>/</span>{total}</span>
+      </div>
+    </header>
+    <main className={`flex-1 flex flex-col z-10 overflow-hidden ${noPad ? '' : 'px-10 pb-8'}`}>
+      {children}
+    </main>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width: `${(num/total)*100}%`}}></footer>
+  </div>
+  );
+};
+
+// ===== SECTION TITLE =====
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+  <div className="mb-4 shrink-0 stagger">
+    {pre && <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">{pre}</p>}
+    <h1 className={`font-display text-5xl md:text-7xl ${th.text} leading-[0.9] tracking-wide`}>{title}</h1>
+    {sub && <p className={`text-[15px] ${th.sub} mt-3 font-body max-w-4xl leading-snug`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== PRODUCT THUMB =====
+const ProdImg = ({ src, alt, className }) => (
+  <div className={`bg-white rounded-md overflow-hidden flex items-center justify-center ${className}`}>
+    <img src={src} alt={alt} className="w-full h-full object-contain" loading="lazy" />
+  </div>
+);
+
+// ===== DATA =====
+const julyResults = [
+  { label: "GP Created", actual: "$619,679", budget: "$525,600", delta: "+17.9%", IconComp: Dollar },
+  { label: "GP Fulfilled", actual: "$788,610", budget: "$500,572", delta: "+57.5%", IconComp: Check },
+  { label: "Website Sessions", actual: "199,714", budget: "165,788", delta: "+20.5%", IconComp: Users },
+];
+
+const julySupport = [
+  { label: "Ad Spend", value: "$165,151", sub: "No target set" },
+  { label: "Abandoned Carts", value: "735", sub: "vs 828 implied", delta: "-11.2%", tone: "neutral" },
+  { label: "Inbound Calls", value: "192", sub: "vs 186 implied", delta: "+3.2%", tone: "up" },
+];
+
+const offerRoster = [
+  { name: "REP Altitude", sku: "Rack + Cables + Smith", cat: "Rack", price: "$6,999", was: "", img: IMG.altitude, cover: true, stock: null, note: "New range, listing live today" },
+  { name: "Force USA HG100 Home Gym", sku: "F-HG100", cat: "Home Gym", price: "$699", was: "$849", img: IMG.hg100, stock: 14, note: "New to the offer list" },
+  { name: "REP Arcadia Functional Trainer", sku: "FT-3500", cat: "Functional", price: "$3,999", was: "$4,199", img: IMG.arcadia, stock: 2, note: "Only 2 units on hand" },
+  { name: "Force USA Glide Treadmill", sku: "F-GLIDE-T2", cat: "Cardio", price: "$1,899", was: "$2,499", img: IMG.glide, stock: 78, note: "Continue through" },
+  { name: "Force USA G20 Pro", sku: "F-G20-V2", cat: "All-In-One", price: "$5,999", was: "$8,499", img: IMG.g20, stock: 31, note: "Continue through" },
+];
+
+const tbcItems = [
+  { name: "Vortex Pulse Spin Bike", sku: "V-PULSE", price: "$349", was: "$499", who: "AC" },
+  { name: "Force USA Ski Trainer + Stand", sku: "F-SKI-TRAINER", price: "$1,149", was: "$1,499", who: "AC" },
+  { name: "Centr FID5 Bench", sku: "FID5", price: "$599", was: "$799", who: "AC" },
+  { name: "Force USA R3 Air Rower", sku: "F-R3", price: "$1,099", was: "$1,299", who: "AC" },
+  { name: "Centr 1 Functional Trainer", sku: "CENTR-1", price: "$1,399", was: "", who: "TG" },
+  { name: "Centr 2 Functional Trainer", sku: "CENTR2-IG", price: "$2,699", was: "$2,799", who: "TG" },
+  { name: "Torque USA Anker 3", sku: "ANKER-3-001-150LB", price: "$1,899", was: "$2,499", who: "TG" },
+  { name: "Torque USA F9 Fold-Away", sku: "F9-003-225LB", price: "$5,499", was: "$6,999", who: "TG" },
+];
+
+const stockReality = [
+  { name: "Altitude Series", detail: "Stock landing this month. Listing goes live end of day, banners ready.", state: "ok", label: "This is the push" },
+  { name: "PR-4000 Power Rack", detail: "Live at $1,529, 6 units on hand.", state: "ok", label: "Live and selling" },
+  { name: "Arcadia FT-3500", detail: "Live at $4,199, only 2 units on hand.", state: "thin", label: "Stock thin" },
+];
+
+const wgaSequence = [
+  { step: "Week out", detail: "Personal email from the reps to named site managers, inviting them to the stand. Leads with proof from the World Gym sites we already supply." },
+  { step: "At the conference", detail: "Face to face on booth 35, floor walk-through, offer and consult on the spot." },
+  { step: "Follow up", detail: "Rep phone call, conference leave-behind one-pager, optional LinkedIn touch." },
+];
+
+const alsoRunning = [
+  { name: "Hyrox Perth", when: "21 to 23 Aug", detail: "Perth Convention and Exhibition Centre. Race weekend activation.", IconComp: Flame },
+  { name: "GC Show Day", when: "28 Aug", detail: "Gold Coast Show Day public holiday trading.", IconComp: Cal },
+  { name: "CLP-V4 Launch", when: "TBC", detail: "Force USA direct-to-consumer launch, same wave as the C10-V2. Timing not locked.", IconComp: Bolt },
+];
+
+const forwardLook = [
+  { name: "M20 Launch", when: "1 Sep" },
+  { name: "Father's Day", when: "6 Sep" },
+  { name: "Experience Centre Launch", when: "Likely Oct" },
+];
+
+// ===== SLIDE 1: TITLE =====
+const TitleSlide = () => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex flex-col justify-end overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className="absolute -right-[25%] top-[15%] w-[60%] h-[130%] border border-gaf-orange/10 transform rotate-[-18deg]"></div>
+    <div className="flex-1 flex items-center px-16 z-10">
+      <div className="stagger">
+        <div className="flex items-center gap-5 mb-10">
+          <img src={GAF_LOGO} alt="Gym and Fitness" className={`h-14 w-auto object-contain ${th.logoFilter}`} />
+          <div className={`w-px h-10 ${th.bg3}`}></div>
+          <span className={`text-[14px] font-heading tracking-[.4em] ${th.sub} uppercase`}>Sales Team Briefing</span>
+        </div>
+        <h1 className={`font-display text-[8rem] md:text-[11rem] leading-[0.85] tracking-wider ${th.titleText}`}>
+          AUGUST<br/><span className="text-gaf-orange">2026</span>
+        </h1>
+        <div className="flex items-center gap-6 mt-10">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>REP and Altitude Focus · August Product Offers · WGA Conference · Hyrox Perth</p>
+        </div>
+      </div>
+    </div>
+    <div className="px-16 pb-8 z-10">
+      <p className={`text-[14px] font-heading tracking-[.5em] ${th.muted} uppercase`}>Confidential Internal Use · For the August Sales Meeting</p>
+    </div>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:'11%'}}></footer>
+  </div>
+  );
+};
+
+// ===== SLIDE 2: HOW JULY LANDED =====
+const JulySlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Look Back" title="HOW JULY LANDED" sub="Month to date, not the full month. Every figure below covers 1 to 28 July, the last days entered in the GAF data sheet, and each is compared against a budget cut to the same 28 days. The final month will land higher again." />
+    <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+      <div className="grid grid-cols-3 gap-5 stagger">
+        {julyResults.map((m, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col gap-3`}>
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2 min-w-0">
+                <p className={`text-[13px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+                <span className={`text-[11px] font-heading font-bold tracking-[.15em] uppercase px-1.5 py-0.5 rounded shrink-0 ${th.amberBg} ${th.amber}`}>MTD</span>
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-gaf-orange/10 flex items-center justify-center shrink-0"><m.IconComp size={20} className="text-gaf-orange" /></div>
+            </div>
+            <p className={`font-display text-6xl tracking-wide leading-[0.9] ${th.text}`}>{m.actual}</p>
+            <div className="flex items-baseline gap-3">
+              <span className={`text-[15px] font-body ${th.sub}`}>Budget {m.budget}</span>
+              <span className={`text-[16px] font-heading font-bold ${th.green}`}>{m.delta}</span>
+            </div>
+            <p className={`text-[13px] font-body ${th.muted} leading-snug`}>1 to 28 July only. Budget day-matched to the same 28 days.</p>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-4 stagger">
+        {julySupport.map((m, i) => (
+          <div key={i} className={`${th.bg3} rounded-lg p-4 flex items-center justify-between gap-3`}>
+            <div>
+              <p className={`text-[13px] font-heading font-medium tracking-[.25em] uppercase ${th.sub}`}>{m.label}</p>
+              <p className={`text-[13px] font-body ${th.muted} mt-1`}>{m.sub}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <p className={`text-2xl font-heading font-bold ${th.text} leading-none`}>{m.value}</p>
+              {m.delta && <p className={`text-[15px] font-heading font-bold mt-1 ${m.tone === 'up' ? th.green : th.sub}`}>{m.delta}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`${th.greenBg} border ${th.greenBorder} rounded-lg p-3.5 flex items-start gap-3`}>
+        <TrendUp size={18} className={`${th.green} shrink-0 mt-0.5`} />
+        <p className={`text-[14px] font-body ${th.sub} leading-snug`}>Fulfilled GP ran well ahead of created GP, which is the EOFY order book being invoiced out rather than new demand. The created line is the measure of how July actually traded, and it beat budget by 17.9%. Calls landed 3.2% above the implied target while carts came in 11.2% below it, so July turned fewer carts into more GP. That is the funnel converting better, not demand falling away. Carts and calls carry no budget line in the data sheet, so both implied targets are back-calculated from June's rate.</p>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 3: AUGUST TARGETS =====
+const TargetsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const financial = [
+    { label: "GP Created (Budget)", value: "$581,915", IconComp: Dollar, sub: "Total GP target across August" },
+    { label: "GP Fulfilled (Budget)", value: "$554,204", IconComp: Check, sub: "GP delivered through invoicing" },
+  ];
+  const operational = [
+    { label: "Website Sessions", value: "183,551", IconComp: Users, sub: "Target from the GAF data sheet" },
+    { label: "Abandoned Carts", value: "690", IconComp: Pkg, sub: "Scaled off July, below its 735" },
+    { label: "Inbound Phone Calls", value: "180", IconComp: Megaphone, sub: "Scaled off July, below its 192" },
+  ];
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="The Month Ahead" title="AUGUST TARGETS" sub="August carries the same GP budget as July, dollar for dollar. The cart and call targets still come out lower, because they scale off July's own conversion rate and July converted 25% better than June did. Same GP to find, fewer carts and calls needed to get there." />
+    <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+      <div className="grid grid-cols-2 gap-5 stagger">
+        {financial.map((m, i) => (
+          <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-7 flex flex-col gap-3`}>
+            <div className="flex items-center justify-between">
+              <p className={`text-[14px] font-heading font-medium tracking-[.3em] uppercase text-gaf-orange`}>{m.label}</p>
+              <div className="w-11 h-11 rounded-lg bg-gaf-orange/10 flex items-center justify-center"><m.IconComp size={22} className="text-gaf-orange" /></div>
+            </div>
+            <p className={`font-display text-7xl tracking-wide leading-[0.9] text-gaf-orange`}>{m.value}</p>
+            <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{m.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-4 stagger">
+        {operational.map((m, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+            <div className="flex items-center justify-between">
+              <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+              <m.IconComp size={16} className="text-gaf-orange" />
+            </div>
+            <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.text}`}>{m.value}</p>
+            <p className={`text-[13px] font-body ${th.muted} leading-snug`}>{m.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3.5 flex items-start gap-3">
+        <Target size={18} className="text-gaf-orange shrink-0 mt-0.5" />
+        <p className={`text-[14px] font-body ${th.sub} leading-snug`}>Same budget as July, without the EOFY order book behind it. The play on the next slide is where the volume comes from instead.</p>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 4: THE AUGUST PLAY =====
+const PlaySlide = ({ n, t }) => {
+  const th = useTheme();
+  const stateStyle = {
+    'no-listing': { cls: `${th.redBg} ${th.redBorder}`, txt: th.red },
+    'draft':      { cls: `${th.redBg} ${th.redBorder}`, txt: th.red },
+    'thin':       { cls: `${th.amberBg} ${th.amberBorder}`, txt: th.amber },
+    'ok':         { cls: `${th.greenBg} ${th.greenBorder}`, txt: th.green },
+  };
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="The Objective" title="THE AUGUST PLAY" sub="All-in-One inventory is still short, so the load has to move. We are not heavy in REP stock overall, and we are actually under on the Ares Series. What we do have is Altitude stock landing this month, so that is what we get behind." />
+    <div className="flex gap-5 flex-1 min-h-0">
+      <div className="w-[330px] shrink-0 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white relative overflow-hidden shrink-0">
+          <div className="absolute -right-4 -top-4 opacity-10"><Target size={130} /></div>
+          <p className="text-[13px] font-heading tracking-[.3em] uppercase opacity-90 mb-2 relative z-10">The Shift</p>
+          <h3 className="font-display text-3xl tracking-wide leading-[0.98] relative z-10">GET BEHIND<br/>ALTITUDE</h3>
+          <p className="text-[14px] font-body opacity-95 leading-snug relative z-10 mt-3">The one REP range with stock arriving. Push what we can actually ship.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex-1 flex flex-col min-h-0 gap-2.5`}>
+          <p className={`text-[11px] font-heading tracking-[.25em] text-gaf-orange uppercase`}>Where the Spend Goes</p>
+          {[["Altitude","the new range, stock landing this month"],["Glide and G20 Pro","the two in-stock heroes that keep converting"],["Evergreen cardio","holds the base"]].map(([a,b],i)=>(
+            <div key={i} className={`${th.bg3} rounded-lg p-3`}>
+              <p className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>{a}</p>
+              <p className={`text-[13px] ${th.sub} font-body mt-0.5 leading-snug`}>{b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="rounded-lg overflow-hidden shrink-0 border border-gaf-orange/20">
+          <img src="assets/rep-altitude-banner.jpg" alt="New REP Altitude" className="w-full h-auto object-cover" />
+        </div>
+        <div className="grid grid-cols-3 gap-3 flex-1 stagger min-h-0">
+          {stockReality.map((r, i) => {
+            const s = stateStyle[r.state];
+            return (
+            <div key={i} className={`${s.cls} border rounded-lg p-3.5 flex flex-col justify-center gap-1.5`}>
+              <p className={`text-[15px] font-heading font-bold ${th.text} leading-tight`}>{r.name}</p>
+              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{r.detail}</p>
+              <p className={`text-[12px] font-heading font-bold tracking-[.15em] uppercase ${s.txt} mt-0.5`}>{r.label}</p>
+            </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 5: AUGUST PRODUCT OFFERS =====
+const OffersSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="The Offer Roster · 1 to 31 August" title="AUGUST PRODUCT OFFERS" sub="The locked list up top. Everything below it is still TBC on pricing and sign-off, so do not quote those yet." />
+    <div className="flex flex-col gap-3 flex-1 min-h-0">
+      <div className="grid grid-cols-5 gap-3 flex-1 stagger min-h-0">
+        {offerRoster.map((p, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex flex-col`}>
+            <div className="flex items-center justify-between mb-2 gap-1">
+              <span className={`text-[10px] font-heading tracking-[.2em] uppercase ${th.muted}`}>{p.cat}</span>
+              {p.stock === null
+                ? <span className="text-[10px] font-heading font-bold tracking-[.1em] uppercase px-1.5 py-0.5 rounded text-white bg-gaf-orange">Incoming</span>
+                : <span className={`text-[10px] font-heading font-bold tracking-[.1em] uppercase px-1.5 py-0.5 rounded ${p.stock <= 5 ? `${th.amberBg} ${th.amber}` : 'text-gaf-orange bg-gaf-orange/10'}`}>{p.stock} in stock</span>}
+            </div>
+            <div className={`bg-white rounded-md overflow-hidden flex items-center justify-center flex-1 min-h-[110px] mb-2`}>
+              <img src={p.img} alt={p.name} className={`w-full h-full ${p.cover ? 'object-cover object-right' : 'object-contain'}`} loading="lazy" />
+            </div>
+            <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</p>
+            <p className={`text-[12px] ${th.muted} font-body mt-0.5`}>{p.sku}</p>
+            <div className="mt-auto pt-2">
+              <div className="flex items-baseline gap-2">
+                <span className="text-[19px] font-heading font-bold text-gaf-orange">{p.price}</span>
+                {p.was && <span className={`text-[13px] font-body line-through ${th.muted}`}>{p.was}</span>}
+              </div>
+              <p className={`text-[12px] ${th.sub} font-body mt-1 leading-snug`}>{p.note}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className={`${th.bg3} rounded-lg p-4 shrink-0`}>
+        <div className="flex items-center gap-3 mb-3">
+          <span className={`text-[12px] font-heading font-bold tracking-[.2em] uppercase px-2 py-0.5 rounded ${th.amberBg} ${th.amber}`}>TBC</span>
+          <p className={`text-[12px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Proposed, Not Yet Signed Off</p>
+          <p className={`text-[13px] font-body ${th.muted}`}>Pricing pass still to come. Not for quoting.</p>
+        </div>
+        <div className="grid grid-cols-4 gap-2.5">
+          {tbcItems.map((p, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-3 py-2 flex items-center justify-between gap-2`}>
+              <div className="min-w-0">
+                <p className={`text-[13px] font-heading font-semibold ${th.text} leading-tight truncate`}>{p.name}</p>
+                <p className={`text-[11px] ${th.muted} font-body truncate`}>{p.sku}</p>
+              </div>
+              <div className="text-right shrink-0">
+                <p className={`text-[15px] font-heading font-bold ${th.sub} leading-none`}>{p.price}</p>
+                {p.was && <p className={`text-[11px] font-body line-through ${th.muted} mt-0.5`}>{p.was}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 6: WGA CONFERENCE =====
+const WgaSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="Commercial · 21 to 22 August" title="WGA CONFERENCE" sub="World Gym Australia conference, booth 35. We present as Centr x Hyrox in front of gym owners and operators, with Gym and Fitness standing behind it as the provider." />
+    <div className="flex gap-5 flex-1 min-h-0">
+      <div className="w-[340px] shrink-0 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white relative overflow-hidden shrink-0">
+          <div className="absolute -right-4 -top-4 opacity-10"><Store size={130} /></div>
+          <p className="text-[13px] font-heading tracking-[.3em] uppercase opacity-90 mb-2 relative z-10">The Opening</p>
+          <h3 className="font-display text-[1.75rem] tracking-wide leading-[1.05] relative z-10">THEIR FLOOR<br/>IS THEIR CHOICE</h3>
+          <p className="text-[14px] font-body opacity-95 leading-snug relative z-10 mt-3">World Gym franchisees are independent operators. They are not locked into a prescribed fitout, so the floor is theirs to decide, and it is how they compete locally.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex-1`}>
+          <p className={`text-[11px] font-heading tracking-[.25em] text-gaf-orange uppercase mb-3`}>The Core Message</p>
+          <p className={`text-[15px] font-body ${th.text} leading-relaxed italic`}>"Train for Hyrox on the competition equipment. Centr x Hyrox on your floor, supplied and supported by Gym and Fitness."</p>
+        </div>
+      </div>
+      <div className="flex-1 flex flex-col gap-3 min-h-0">
+        <div className="flex items-center gap-2 shrink-0">
+          <Mail size={16} className="text-gaf-orange" />
+          <p className={`text-[14px] font-heading tracking-[.3em] ${th.sub} uppercase`}>The Sequence</p>
+        </div>
+        <div className="flex flex-col gap-3 flex-1 stagger min-h-0">
+          {wgaSequence.map((s, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex gap-4 items-start flex-1`}>
+              <div className="w-9 h-9 rounded-lg bg-gaf-orange/10 flex items-center justify-center shrink-0">
+                <span className="text-[15px] font-heading font-bold text-gaf-orange">{i+1}</span>
+              </div>
+              <div>
+                <p className={`text-[16px] font-heading font-bold ${th.text} leading-tight`}>{s.step}</p>
+                <p className={`text-[14px] font-body ${th.sub} mt-1 leading-snug`}>{s.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3 shrink-0 flex items-start gap-3">
+          <Warn size={16} className="text-gaf-orange shrink-0 mt-0.5" />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={`font-semibold ${th.text}`}>Deliberately not a bulk EDM.</span> This sends one to one from the reps to named managers. That keeps it a genuine business communication and it converts far better on a considered fitout purchase. Lead capture on the stand runs through a HubSpot landing page and QR code, tagged to the conference for reporting.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 7: GAF COMMERCIAL SITE =====
+const CommercialSlide = ({ n, t }) => {
+  const th = useTheme();
+  const nav = ["Strength","Free Weights","Hyrox / Functional","Cardio","Flooring","Recovery","Storage","Fitouts","Contact"];
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="New Asset" title="GAF COMMERCIAL" sub="A dedicated commercial storefront, separate from the retail site. Built quote-led rather than checkout-led, which is how commercial buyers actually purchase." />
+    <div className="flex gap-5 flex-1 min-h-0">
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg overflow-hidden flex-1 flex flex-col min-h-0`}>
+          <div className={`${th.bg3} px-4 py-2.5 flex items-center gap-3 shrink-0 border-b ${th.cardBorder}`}>
+            <div className="flex gap-1.5">
+              {["#ff5f57","#febc2e","#28c840"].map((c,i)=>(<div key={i} className="w-2.5 h-2.5 rounded-full" style={{background:c}}></div>))}
+            </div>
+            <div className={`flex-1 ${th.cardBg} rounded px-3 py-1`}>
+              <p className={`text-[13px] font-body ${th.sub}`}>commercial.gymandfitness.com.au</p>
+            </div>
+          </div>
+          <div className="flex-1 flex items-center justify-center p-6 min-h-0">
+            <div className="text-center">
+              <p className={`font-display text-4xl tracking-wide ${th.text} leading-none`}>GYM <span className={th.sub}>and</span> FITNESS</p>
+              <p className="text-[15px] font-heading font-bold tracking-[.55em] text-gaf-orange uppercase mt-2 ml-2">Commercial</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center mt-6 max-w-[520px]">
+                {nav.map((s,i)=>(
+                  <span key={i} className={`text-[13px] font-heading font-semibold tracking-[.12em] uppercase ${th.sub}`}>{s}</span>
+                ))}
+              </div>
+              <p className={`text-[13px] font-body ${th.muted} mt-6`}>Screenshot to drop in here</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="w-[400px] shrink-0 flex flex-col gap-3 min-h-0">
+        <div className="bg-gaf-orange rounded-lg p-5 text-white relative overflow-hidden shrink-0">
+          <div className="absolute -right-4 -top-4 opacity-10"><Store size={130} /></div>
+          <p className="text-[13px] font-heading tracking-[.3em] uppercase opacity-90 mb-2 relative z-10">Why It Matters</p>
+          <h3 className="font-display text-[1.75rem] tracking-wide leading-[1.05] relative z-10">QUOTE FIRST,<br/>NOT CHECKOUT</h3>
+          <p className="text-[14px] font-body opacity-95 leading-snug relative z-10 mt-3">Commercial buyers spec a room, not a product. The site is built to start that conversation and route it to us.</p>
+        </div>
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex-1`}>
+          <p className={`text-[11px] font-heading tracking-[.25em] text-gaf-orange uppercase mb-3`}>What's On It</p>
+          <div className="space-y-2">
+            {[["Add to Quote","Builds a quote cart instead of a checkout"],
+              ["Call a Product Expert","Straight to 1800 614 491"],
+              ["Fitouts","Whole-room offer, not single SKUs"],
+              ["Finance Available","Surfaced on every product"]].map(([a,b],i)=>(
+              <div key={i} className={`${th.bg3} rounded-lg px-3 py-2`}>
+                <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{a}</p>
+                <p className={`text-[13px] ${th.sub} font-body mt-0.5 leading-snug`}>{b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className={`${th.amberBg} border ${th.amberBorder} rounded-lg p-3 flex items-start gap-2.5 shrink-0`}>
+          <Warn size={15} className={`${th.amber} shrink-0 mt-0.5`} />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}>Site is built and ready. Still behind a password gate as at 29 July, so hold the URL until it is opened up.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 8: ALSO RUNNING =====
+const AlsoSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <SectionTitle pre="On the Calendar" title="ALSO RUNNING" sub="Live in August alongside the two hero campaigns, plus what is coming next." />
+    <div className="flex-1 flex flex-col gap-5 min-h-0 justify-center">
+      <div className="grid grid-cols-3 gap-4 stagger">
+        {alsoRunning.map((a, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-3`}>
+            <div className="flex items-center justify-between">
+              <span className={`text-[12px] font-heading font-bold tracking-[.2em] uppercase text-gaf-orange bg-gaf-orange/10 px-2 py-1 rounded`}>{a.when}</span>
+              <a.IconComp size={20} className="text-gaf-orange" />
+            </div>
+            <p className={`font-display text-3xl tracking-wide leading-[0.95] ${th.text}`}>{a.name}</p>
+            <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{a.detail}</p>
+          </div>
+        ))}
+      </div>
+      <div className={`${th.bg3} rounded-lg p-5`}>
+        <p className={`text-[12px] font-heading tracking-[.3em] ${th.sub} uppercase mb-4`}>Straight After</p>
+        <div className="grid grid-cols-3 gap-4">
+          {forwardLook.map((f, i) => (
+            <div key={i} className={`flex items-center justify-between ${th.cardBg} border ${th.cardBorder} rounded-lg px-4 py-3`}>
+              <p className={`text-[16px] font-heading font-bold ${th.text}`}>{f.name}</p>
+              <span className="text-[14px] font-heading font-bold text-gaf-orange">{f.when}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="bg-gaf-orange/5 border border-gaf-orange/20 rounded-lg p-3.5 flex items-start gap-3">
+        <Cal size={18} className="text-gaf-orange shrink-0 mt-0.5" />
+        <p className={`text-[14px] font-body ${th.sub} leading-snug`}>The Experience Centre launch is the next big set piece, now looking like October rather than September. Anything we want shot, listed or merchandised for it still needs to start moving during August.</p>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE 8: Q&A =====
+const QSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t}>
+    <div className="flex-1 flex flex-col items-center justify-center relative">
+      <div className="absolute -left-[10%] top-[20%] w-[50%] h-[60%] bg-gaf-orange opacity-[0.03] transform rotate-[-18deg]"></div>
+      <div className="absolute -right-[10%] top-[25%] w-[45%] h-[55%] border border-gaf-orange/10 transform rotate-[-18deg]"></div>
+      <div className="stagger text-center z-10">
+        <p className="text-[14px] font-heading tracking-[.5em] text-gaf-orange uppercase mb-6">Over to You</p>
+        <h1 className={`font-display text-[10rem] leading-[0.85] tracking-wider ${th.titleText}`}>Q&amp;A</h1>
+        <div className="flex items-center gap-6 mt-10 justify-center">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>Questions, gaps, anything that needs a decision today</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+const SLIDES = [TitleSlide, JulySlide, TargetsSlide, PlaySlide, OffersSlide, WgaSlide, CommercialSlide, AlsoSlide, QSlide];
+
+function App() {
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    setIdx(prev => {
+      const next = prev + dir;
+      if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
+  useEffect(() => { document.body.style.background = th.bodyBg; }, [th.bodyBg]);
+
+  const Cur = SLIDES[idx];
+
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className={`w-screen h-screen flex items-center justify-center ${th.grainClass}`} style={{background: th.bodyBg}}>
+        <div style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
+          <div key={key} className="w-full h-full slide-enter">
+            <Cur n={idx + 1} t={SLIDES.length} />
+          </div>
+        </div>
+        <div className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)"
+            className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => go(-1)} disabled={idx === 0}
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevL size={18} />
+          </button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1}
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevR size={18} />
+          </button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

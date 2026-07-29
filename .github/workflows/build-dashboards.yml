@@ -1,0 +1,121 @@
+name: Build dashboards
+
+# Rebuilds a dashboard whenever its source changes and commits the output.
+#
+# Without this, editing _src/ does nothing visible: the live page is committed
+# build output, so a source-only PR merges cleanly and changes nothing. That is
+# the single thing standing between "the source exists" and "a non-developer can
+# actually change a dashboard with Claude Code".
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "_src/**"
+  workflow_dispatch:
+    inputs:
+      dashboard:
+        description: "Dashboard to rebuild, or 'all'"
+        required: false
+        default: "all"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-dashboards
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # The job commits its own output. Without this it would retrigger itself
+    # forever: build -> commit -> push -> build.
+    if: github.actor != 'github-actions[bot]'
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # need the previous commit to diff against
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Work out which dashboards to build
+        id: pick
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dashboard }}" != "all" ]; then
+            LIST="${{ inputs.dashboard }}"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            LIST=$(ls -d _src/*/ | xargs -n1 basename)
+          else
+            # Only what this push actually touched, so one edit does not rebuild
+            # all seven (each is a full npm install).
+            LIST=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} \
+                   | grep '^_src/' | cut -d/ -f2 | sort -u || true)
+          fi
+          # Drop anything without a package.json (e.g. a stray docs folder).
+          KEEP=""
+          for d in $LIST; do
+            [ -f "_src/$d/package.json" ] && KEEP="$KEEP $d"
+          done
+          KEEP=$(echo $KEEP | xargs || true)
+          echo "list=$KEEP" >> "$GITHUB_OUTPUT"
+          echo "Will build:${KEEP:- (nothing)}"
+
+      - name: Build and stage
+        if: steps.pick.outputs.list != ''
+        run: |
+          set -euo pipefail
+          for d in ${{ steps.pick.outputs.list }}; do
+            echo "::group::$d"
+            ( cd "_src/$d" && npm ci --no-audit --no-fund && npm run build )
+
+            # Replace the published folder wholesale. Vite emits hash-named
+            # assets, so copying without deleting would accumulate every old
+            # bundle forever. Verified safe: the only non-Vite files in any
+            # published folder (favicons, archetype images) live in _src/<d>/public/
+            # and are therefore reproduced by the build.
+            rm -rf "$d"
+            mkdir -p "$d"
+            cp -R "_src/$d/dist/." "$d/"
+            echo "::endgroup::"
+          done
+
+      # A build can bake a secret into public JavaScript. That is exactly how the
+      # Meta token leaked in May 2026. Check before anything is committed.
+      - name: Scan built output for credentials
+        if: steps.pick.outputs.list != ''
+        run: |
+          set -euo pipefail
+          FAIL=0
+          for d in ${{ steps.pick.outputs.list }}; do
+            for pat in 'AIza[0-9A-Za-z_-]{30}' 'EAA[A-Za-z0-9]{60}' 'shpat_[a-f0-9]{32}' \
+                       'pat-na[0-9]-[a-f0-9-]{30}' 'sk-ant-[A-Za-z0-9_-]{20}' 'ghp_[A-Za-z0-9]{30}'; do
+              if grep -rIlE "$pat" "$d" >/dev/null 2>&1; then
+                echo "FATAL: credential-shaped string in built output of $d (pattern ${pat:0:12})"
+                FAIL=1
+              fi
+            done
+          done
+          [ "$FAIL" = "0" ] || { echo "Refusing to publish. Check the build config for an injected secret."; exit 1; }
+          echo "built output clean"
+
+      - name: Commit rebuilt dashboards
+        if: steps.pick.outputs.list != ''
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- ${{ steps.pick.outputs.list }}; then
+            echo "build output identical, nothing to commit"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ${{ steps.pick.outputs.list }}
+          git commit -m "Rebuild dashboards: ${{ steps.pick.outputs.list }} [skip ci]"
+          git pull --rebase
+          git push
+          echo "published"

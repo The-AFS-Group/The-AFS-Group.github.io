@@ -210,22 +210,21 @@ const julySupport = [
 ];
 
 const offerRoster = [
-  { name: "REP Altitude", sku: "Rack + Cables + Smith", cat: "Rack", price: "$6,999", was: "", img: IMG.altitude, cover: true, stock: null, note: "New range, listing live today" },
-  { name: "Force USA HG100 Home Gym", sku: "F-HG100", cat: "Home Gym", price: "$699", was: "$849", img: IMG.hg100, stock: 14, note: "New to the offer list" },
-  { name: "REP Arcadia Functional Trainer", sku: "FT-3500", cat: "Functional", price: "$3,999", was: "$4,199", img: IMG.arcadia, stock: 2, note: "Only 2 units on hand" },
-  { name: "Force USA Glide Treadmill", sku: "F-GLIDE-T2", cat: "Cardio", price: "$1,899", was: "$2,499", img: IMG.glide, stock: 78, note: "Continue through" },
-  { name: "Force USA G20 Pro", sku: "F-G20-V2", cat: "All-In-One", price: "$5,999", was: "$8,499", img: IMG.g20, stock: 31, note: "Continue through" },
+  { name: "Force USA HG100 Home Gym", sku: "F-HG100", cat: "Home Gym", price: "$699", was: "$849", off: "18%", img: IMG.hg100, stock: 14, note: "New to the offer list" },
+  { name: "REP Arcadia Functional Trainer", sku: "FT-3500", cat: "Functional", price: "$3,999", was: "$4,199", off: "5%", img: IMG.arcadia, stock: 2, note: "Only 2 units on hand" },
+  { name: "Force USA Glide Treadmill", sku: "F-GLIDE-T2", cat: "Cardio", price: "$1,899", was: "$2,499", off: "24%", img: IMG.glide, stock: 78, note: "Continue through" },
+  { name: "Force USA G20 Pro", sku: "F-G20-V2", cat: "All-In-One", price: "$5,999", was: "$8,499", off: "29%", img: IMG.g20, stock: 31, note: "Continue through" },
 ];
 
 const tbcItems = [
-  { name: "Vortex Pulse Spin Bike", sku: "V-PULSE", price: "$349", was: "$499", who: "AC" },
-  { name: "Force USA Ski Trainer + Stand", sku: "F-SKI-TRAINER", price: "$1,149", was: "$1,499", who: "AC" },
-  { name: "Centr FID5 Bench", sku: "FID5", price: "$599", was: "$799", who: "AC" },
-  { name: "Force USA R3 Air Rower", sku: "F-R3", price: "$1,099", was: "$1,299", who: "AC" },
-  { name: "Centr 1 Functional Trainer", sku: "CENTR-1", price: "$1,399", was: "", who: "TG" },
-  { name: "Centr 2 Functional Trainer", sku: "CENTR2-IG", price: "$2,699", was: "$2,799", who: "TG" },
-  { name: "Torque USA Anker 3", sku: "ANKER-3-001-150LB", price: "$1,899", was: "$2,499", who: "TG" },
-  { name: "Torque USA F9 Fold-Away", sku: "F9-003-225LB", price: "$5,499", was: "$6,999", who: "TG" },
+  { name: "Vortex Pulse Spin Bike", sku: "V-PULSE", price: "$349", was: "$499", off: "30%", who: "AC" },
+  { name: "Force USA Ski Trainer + Stand", sku: "F-SKI-TRAINER", price: "$1,149", was: "$1,499", off: "23%", who: "AC" },
+  { name: "Centr FID5 Bench", sku: "FID5", price: "$599", was: "$799", off: "25%", who: "AC" },
+  { name: "Force USA R3 Air Rower", sku: "F-R3", price: "$1,099", was: "$1,299", off: "15%", who: "AC" },
+  { name: "Centr 1 Functional Trainer", sku: "CENTR-1", price: "$1,399", was: "", off: "", who: "TG" },
+  { name: "Centr 2 Functional Trainer", sku: "CENTR2-IG", price: "$2,699", was: "$2,799", off: "4%", who: "TG" },
+  { name: "Torque USA Anker 3", sku: "ANKER-3-001-150LB", price: "$1,899", was: "$2,499", off: "24%", who: "TG" },
+  { name: "Torque USA F9 Fold-Away", sku: "F9-003-225LB", price: "$5,499", was: "$6,999", off: "21%", who: "TG" },
 ];
 
 const stockReality = [
@@ -440,24 +439,25 @@ const OffersSlide = ({ n, t }) => {
   <Slide num={n} total={t}>
     <SectionTitle pre="The Offer Roster · 1 to 31 August" title="AUGUST PRODUCT OFFERS" sub="The locked list up top. Everything below it is still TBC on pricing and sign-off, so do not quote those yet." />
     <div className="flex flex-col gap-3 flex-1 min-h-0">
-      <div className="grid grid-cols-5 gap-3 flex-1 stagger min-h-0">
+      <div className="grid grid-cols-4 gap-3 flex-1 stagger min-h-0 overflow-hidden">
         {offerRoster.map((p, i) => (
-          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex flex-col`}>
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex flex-col min-h-0 overflow-hidden`}>
             <div className="flex items-center justify-between mb-2 gap-1">
               <span className={`text-[10px] font-heading tracking-[.2em] uppercase ${th.muted}`}>{p.cat}</span>
               {p.stock === null
                 ? <span className="text-[10px] font-heading font-bold tracking-[.1em] uppercase px-1.5 py-0.5 rounded text-white bg-gaf-orange">Incoming</span>
                 : <span className={`text-[10px] font-heading font-bold tracking-[.1em] uppercase px-1.5 py-0.5 rounded ${p.stock <= 5 ? `${th.amberBg} ${th.amber}` : 'text-gaf-orange bg-gaf-orange/10'}`}>{p.stock} in stock</span>}
             </div>
-            <div className={`bg-white rounded-md overflow-hidden flex items-center justify-center flex-1 min-h-[110px] mb-2`}>
+            <div className={`bg-white rounded-md overflow-hidden flex items-center justify-center flex-1 min-h-0 mb-2`}>
               <img src={p.img} alt={p.name} className={`w-full h-full ${p.cover ? 'object-cover object-right' : 'object-contain'}`} loading="lazy" />
             </div>
-            <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</p>
-            <p className={`text-[12px] ${th.muted} font-body mt-0.5`}>{p.sku}</p>
-            <div className="mt-auto pt-2">
-              <div className="flex items-baseline gap-2">
+            <div className="shrink-0">
+              <p className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</p>
+              <p className={`text-[12px] ${th.muted} font-body mt-0.5`}>{p.sku}</p>
+              <div className="flex items-baseline gap-2 mt-2 flex-wrap">
                 <span className="text-[19px] font-heading font-bold text-gaf-orange">{p.price}</span>
                 {p.was && <span className={`text-[13px] font-body line-through ${th.muted}`}>{p.was}</span>}
+                {p.off && <span className="text-[12px] font-heading font-bold tracking-[.1em] uppercase text-white bg-gaf-orange px-1.5 py-0.5 rounded">{p.off} off</span>}
               </div>
               <p className={`text-[12px] ${th.sub} font-body mt-1 leading-snug`}>{p.note}</p>
             </div>
@@ -479,7 +479,10 @@ const OffersSlide = ({ n, t }) => {
               </div>
               <div className="text-right shrink-0">
                 <p className={`text-[15px] font-heading font-bold ${th.sub} leading-none`}>{p.price}</p>
-                {p.was && <p className={`text-[11px] font-body line-through ${th.muted} mt-0.5`}>{p.was}</p>}
+                <div className="flex items-baseline justify-end gap-1.5 mt-0.5">
+                  {p.was && <span className={`text-[11px] font-body line-through ${th.muted}`}>{p.was}</span>}
+                  {p.off && <span className={`text-[11px] font-heading font-bold ${th.amber}`}>{p.off} off</span>}
+                </div>
               </div>
             </div>
           ))}
@@ -540,7 +543,6 @@ const WgaSlide = ({ n, t }) => {
 // ===== SLIDE 7: GAF COMMERCIAL SITE =====
 const CommercialSlide = ({ n, t }) => {
   const th = useTheme();
-  const nav = ["Strength","Free Weights","Hyrox / Functional","Cardio","Flooring","Recovery","Storage","Fitouts","Contact"];
   return (
   <Slide num={n} total={t}>
     <SectionTitle pre="New Asset" title="GAF COMMERCIAL" sub="A dedicated commercial storefront, separate from the retail site. Built quote-led rather than checkout-led, which is how commercial buyers actually purchase." />
@@ -555,17 +557,8 @@ const CommercialSlide = ({ n, t }) => {
               <p className={`text-[13px] font-body ${th.sub}`}>commercial.gymandfitness.com.au</p>
             </div>
           </div>
-          <div className="flex-1 flex items-center justify-center p-6 min-h-0">
-            <div className="text-center">
-              <p className={`font-display text-4xl tracking-wide ${th.text} leading-none`}>GYM <span className={th.sub}>and</span> FITNESS</p>
-              <p className="text-[15px] font-heading font-bold tracking-[.55em] text-gaf-orange uppercase mt-2 ml-2">Commercial</p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1.5 justify-center mt-6 max-w-[520px]">
-                {nav.map((s,i)=>(
-                  <span key={i} className={`text-[13px] font-heading font-semibold tracking-[.12em] uppercase ${th.sub}`}>{s}</span>
-                ))}
-              </div>
-              <p className={`text-[13px] font-body ${th.muted} mt-6`}>Screenshot to drop in here</p>
-            </div>
+          <div className="flex-1 min-h-0 bg-white overflow-hidden">
+            <img src="assets/gaf-commercial-site.png" alt="GAF Commercial storefront" className="w-full h-full object-cover object-top" />
           </div>
         </div>
       </div>

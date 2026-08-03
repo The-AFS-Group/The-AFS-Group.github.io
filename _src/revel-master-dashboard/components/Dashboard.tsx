@@ -1,16 +1,17 @@
 
 import React, { useState } from 'react';
-import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Flag } from 'lucide-react';
+import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Flag, Compass } from 'lucide-react';
 import CallInsightsDashboard from './CallInsightsDashboard';
 import SalesDashboard from './SalesDashboard';
 import ProductInsightsDashboard from './ProductInsightsDashboard';
 import BHAGDashboard from './BHAGDashboard';
 import StrategicPrioritiesDashboard from './StrategicPrioritiesDashboard';
+import OPSPDashboard from './OPSPDashboard';
 import { GAF_COLORS } from '../constants';
 
 const Dashboard: React.FC = () => {
   // Default to 'sales' view as requested
-  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'product-insights' | 'bhag' | 'initiatives'>('sales');
+  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'opsp' | 'product-insights' | 'bhag' | 'initiatives'>('sales');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -74,6 +75,19 @@ const Dashboard: React.FC = () => {
           >
             <BarChart3 size={20} className="shrink-0" />
             {!isCollapsed && <span>Sales Health</span>}
+          </button>
+
+          <button
+            onClick={() => { setActiveView('opsp'); setIsSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
+              activeView === 'opsp'
+                ? 'bg-white/10 text-white shadow-sm border border-white/5'
+                : 'text-gray-400 hover:bg-white/5 hover:text-white'
+            } ${isCollapsed ? 'justify-center' : ''}`}
+            title={isCollapsed ? "OPSP" : ""}
+          >
+            <Compass size={20} className="shrink-0" />
+            {!isCollapsed && <span>OPSP</span>}
           </button>
 
           <button
@@ -146,7 +160,9 @@ const Dashboard: React.FC = () => {
 
         {/* Dashboard Content */}
         <div className="flex-1">
-          {activeView === 'call-insights' ? (
+          {activeView === 'opsp' ? (
+            <OPSPDashboard />
+          ) : activeView === 'call-insights' ? (
             <CallInsightsDashboard />
           ) : activeView === 'product-insights' ? (
             <ProductInsightsDashboard />

@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Home Gym Builder — Customer Journey Map | GAF</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gaf-black:#000;--gaf-ink:#1A1A1A;--gaf-white:#fff;
+    --gaf-orange:#F26422;--gaf-orange-700:#B34213;--gaf-orange-soft:#FDE9DD;
+    --g50:#FAFAFA;--g100:#F0F0F0;--g200:#E2E2E2;--g300:#C9C9C9;--g400:#A0A0A0;
+    --g500:#717171;--g600:#555;--g700:#424242;--g800:#2B2B2B;--g900:#1A1A1A;
+    --success:#2E8B4A;--display:'Montserrat',Arial,sans-serif;--sans:'Open Sans',Arial,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:var(--sans);color:var(--gaf-ink);background:var(--gaf-white);line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 24px}
+  h1,h2,h3,h4,.eyebrow{font-family:var(--display)}
+  .eyebrow{text-transform:uppercase;letter-spacing:.18em;font-weight:700;font-size:12px;color:var(--gaf-orange)}
+  a{color:var(--gaf-orange-700)}
+
+  /* header */
+  header{background:var(--gaf-black);color:var(--gaf-white);padding:64px 0 30px}
+  header .eyebrow{color:var(--gaf-orange)}
+  header h1{font-weight:900;font-size:clamp(30px,5.4vw,54px);line-height:1.03;margin:14px 0 18px;letter-spacing:-.01em}
+  header p.sub{color:var(--g300);font-size:18px;max-width:780px}
+  header p.sub strong{color:#fff}
+  .status{display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#241a12;border:1px solid var(--gaf-orange-700);border-radius:8px;padding:11px 16px;font-size:14px;color:var(--g300)}
+  .status .dot{width:9px;height:9px;border-radius:50%;background:var(--gaf-orange);flex:none}
+  .status strong{color:var(--gaf-orange);font-family:var(--display);text-transform:uppercase;letter-spacing:.06em;font-size:12px}
+
+  /* orange rule band */
+  .rule-band{background:var(--gaf-orange);color:#fff;font-family:var(--display);font-weight:700}
+  .rule-band .wrap{padding:22px 24px;display:flex;gap:18px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .rule-band .rule{font-size:clamp(15px,2.3vw,21px);line-height:1.3}
+  .rule-band .rule strong{font-weight:900}
+  .rule-band .gate{background:#fff;color:var(--gaf-orange-700);font-weight:900;padding:8px 16px;border-radius:6px;white-space:nowrap;font-size:15px;font-family:var(--sans)}
+
+  section{padding:52px 0}
+  section.alt{background:var(--g50);border-top:1px solid var(--g200);border-bottom:1px solid var(--g200)}
+  section.dark{background:var(--gaf-black);color:#fff}
+  h2{font-weight:800;font-size:clamp(22px,3.4vw,32px);letter-spacing:-.01em;margin-bottom:10px}
+  section.dark h2{color:#fff}
+  .lead{color:var(--g600);font-size:17px;max-width:800px;margin-bottom:28px}
+  section.dark .lead{color:var(--g300)}
+  .sec-eyebrow{margin-bottom:6px}
+  p.body{color:var(--g700);font-size:15.5px;max-width:820px;margin-bottom:14px}
+  p.body strong{color:var(--gaf-ink)}
+  section.dark p.body{color:var(--g300)}
+  section.dark p.body strong{color:#fff}
+
+  /* two-lane note */
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
+  .lane{border:1px solid var(--g200);border-radius:12px;padding:22px 24px;background:#fff}
+  .lane .tag{display:inline-block;font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.1em;color:#fff;padding:4px 10px;border-radius:5px;text-transform:uppercase}
+  .lane.ss .tag{background:var(--gaf-orange)}
+  .lane.sa .tag{background:var(--gaf-black)}
+  .lane h3{font-size:18px;font-weight:800;margin:13px 0 7px}
+  .lane p{color:var(--g600);font-size:14.5px}
+
+  /* profit table */
+  .tbl{width:100%;border-collapse:collapse;margin-top:6px;font-size:14.5px;background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden}
+  .tbl th{background:var(--g900);color:#fff;font-family:var(--display);font-weight:700;text-align:left;padding:13px 16px;font-size:12.5px;letter-spacing:.03em;text-transform:uppercase}
+  .tbl th.r,.tbl td.r{text-align:right}
+  .tbl td{padding:12px 16px;border-top:1px solid var(--g200);color:var(--g700)}
+  .tbl tr.hot td{background:var(--gaf-orange-soft);font-weight:700;color:var(--gaf-ink)}
+  .tbl tr.hot td .star{color:var(--gaf-orange-700)}
+  .tbl td .neg{color:var(--gaf-danger,#C23B22)}
+  .tbl-note{font-size:13.5px;color:var(--g600);margin-top:12px;max-width:820px}
+  .tbl-note strong{color:var(--gaf-orange-700)}
+
+  /* journey ribbon */
+  .journey-scroll{overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch}
+  .journey{display:grid;grid-template-columns:repeat(7,minmax(150px,1fr));gap:10px;min-width:920px}
+  .jstage{border:1px solid #333;border-radius:12px;overflow:hidden;background:#141414;display:flex;flex-direction:column}
+  .jstage .top{padding:14px 14px 12px;border-bottom:1px solid #2a2a2a}
+  .jstage .idx{font-family:var(--display);font-weight:900;font-size:12px;color:var(--gaf-orange)}
+  .jstage .nm{font-family:var(--display);font-weight:800;font-size:16px;color:#fff;margin-top:3px;line-height:1.1}
+  .jstage .mind{padding:12px 14px;font-size:12.5px;color:var(--g300);font-style:italic;line-height:1.4;flex:1}
+  .jstage .jtbd{padding:9px 14px;font-family:var(--display);font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--g400);border-top:1px solid #2a2a2a}
+  .jstage.pre{background:#0d0d0d;border-style:dashed;border-color:#3a3a3a}
+  .jstage.pre .nm{color:var(--g300)}
+  .jstage.adv{border-color:var(--gaf-orange-700)}
+  .jstage.adv .nm{color:var(--gaf-orange)}
+  .loop-note{margin-top:16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;background:#171717;border:1px solid var(--gaf-orange-700);border-radius:10px;padding:14px 18px}
+  .loop-note .lp{font-family:var(--display);font-weight:900;color:var(--gaf-orange);font-size:14px;white-space:nowrap}
+  .loop-note .lt{font-size:13.5px;color:var(--g300)}
+  .loop-note .lt strong{color:#fff}
+  .scroll-hint{font-size:12px;color:var(--g500);margin-top:10px;font-style:italic}
+
+  /* metric row under journey */
+  .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-top:22px}
+  .metric{background:#fff;border:1px solid var(--g200);border-radius:11px;padding:16px 18px}
+  .metric .l{font-size:12px;font-weight:700;font-family:var(--display);text-transform:uppercase;letter-spacing:.04em;color:var(--gaf-orange-700)}
+  .metric .v{font-size:14px;color:var(--g700);margin-top:5px;line-height:1.35}
+
+  /* stage detail cards */
+  .stage{border:1px solid var(--g200);border-radius:14px;background:#fff;margin-bottom:18px;overflow:hidden}
+  .stage-head{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;padding:20px 24px 14px}
+  .stage-head .num{font-family:var(--display);font-weight:900;font-size:30px;color:var(--gaf-orange);line-height:1}
+  .stage-head .ttl{font-family:var(--display);font-weight:800;font-size:20px;color:var(--gaf-ink)}
+  .stage-head .say{font-size:14px;color:var(--g500);font-style:italic}
+  .stage-body{padding:0 24px 22px;display:grid;grid-template-columns:1fr;gap:6px}
+  .stage-body p{font-size:14.5px;color:var(--g700);margin-bottom:8px}
+  .stage-body p strong{color:var(--gaf-ink)}
+  .stage-body .label{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--gaf-orange-700);margin-top:6px}
+  .quotes{display:flex;flex-direction:column;gap:8px;margin:6px 0 10px;padding-left:2px}
+  .q{border-left:3px solid var(--gaf-orange);background:var(--g50);padding:9px 14px;border-radius:0 6px 6px 0;font-size:14px;color:var(--g800);font-style:italic}
+  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+  .chip{font-size:12px;font-weight:600;background:#fff;border:1px solid var(--g300);border-radius:20px;padding:5px 12px;color:var(--g700)}
+  .chip.mono{font-family:var(--display);font-weight:700;font-size:11.5px}
+  .stage-metric{font-size:13px;color:var(--g600);border-top:1px solid var(--g100);padding-top:12px;margin-top:6px}
+  .stage-metric b{font-family:var(--display);color:var(--gaf-ink)}
+  .stage.hero{border-color:var(--gaf-orange);box-shadow:0 6px 20px rgba(242,100,34,.08)}
+  .stage.hero .stage-head{background:var(--gaf-orange-soft)}
+
+  /* channel matrix */
+  .matrix{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--g200);border-radius:12px;overflow:hidden}
+  .matrix th{background:var(--g900);color:#fff;font-family:var(--display);font-weight:700;padding:12px 12px;font-size:12px;text-transform:uppercase;letter-spacing:.02em}
+  .matrix th.c,.matrix td.c{text-align:center}
+  .matrix td{padding:11px 12px;border-top:1px solid var(--g200);color:var(--g700);vertical-align:middle}
+  .matrix td.ch{font-weight:700;color:var(--gaf-ink)}
+  .matrix td.notes{font-size:12.5px;color:var(--g600);line-height:1.35}
+  .matrix tr.phone td{background:var(--gaf-orange-soft)}
+  .rl{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:6px;font-family:var(--display);font-weight:900;font-size:12px;color:#fff}
+  .rl.I{background:var(--g500)}.rl.N{background:var(--g400)}.rl.C{background:var(--gaf-orange)}.rl.G{background:var(--success)}
+  .legend{display:flex;flex-wrap:wrap;gap:16px;margin:0 0 16px;font-size:12.5px;color:var(--g600)}
+  .legend span{display:inline-flex;align-items:center;gap:7px}
+
+  /* attribution */
+  .attr{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:8px}
+  .attr .card{border-radius:12px;padding:22px 20px;text-align:center}
+  .attr .card .n{font-family:var(--display);font-weight:900;font-size:clamp(28px,4vw,40px);line-height:1}
+  .attr .card .l{font-size:13px;font-weight:600;margin-top:8px}
+  .attr .g4{background:#1e1e1e;border:1px solid #333}
+  .attr .g4 .n{color:var(--g400)}.attr .g4 .l{color:var(--g400)}
+  .attr .sh{background:#241a12;border:1px solid var(--gaf-orange-700)}
+  .attr .sh .n{color:var(--gaf-orange)}.attr .sh .l{color:var(--g300)}
+  .attr .tot{background:var(--gaf-orange);border:1px solid var(--gaf-orange)}
+  .attr .tot .n{color:#fff}.attr .tot .l{color:#fff;font-weight:700}
+  .attr-take{margin-top:18px;background:#171717;border-left:4px solid var(--gaf-orange);border-radius:0 10px 10px 0;padding:18px 22px;font-size:15px;color:var(--g300);max-width:860px}
+  .attr-take strong{color:#fff}
+
+  /* build priorities */
+  .prio{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:6px}
+  .pr{background:#fff;border:1px solid var(--g200);border-left:4px solid var(--gaf-orange);border-radius:10px;padding:20px 22px}
+  .pr .pn{font-family:var(--display);font-weight:900;font-size:14px;color:var(--gaf-orange-700)}
+  .pr h4{font-size:16px;font-weight:800;margin:6px 0 6px;color:var(--gaf-ink)}
+  .pr p{font-size:14px;color:var(--g600)}
+
+  /* decisions */
+  .decisions{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .dec{display:grid;grid-template-columns:52px 1fr;gap:18px;align-items:start;background:#fff;border:1px solid var(--g200);border-radius:12px;padding:20px 24px}
+  .dec .dn{font-family:var(--display);font-weight:900;font-size:26px;color:#fff;background:var(--gaf-black);width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+  .dec h4{font-size:16px;font-weight:800;margin-bottom:6px;color:var(--gaf-ink)}
+  .dec p{font-size:14px;color:var(--g600)}
+  .dec .opts{margin-top:9px;display:flex;flex-wrap:wrap;gap:8px}
+  .dec .opt{font-size:12.5px;font-weight:600;background:var(--g50);border:1px solid var(--g200);border-radius:7px;padding:6px 12px;color:var(--g700)}
+
+  .callout{background:var(--gaf-orange-soft);border:1px solid var(--gaf-orange);border-radius:12px;padding:20px 24px;margin-top:22px}
+  .callout .t{font-family:var(--display);font-weight:800;font-size:14px;text-transform:uppercase;letter-spacing:.04em;color:var(--gaf-orange-700);margin-bottom:6px}
+  .callout p{font-size:14.5px;color:var(--g700)}
+
+  footer{background:var(--gaf-black);color:var(--g400);padding:36px 0;font-size:13px}
+  footer strong{color:#fff}
+  footer a{color:var(--gaf-orange);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(242,100,34,.4)}
+  footer .src{margin-top:14px;line-height:1.7;color:var(--g500);font-size:12.5px}
+
+  @media(max-width:820px){
+    .lanes,.prio,.attr{grid-template-columns:1fr}
+    .dec{grid-template-columns:1fr}
+    .dec .dn{margin-bottom:4px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">GAF · Home Gym Builder · Mini-Goal 1</div>
+    <h1>The Home Gym Builder<br>Customer Journey Map</h1>
+    <p class="sub">Consideration to Advocacy, reconstructed from GAF's own data — not a workshop guess. Built from <strong>935 real Home Gym Builder sales calls</strong>, the live 90-day performance dashboard, and the Profit Per X economics, read through Jobs-to-be-Done and the loyalty loop.</p>
+    <div class="status"><span class="dot"></span><strong>Draft for review</strong>&nbsp;·&nbsp;Four decisions await your sign-off (section 8). Not marked complete until you approve the map.</div>
+  </div>
+</header>
+
+<div class="rule-band">
+  <div class="wrap">
+    <div class="rule">Every gym we design pays us three times — <strong>to build it, to grow it, to refer the next one.</strong></div>
+    <div class="gate">Advocacy → Trigger loop</div>
+  </div>
+</div>
+
+<!-- 1. How to read -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">01 · How to read this map</div>
+    <h2>Two things make this different from a funnel</h2>
+    <p class="lead">This is the actual journey of GAF's most profitable customer — reconstructed from real calls, live performance data and the unit economics, then read through JTBD and the McKinsey loyalty loop.</p>
+    <div class="lanes">
+      <div class="lane ss">
+        <span class="tag">Self-Serve lane</span>
+        <h3>It runs in two lanes</h3>
+        <p>The Home Gym Builder buys one of two ways, and the strategy depends on both. The Self-Serve lane is online, led by the AI Gym Designer. The same person can cross lanes mid-journey — and the highest-value ones usually do.</p>
+      </div>
+      <div class="lane sa">
+        <span class="tag">Sales-Assisted lane</span>
+        <h3>It ends where it begins</h3>
+        <p>The Sales-Assisted lane is led by the phone consultant. Advocacy is not the last stage — it is the top of the next customer's Consideration. The referral loop is the engine of the 30,000-gym BHAG.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. Who this is -->
+<section class="alt">
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">02 · Who this is (and is not)</div>
+    <h2>Why this customer is the whole strategy</h2>
+    <p class="body">The <strong>Home Gym Builder</strong> is a project-mode buyer kitting out a garage or spare room — a household decision, $4k+ project value. Persona anchor: David Fowler (built from survey data, not a real customer). The locked "Home Gym Builder sale" (Adam Carter): <strong>1 anchor product + 2 attachment SKUs + total cart over $3,376.</strong></p>
+    <div class="callout">
+      <div class="t">Load-bearing refusal</div>
+      <p>This map is <strong>NOT</strong> budget-conscious single-SKU shoppers. They get self-serve only — no consultant time, no freight subsidy. The Home Gym Builder is the <em>only</em> segment that makes money online; every other online archetype loses money without a consultant. The journey must never quietly widen to "for everyone."</p>
+    </div>
+    <p class="body" style="margin-top:26px"><strong>Profit Per X by archetype</strong> (Apr 25 – Mar 26):</p>
+    <table class="tbl">
+      <thead><tr><th>Segment</th><th class="r">Median profit / customer</th><th class="r">Order frequency</th></tr></thead>
+      <tbody>
+        <tr class="hot"><td><span class="star">★</span> Home Gym Builder, sales-assisted</td><td class="r">$1,271</td><td class="r">1.65</td></tr>
+        <tr><td>Home Gym Builder, online</td><td class="r">$502</td><td class="r">1.99</td></tr>
+        <tr><td>Performance Optimiser, online</td><td class="r"><span class="neg">–$25</span></td><td class="r">1.34</td></tr>
+        <tr><td>Budget-Conscious Seeker, online</td><td class="r"><span class="neg">–$165</span></td><td class="r">1.16</td></tr>
+      </tbody>
+    </table>
+    <p class="tbl-note">Sales-assisted is <strong>2.5× the online version of the same person</strong> and 3.5× the next-best segment. The phone consultant does the profit heavy-lifting. The AI Gym Designer exists to give the self-serve lane some of that consultant leverage — and to feed the sales team the leads worth their time.</p>
+  </div>
+</section>
+
+<!-- 3. Data basis -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">03 · Data basis — the 4-pass build</div>
+    <h2>What is observed vs inferred</h2>
+    <p class="lead">Honest about the seams: the sales-call data is naturally weighted to the Sales-Assisted lane and to Consideration (77% of coded calls). Post-purchase stages are the thinnest evidence — "designed intent, lightly evidenced."</p>
+    <table class="tbl">
+      <thead><tr><th>Pass</th><th>Source</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1 · Cohort</strong></td><td>Sales-call segment cut: 935 residential home-gym calls of 2,266 (Nov 25 – Apr 26). Shopify/NetSuite order-level cut against the locked definition still to run.</td><td>Partial</td></tr>
+        <tr><td><strong>2 · Quant skeleton</strong></td><td>Live performance dashboard, 90-day window to 19 Jul: GA4 (356833601), Shopify, HubSpot, Search Console.</td><td>Observed — site-wide, not yet cohort-filtered</td></tr>
+        <tr><td><strong>3 · Qualitative flesh</strong></td><td>935 coded sales-call transcripts: JTBD, sentiment, barriers, triggers, competitors, household dynamics, verbatim quotes.</td><td>Observed</td></tr>
+        <tr><td><strong>4 · Synthesis</strong></td><td>Two-lane stage map + channel-role matrix (this document).</td><td>This document</td></tr>
+      </tbody>
+    </table>
+    <p class="tbl-note">Cross-device and online-to-phone stitching is <strong>inferred, not observed</strong>. These gaps are named again in section 7 with how to close them.</p>
+  </div>
+</section>
+
+<!-- 4. Journey at a glance -->
+<section class="dark">
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">04 · The journey at a glance</div>
+    <h2>Six stages, two lanes, one loop</h2>
+    <p class="lead">Read left to right. A Trigger preamble feeds Consideration; the two lanes converge at Purchase and re-diverge at Grow. Advocacy feeds the next customer's Trigger.</p>
+    <div class="journey-scroll">
+      <div class="journey">
+        <div class="jstage pre">
+          <div class="top"><div class="idx">00</div><div class="nm">Trigger</div></div>
+          <div class="mind">"Something changed. I need my own setup."</div>
+          <div class="jtbd">Control / Discipline</div>
+        </div>
+        <div class="jstage">
+          <div class="top"><div class="idx">01</div><div class="nm">Consideration</div></div>
+          <div class="mind">"I just don't know what I want."</div>
+          <div class="jtbd">Convenience / Efficiency</div>
+        </div>
+        <div class="jstage">
+          <div class="top"><div class="idx">02</div><div class="nm">Design</div></div>
+          <div class="mind">"Show me my gym before I spend a cent."</div>
+          <div class="jtbd">Achievement / Progress</div>
+        </div>
+        <div class="jstage">
+          <div class="top"><div class="idx">03</div><div class="nm">Purchase</div></div>
+          <div class="mind">"Just the shipping, and is it in stock?"</div>
+          <div class="jtbd">Convenience / Efficiency</div>
+        </div>
+        <div class="jstage">
+          <div class="top"><div class="idx">04</div><div class="nm">Build</div></div>
+          <div class="mind">"It arrived. Now help me set it up right."</div>
+          <div class="jtbd">Control / Discipline</div>
+        </div>
+        <div class="jstage">
+          <div class="top"><div class="idx">05</div><div class="nm">Grow<span style="font-weight:600;font-size:11px;color:var(--g500)"> (Phase 2)</span></div></div>
+          <div class="mind">"I've outgrown the starter kit. What's next?"</div>
+          <div class="jtbd">Achievement / Progress</div>
+        </div>
+        <div class="jstage adv">
+          <div class="top"><div class="idx">06</div><div class="nm">Advocacy</div></div>
+          <div class="mind">"You have to see my garage. Talk to these guys."</div>
+          <div class="jtbd">Social / Status</div>
+        </div>
+      </div>
+    </div>
+    <p class="scroll-hint">↔ Scroll to see all seven stages.</p>
+    <div class="loop-note">
+      <span class="lp">↺ Advocacy → Trigger</span>
+      <span class="lt">Existing-customer + referral is the cohort's <strong>#1 discovery channel</strong>. Today's advocates literally drive tomorrow's Consideration — the loyalty loop already turning.</span>
+    </div>
+  </div>
+</section>
+
+<!-- 5. Stage detail -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">05 · Stage by stage</div>
+    <h2>The detail, with the customer's own words</h2>
+    <p class="lead">Every quote below is verbatim from the coded Home Gym Builder sales calls.</p>
+
+    <div class="stage">
+      <div class="stage-head"><span class="num">00</span><span class="ttl">Trigger</span><span class="say">the thing that starts it</span></div>
+      <div class="stage-body">
+        <p><strong>What the data shows.</strong> The dominant triggers are a life or project change (renovation, a new house), quitting or being priced out of a commercial gym, and a promotional event — Black Friday appears repeatedly as the timing trigger. Discovery is heavily existing-customer and referral: the loyalty loop already turning.</p>
+        <div class="quotes">
+          <div class="q">"we're just in the middle of our renos"</div>
+          <div class="q">"I need to do something… but I'm never gonna go to a gym"</div>
+        </div>
+        <div class="label">GAF action</div>
+        <p>Be present at the trigger: retargeting for renovators/movers, always-on brand for the "quit the gym" moment, and a promotional calendar that gives fence-sitters a date. Protect the referral loop — it feeds this stage for free.</p>
+        <div class="stage-metric"><b>Metric:</b> Triggered sessions and inbound call volume by source.</div>
+      </div>
+    </div>
+
+    <div class="stage hero">
+      <div class="stage-head"><span class="num">01</span><span class="ttl">Consideration</span><span class="say">"I just don't know what I want"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: overwhelmed.</strong> The single most revealing pattern is decision paralysis colliding with hard spatial constraint.</p>
+        <div class="quotes">
+          <div class="q">"I just don't know what I want."</div>
+          <div class="q">"I'm limited by my space. So the rack has maximum is 24 inch."</div>
+          <div class="q">"most of the garage here in Australia is sloped down."</div>
+        </div>
+        <p><strong>Dominant JTBD:</strong> Convenience / Efficiency (503 of 724 Consideration calls), with Achievement / Progress close behind. <strong>Household is in the room:</strong> 15% of decisions are joint-equal, and a spouse or partner is named throughout — a two-person decision, not one.</p>
+        <div class="label">Barriers, ranked</div>
+        <div class="chips">
+          <span class="chip">Space constraints</span><span class="chip">Financial constraints</span><span class="chip">Product availability / stock</span><span class="chip">Shipping cost</span><span class="chip">Price vs competitor</span>
+        </div>
+        <div class="label" style="margin-top:12px">Competitors cross-shopped</div>
+        <div class="chips">
+          <span class="chip mono">Rogue</span><span class="chip mono">Rep Fitness</span><span class="chip mono">Force USA <span style="font-weight:400;color:var(--g500)">(our own, resold)</span></span><span class="chip mono">Vulcan</span><span class="chip mono">Nordic</span>
+        </div>
+        <div class="label" style="margin-top:14px">GAF action — the wedge</div>
+        <p>This is the exact stage the <strong>AI Gym Designer</strong> is built to rescue. "I don't know what I want" + "will it fit my sloped 24-inch garage" is a design problem. The Designer turns an overwhelmed browser into a person with a plan.</p>
+        <div class="stage-metric"><b>Metric:</b> Session-to-designer-start rate; call-to-qualified-lead rate.</div>
+      </div>
+    </div>
+
+    <div class="stage hero">
+      <div class="stage-head"><span class="num">02</span><span class="ttl">Design</span><span class="say">"show me my gym before I spend a cent"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: ready to be led.</strong> When someone else takes the design burden, the mood flips from anxious to excited. The tell from the Sales-Assisted lane:</p>
+        <div class="quotes">
+          <div class="q">"I had a plan to finish off my gym, now you've given me some different things to think about."</div>
+        </div>
+        <p>That is the consultant expanding a single-item enquiry into a full project — the single highest-leverage move in the whole journey.</p>
+        <p><strong>Touchpoints.</strong> Self-Serve: the AI Gym Designer (upload the space → real-time plan → anchor + 2+ attachments → saved, shareable design). Sales-Assisted: the consultant builds the same picture live on the call.</p>
+        <div class="label">GAF action — the front door</div>
+        <p>Brand promise 01 ("You'll talk to a designer", now AI-powered) lives here. The Designer's job is to produce a cart matching the locked HGB definition, so the "design" and the "sale" are the same object. Save every design — it powers Grow and Advocacy later.</p>
+        <div class="stage-metric"><b>Metric:</b> Number of designs started and saved (the 100-designs-by-1-Oct milestone measures exactly this).</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-head"><span class="num">03</span><span class="ttl">Purchase</span><span class="say">"just the shipping, and is it in stock?"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: positive, close to committed.</strong> Decision-stage sentiment is overwhelmingly positive (160 of 173 calls). The big objections have collapsed to three small ones: shipping cost, stock availability, and final price.</p>
+        <div class="quotes">
+          <div class="q">"Just the shipping, probably."</div>
+          <div class="q">"I just wanted to check that on stock before I made the drive down for you, boys."</div>
+        </div>
+        <p><strong>The two lanes at the moment of truth.</strong> Self-Serve: freight and stock must be visible and honest <em>before</em> checkout (shipping-cost surprise and stock ambiguity are the top website-confusion topics). Sales-Assisted: the consultant closes with a quote, freight solution, finance option and local pickup. Our advantages: stock availability, local pickup, a discount / free-shipping offer. Our disadvantages: high shipping cost and higher price vs competitor. <strong>Purchase is won by neutralising freight.</strong></p>
+        <div class="stage-metric"><b>Metric:</b> Design-to-purchase conversion; AOV (target above the $3,376 threshold).</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-head"><span class="num">04</span><span class="ttl">Build</span><span class="say">"it arrived, now help me set it up right"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: excited but daunted by a pallet of boxes.</strong> The fit anxiety from Consideration returns as assembly anxiety. (Lightly evidenced in call data, which rarely captures post-delivery; anchored on the fit logic: "always gonna fit if designed correctly.")</p>
+        <div class="label">GAF action</div>
+        <p>Deliver the "designed correctly, so it fits" promise physically. Proactive assembly support turns a daunting unbox into the first workout — the real activation metric — and it sets up Phase 2.</p>
+        <div class="stage-metric"><b>Metric:</b> Delivery-to-first-workout time; inbound support contacts per order.</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-head"><span class="num">05</span><span class="ttl">Grow <span style="font-weight:600;color:var(--g500);font-size:15px">(Phase 2)</span></span><span class="say">"I've outgrown the starter kit"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: confident, capable, wanting more.</strong> The starter setup did its job; now there is upgrade appetite (more plates, a bench, an attachment, flooring). Force USA plates, dumbbells and bumper plates are the top add-to-cart items site-wide — classic Phase 2 attachments.</p>
+        <p><strong>The economics.</strong> Home Gym Builders reorder (frequency 1.65 sales-assisted, 1.99 online). Phase 2 attach baseline is <strong>21.4% over 36 months, target 40%+</strong>. The saved design is the reactivation asset — it already knows what they have and what completes the set.</p>
+        <div class="label">GAF action</div>
+        <p>Self-Serve: reorder prompts from the saved design ("complete your setup"). Sales-Assisted: consultant reactivation on a sensible cadence. This is where the money phrase's second beat — "to grow it" — is earned.</p>
+        <div class="stage-metric"><b>Metric:</b> Phase 2 attach rate (21.4% → 40%).</div>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="stage-head"><span class="num">06</span><span class="ttl" style="color:var(--gaf-orange-700)">Advocacy</span><span class="say">"you have to see my garage"</span></div>
+      <div class="stage-body">
+        <p><strong>State of mind: proud.</strong> A home gym is a visible, social artefact, and the owner shows it off. This closes the loop: the cohort's largest discovery channel is existing-customer and referral — today's advocates are driving tomorrow's Consideration.</p>
+        <p><strong>Dominant JTBD:</strong> Social / Status — signal the achievement, help my mates do the same.</p>
+        <div class="label">GAF action</div>
+        <p>Make the referral easy and asked-for: the consultant asks at the right moment; self-serve makes the saved design shareable. Every referred customer re-enters at Trigger with pre-loaded trust — which is why sales-assisted HGBs are worth $1,271 each and compound.</p>
+        <div class="stage-metric"><b>Metric:</b> Referral-attributed new customers (the third beat of the money phrase, "to refer the next one").</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. Channel matrix + attribution -->
+<section class="alt">
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">06 · Channel-role matrix</div>
+    <h2>Which channel does which job</h2>
+    <p class="lead">Roles read from the 90-day GA4 channel mix and the cohort's discovery data.</p>
+    <div class="legend">
+      <span><span class="rl I">I</span> Initiates</span>
+      <span><span class="rl N">N</span> Nurtures</span>
+      <span><span class="rl C">C</span> Closes</span>
+      <span><span class="rl G">G</span> Grows</span>
+    </div>
+    <table class="matrix">
+      <thead><tr><th>Channel</th><th class="c">Consid.</th><th class="c">Design</th><th class="c">Purchase</th><th class="c">Grow</th><th>Notes (90d, site-wide)</th></tr></thead>
+      <tbody>
+        <tr><td class="ch">Paid Social (Meta)</td><td class="c"><span class="rl I">I</span></td><td class="c"><span class="rl I">I</span></td><td class="c"></td><td class="c"></td><td class="notes">242k sessions, only 4,254 conv. A top-of-funnel initiator, not a closer. Judging it on last-click ROAS is a mistake.</td></tr>
+        <tr><td class="ch">Paid Shopping</td><td class="c"><span class="rl I">I</span></td><td class="c"></td><td class="c"><span class="rl C">C</span></td><td class="c"></td><td class="notes">166k sessions, 9,541 conv. Highest-converting paid channel: catches mid/low-funnel intent.</td></tr>
+        <tr><td class="ch">Paid Search</td><td class="c"></td><td class="c"><span class="rl N">N</span></td><td class="c"><span class="rl C">C</span></td><td class="c"></td><td class="notes">48k sessions, 7,506 conv. High-intent capture ("brand + model").</td></tr>
+        <tr><td class="ch">Organic / SEO</td><td class="c"><span class="rl I">I</span></td><td class="c"><span class="rl N">N</span></td><td class="c"></td><td class="c"><span class="rl G">G</span></td><td class="notes">Informational blogs rank; transactional queries convert. Early-stage educator.</td></tr>
+        <tr><td class="ch">AI / AEO (ChatGPT etc.)</td><td class="c"><span class="rl I">I</span></td><td class="c"><span class="rl N">N</span></td><td class="c"></td><td class="c"></td><td class="notes">Emerging: 2,192 ChatGPT sessions, 478 conv, ~$50k rev in 90d, up 378% YoY. A new Consideration entry point to own.</td></tr>
+        <tr><td class="ch">Email / HubSpot</td><td class="c"></td><td class="c"><span class="rl N">N</span></td><td class="c"></td><td class="c"><span class="rl G">G</span></td><td class="notes">43,370-contact list. Nurture and Phase 2 reactivation engine, not an initiator.</td></tr>
+        <tr><td class="ch">Direct / Referral</td><td class="c"><span class="rl N">N</span></td><td class="c"></td><td class="c"><span class="rl C">C</span></td><td class="c"><span class="rl G">G</span></td><td class="notes">Existing-customer is the cohort's #1 discovery channel: the loyalty loop as an acquisition channel.</td></tr>
+        <tr class="phone"><td class="ch">Phone consultant</td><td class="c"><span class="rl N">N</span></td><td class="c"><span class="rl C">C</span></td><td class="c"><span class="rl C">C</span></td><td class="c"><span class="rl G">G</span></td><td class="notes">The highest-profit close in the business. Invisible to GA4 last-click.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="dark">
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">The attribution truth</div>
+    <h2>Last-click sees under half the money</h2>
+    <p class="lead">In the 90-day window, three numbers tell the story:</p>
+    <div class="attr">
+      <div class="card g4"><div class="n">$3.25m</div><div class="l">GA4 attributes (last-click trackable)</div></div>
+      <div class="card sh"><div class="n">$6.21m</div><div class="l">Shopify records</div></div>
+      <div class="card tot"><div class="n">$7.06m</div><div class="l">Total sales (incl. offline / phone)</div></div>
+    </div>
+    <div class="attr-take">
+      More than <strong>50% of revenue closes in channels last-click cannot credit</strong> — phone, in-store pickup, cross-device, email-influenced. The phone consultant is the most profitable close in the company at <strong>$1,271 per customer</strong>, 2.5× the online version. Paid Social <em>initiates</em> (242k sessions, few conversions) while Paid Shopping and Paid Search <em>close</em>. Any budget decision that reads Paid Social's low last-click ROAS as "cut it" would be cutting the journey's biggest front door.
+    </div>
+  </div>
+</section>
+
+<!-- 7. Build priorities -->
+<section>
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">07 · What this tells the build</div>
+    <h2>Five concrete priorities for the AI Gym Designer &amp; site</h2>
+    <p class="lead">All five are evidenced in the stages above.</p>
+    <div class="prio">
+      <div class="pr"><div class="pn">01</div><h4>Own the Consideration→Design handoff</h4><p>"I just don't know what I want" is the most common state of mind, and it is a design problem. Route overwhelmed browsers (especially on <code>/collections/all-in-one-trainers</code>) into the Designer.</p></div>
+      <div class="pr"><div class="pn">02</div><h4>Space and fit are the wedge — ask for the space first</h4><p>Sloped garages, 24-inch rack-depth limits, ceiling height are named constraints. A designer that takes the room's dimensions and guarantees fit removes the #1 barrier.</p></div>
+      <div class="pr"><div class="pn">03</div><h4>Freight and stock must be truthful and early</h4><p>Shipping-cost surprise and stock ambiguity are the top website-confusion topics and the top unresolved objections. Show real freight and real stock before checkout, not after.</p></div>
+      <div class="pr"><div class="pn">04</div><h4>Design for two people</h4><p>The household decision is real. The saved design has to be shareable with a partner — 15%+ are joint decisions and the rest still get run past a spouse.</p></div>
+      <div class="pr" style="grid-column:1/-1"><div class="pn">05</div><h4>Save every design as the Phase 2 and referral asset</h4><p>The saved design powers reorder prompts (Grow) and shareable proof (Advocacy). It is the object that makes the money phrase literally true.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. Decisions -->
+<section class="alt">
+  <div class="wrap">
+    <div class="eyebrow sec-eyebrow">08 · Open decisions for Josh</div>
+    <h2>Four calls needed before locking</h2>
+    <p class="lead">These change the map, so I am not guessing them. Everything above is the draft; your answers here lock it.</p>
+    <div class="decisions">
+      <div class="dec">
+        <div class="dn">1</div>
+        <div>
+          <h4>Stage names for the team-facing version</h4>
+          <p>Keep the internal six stages, or relabel "Grow (Phase 2)" and "Build" into plainer language for the brand-rhythm walkthrough?</p>
+          <div class="opts"><span class="opt">Keep internal six</span><span class="opt">Plainer team labels</span></div>
+        </div>
+      </div>
+      <div class="dec">
+        <div class="dn">2</div>
+        <div>
+          <h4>Cohort-isolate the quant numbers before the explorer ships?</h4>
+          <p>The section-4 numbers are site-wide, not yet filtered to the HGB order cohort. I can run the Shopify/NetSuite order-level cut against the locked definition to replace them with true cohort figures (days-to-purchase, sales-assisted split, real Phase 2 timing).</p>
+          <div class="opts"><span class="opt">Run the true cohort cut now</span><span class="opt">Ship on directional numbers, refine for Sept</span></div>
+        </div>
+      </div>
+      <div class="dec">
+        <div class="dn">3</div>
+        <div>
+          <h4>Two lanes, or one blended journey?</h4>
+          <p>Present the two-lane framing, or lead the brand-rhythm story with a single blended journey and keep the two lanes as the operating detail underneath?</p>
+          <div class="opts"><span class="opt">Two lanes up front</span><span class="opt">One blended journey</span></div>
+        </div>
+      </div>
+      <div class="dec">
+        <div class="dn">4</div>
+        <div>
+          <h4>Money-phrase placement</h4>
+          <p>The Advocacy → Trigger loop is drawn as the "pays three times" centrepiece. Draw it explicitly as the heart of the explorer and video, or keep it as a closing line?</p>
+          <div class="opts"><span class="opt">Explicit centrepiece</span><span class="opt">Closing line</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <strong>Home Gym Builder — Customer Journey Map.</strong> Mini-goal 1 of the Home Gym Builder Persona &amp; Designer Launch mission. Feeds the archetype explorer (mini-goal 2), the persona walkthrough video (mini-goal 3), and the 30 Sept marketing plan.<br>
+    <span class="src">
+      Sources: 935 HGB-cohort sales calls (Nov 25 – Apr 26), coded by stage, JTBD, sentiment, barrier, competitor, verbatim quote · Live performance dashboard, 90d to 19 Jul 2026 (GA4 356833601, Shopify, HubSpot, Search Console) · GAF Profit Per X by Archetype (Apr 25 – Mar 26) · Home Gym Builder sale definition (Adam Carter).<br>
+      Draft prepared for Josh Hancock's review · GAF · Gym and Fitness.
+    </span>
+  </div>
+</footer>
+
+</body>
+</html>

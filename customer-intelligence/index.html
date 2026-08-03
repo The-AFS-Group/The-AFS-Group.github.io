@@ -122,6 +122,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 footer{background:var(--g50);padding:44px 0;font-size:12.5px;color:var(--g500)}
 footer h4{font-size:13px;margin-bottom:11px;color:var(--ink)}
 footer p{max-width:80ch;margin:0 0 11px}
+.ptag{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.12em;color:var(--orange);
+ background:var(--orange-soft);display:inline-block;padding:8px 12px;border-radius:3px;margin:26px 0 12px}
+pre{background:var(--g900);color:#E8E8E8;padding:26px;overflow-x:auto;font:400 12.5px/1.62 ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:2px;margin:0}
+pre .c{color:#8FA9CE}
+.pnote{font-size:14px;color:var(--g600);margin:14px 0 0;max-width:78ch}
+.pnote code{font:400 12.5px/1 ui-monospace,Menlo,monospace;background:var(--g100);padding:2px 5px;border-radius:3px;color:var(--g800)}
 .tt{position:fixed;pointer-events:none;background:var(--g900);color:#fff;font:400 12px/1.5 var(--sans);padding:8px 11px;border-radius:4px;opacity:0;transition:opacity .12s;z-index:99;white-space:nowrap}
 
 /* illustrative banner */
@@ -181,7 +187,7 @@ footer p{max-width:80ch;margin:0 0 11px}
 <nav><div class="wrap">
  <img class="navlogo" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness">
  <a href="#capture">Capture</a><a href="#signal">Signal</a><a href="#space">Space</a><a href="#quote">Quote of the week</a><a href="#archetypes">Archetypes</a>
- <a href="#movement">Movement</a><a href="#competitors">Competitors</a><a href="#voices">Voices</a><a href="#method">Method</a>
+ <a href="#movement">Movement</a><a href="#competitors">Competitors</a><a href="#voices">Voices</a><a href="#prompt">The prompt</a><a href="#method">Method</a>
 </div></nav>
 
 <header>
@@ -323,6 +329,74 @@ footer p{max-width:80ch;margin:0 0 11px}
  </div>
 </section>
 
+<section id="prompt">
+ <div class="wrap">
+  <div class="eyebrow">Take it and use it</div>
+  <h2>The prompts, generalised</h2>
+  <p class="lede">Two prompts, not one. A cheap classifier runs on every call, and the expensive extraction only runs on what survives it. That single decision is what makes coding every call affordable: on our volumes roughly three quarters of calls never reach the second prompt.</p>
+
+  <div class="ptag">Stage one &middot; the screen &middot; runs on everything</div>
+<pre><span class="c"># Judge the PRIMARY purpose. A call mainly about delivery is
+# post-purchase service even if products are discussed at length.</span>
+
+You are analysing a phone call transcript to decide whether it contains
+customer intelligence worth extracting.
+
+CLASSIFY AS ONE OF
+  "SALES_INQUIRY"          pre-purchase, exploring or buying
+  "POST_PURCHASE_SERVICE"  delivery, tracking, invoices, returns, warranty
+  "OTHER_NON_VALUABLE"     wrong numbers, spam, internal coordination
+
+TRANSCRIPT
+"""{transcript}"""
+
+METADATA  direction: {direction} | duration: {duration}s
+
+Respond with JSON only, no markdown:
+{
+  "classification":  "SALES_INQUIRY|POST_PURCHASE_SERVICE|OTHER_NON_VALUABLE",
+  "confidence":      0.0-1.0,
+  "primary_reason":  "one line",
+  "key_indicators":  ["phrase from the transcript", "phrase"]
+}</pre>
+  <p class="pnote"><strong>Why <code>key_indicators</code> matters.</strong> It makes the screen auditable. When someone asks why a call was discarded you can show the exact phrases the model reacted to, instead of shrugging at a confidence score.</p>
+
+  <div class="ptag">Stage two &middot; the extraction &middot; runs only on what passed</div>
+<pre><span class="c"># Structure the ask in three blocks. Models follow a shaped brief far
+# better than a flat list of fields.</span>
+
+Analyse this transcript and extract structured insights for strategic
+decision-making.
+
+1. JOBS TO BE DONE  the job the customer is hiring the product to perform
+   - Functional  the practical task or outcome needed
+   - Emotional   the feeling or state they want to reach
+   - Social      how they want to be perceived by others
+   For EACH, also classify into a broader theme from the closed list.
+
+2. FORCES
+   - Motivations  what is pushing them toward a purchase
+   - Barriers     what is holding them back
+   - Triggers     what prompted them to call TODAY, not in general
+
+3. STRATEGIC INTELLIGENCE
+   - How did they discover this product category
+   - How do they see us against the alternatives
+   - What information gap caused the confusion
+
+CONFIDENCE LEVELS
+  HIGH    explicitly stated, repeated, or unambiguous from context
+  MEDIUM  implied by the flow, a reasonable inference
+  LOW     weak signal, assumption, or highly ambiguous
+
+Use "" for missing data. NEVER null.
+Return ONLY valid JSON, no markdown.</pre>
+  <p class="pnote"><strong>Two details that look trivial and are not.</strong> <code>Use "" for missing data, NEVER null</code> stops a spreadsheet column silently changing type halfway down. And forcing a per-field confidence level means you can filter to the high-confidence rows when a decision actually matters, instead of treating every extracted value as equally solid.</p>
+
+  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> Our theme lists are closed, and a separate keyword dictionary maps the model's free-text answer into them. When the model started describing jobs in language the dictionary did not contain, those answers fell into the catch-all rather than into a theme. Nothing broke and no error was raised, but a third of functional jobs and half of emotional jobs now sit unclassified. If you use closed theme lists, budget for widening them as the model's language changes, and watch the size of your catch-all bucket as a health metric.</p></div>
+ </div>
+</section>
+
 <section>
  <div class="wrap"><div class="cta">
   <div><h3>What this built</h3><p>Call after call said the same thing: they could not picture it until they saw it. That became a brand promise, and keeping it meant building a design tool that did not previously exist.</p></div>
@@ -337,7 +411,7 @@ footer p{max-width:80ch;margin:0 0 11px}
   <p><strong>Archetypes</strong> in the real dashboard are rule-derived from coded fields (segment, equipment location, functional job theme, primary barrier), never from demographics and never from what was purchased. Sub-themes are clustered from the free-text job fields rather than picked off a fixed list, which is why the second level can carry language the closed list cannot.</p>
   <p><strong>What is real and what is not.</strong> Real: the pipeline, the nightly cadence, the 101-field schema, the screening ratio, and the capture volume shown in the black band. Illustrative: every archetype, share, job and barrier split, sub-theme, competitor label and quote on this page. The sample data is thematically representative of what the real dashboard produces and is internally consistent, but it is not our segmentation, not our customer mix and not our numbers. Competitor labels are generic by design.</p>
   <p><strong>Anonymisation.</strong> No customer names, phone numbers, staff names, revenue, margin, order or profit data appear on this page, and none were used to build it. Every figure is a call count or a percentage.</p>
-  <p><strong>A limitation worth stating.</strong> Roughly a third of functional jobs and half of emotional jobs come back unclassified, and that has not improved in six months. We also revised the job theme label set in May 2026 without versioning it, which broke period comparison on those fields. If you build one of these, version your closed lists and treat a change to them as a schema migration rather than a prompt tweak.</p>
+  <p><strong>A limitation worth stating.</strong> Roughly a third of functional jobs and half of emotional jobs come back unclassified, and that has not improved in six months. The cause is not the model. Themes are a closed list, and a keyword dictionary maps the model's free-text answer into that list; anything whose wording is not in the dictionary lands in the catch-all instead. As the model's language shifted, more answers fell through, so the two catch-all buckets traded share while the total stayed flat. Because of that, job theme fields are shown here as a current snapshot and are not compared across periods. Barrier and competitor fields do not go through that mapping and do support period comparison.</p>
   <p><strong>Frozen snapshot</strong> taken 1 August 2026. Companion to “Keeping the Promise”, Claire Mula and Josh Hancock, CEO Magazine.</p>
  </div>
 </footer>

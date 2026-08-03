@@ -122,6 +122,30 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 footer{background:var(--g50);padding:44px 0;font-size:12.5px;color:var(--g500)}
 footer h4{font-size:13px;margin-bottom:11px;color:var(--ink)}
 footer p{max-width:80ch;margin:0 0 11px}
+/* CEO-facing prompt section */
+.twoq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2px;background:var(--g200);border:1px solid var(--g200);margin-bottom:44px}
+.twoq>div{background:#fff;padding:28px}
+.qnum{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.13em;color:var(--orange);margin-bottom:12px}
+.twoq h4{font-size:19px;margin-bottom:12px;line-height:1.25}
+.twoq p{font-size:14.5px;color:var(--g700);margin:0 0 12px;max-width:none}
+.twoq .qwhy2{color:var(--g500);font-size:13.5px;border-top:1px solid var(--g200);padding-top:12px;margin:16px 0 0}
+.sub-h{font-size:19px;margin-bottom:18px}
+.insist{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:40px}
+.insist>div{font-size:14.5px;line-height:1.6;color:var(--g700);border-top:2px solid var(--orange);padding-top:14px}
+.insist span{display:block;font:900 13px/1 var(--display);color:var(--orange);margin-bottom:9px;letter-spacing:.06em}
+.insist b{color:var(--ink)}
+details.tech{border:1px solid var(--g200);background:var(--g50)}
+details.tech summary{cursor:pointer;list-style:none;padding:18px 22px;font:700 12px/1 var(--display);
+ text-transform:uppercase;letter-spacing:.09em;color:var(--g600);display:flex;align-items:center;gap:12px}
+details.tech summary::-webkit-details-marker{display:none}
+details.tech summary:hover{color:var(--orange)}
+.chev2{flex:none;width:20px;height:20px;border-radius:50%;background:var(--orange-soft);display:inline-flex;
+ align-items:center;justify-content:center;transition:transform .26s}
+.chev2 svg{width:10px;height:10px}
+.chev2 path{stroke:#B34213;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+details.tech[open] .chev2{transform:rotate(180deg);background:var(--orange)}
+details.tech[open] .chev2 path{stroke:#fff}
+.techbody{padding:0 22px 26px}
 .ptag{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.12em;color:var(--orange);
  background:var(--orange-soft);display:inline-block;padding:8px 12px;border-radius:3px;margin:26px 0 12px}
 pre{background:var(--g900);color:#E8E8E8;padding:26px;overflow-x:auto;font:400 12.5px/1.62 ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:2px;margin:0}
@@ -315,7 +339,7 @@ pre .c{color:#8FA9CE}
  <div class="wrap">
   <div class="eyebrow">Competitive watch</div>
   <h2>Who gets named, unprompted</h2>
-  <p class="lede">331 competitor mentions across 1,794 coded calls in the last 90 days. Read the ranking, not the gaps. The most common answer by far is nobody at all, which tells us more than any single bar.</p>
+  <p class="lede">331 competitor mentions across 1,794 coded calls in the last 90 days.</p>
   <svg class="ch" id="c-comp"></svg>
  </div>
 </section>
@@ -332,9 +356,35 @@ pre .c{color:#8FA9CE}
 <section id="prompt">
  <div class="wrap">
   <div class="eyebrow">Take it and use it</div>
-  <h2>The prompts, generalised</h2>
-  <p class="lede">Two prompts, not one. A cheap classifier runs on every call, and the expensive extraction only runs on what survives it. That single decision is what makes coding every call affordable: on our volumes roughly three quarters of calls never reach the second prompt.</p>
+  <h2>How to ask for this</h2>
+  <p class="lede">You do not need to build this yourself, and you do not need to read a line of code to commission it. It is two questions, asked of every recorded call, overnight, by a machine.</p>
 
+  <div class="twoq">
+   <div>
+    <div class="qnum">Question one</div>
+    <h4>Is this even a sales conversation?</h4>
+    <p>Asked of every call. Most calls into a retail line are delivery chases, warranty questions, wrong numbers and hang-ups. Roughly three in four get discarded here.</p>
+    <p class="qwhy2">This is the question that makes the whole thing affordable. It is cheap to ask, and it means you only pay to analyse the calls that are worth analysing.</p>
+   </div>
+   <div>
+    <div class="qnum">Question two</div>
+    <h4>What was this person actually trying to do?</h4>
+    <p>Asked only of the survivors. Three things: the job they are hiring you to do, what is stopping them, and anything else worth knowing such as who else they considered and where they got confused.</p>
+    <p class="qwhy2">Everything on this page comes out of that second question. Nothing else is required.</p>
+   </div>
+  </div>
+
+  <h3 class="sub-h">Four things to insist on</h3>
+  <div class="insist">
+   <div><span>01</span><b>Let it say "I don't know."</b> A model that returns a confident answer every time is guessing, and you will not be able to tell which answers were guesses. Ours declines to answer on about a third of calls, and that is a feature.</div>
+   <div><span>02</span><b>Make it quote the customer.</b> One verbatim line per call, unedited. Summaries die in a boardroom. The customer's own words do not.</div>
+   <div><span>03</span><b>Make it show its working.</b> It should name the phrases that drove its decision, so when someone challenges a number you can show them why rather than pointing at a confidence score.</div>
+   <div><span>04</span><b>Budget for the categories going stale.</b> Ours are a fixed list, and as the way customers talk shifted, more answers stopped fitting any of them. Watch how much is landing in "other". When that grows, the list needs widening, not the model replacing.</div>
+  </div>
+
+  <details class="tech">
+   <summary><span class="chev2"><svg viewBox="0 0 12 12"><path d="M2.5 4.5 L6 8 L9.5 4.5"/></svg></span>The actual prompts, for whoever builds it</summary>
+   <div class="techbody">
   <div class="ptag">Stage one &middot; the screen &middot; runs on everything</div>
 <pre><span class="c"># Judge the PRIMARY purpose. A call mainly about delivery is
 # post-purchase service even if products are discussed at length.</span>
@@ -393,7 +443,9 @@ Use "" for missing data. NEVER null.
 Return ONLY valid JSON, no markdown.</pre>
   <p class="pnote"><strong>Two details that look trivial and are not.</strong> <code>Use "" for missing data, NEVER null</code> stops a spreadsheet column silently changing type halfway down. And forcing a per-field confidence level means you can filter to the high-confidence rows when a decision actually matters, instead of treating every extracted value as equally solid.</p>
 
-  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> Our theme lists are closed, and a separate keyword dictionary maps the model's free-text answer into them. When the model started describing jobs in language the dictionary did not contain, those answers fell into the catch-all rather than into a theme. Nothing broke and no error was raised, but a third of functional jobs and half of emotional jobs now sit unclassified. If you use closed theme lists, budget for widening them as the model's language changes, and watch the size of your catch-all bucket as a health metric.</p></div>
+  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> Our theme lists are closed, and a separate keyword dictionary maps the model's free-text answer into them. When the model started describing jobs in language the dictionary did not contain, those answers fell into the catch-all rather than into a theme. Nothing broke and no error was raised, but a third of functional jobs and half of emotional jobs now sit unclassified.</p></div>
+   </div>
+  </details>
  </div>
 </section>
 

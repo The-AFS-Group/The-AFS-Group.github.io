@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Customer Intelligence &amp; JTBD | Gym and Fitness</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Open+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{--orange:#F26422;--orange-soft:#FDE9DD;--blue:#2E6FD9;--blue-soft:#E7EFFC;
+--ink:#000;--g900:#1A1A1A;--g800:#2B2B2B;--g700:#424242;--g600:#555;--g500:#717171;
+--g400:#A0A0A0;--g300:#C9C9C9;--g200:#E2E2E2;--g100:#F0F0F0;--g50:#FAFAFA;
+--display:'Montserrat','Helvetica Neue',Arial,sans-serif;--sans:'Open Sans','Helvetica Neue',Arial,sans-serif}
+*{box-sizing:border-box}
+body{margin:0;font:400 15px/1.6 var(--sans);color:var(--ink);background:#fff;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1180px;margin:0 auto;padding:0 26px}
+h1,h2,h3,h4{font-family:var(--display);font-weight:800;line-height:1.14;margin:0}
+.eyebrow{font:700 11px/1.3 var(--display);text-transform:uppercase;letter-spacing:.15em;color:var(--orange)}
+
+nav{position:sticky;top:0;z-index:50;background:rgba(26,26,26,.97);backdrop-filter:blur(8px);border-bottom:1px solid #ffffff1f}
+nav .wrap{display:flex;gap:26px;align-items:center;height:52px;overflow-x:auto;scrollbar-width:none}
+nav .wrap::-webkit-scrollbar{display:none}
+nav a{color:var(--g400);text-decoration:none;font:600 11px/1 var(--display);text-transform:uppercase;letter-spacing:.09em;white-space:nowrap;padding:6px 0;border-bottom:2px solid transparent}
+nav a:hover,nav a.on{color:#fff;border-bottom-color:var(--orange)}
+nav .navlogo{height:19px;width:auto;flex:none;margin-right:8px;background:#fff;padding:4px 7px;border-radius:3px}
+.hlogo{height:34px;width:auto;background:#fff;padding:8px 12px;border-radius:4px;margin-bottom:24px;display:block}
+.arch-img{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;background:var(--g100)}
+.arch-figure{margin:0}
+.arch-figure figcaption{font-size:11px;color:var(--g400);font-style:italic;margin-top:8px}
+.pa-hero{display:grid;grid-template-columns:minmax(0,380px) 1fr;gap:34px;align-items:start;margin-bottom:28px}
+.pa-hero h3{font-size:28px;margin-bottom:8px}
+.pa-hero .bl{color:var(--g600);font-size:15.5px;margin:0 0 26px}
+@media(max-width:760px){.pa-hero{grid-template-columns:1fr;gap:22px}}
+.tab .thumb{width:100%;aspect-ratio:3/2;object-fit:cover;display:block;margin-bottom:12px;filter:grayscale(1) contrast(.92);opacity:.62;transition:.2s}
+.tab.on .thumb,.tab:hover .thumb{filter:none;opacity:1}
+
+header{background:var(--g900);color:#fff;padding:54px 0 0}
+header h1{font-size:clamp(28px,4.4vw,46px);letter-spacing:-.02em;margin:12px 0 16px;color:#fff}
+header .sub{color:var(--g300);max-width:70ch;font-size:16px;margin:0}
+.badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.badge{font:600 11px/1 var(--display);text-transform:uppercase;letter-spacing:.08em;padding:8px 13px;border-radius:999px;border:1px solid #ffffff33;color:var(--g300)}
+.badge.live{border-color:#F2642266;color:#F8A87E;background:#F264221a}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--orange);margin-right:7px;vertical-align:middle;animation:pulse 2.2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* live capture band */
+.capture{background:#111;color:#fff;padding:34px 0 40px;margin-top:44px;border-top:1px solid #ffffff1a}
+.cap-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:22px}
+.cap-stats{display:flex;gap:40px;flex-wrap:wrap}
+.cap-stat .v{font:900 30px/1 var(--display);letter-spacing:-.02em}
+.cap-stat .v.o{color:var(--orange)}
+.cap-stat .l{font-size:11.5px;color:var(--g500);text-transform:uppercase;letter-spacing:.08em;margin-top:7px;font-family:var(--display);font-weight:600}
+.cap-note{font-size:13px;color:var(--g400);max-width:34ch;text-align:right}
+#spark{width:100%;height:74px;display:block;overflow:visible}
+.cap-axis{display:flex;justify-content:space-between;font-size:11px;color:var(--g600);margin-top:8px;font-family:var(--display);font-weight:600;letter-spacing:.06em}
+
+section{padding:56px 0;border-bottom:1px solid var(--g200)}
+h2{font-size:clamp(22px,3vw,32px);letter-spacing:-.01em;margin-bottom:12px}
+.lede{font-size:16px;color:var(--g600);max-width:74ch;margin:0 0 30px}
+
+/* window control */
+.ctrl{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:30px;padding:16px 20px;background:var(--g50);border:1px solid var(--g200)}
+.ctrl .lb{font:700 11px/1 var(--display);text-transform:uppercase;letter-spacing:.1em;color:var(--g500)}
+.seg{display:inline-flex;border:1px solid var(--g300);border-radius:999px;overflow:hidden;background:#fff}
+.seg button{border:0;background:#fff;font:700 12px/1 var(--display);letter-spacing:.06em;padding:11px 20px;cursor:pointer;color:var(--g600);transition:.15s}
+.seg button+button{border-left:1px solid var(--g200)}
+.seg button.on{background:var(--orange);color:#fff}
+.ctrl .n{font-size:13px;color:var(--g500);margin-left:auto}
+.ctrl .n b{color:var(--ink);font-variant-numeric:tabular-nums}
+
+.grid4{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:34px}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:40px}
+.ctitle{font:700 14px/1.3 var(--display);margin-bottom:3px}
+.csub{font-size:12.5px;color:var(--g500);margin-bottom:15px}
+svg.ch{width:100%;height:auto;display:block;overflow:visible}
+
+/* archetype */
+.tabs{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:2px;background:var(--g200);border:1px solid var(--g200);margin-bottom:0}
+.tab{background:#fff;padding:18px;text-align:left;border:0;cursor:pointer;border-top:3px solid transparent;transition:.15s;font-family:var(--sans)}
+.tab:hover{background:var(--g50)}
+.tab.on{border-top-color:var(--orange);background:var(--g50)}
+.tab .nm{font:800 14px/1.25 var(--display);display:block;margin-bottom:6px}
+.tab.on .nm{color:var(--orange)}
+.tab .sh{font-size:12px;color:var(--g500)}
+.panel{border:1px solid var(--g200);border-top:0;padding:34px}
+.pa-head{display:flex;gap:26px;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;margin-bottom:26px}
+.pa-head h3{font-size:26px;margin-bottom:6px}
+.pa-head .bl{color:var(--g600);font-size:15px;margin:0}
+.pstats{display:flex;gap:32px;flex-wrap:wrap}
+.pstat .v{font:900 26px/1 var(--display);color:var(--orange)}
+.pstat .l{font-size:11px;color:var(--g500);text-transform:uppercase;letter-spacing:.07em;margin-top:6px;font-family:var(--display);font-weight:600}
+.jfw{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:2px;background:var(--g200);border:1px solid var(--g200);margin-bottom:28px}
+.jfw>div{background:#fff;padding:20px}
+.jfw h5{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.12em;margin:0 0 10px}
+.jfw .j h5{color:var(--orange)} .jfw .f h5{color:var(--blue)} .jfw .w h5{color:var(--g500)}
+.jfw p{margin:0;font-size:14px;line-height:1.55}
+.jfw .w{background:var(--g50)}
+blockquote{margin:0;padding:18px 20px;background:var(--g50);border-left:3px solid var(--orange);font-size:14.5px;line-height:1.6;color:var(--g800)}
+blockquote+blockquote{margin-top:12px}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--g200)}
+th{font:700 11px/1.3 var(--display);text-transform:uppercase;letter-spacing:.07em;color:var(--g500)}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.up{color:var(--orange);font-weight:700}.dn{color:var(--blue);font-weight:700}.flat{color:var(--g500)}
+.callout{border-left:3px solid var(--orange);background:var(--orange-soft);padding:18px 22px;margin:26px 0}
+.callout.grey{border-left-color:var(--g700);background:var(--g50)}
+.callout p{margin:0;font-size:14.5px}
+
+/* feed */
+.feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.fq{border:1px solid var(--g200);padding:18px;font-size:14px;line-height:1.55;color:var(--g800);background:#fff}
+.fq .meta{display:flex;gap:8px;margin-top:13px;flex-wrap:wrap}
+.chip{font:700 10px/1 var(--display);text-transform:uppercase;letter-spacing:.08em;padding:5px 9px;border-radius:999px;background:var(--g100);color:var(--g600)}
+.chip.o{background:var(--orange-soft);color:#B34213}
+
+.cta{background:var(--g900);color:#fff;padding:38px;display:flex;gap:26px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.cta h3{color:#fff;font-size:20px;margin-bottom:7px}
+.cta p{color:var(--g400);font-size:14.5px;margin:0;max-width:56ch}
+.btn{display:inline-block;background:var(--orange);color:#fff;text-decoration:none;font:700 13px/1 var(--display);text-transform:uppercase;letter-spacing:.05em;padding:15px 28px;border-radius:999px;white-space:nowrap}
+.btn:hover{background:#D85418}
+footer{background:var(--g50);padding:44px 0;font-size:12.5px;color:var(--g500)}
+footer h4{font-size:13px;margin-bottom:11px;color:var(--ink)}
+footer p{max-width:80ch;margin:0 0 11px}
+/* CEO-facing prompt section */
+.twoq{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:2px;background:var(--g200);border:1px solid var(--g200);margin-bottom:44px}
+.twoq>div{background:#fff;padding:28px}
+.qnum{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.13em;color:var(--orange);margin-bottom:12px}
+.twoq h4{font-size:19px;margin-bottom:12px;line-height:1.25}
+.twoq p{font-size:14.5px;color:var(--g700);margin:0 0 12px;max-width:none}
+.twoq .qwhy2{color:var(--g500);font-size:13.5px;border-top:1px solid var(--g200);padding-top:12px;margin:16px 0 0}
+.sub-h{font-size:19px;margin-bottom:18px}
+.insist{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:40px}
+.insist>div{font-size:14.5px;line-height:1.6;color:var(--g700);border-top:2px solid var(--orange);padding-top:14px}
+.insist span{display:block;font:900 13px/1 var(--display);color:var(--orange);margin-bottom:9px;letter-spacing:.06em}
+.insist b{color:var(--ink)}
+details.tech{border:1px solid var(--g200);background:var(--g50)}
+details.tech summary{cursor:pointer;list-style:none;padding:18px 22px;font:700 12px/1 var(--display);
+ text-transform:uppercase;letter-spacing:.09em;color:var(--g600);display:flex;align-items:center;gap:12px}
+details.tech summary::-webkit-details-marker{display:none}
+details.tech summary:hover{color:var(--orange)}
+.chev2{flex:none;width:20px;height:20px;border-radius:50%;background:var(--orange-soft);display:inline-flex;
+ align-items:center;justify-content:center;transition:transform .26s}
+.chev2 svg{width:10px;height:10px}
+.chev2 path{stroke:#B34213;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+details.tech[open] .chev2{transform:rotate(180deg);background:var(--orange)}
+details.tech[open] .chev2 path{stroke:#fff}
+.techbody{padding:0 22px 26px}
+.ptag{font:700 10.5px/1 var(--display);text-transform:uppercase;letter-spacing:.12em;color:var(--orange);
+ background:var(--orange-soft);display:inline-block;padding:8px 12px;border-radius:3px;margin:26px 0 12px}
+pre{background:var(--g900);color:#E8E8E8;padding:26px;overflow-x:auto;font:400 12.5px/1.62 ui-monospace,SFMono-Regular,Menlo,monospace;border-radius:2px;margin:0}
+pre .c{color:#8FA9CE}
+.pnote{font-size:14px;color:var(--g600);margin:14px 0 0;max-width:78ch}
+.pnote code{font:400 12.5px/1 ui-monospace,Menlo,monospace;background:var(--g100);padding:2px 5px;border-radius:3px;color:var(--g800)}
+.tt{position:fixed;pointer-events:none;background:var(--g900);color:#fff;font:400 12px/1.5 var(--sans);padding:8px 11px;border-radius:4px;opacity:0;transition:opacity .12s;z-index:99;white-space:nowrap}
+
+/* illustrative banner */
+.illus{background:#FFF3CD;border-bottom:2px solid #E6B800;position:relative;z-index:60}
+.illus .wrap{display:flex;gap:14px;align-items:flex-start;padding-top:13px;padding-bottom:13px}
+.illus .tag{flex:none;font:800 10px/1 var(--display);text-transform:uppercase;letter-spacing:.11em;background:#1A1A1A;color:#FFD84D;padding:7px 10px;border-radius:3px;margin-top:1px}
+.illus p{margin:0;font-size:13.5px;line-height:1.5;color:#4A3B00;max-width:none}
+.illus b{font-weight:700}
+
+.smallnote{background:var(--g50);border-left:3px solid var(--g400);padding:13px 18px;font-size:13.5px;color:var(--g600);margin:-16px 0 28px}
+.smallnote strong{color:var(--ink)}
+
+/* expandable job rows */
+.jrow.has-sub{cursor:pointer}
+.jrow.has-sub:hover .jlab{color:var(--orange)}
+.chev{flex:none;width:20px;height:20px;border-radius:50%;background:var(--orange-soft);
+ display:inline-flex;align-items:center;justify-content:center;transition:transform .26s var(--ease,cubic-bezier(.2,.8,.2,1)),background .15s;margin-left:2px}
+.chev svg{width:10px;height:10px;display:block}
+.chev path{stroke:#B34213;stroke-width:2.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.jrow.has-sub:hover .chev{background:var(--orange)}
+.jrow.has-sub:hover .chev path{stroke:#fff}
+.jrow.open .chev{transform:rotate(180deg);background:var(--orange)}
+.jrow.open .chev path{stroke:#fff}
+.subwrap{overflow:hidden;transition:height .28s cubic-bezier(.2,.8,.2,1)}
+.subs{padding:12px 0 4px 16px;border-left:2px solid var(--orange-soft);margin:6px 0 14px}
+.subrow{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12.5px}
+.subrow .sl{color:var(--g600);flex:1;min-width:0}
+.subbar{height:7px;background:var(--orange-soft);border-radius:4px;flex:none;width:96px;position:relative;overflow:hidden}
+.subbar i{position:absolute;left:0;top:0;bottom:0;background:var(--orange);border-radius:4px;display:block}
+.subrow .sv{color:var(--g500);font-variant-numeric:tabular-nums;width:40px;text-align:right;font-weight:600}
+.hint{font-size:11.5px;color:var(--g400);font-style:italic;margin-top:10px}
+
+/* quote of the week */
+.qotw{background:var(--g900);color:#fff;padding:40px;display:grid;grid-template-columns:1fr 300px;gap:40px;align-items:start}
+.qotw .qmain q,.qotw .qmain .qq{display:block;font:700 clamp(20px,2.5vw,29px)/1.4 var(--display);color:#fff;letter-spacing:-.01em;margin:0 0 20px}
+.qotw .qwhy{color:var(--g400);font-size:14.5px;line-height:1.6;margin:0;max-width:60ch}
+.qotw .qside{border-left:1px solid #ffffff26;padding-left:28px}
+.qotw .qlab{font:700 10px/1 var(--display);text-transform:uppercase;letter-spacing:.13em;color:var(--orange);margin-bottom:9px}
+.qotw .qval{font-size:14px;color:#fff;margin-bottom:22px}
+.qnav{display:flex;gap:8px;margin-top:26px}
+.qnav button{background:transparent;border:1px solid #ffffff33;color:var(--g400);font:700 11px/1 var(--display);letter-spacing:.06em;padding:10px 14px;border-radius:999px;cursor:pointer;transition:.15s}
+.qnav button:hover{border-color:var(--orange);color:#fff}
+.qdots{display:flex;gap:7px;align-items:center;margin-left:6px}
+.qdots i{width:7px;height:7px;border-radius:50%;background:#ffffff30;display:block;cursor:pointer}
+.qdots i.on{background:var(--orange)}
+@media(max-width:820px){.qotw{grid-template-columns:1fr;gap:26px}.qotw .qside{border-left:0;border-top:1px solid #ffffff26;padding-left:0;padding-top:24px}}
+@media(max-width:700px){.cap-note{text-align:left}.cta{flex-direction:column;align-items:flex-start}.illus .wrap{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="illus"><div class="wrap">
+ <span class="tag">Example only</span>
+ <p><b>This is a worked example, not our live data.</b> The pipeline, the schema and the capture volume are real. Every breakdown below &mdash; the archetypes, their shares, the job and barrier splits, the competitor set and the quotes &mdash; is illustrative sample data created for publication. It is thematically representative of what the real dashboard produces, but it is not our segmentation and not our numbers.</p>
+</div></div>
+
+<nav><div class="wrap">
+ <img class="navlogo" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness">
+ <a href="#capture">Capture</a><a href="#signal">Signal</a><a href="#archetypes">Archetypes</a><a href="#space">Space</a><a href="#quote">Quote of the week</a>
+ <a href="#competitors">Competitors</a><a href="#prompt">The prompt</a><a href="#method">Method</a>
+</div></nav>
+
+<header>
+ <div class="wrap">
+  <img class="hlogo" src="https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576" alt="Gym and Fitness">
+  <div class="eyebrow">Customer Intelligence &middot; Internal</div>
+  <h1>Customer Intelligence<br>&amp; Jobs To Be Done</h1>
+  <p class="sub">Every sales call, coded overnight, into one view of who is calling and what is stopping them.</p>
+  <div class="badges">
+   <span class="badge live"><span class="dot"></span>Coding nightly</span>
+   <span class="badge" id="b-range"></span>
+   <span class="badge">Illustrative sample data</span>
+   <span class="badge">No revenue or margin data</span>
+  </div>
+ </div>
+
+ <div class="capture" id="capture">
+  <div class="wrap">
+   <div class="cap-top">
+    <div class="cap-stats">
+     <div class="cap-stat"><div class="v" id="s-screen">0</div><div class="l">Calls screened</div></div>
+     <div class="cap-stat"><div class="v o" id="s-coded">0</div><div class="l">Coded as sales calls</div></div>
+     <div class="cap-stat"><div class="v" id="s-fields">101</div><div class="l">Fields per call</div></div>
+     <div class="cap-stat"><div class="v" id="s-week">0</div><div class="l">Coded last full week</div></div>
+    </div>
+   </div>
+   <svg id="spark" viewBox="0 0 1000 74" preserveAspectRatio="none" role="img" aria-label="Weekly coded call volume over the last 26 weeks"></svg>
+   <div class="cap-axis"><span id="ax-l"></span><span>Coded calls per week &middot; last 26 weeks</span><span id="ax-r"></span></div>
+  </div>
+ </div>
+</header>
+
+<section id="signal">
+ <div class="wrap">
+  <div class="eyebrow">The signal</div>
+  <h2>What the phone is telling us</h2>
+  <p class="lede">Change the window and every chart re-reads. That is the difference between a survey and a feed.</p>
+  <div class="ctrl">
+   <span class="lb">Rolling window</span>
+   <span class="seg" id="seg">
+    <button data-w="1">Yesterday</button><button data-w="30">30 days</button><button data-w="60">60 days</button><button data-w="90" class="on">90 days</button>
+   </span>
+   <span class="n">Based on <b id="w-n">0</b> coded calls <span id="w-to"></span></span>
+  </div>
+  <div class="smallnote" id="w-small" hidden><strong>Small sample.</strong> A single day is 30 to 40 calls, so these shares move around a lot. The team reads the day for what is coming up right now, and the 90 day window for what is actually true.</div>
+  <div class="grid2" style="margin-bottom:38px">
+   <div><div class="ctitle">Functional job</div><div class="csub">What they are trying to get done. Click a theme to open its sub-themes.</div><div id="c-func"></div></div>
+   <div><div class="ctitle">Emotional job</div><div class="csub">How they want it to feel. Click a theme to open its sub-themes.</div><div id="c-emo"></div></div>
+  </div>
+  <div class="grid2" style="margin-bottom:38px">
+   <div><div class="ctitle">Social job</div><div class="csub">How they want to be seen. Click a theme to open its sub-themes.</div><div id="c-social"></div></div>
+   <div><div class="ctitle">Primary motivation</div><div class="csub">What is actually driving the purchase. Click a type to open its sub-themes.</div><div id="c-motiv"></div></div>
+  </div>
+  <div class="grid2">
+   <div><div class="ctitle">Primary barrier</div><div class="csub">What is in the way</div><div id="c-bar"></div></div>
+   <div><div class="ctitle">Buying stage</div><div class="csub">Where they are in the decision</div><div id="c-stage"></div></div>
+  </div>
+  <div class="callout grey"><p><strong>Unclassified is shown, never hidden.</strong> A third of functional jobs, half of emotional and two thirds of social come back blank. That is the model declining to answer rather than guessing, and it is the right call: plenty of sales calls contain no social job at all. A tool that answered every time would be inventing the difference.</p></div>
+ </div>
+</section>
+
+<section id="archetypes">
+ <div class="wrap">
+  <div class="eyebrow">Archetypes</div>
+  <h2>Four people keep calling</h2>
+  <p class="lede">Derived from the coded fields, not demographics. Each is a different job, fear and way of winning it.</p>
+  <div class="tabs" id="tabs"></div>
+  <div class="panel" id="panel"></div>
+ </div>
+</section>
+
+
+
+<section id="space">
+ <div class="wrap">
+  <div class="eyebrow">The space</div>
+  <h2>Where the equipment actually goes</h2>
+  <p class="lede">Coded from what the customer describes, not from what they bought. This field drives almost every technical objection we take.</p>
+  <div class="grid2">
+   <div><div class="ctitle">Room or setting</div><div class="csub">Share of coded calls where a location was described</div><div id="c-space"></div></div>
+   <div>
+    <div class="ctitle">How constrained is it</div><div class="csub">The model's read on how much room they have to work with</div><div id="c-constraint"></div>
+    <div class="callout" style="margin-top:26px"><p><strong>Half of all calls describe a garage or a spare room</strong>, and only one in eight a space the model reads as spacious. Size the room before the sale, not after the delivery.</p></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="quote" style="padding-top:0;border-bottom:0">
+ <div class="wrap">
+  <div class="qotw">
+   <div class="qmain">
+    <div class="qlab" id="q-week"></div>
+    <span class="qq" id="q-text"></span>
+    <p class="qwhy" id="q-why"></p>
+    <div class="qnav">
+     <button id="q-prev">&larr; Earlier</button><button id="q-next">Later &rarr;</button>
+     <span class="qdots" id="q-dots"></span>
+    </div>
+   </div>
+   <div class="qside">
+    <div class="qlab">Quote of the week</div>
+    <div class="qval">Chosen every Monday from the week's coded calls, and read out at the Tuesday sales meeting.</div>
+    <div class="qlab">Archetype</div><div class="qval" id="q-arch"></div>
+    <div class="qlab">Primary barrier</div><div class="qval" id="q-bar"></div>
+   </div>
+  </div>
+ </div>
+</section>
+
+<section id="competitors">
+ <div class="wrap">
+  <div class="eyebrow">Competitive watch</div>
+  <h2>Who gets named, unprompted</h2>
+  <p class="lede">331 competitor mentions across 1,794 coded calls in the last 90 days.</p>
+  <svg class="ch" id="c-comp"></svg>
+ </div>
+</section>
+
+<section id="prompt">
+ <div class="wrap">
+  <div class="eyebrow">Take it and use it</div>
+  <h2>How to ask for this</h2>
+  <p class="lede">Two questions, asked of every recorded call, overnight, by a machine. You do not need to read code to commission it.</p>
+
+  <div class="twoq">
+   <div>
+    <div class="qnum">Question one</div>
+    <h4>Is this even a sales conversation?</h4>
+    <p>Asked of every call. Most are delivery chases, warranty questions, wrong numbers and hang-ups. Three in four get discarded here.</p>
+    <p class="qwhy2">This is what makes it affordable. You only pay to analyse the calls worth analysing.</p>
+   </div>
+   <div>
+    <div class="qnum">Question two</div>
+    <h4>What was this person actually trying to do?</h4>
+    <p>Asked only of the survivors. Three things: the job they are hiring you to do, what is stopping them, and who else they considered.</p>
+    <p class="qwhy2">Everything on this page comes out of that one question.</p>
+   </div>
+  </div>
+
+  <h3 class="sub-h">Four things to insist on</h3>
+  <div class="insist">
+   <div><span>01</span><b>Let it say "I don't know."</b> A model that answers confidently every time is guessing, and you cannot tell which ones. Ours declines on about a third of calls.</div>
+   <div><span>02</span><b>Make it quote the customer.</b> One unedited line per call. Summaries die in a boardroom. The customer's own words do not.</div>
+   <div><span>03</span><b>Make it show its working.</b> It should name the phrases behind each decision, so a challenged number has an answer.</div>
+   <div><span>04</span><b>Measure the blanks, and know why.</b> Ours are high on emotional and social intent because the model returns nothing rather than guessing. Blanks from honest silence are healthy. Blanks from a category list that no longer fits are not. Check which you have before anyone tries to fix it.</div>
+  </div>
+
+  <details class="tech">
+   <summary><span class="chev2"><svg viewBox="0 0 12 12"><path d="M2.5 4.5 L6 8 L9.5 4.5"/></svg></span>The actual prompts, for whoever builds it</summary>
+   <div class="techbody">
+  <div class="ptag">Stage one &middot; the screen &middot; runs on everything</div>
+<pre><span class="c"># Judge the PRIMARY purpose. A call mainly about delivery is
+# post-purchase service even if products are discussed at length.</span>
+
+You are analysing a phone call transcript to decide whether it contains
+customer intelligence worth extracting.
+
+CLASSIFY AS ONE OF
+  "SALES_INQUIRY"          pre-purchase, exploring or buying
+  "POST_PURCHASE_SERVICE"  delivery, tracking, invoices, returns, warranty
+  "OTHER_NON_VALUABLE"     wrong numbers, spam, internal coordination
+
+TRANSCRIPT
+"""{transcript}"""
+
+METADATA  direction: {direction} | duration: {duration}s
+
+Respond with JSON only, no markdown:
+{
+  "classification":  "SALES_INQUIRY|POST_PURCHASE_SERVICE|OTHER_NON_VALUABLE",
+  "confidence":      0.0-1.0,
+  "primary_reason":  "one line",
+  "key_indicators":  ["phrase from the transcript", "phrase"]
+}</pre>
+  <p class="pnote"><strong>Why <code>key_indicators</code> matters.</strong> It makes the screen auditable. When someone asks why a call was discarded you can show the exact phrases the model reacted to, instead of shrugging at a confidence score.</p>
+
+  <div class="ptag">Stage two &middot; the extraction &middot; runs only on what passed</div>
+<pre><span class="c"># Structure the ask in three blocks. Models follow a shaped brief far
+# better than a flat list of fields.</span>
+
+Analyse this transcript and extract structured insights for strategic
+decision-making.
+
+1. JOBS TO BE DONE  the job the customer is hiring the product to perform
+   - Functional  the practical task or outcome needed
+   - Emotional   the feeling or state they want to reach
+   - Social      how they want to be perceived by others
+   For EACH, also classify into a broader theme from the closed list.
+
+2. FORCES
+   - Motivations  what is pushing them toward a purchase
+   - Barriers     what is holding them back
+   - Triggers     what prompted them to call TODAY, not in general
+
+3. STRATEGIC INTELLIGENCE
+   - How did they discover this product category
+   - How do they see us against the alternatives
+   - What information gap caused the confusion
+
+CONFIDENCE LEVELS
+  HIGH    explicitly stated, repeated, or unambiguous from context
+  MEDIUM  implied by the flow, a reasonable inference
+  LOW     weak signal, assumption, or highly ambiguous
+
+Use "" for missing data. NEVER null.
+Return ONLY valid JSON, no markdown.</pre>
+  <p class="pnote"><strong>Two details that look trivial and are not.</strong> <code>Use "" for missing data, NEVER null</code> stops a spreadsheet column silently changing type halfway down. And forcing a per-field confidence level means you can filter to the high-confidence rows when a decision actually matters, instead of treating every extracted value as equally solid.</p>
+
+  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> We spent a while assuming a high unclassified rate meant our category list had gone stale. It had not. Measuring the field directly showed the model was simply returning nothing on those calls, and a fallback we thought was doing the work fired on nine rows out of five thousand. Measure the field before you fix the theory.</p></div>
+   </div>
+  </details>
+ </div>
+</section>
+
+<section>
+ <div class="wrap"><div class="cta">
+  <div><h3>What this built</h3><p>Call after call said the same thing: they could not picture it until they saw it. That became a brand promise, and keeping it meant building a design tool that did not previously exist.</p></div>
+  <a class="btn" href="https://gaf-gym-designer.pages.dev/">Open the gym designer</a>
+ </div></div>
+</section>
+
+<footer id="method">
+ <div class="wrap">
+  <h4>Method, limits and anonymisation</h4>
+  <p><strong>Pipeline.</strong> Calls are transcribed and exported to a Google Sheet. A nightly Apps Script passes each new transcript to a language model against a fixed schema and writes back 101 fields. It screens first, discarding roughly three in four.</p>
+  <p><strong>Archetypes</strong> are rule-derived from coded fields (segment, location, job theme, barrier), never from demographics or from what was purchased. Sub-themes are clustered from free text, which is why the second level carries language the fixed list cannot.</p>
+  <p><strong>What is real and what is not.</strong> Real: the pipeline, the nightly cadence, the 101-field schema, the screening ratio and the capture volume in the black band. Illustrative: every archetype, share, split, sub-theme, competitor label and quote. Representative and internally consistent, but not our segmentation and not our numbers. Competitor labels are generic by design.</p>
+  <p><strong>Anonymisation.</strong> No customer names, phone numbers, staff names, revenue, margin, order or profit data appear here, and none were used to build it. Every figure is a call count or a percentage.</p>
+  <p><strong>A limitation worth stating.</strong> A third of functional jobs, half of emotional and two thirds of social come back unclassified, and that has not improved in six months. In the large majority of cases the model returned no answer for the field rather than a poor one. That is defensible for emotional and social intent, which many sales calls simply do not contain, but it means those fields describe the calls where intent was expressed, not all callers. Job themes are shown as a current snapshot and are not compared across periods.</p>
+  <p><strong>Frozen snapshot</strong> taken 1 August 2026. Companion to “Keeping the Promise”, Claire Mula and Josh Hancock, CEO Magazine.</p>
+ </div>
+</footer>
+
+<div class="tt" id="tt"></div>
+<script>
+const D={"archetypes": [{"id": "comeback", "img": "img/comeback.jpg", "name": "The Comeback", "share": 31.0, "n": 1302, "blurb": "Returning to training after a long break", "strong": 24.8, "decision": 19.6, "job": "Get started again without it feeling like starting over", "fear": "Buying gear that ends up as a clothes rack", "win": "Sell the first eight weeks, not the equipment. This group needs a plan and a reason to come back on day three, and they say so unprompted.", "func": [{"l": "Convenience/Efficiency", "p": 62.4}, {"l": "Health/Recovery", "p": 24.1}, {"l": "Build/Transform Body", "p": 9.8}, {"l": "Performance/Competition", "p": 3.7}], "barrier": [{"l": "Confidence", "p": 34.7}, {"l": "Financial", "p": 26.9}, {"l": "Support", "p": 22.4}, {"l": "Technical", "p": 16.0}], "loc": [{"l": "Home Spare Room", "p": 38.9}, {"l": "Home Garage", "p": 31.2}, {"l": "Home Living Area", "p": 21.4}, {"l": "Apartment", "p": 8.5}], "exp": [{"l": "Some Experience", "p": 44.6}, {"l": "Complete Beginner", "p": 29.3}, {"l": "Intermediate", "p": 21.8}, {"l": "Advanced", "p": 4.3}], "quotes": ["I used to train five days a week and then life happened. I just want to get back into it without embarrassing myself.", "I've got the space. What I haven't got is any idea where to start."]}, {"id": "upgrader", "img": "img/upgrader.jpg", "name": "The Upgrader", "share": 26.0, "n": 1092, "blurb": "Outgrown the setup they already own", "strong": 41.3, "decision": 38.7, "job": "Stop being limited by the gear they bought first time", "fear": "Buying twice again", "win": "Talk about the ceiling, not the entry point. Highest intent of any group, so the risk here is under-selling rather than over-selling.", "func": [{"l": "Build/Transform Body", "p": 58.2}, {"l": "Performance/Competition", "p": 27.6}, {"l": "Convenience/Efficiency", "p": 11.4}, {"l": "Health/Recovery", "p": 2.8}], "barrier": [{"l": "Financial", "p": 37.1}, {"l": "Technical", "p": 31.8}, {"l": "Space", "p": 18.2}, {"l": "Support", "p": 12.9}], "loc": [{"l": "Home Garage", "p": 61.7}, {"l": "Home Spare Room", "p": 22.3}, {"l": "Home Basement", "p": 9.4}, {"l": "Outdoor", "p": 6.6}], "exp": [{"l": "Intermediate", "p": 41.9}, {"l": "Advanced", "p": 38.4}, {"l": "Expert", "p": 13.2}, {"l": "Some Experience", "p": 6.5}], "quotes": ["The bench I bought two years ago wobbles under anything decent. I'm not making that mistake twice.", "I want something I'm not going to outgrow in eighteen months."]}, {"id": "smallspace", "img": "img/smallspace.jpg", "name": "The Small Space", "share": 24.0, "n": 1008, "blurb": "Working within an apartment, a corner or a shared room", "strong": 29.5, "decision": 26.1, "job": "Fit real training into a space that was not designed for it", "fear": "It arrives and it does not fit, or the neighbours complain", "win": "Lead with footprint, ceiling height and noise. Space and technical friction is over half of why this group calls, and almost all of it is answerable before they buy.", "func": [{"l": "Convenience/Efficiency", "p": 71.8}, {"l": "Health/Recovery", "p": 16.3}, {"l": "Build/Transform Body", "p": 9.1}, {"l": "Performance/Competition", "p": 2.8}], "barrier": [{"l": "Space", "p": 39.4}, {"l": "Technical", "p": 24.7}, {"l": "Support", "p": 20.2}, {"l": "Financial", "p": 15.7}], "loc": [{"l": "Apartment", "p": 47.2}, {"l": "Home Spare Room", "p": 29.8}, {"l": "Home Living Area", "p": 17.6}, {"l": "Home Garage", "p": 5.4}], "exp": [{"l": "Intermediate", "p": 38.1}, {"l": "Some Experience", "p": 33.5}, {"l": "Complete Beginner", "p": 17.2}, {"l": "Advanced", "p": 11.2}], "quotes": ["I'm on the third floor so anything I drop, someone hears. That's my whole problem.", "The room is two and a half metres to the ceiling. Does that rule out most of it?"]}, {"id": "facility", "img": "img/facility.jpg", "name": "The Facility Fitter", "share": 19.0, "n": 798, "blurb": "Kitting out a club, studio or workplace", "strong": 31.2, "decision": 24.8, "job": "Get a space fitted out, delivered and signed off", "fear": "Being the one who chose wrong for somebody else's building", "win": "Own the coordination end to end. They are usually neither the end user nor the expert, and support is their number one barrier by a distance.", "func": [{"l": "Convenience/Efficiency", "p": 48.6}, {"l": "Performance/Competition", "p": 36.2}, {"l": "Build/Transform Body", "p": 9.7}, {"l": "Health/Recovery", "p": 5.5}], "barrier": [{"l": "Support", "p": 41.8}, {"l": "Financial", "p": 23.4}, {"l": "Time", "p": 19.9}, {"l": "Technical", "p": 14.9}], "loc": [{"l": "Commercial Facility", "p": 88.3}, {"l": "Outdoor", "p": 6.1}, {"l": "Home Garage", "p": 3.4}, {"l": "Apartment", "p": 2.2}], "exp": [{"l": "Some Experience", "p": 36.8}, {"l": "Intermediate", "p": 31.4}, {"l": "Advanced", "p": 19.6}, {"l": "Expert", "p": 12.2}], "quotes": ["It's not my project. I've been asked to sort it out and I need someone to tell me what I actually need.", "The fit-out has to be finished before the tenancy starts. That date is not moving."]}], "windows": {"1": {"n": 34, "small": true, "func": [{"l": "Unclassified", "p": 35.3}, {"l": "Convenience/Efficiency", "p": 29.4}, {"l": "Build/Transform Body", "p": 23.5}, {"l": "Health/Recovery", "p": 8.8}, {"l": "Performance/Competition", "p": 2.9}], "emo": [{"l": "Unclassified", "p": 50.0}, {"l": "Confidence", "p": 20.6}, {"l": "Control/Discipline", "p": 14.7}, {"l": "Achievement/Progress", "p": 11.8}, {"l": "Stress Relief", "p": 2.9}], "social": [{"l": "Unclassified", "p": 58.8}, {"l": "Status/Impression", "p": 17.6}, {"l": "Expertise/Authority", "p": 11.8}, {"l": "Independence", "p": 8.8}, {"l": "Community/Belonging", "p": 2.9}], "motiv": [{"l": "Functional", "p": 67.6}, {"l": "Financial", "p": 23.5}, {"l": "Emotional", "p": 5.9}, {"l": "Social", "p": 2.9}], "barrier": [{"l": "Support", "p": 32.4}, {"l": "Financial", "p": 26.5}, {"l": "Technical", "p": 17.6}, {"l": "Space", "p": 11.8}, {"l": "Time", "p": 8.8}, {"l": "Confidence", "p": 2.9}], "stage": [{"l": "Consideration", "p": 44.1}, {"l": "Decision", "p": 29.4}, {"l": "Awareness", "p": 14.7}, {"l": "Post Purchase", "p": 11.8}]}, "90": {"n": 1794, "func": [{"l": "Convenience/Efficiency", "p": 34.1}, {"l": "Unclassified", "p": 30.8}, {"l": "Build/Transform Body", "p": 19.6}, {"l": "Health/Recovery", "p": 8.9}, {"l": "Performance/Competition", "p": 6.6}], "emo": [{"l": "Unclassified", "p": 46.9}, {"l": "Confidence", "p": 18.2}, {"l": "Achievement/Progress", "p": 15.4}, {"l": "Control/Discipline", "p": 14.8}, {"l": "Stress Relief", "p": 4.7}], "barrier": [{"l": "Support", "p": 29.8}, {"l": "Financial", "p": 27.4}, {"l": "Technical", "p": 20.9}, {"l": "Space", "p": 10.6}, {"l": "Time", "p": 7.1}, {"l": "Confidence", "p": 4.2}], "stage": [{"l": "Consideration", "p": 43.8}, {"l": "Decision", "p": 28.6}, {"l": "Awareness", "p": 15.2}, {"l": "Post Purchase", "p": 12.4}], "social": [{"l": "Unclassified", "p": 61.4}, {"l": "Status/Impression", "p": 14.8}, {"l": "Expertise/Authority", "p": 11.2}, {"l": "Independence", "p": 7.9}, {"l": "Community/Belonging", "p": 4.7}], "motiv": [{"l": "Functional", "p": 71.8}, {"l": "Financial", "p": 17.4}, {"l": "Emotional", "p": 7.2}, {"l": "Social", "p": 3.6}]}, "60": {"n": 1097, "func": [{"l": "Convenience/Efficiency", "p": 32.6}, {"l": "Unclassified", "p": 31.9}, {"l": "Build/Transform Body", "p": 21.2}, {"l": "Health/Recovery", "p": 8.1}, {"l": "Performance/Competition", "p": 6.2}], "emo": [{"l": "Unclassified", "p": 47.8}, {"l": "Confidence", "p": 19.6}, {"l": "Control/Discipline", "p": 14.9}, {"l": "Achievement/Progress", "p": 13.4}, {"l": "Stress Relief", "p": 4.3}], "barrier": [{"l": "Support", "p": 31.4}, {"l": "Financial", "p": 26.2}, {"l": "Technical", "p": 19.8}, {"l": "Space", "p": 11.9}, {"l": "Time", "p": 6.6}, {"l": "Confidence", "p": 4.1}], "stage": [{"l": "Consideration", "p": 42.1}, {"l": "Decision", "p": 30.2}, {"l": "Awareness", "p": 14.6}, {"l": "Post Purchase", "p": 13.1}], "social": [{"l": "Unclassified", "p": 62.1}, {"l": "Status/Impression", "p": 14.2}, {"l": "Expertise/Authority", "p": 11.6}, {"l": "Independence", "p": 7.4}, {"l": "Community/Belonging", "p": 4.7}], "motiv": [{"l": "Functional", "p": 70.4}, {"l": "Financial", "p": 18.9}, {"l": "Emotional", "p": 7.1}, {"l": "Social", "p": 3.6}]}, "30": {"n": 402, "func": [{"l": "Unclassified", "p": 33.6}, {"l": "Convenience/Efficiency", "p": 30.2}, {"l": "Build/Transform Body", "p": 22.8}, {"l": "Health/Recovery", "p": 7.4}, {"l": "Performance/Competition", "p": 6.0}], "emo": [{"l": "Unclassified", "p": 45.2}, {"l": "Confidence", "p": 21.4}, {"l": "Control/Discipline", "p": 15.1}, {"l": "Achievement/Progress", "p": 13.9}, {"l": "Stress Relief", "p": 4.4}], "barrier": [{"l": "Support", "p": 33.9}, {"l": "Financial", "p": 24.1}, {"l": "Technical", "p": 18.6}, {"l": "Space", "p": 12.8}, {"l": "Time", "p": 6.4}, {"l": "Confidence", "p": 4.2}], "stage": [{"l": "Consideration", "p": 41.4}, {"l": "Decision", "p": 31.8}, {"l": "Awareness", "p": 14.1}, {"l": "Post Purchase", "p": 12.7}], "social": [{"l": "Unclassified", "p": 59.8}, {"l": "Status/Impression", "p": 15.6}, {"l": "Expertise/Authority", "p": 11.9}, {"l": "Independence", "p": 8.1}, {"l": "Community/Belonging", "p": 4.6}], "motiv": [{"l": "Functional", "p": 69.1}, {"l": "Financial", "p": 20.3}, {"l": "Emotional", "p": 7.0}, {"l": "Social", "p": 3.6}]}}, "monthly": [{"m": "2025-11", "n": 280, "lab": "Nov 25"}, {"m": "2025-12", "n": 342, "lab": "Dec"}, {"m": "2026-01", "n": 530, "lab": "Jan 26"}, {"m": "2026-02", "n": 423, "lab": "Feb"}, {"m": "2026-03", "n": 541, "lab": "Mar"}, {"m": "2026-04", "n": 938, "lab": "Apr"}, {"m": "2026-05", "n": 699, "lab": "May"}, {"m": "2026-06", "n": 716, "lab": "Jun"}, {"m": "2026-07", "n": 439, "lab": "Jul"}], "weekly": [{"w": "2026-02-02", "n": 101}, {"w": "2026-02-09", "n": 120}, {"w": "2026-02-16", "n": 100}, {"w": "2026-02-23", "n": 107}, {"w": "2026-03-02", "n": 113}, {"w": "2026-03-09", "n": 118}, {"w": "2026-03-16", "n": 98}, {"w": "2026-03-23", "n": 156}, {"w": "2026-03-30", "n": 113}, {"w": "2026-04-06", "n": 130}, {"w": "2026-04-13", "n": 219}, {"w": "2026-04-20", "n": 330}, {"w": "2026-04-27", "n": 258}, {"w": "2026-05-04", "n": 180}, {"w": "2026-05-11", "n": 152}, {"w": "2026-05-18", "n": 127}, {"w": "2026-05-25", "n": 177}, {"w": "2026-06-01", "n": 196}, {"w": "2026-06-08", "n": 142}, {"w": "2026-06-15", "n": 142}, {"w": "2026-06-22", "n": 172}, {"w": "2026-06-29", "n": 129}, {"w": "2026-07-06", "n": 82}, {"w": "2026-07-13", "n": 84}, {"w": "2026-07-20", "n": 106}, {"w": "2026-07-27", "n": 105}], "totals": {"screened": 21714, "coded": 4911, "first": "2025-11-05", "last": "2026-08-01"}, "barriers": [{"l": "Financial", "a": 27.9, "b": 27.4}, {"l": "Support", "a": 14.1, "b": 29.8}, {"l": "Technical", "a": 24.6, "b": 20.9}, {"l": "Space", "a": 11.2, "b": 10.6}, {"l": "Time", "a": 7.4, "b": 7.1}, {"l": "Confidence", "a": 4.6, "b": 4.2}], "comp": [{"l": "Specialist brand A", "n": 26}, {"l": "Overseas direct-to-consumer", "n": 19}, {"l": "National sporting retailer", "n": 14}, {"l": "Specialist brand B", "n": 11}, {"l": "Marketplace and second-hand", "n": 9}, {"l": "Commercial equipment supplier", "n": 7}, {"l": "Cardio specialist", "n": 6}, {"l": "Local independent", "n": 4}], "feed": [["I'm on the third floor so anything I drop, someone hears. That's my whole problem.", "The Small Space", "Space"], ["The bench I bought two years ago wobbles under anything decent.", "The Upgrader", "Technical"], ["I've got the space. What I haven't got is any idea where to start.", "The Comeback", "Confidence"], ["Cancelled it in the end. The delivery cost more than I'd budgeted for the whole thing.", "The Comeback", "Financial"], ["The fit-out has to be finished before the tenancy starts. That date is not moving.", "The Facility Fitter", "Time"], ["The floor needs to go down first, then I'll see what else I can fit.", "The Upgrader", "Staged build"], ["Let me show my partner and we'll come back to you.", "The Comeback", "Joint decision"], ["The room is two and a half metres to the ceiling. Does that rule out most of it?", "The Small Space", "Technical"], ["Whoever makes my life the least difficult, honestly.", "The Facility Fitter", "Support"]], "qotw": [{"w": "Week of 27 July 2026", "q": "I've been putting this off for two years because I assumed I'd need a whole garage. Turns out I need about two metres.", "why": "Picked because it names the assumption that stops the sale. The objection is a belief about space, not a question about price, and it was resolved in ninety seconds on the phone.", "arch": "The Small Space", "bar": "Space"}, {"w": "Week of 20 July 2026", "q": "I don't want the cheap one. I want the one I'm not going to have to replace.", "why": "The clearest statement of the upgrade job we have heard this quarter. This customer is telling us to sell them the ceiling, and we routinely quote them the entry point.", "arch": "The Upgrader", "bar": "Financial"}, {"w": "Week of 13 July 2026", "q": "It's not my project. I've been asked to sort it out and I need someone to tell me what I actually need.", "why": "A reminder that the facility buyer is often not the end user and rarely the expert. Support, not price, is what wins this one.", "arch": "The Facility Fitter", "bar": "Support"}, {"w": "Week of 6 July 2026", "q": "I used to train five days a week and then life happened.", "why": "Eleven words that contain the entire comeback job. Nothing in a demographic profile would ever have surfaced this.", "arch": "The Comeback", "bar": "Confidence"}], "sub": {"Convenience/Efficiency": [{"l": "No commute to a gym", "p": 33.6}, {"l": "Train around work hours", "p": 25.8}, {"l": "Fit training into family life", "p": 18.2}, {"l": "Avoid queues and equipment waits", "p": 13.1}, {"l": "Independent of weather and travel", "p": 9.3}], "Build/Transform Body": [{"l": "Lose weight", "p": 30.9}, {"l": "Build visible muscle", "p": 26.7}, {"l": "Get back to a previous level", "p": 21.8}, {"l": "Prepare for an event or milestone", "p": 12.4}, {"l": "Lift heavier", "p": 8.2}], "Health/Recovery": [{"l": "Manage an existing injury", "p": 32.7}, {"l": "Rehab after surgery or illness", "p": 24.1}, {"l": "Reduce back and joint pain", "p": 21.3}, {"l": "Recover between sessions", "p": 13.8}, {"l": "Acting on medical or physio advice", "p": 8.1}], "Performance/Competition": [{"l": "Sport-specific conditioning", "p": 34.8}, {"l": "Event and race training", "p": 26.2}, {"l": "Chasing a strength benchmark", "p": 20.9}, {"l": "Squad or team programming", "p": 11.3}, {"l": "Returning to competition", "p": 6.8}], "Confidence": [{"l": "Feel capable in my own space", "p": 37.9}, {"l": "Not be watched while training", "p": 26.8}, {"l": "Trust the gear under load", "p": 21.2}, {"l": "Know I bought the right thing", "p": 14.1}], "Achievement/Progress": [{"l": "See measurable progress", "p": 40.6}, {"l": "Hit a personal milestone", "p": 29.1}, {"l": "Prove I can stick at it", "p": 19.2}, {"l": "Keep up with people around me", "p": 11.1}], "Control/Discipline": [{"l": "Own my own schedule", "p": 43.7}, {"l": "Build a routine that holds", "p": 30.9}, {"l": "Remove the excuses", "p": 17.2}, {"l": "Train entirely on my terms", "p": 8.2}], "Stress Relief": [{"l": "Decompress after work", "p": 45.8}, {"l": "Time on my own", "p": 31.6}, {"l": "Sleep better", "p": 22.6}], "Status/Impression": [{"l": "Show the space to friends and family", "p": 34.2}, {"l": "Be seen as someone who trains", "p": 28.6}, {"l": "Keep up with a peer group", "p": 22.4}, {"l": "Set an example at home", "p": 14.8}], "Expertise/Authority": [{"l": "Be the one who knows the gear", "p": 38.4}, {"l": "Advise others on their setup", "p": 27.9}, {"l": "Coach or train other people", "p": 21.3}, {"l": "Professional credibility", "p": 12.4}], "Independence": [{"l": "Not tied to a gym's opening hours", "p": 41.6}, {"l": "Train without needing anyone else", "p": 33.2}, {"l": "Own the equipment outright", "p": 25.2}], "Community/Belonging": [{"l": "Train with family at home", "p": 39.8}, {"l": "Host training with friends", "p": 31.4}, {"l": "Part of an online training group", "p": 28.8}], "Functional": [{"l": "Convenience of training at home", "p": 31.4}, {"l": "Complete an existing setup", "p": 24.8}, {"l": "Space efficiency", "p": 19.2}, {"l": "Replace a gym membership", "p": 15.1}, {"l": "One specific piece of equipment", "p": 9.5}], "Financial": [{"l": "Cost saving against a membership", "p": 38.2}, {"l": "Sale or promotion timing", "p": 27.6}, {"l": "Finance or payment plan available", "p": 19.4}, {"l": "Freight and delivery cost", "p": 14.8}], "Emotional": [{"l": "Feeling in control again", "p": 42.1}, {"l": "Confidence in their own space", "p": 33.6}, {"l": "Headspace and stress", "p": 24.3}], "Social": [{"l": "Training with family", "p": 44.7}, {"l": "Influence of friends or peers", "p": 31.8}, {"l": "Visible commitment to a change", "p": 23.5}]}, "space": [{"l": "Home garage", "p": 31.8}, {"l": "Home spare room", "p": 24.6}, {"l": "Commercial facility", "p": 16.2}, {"l": "Home living area", "p": 11.4}, {"l": "Apartment", "p": 8.1}, {"l": "Backyard shed", "p": 4.7}, {"l": "Outdoor or patio", "p": 2.2}, {"l": "Basement or under-house", "p": 1.0}], "constraint": [{"l": "Moderate", "p": 38.4}, {"l": "Somewhat limited", "p": 33.9}, {"l": "Very limited", "p": 15.7}, {"l": "Spacious", "p": 12.0}]};
+const O="#F26422",B="#2E6FD9",M="#C9C9C9",G2="#E2E2E2",G5="#717171",G7="#424242";
+const NS="http://www.w3.org/2000/svg",tt=document.getElementById('tt');
+const $=id=>document.getElementById(id);
+function el(t,a){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);return e}
+function hov(n,h){n.style.cursor='default';
+ n.addEventListener('mousemove',e=>{tt.innerHTML=h;tt.style.opacity=1;const r=tt.getBoundingClientRect();
+  tt.style.left=Math.min(e.clientX+14,innerWidth-r.width-8)+'px';tt.style.top=(e.clientY-r.height-12)+'px'});
+ n.addEventListener('mouseleave',()=>tt.style.opacity=0)}
+const fmtD=s=>{const d=new Date(s+'T00:00:00');return d.toLocaleDateString('en-AU',{day:'numeric',month:'short',year:'numeric'})};
+
+/* header + counters */
+$('b-range').textContent=fmtD(D.totals.first)+' to '+fmtD(D.totals.last);
+const wk=D.weekly, lastFull=wk[wk.length-2]?.n ?? wk[wk.length-1].n;
+const COUNTERS=[['s-screen',D.totals.screened],['s-coded',D.totals.coded],['s-week',lastFull]];
+// Correct by default. The count-up is decoration, so a visitor who scrolls
+// straight past the band still sees real numbers rather than zeros.
+COUNTERS.forEach(([id,v])=>$(id).textContent=v.toLocaleString());
+function count(id,to){const e=$(id);let s=null;const dur=900;
+ function f(t){s??=t;const p=Math.min((t-s)/dur,1);e.textContent=Math.round(to*(1-Math.pow(1-p,3))).toLocaleString();if(p<1)requestAnimationFrame(f)}
+ requestAnimationFrame(f)}
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+ new IntersectionObserver((es,ob)=>{if(es[0].isIntersecting){
+  COUNTERS.forEach(([id,v])=>count(id,v));ob.disconnect()}},{threshold:.3}).observe($('capture'));
+}
+
+/* sparkline */
+(function(){const s=$('spark'),W=1000,H=74,max=Math.max(...wk.map(d=>d.n))*1.12,n=wk.length;
+ const x=i=>i*(W/(n-1)), y=v=>H-4-(H-14)*(v/max);
+ let dl='',da='';
+ wk.forEach((d,i)=>{dl+=(i?'L':'M')+x(i)+','+y(d.n);});
+ da=dl+`L${W},${H}L0,${H}Z`;
+ const g=el('linearGradient',{id:'gr',x1:0,y1:0,x2:0,y2:1});
+ g.appendChild(el('stop',{offset:'0%','stop-color':O,'stop-opacity':.34}));
+ g.appendChild(el('stop',{offset:'100%','stop-color':O,'stop-opacity':0}));
+ const defs=el('defs',{});defs.appendChild(g);s.appendChild(defs);
+ s.appendChild(el('path',{d:da,fill:'url(#gr)'}));
+ s.appendChild(el('path',{d:dl,fill:'none',stroke:O,'stroke-width':2,'stroke-linejoin':'round','vector-effect':'non-scaling-stroke'}));
+ wk.forEach((d,i)=>{const c=el('circle',{cx:x(i),cy:y(d.n),r:9,fill:'transparent'});
+  hov(c,`<b>Week of ${fmtD(d.w)}</b> &middot; ${d.n} coded`);s.appendChild(c)});
+ const lp=el('circle',{cx:x(n-1),cy:y(wk[n-1].n),r:4,fill:O,stroke:'#111','stroke-width':2});s.appendChild(lp);
+ $('ax-l').textContent=fmtD(wk[0].w);$('ax-r').textContent=fmtD(wk[n-1].w);
+})();
+
+/* horizontal bars */
+function hbars(svg,data,opt={}){
+ svg.innerHTML='';const W=300,rh=opt.rh||38,max=Math.max(...data.map(d=>d.p));
+ data.forEach((d,i)=>{
+  const y=i*rh,mute=/unclass|other/i.test(d.l),w=Math.max((W-46)*(d.p/max),1.5);
+  const g=el('g',{});
+  const t=el('text',{x:0,y:y+11,'font-size':12,fill:mute?G5:G7});t.textContent=d.l;g.appendChild(t);
+  const by=y+17,h=10;
+  g.appendChild(el('path',{d:`M0,${by}L${w-4},${by}Q${w},${by} ${w},${by+4}L${w},${by+h-4}Q${w},${by+h} ${w-4},${by+h}L0,${by+h}Z`,fill:mute?M:(opt.color||O)}));
+  const v=el('text',{x:w+8,y:by+h-.5,'font-size':11.5,fill:G5,'font-weight':600});v.textContent=d.p.toFixed(1)+'%';g.appendChild(v);
+  hov(g,`<b>${d.l}</b> &middot; ${d.p}%`);svg.appendChild(g)});
+ svg.setAttribute('viewBox',`0 0 ${W} ${data.length*rh}`);
+}
+/* HTML rows with optional layer-2 sub-themes */
+function hrows(host,data,opt={}){
+ const max=Math.max(...data.map(d=>d.p));
+ host.innerHTML=data.map((d,i)=>{
+  const mute=/unclass|other/i.test(d.l), sub=opt.sub&&D.sub[d.l];
+  const w=Math.max((d.p/max)*100,1.2);
+  return `<div class="jrow${sub?' has-sub':''}" data-i="${i}">
+   <div style="display:flex;align-items:center;gap:9px;margin-bottom:5px">
+    <span class="jlab" style="font-size:13px;color:${mute?'var(--g500)':'var(--g700)'};flex:1;transition:color .15s">${d.l}</span>
+    ${sub?`<span class="chev" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="M2.5 4.5 L6 8 L9.5 4.5"/></svg></span>`:''}
+    <span style="font-size:12px;color:var(--g500);font-weight:600;font-variant-numeric:tabular-nums;min-width:42px;text-align:right">${d.p.toFixed(1)}%</span>
+   </div>
+   <div style="height:10px;background:var(--g100);border-radius:5px;overflow:hidden;margin-bottom:6px">
+    <div style="height:100%;width:${w}%;background:${mute?'var(--g300)':'var(--orange)'};border-radius:5px"></div>
+   </div>
+   <div class="subwrap" style="height:0"><div class="subs">${
+     (sub||[]).map(s=>`<div class="subrow"><span class="sl">${s.l}</span>
+       <span class="subbar"><i style="width:${s.p}%"></i></span><span class="sv">${s.p.toFixed(1)}%</span></div>`).join('')
+   }<div class="hint">Share within ${d.l}. Sub-themes are clustered from the free-text job field, not a fixed list.</div></div></div>
+  </div>`}).join('') + (opt.sub?`<div class="hint" style="margin-top:2px">Click any theme above to open its second level.</div>`:'');
+ if(!opt.sub)return;
+ host.querySelectorAll('.jrow.has-sub').forEach(r=>{
+  r.addEventListener('click',()=>{
+   const w=r.querySelector('.subwrap'), inner=w.firstElementChild, open=r.classList.contains('open');
+   host.querySelectorAll('.jrow.has-sub').forEach(o=>{if(o!==r){o.classList.remove('open');o.querySelector('.subwrap').style.height='0px'}});
+   r.classList.toggle('open',!open);
+   w.style.height = open ? '0px' : inner.offsetHeight+'px';
+  });
+ });
+}
+function render(w){
+ const d=D.windows[String(w)];
+ $('w-n').textContent=d.n.toLocaleString();
+ $('w-to').textContent = w==1 ? 'on '+fmtD(D.totals.last) : 'to '+fmtD(D.totals.last);
+ $('w-small').hidden = !d.small;
+ hrows($('c-func'),d.func,{sub:1});hrows($('c-emo'),d.emo,{sub:1});
+ hrows($('c-social'),d.social,{sub:1});hrows($('c-motiv'),d.motiv,{sub:1});
+ hrows($('c-bar'),d.barrier);hrows($('c-stage'),d.stage);
+}
+hrows($('c-space'),D.space);hrows($('c-constraint'),D.constraint);
+$('seg').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;
+ [...$('seg').children].forEach(x=>x.classList.toggle('on',x===b));render(+b.dataset.w)});
+render(90);
+
+/* archetypes */
+const tabs=$('tabs');
+D.archetypes.forEach((a,i)=>{
+ const b=document.createElement('button');b.className='tab'+(i?'':' on');b.dataset.i=i;
+ b.innerHTML=`<img class="thumb" src="${a.img}" alt=""><span class="nm">${a.name}</span><span class="sh">${a.share}% of coded calls &middot; n=${a.n.toLocaleString()}</span>`;
+ tabs.appendChild(b)});
+function panel(i){
+ const a=D.archetypes[i];
+ $('panel').innerHTML=`
+  <div class="pa-hero">
+   <figure class="arch-figure">
+    <img class="arch-img" src="${a.img}" alt="Illustrative persona for ${a.name}">
+    <figcaption>Illustrative persona. Generated image, not a customer photograph.</figcaption>
+   </figure>
+   <div>
+    <h3>${a.name}</h3><p class="bl">${a.blurb}</p>
+    <div class="pstats">
+     <div class="pstat"><div class="v">${a.share}%</div><div class="l">of coded calls</div></div>
+     <div class="pstat"><div class="v">${a.strong}%</div><div class="l">strong intent</div></div>
+     <div class="pstat"><div class="v">${a.decision}%</div><div class="l">at decision stage</div></div>
+    </div>
+   </div>
+  </div>
+  <div class="jfw">
+   <div class="j"><h5>The job</h5><p>${a.job}</p></div>
+   <div class="f"><h5>The fear</h5><p>${a.fear}</p></div>
+   <div class="w"><h5>How we win it</h5><p>${a.win}</p></div>
+  </div>
+  <div class="grid4" style="margin-bottom:28px">
+   <div><div class="ctitle">Functional job</div><div class="csub">&nbsp;</div><svg class="ch" id="a-func"></svg></div>
+   <div><div class="ctitle">Primary barrier</div><div class="csub">&nbsp;</div><svg class="ch" id="a-bar"></svg></div>
+   <div><div class="ctitle">Where it goes</div><div class="csub">&nbsp;</div><svg class="ch" id="a-loc"></svg></div>
+   <div><div class="ctitle">Experience level</div><div class="csub">&nbsp;</div><svg class="ch" id="a-exp"></svg></div>
+  </div>
+  ${a.quotes.map(q=>`<blockquote>“${q}”</blockquote>`).join('')}`;
+ hbars($('a-func'),a.func.slice(0,4),{rh:34});
+ hbars($('a-bar'),a.barrier.slice(0,4),{rh:34});
+ hbars($('a-loc'),a.loc.slice(0,4),{rh:34,color:B});
+ hbars($('a-exp'),a.exp.slice(0,4),{rh:34,color:B});
+}
+tabs.addEventListener('click',e=>{const b=e.target.closest('.tab');if(!b)return;
+ [...tabs.children].forEach(x=>x.classList.toggle('on',x===b));panel(+b.dataset.i)});
+panel(0);
+
+/* competitors */
+(function(){const s=$('c-comp'),W=900,L=150,R=70,T=8,rh=32,max=Math.max(...D.comp.map(d=>d.n)),plot=W-L-R;
+ s.setAttribute('viewBox',`0 0 ${W} ${T+D.comp.length*rh}`);
+ D.comp.forEach((d,i)=>{const y=T+i*rh,w=plot*(d.n/max),h=13,by=y+4,g=el('g',{});
+  const lb=el('text',{x:L-16,y:by+11,'text-anchor':'end','font-size':13,fill:G7});lb.textContent=d.l;g.appendChild(lb);
+  g.appendChild(el('path',{d:`M${L},${by}L${L+w-4},${by}Q${L+w},${by} ${L+w},${by+4}L${L+w},${by+h-4}Q${L+w},${by+h} ${L+w-4},${by+h}L${L},${by+h}Z`,fill:O}));
+  const v=el('text',{x:L+w+10,y:by+11,'font-size':12,fill:G5,'font-weight':600});v.textContent=d.n;g.appendChild(v);
+  hov(g,`<b>${d.l}</b> &middot; ${d.n} mentions in 90 days`);s.appendChild(g)});
+})();
+
+/* quote of the week */
+let qi=0;
+function qrender(){
+ const q=D.qotw[qi];
+ $('q-week').textContent=q.w;$('q-text').textContent='“'+q.q+'”';
+ $('q-why').textContent=q.why;$('q-arch').textContent=q.arch;$('q-bar').textContent=q.bar;
+ $('q-dots').innerHTML=D.qotw.map((_,i)=>`<i class="${i===qi?'on':''}" data-i="${i}"></i>`).join('');
+}
+$('q-prev').onclick=()=>{qi=Math.min(qi+1,D.qotw.length-1);qrender()};   // index 0 = most recent
+$('q-next').onclick=()=>{qi=Math.max(qi-1,0);qrender()};
+$('q-dots').addEventListener('click',e=>{const d=e.target.closest('i');if(d){qi=+d.dataset.i;qrender()}});
+qrender();
+
+/* nav scrollspy */
+const secs=[...document.querySelectorAll('section[id],footer[id],div#capture')];
+const links=[...document.querySelectorAll('nav a')];
+new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+ links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-45% 0px -50% 0px'})
+ .observe&&secs.forEach(s=>new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){
+ links.forEach(l=>l.classList.toggle('on',l.getAttribute('href')==='#'+e.target.id))}})},{rootMargin:'-45% 0px -50% 0px'}).observe(s));
+</script>
+</body>
+</html>

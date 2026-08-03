@@ -306,6 +306,11 @@ const SwotCard: React.FC<{
     </div>
 );
 
+// The Scaling Up template writes an unfilled field several ways: "Not set",
+// "Not entered", "No theme entered", "No items entered." Treat them all as empty
+// so a placeholder never renders as if it were the actual theme.
+const PLACEHOLDER = /^(not (set|entered)|no [a-z ]+ entered\.?)$/i;
+
 const KeyValueList: React.FC<{ rows: KeyValue[] }> = ({ rows }) => (
     <div className="space-y-3">
         {rows.length === 0 && <p className="text-xs text-gray-400 italic">Not yet entered in the source document.</p>}
@@ -313,7 +318,7 @@ const KeyValueList: React.FC<{ rows: KeyValue[] }> = ({ rows }) => (
             <div key={i} className="pb-3 border-b border-gray-100 last:border-0 last:pb-0">
                 <div className="text-[10px] font-bold uppercase tracking-wider text-gray-400 mb-0.5">{r.key}</div>
                 <div className="text-sm text-gray-800 font-medium leading-snug">
-                    {r.value && !/^not (set|entered)$/i.test(r.value)
+                    {r.value && !PLACEHOLDER.test(r.value)
                         ? r.value
                         : <span className="text-gray-400 italic font-normal">Not set</span>}
                 </div>
@@ -489,7 +494,9 @@ export default function OPSPDashboard() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* A fixed 2-col grid leaves a dead half-width hole when the doc
+                            carries a single critical number, so only split above one. */}
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${d.criticalNumbers.length > 1 ? 'md:grid-cols-2' : ''}`}>
                             {d.criticalNumbers.length === 0 && (
                                 <p className="text-sm text-gray-400 italic">No critical numbers entered in the source document.</p>
                             )}
@@ -534,7 +541,7 @@ export default function OPSPDashboard() {
                                     <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
                                         ? 'text-lg font-black text-orange-300 font-montserrat'
                                         : 'text-sm text-gray-200 font-medium'}`}>
-                                        {t.value && !/^not (set|entered)$/i.test(t.value)
+                                        {t.value && !PLACEHOLDER.test(t.value)
                                             ? t.value
                                             : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}
                                     </div>

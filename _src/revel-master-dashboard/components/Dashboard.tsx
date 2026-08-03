@@ -1,17 +1,16 @@
 
 import React, { useState } from 'react';
-import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Flag, Compass } from 'lucide-react';
+import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Flag, Compass } from 'lucide-react';
 import CallInsightsDashboard from './CallInsightsDashboard';
 import SalesDashboard from './SalesDashboard';
 import ProductInsightsDashboard from './ProductInsightsDashboard';
-import BHAGDashboard from './BHAGDashboard';
 import StrategicPrioritiesDashboard from './StrategicPrioritiesDashboard';
 import OPSPDashboard from './OPSPDashboard';
 import { GAF_COLORS } from '../constants';
 
 const Dashboard: React.FC = () => {
   // Default to 'sales' view as requested
-  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'opsp' | 'product-insights' | 'bhag' | 'initiatives'>('sales');
+  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'opsp' | 'product-insights' | 'initiatives'>('sales');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -91,19 +90,6 @@ const Dashboard: React.FC = () => {
           </button>
 
           <button
-            onClick={() => { setActiveView('bhag'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
-              activeView === 'bhag'
-                ? 'bg-white/10 text-white shadow-sm border border-white/5'
-                : 'text-gray-400 hover:bg-white/5 hover:text-white'
-            } ${isCollapsed ? 'justify-center' : ''}`}
-            title={isCollapsed ? "BHAG" : ""}
-          >
-            <Mountain size={20} className="shrink-0" />
-            {!isCollapsed && <span>BHAG</span>}
-          </button>
-
-          <button
             onClick={() => { setActiveView('initiatives'); setIsSidebarOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
               activeView === 'initiatives'
@@ -166,8 +152,6 @@ const Dashboard: React.FC = () => {
             <CallInsightsDashboard />
           ) : activeView === 'product-insights' ? (
             <ProductInsightsDashboard />
-          ) : activeView === 'bhag' ? (
-            <BHAGDashboard />
           ) : activeView === 'initiatives' ? (
             <StrategicPrioritiesDashboard />
           ) : (

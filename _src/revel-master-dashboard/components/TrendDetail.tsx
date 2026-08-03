@@ -33,7 +33,11 @@ const RecoveryTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-const BHAGDashboard: React.FC = () => {
+// Was the standalone "BHAG" tab. Its hero repeated a BHAG that no longer matched
+// the source doc, and its "Critical Numbers (FY26)" heading duplicated the live
+// quarterly block on the OPSP tab, so both were dropped. What remains is the five
+// recovery/margin trend charts, rendered as a section INSIDE the OPSP tab.
+const TrendDetail: React.FC = () => {
   const cacheKey = 'bhag_data';
   const cachedData = getCachedData<BhagData>(cacheKey);
   const [data, setData] = useState<BhagData | null>(cachedData || null);
@@ -57,14 +61,14 @@ const BHAGDashboard: React.FC = () => {
 
   if (!data && isUpdating) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen gap-4">
-        <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
-        <p className="text-gray-500 font-medium">Loading BHAG Data...</p>
+      <div className="flex flex-col items-center justify-center gap-3 py-16">
+        <Loader2 className="w-8 h-8 text-orange-500 animate-spin" />
+        <p className="text-gray-500 font-medium text-sm">Loading trend data...</p>
       </div>
     );
   }
 
-  if (!data) return <div className="p-8 text-center">No Data Available</div>;
+  if (!data) return <div className="p-8 text-center text-sm text-gray-500">No trend data available.</div>;
 
   // Helpers for current metrics (assuming last entry is current)
   const currentShipping = data.shippingRecovery[data.shippingRecovery.length - 1];
@@ -94,34 +98,7 @@ const BHAGDashboard: React.FC = () => {
   const isDiscountGood = currentDiscountRate < discountTarget;
 
   return (
-    <div className="min-h-screen bg-[#f8f8fa] p-4 md:p-6 space-y-8">
-       {/* Hero BHAG Section - Clean Gradient Style */}
-       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black shadow-xl border border-white/5">
-          <div className="relative z-10 px-6 py-12 md:py-20 flex flex-col items-center justify-center text-center space-y-6">
-             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-xs font-bold text-white tracking-wider uppercase">
-                <Trophy size={14} className="text-yellow-400" />
-                Business Unit BHAG
-             </div>
-             
-             <h1 className="text-3xl md:text-5xl lg:text-6xl font-black text-white max-w-4xl leading-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-               "Reaching 100,000 members by January 1st, 2030."
-             </h1>
-             
-             <div className="flex flex-col items-center gap-2">
-                <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Current Progress</span>
-                <span className="text-2xl md:text-4xl font-bold text-orange-500" style={{ fontFamily: "'Montserrat', sans-serif" }}>TBA</span>
-             </div>
-          </div>
-       </div>
-
-       {/* Critical Numbers Header */}
-       <div className="flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-orange-100 text-orange-600">
-             <Target size={24} />
-          </div>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900" style={{ fontFamily: "'Montserrat', sans-serif" }}>Critical Numbers (FY26)</h2>
-       </div>
-
+    <div className="space-y-6">
        {/* Widgets Grid */}
        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           
@@ -386,4 +363,4 @@ const BHAGDashboard: React.FC = () => {
   );
 };
 
-export default BHAGDashboard;
+export default TrendDetail;

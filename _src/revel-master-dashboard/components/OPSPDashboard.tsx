@@ -3,6 +3,7 @@ import {
     Compass, Heart, Mountain, Star, MapPin, Target, Flag, Rocket, Loader2,
     ShieldCheck, AlertTriangle, Lightbulb, TrendingUp, Users, Settings, CheckCircle2,
 } from 'lucide-react';
+import TrendDetail from './TrendDetail';
 
 // Published-to-web copy of "Revel - One Page Plan (Scaling Up Scoreboard)".
 // Source doc: docs.google.com/document/d/15xdtYOI5odaCfZ_O5Igw-GfFQSR7LIksCTofjXJ4-WA
@@ -549,6 +550,16 @@ export default function OPSPDashboard() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* TREND DETAIL — the recovery and margin series that used to live on
+                    a separate BHAG tab. Doc-driven headlines above, daily feeds here. */}
+                <div>
+                    <div className="flex items-center gap-2 mb-5 mt-2">
+                        <TrendingUp className="text-orange-600" size={22} />
+                        <h2 className="text-xl font-bold text-gray-900">Trend Detail</h2>
+                    </div>
+                    <TrendDetail />
                 </div>
 
                 {/* FOUNDATION ROW */}

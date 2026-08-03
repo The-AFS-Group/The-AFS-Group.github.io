@@ -269,7 +269,7 @@ pre .c{color:#8FA9CE}
    <div><div class="ctitle">Primary barrier</div><div class="csub">What is in the way</div><div id="c-bar"></div></div>
    <div><div class="ctitle">Buying stage</div><div class="csub">Where they are in the decision</div><div id="c-stage"></div></div>
   </div>
-  <div class="callout grey"><p><strong>Unclassified is shown, never hidden.</strong> A third of functional jobs, half of emotional and six in ten social come back unclassified. Almost nobody says out loud how they want to be seen. A model that declines to answer beats one that always does.</p></div>
+  <div class="callout grey"><p><strong>Unclassified is shown, never hidden.</strong> A third of functional jobs, half of emotional and two thirds of social come back blank. That is the model declining to answer rather than guessing, and it is the right call: plenty of sales calls contain no social job at all. A tool that answered every time would be inventing the difference.</p></div>
  </div>
 </section>
 
@@ -357,7 +357,7 @@ pre .c{color:#8FA9CE}
    <div><span>01</span><b>Let it say "I don't know."</b> A model that answers confidently every time is guessing, and you cannot tell which ones. Ours declines on about a third of calls.</div>
    <div><span>02</span><b>Make it quote the customer.</b> One unedited line per call. Summaries die in a boardroom. The customer's own words do not.</div>
    <div><span>03</span><b>Make it show its working.</b> It should name the phrases behind each decision, so a challenged number has an answer.</div>
-   <div><span>04</span><b>Budget for the categories going stale.</b> Ours are a fixed list, and as customers' language shifted more answers stopped fitting. Watch the "other" bucket. When it grows, widen the list.</div>
+   <div><span>04</span><b>Measure the blanks, and know why.</b> Ours are high on emotional and social intent because the model returns nothing rather than guessing. Blanks from honest silence are healthy. Blanks from a category list that no longer fits are not. Check which you have before anyone tries to fix it.</div>
   </div>
 
   <details class="tech">
@@ -421,7 +421,7 @@ Use "" for missing data. NEVER null.
 Return ONLY valid JSON, no markdown.</pre>
   <p class="pnote"><strong>Two details that look trivial and are not.</strong> <code>Use "" for missing data, NEVER null</code> stops a spreadsheet column silently changing type halfway down. And forcing a per-field confidence level means you can filter to the high-confidence rows when a decision actually matters, instead of treating every extracted value as equally solid.</p>
 
-  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> Our theme lists are closed, and a separate keyword dictionary maps the model's free-text answer into them. When the model started describing jobs in language the dictionary did not contain, those answers fell into the catch-all rather than into a theme. Nothing broke and no error was raised, but a third of functional jobs and half of emotional jobs now sit unclassified.</p></div>
+  <div class="callout grey"><p><strong>The mistake to avoid, from our own build.</strong> We spent a while assuming a high unclassified rate meant our category list had gone stale. It had not. Measuring the field directly showed the model was simply returning nothing on those calls, and a fallback we thought was doing the work fired on nine rows out of five thousand. Measure the field before you fix the theory.</p></div>
    </div>
   </details>
  </div>
@@ -441,7 +441,7 @@ Return ONLY valid JSON, no markdown.</pre>
   <p><strong>Archetypes</strong> are rule-derived from coded fields (segment, location, job theme, barrier), never from demographics or from what was purchased. Sub-themes are clustered from free text, which is why the second level carries language the fixed list cannot.</p>
   <p><strong>What is real and what is not.</strong> Real: the pipeline, the nightly cadence, the 101-field schema, the screening ratio and the capture volume in the black band. Illustrative: every archetype, share, split, sub-theme, competitor label and quote. Representative and internally consistent, but not our segmentation and not our numbers. Competitor labels are generic by design.</p>
   <p><strong>Anonymisation.</strong> No customer names, phone numbers, staff names, revenue, margin, order or profit data appear here, and none were used to build it. Every figure is a call count or a percentage.</p>
-  <p><strong>A limitation worth stating.</strong> A third of functional jobs and half of emotional jobs come back unclassified, and that has not improved in six months. The cause is not the model. Themes are a closed list and a keyword dictionary maps free-text answers into it; anything not in the dictionary lands in the catch-all. So job themes are shown as a current snapshot, not compared across periods.</p>
+  <p><strong>A limitation worth stating.</strong> A third of functional jobs, half of emotional and two thirds of social come back unclassified, and that has not improved in six months. In the large majority of cases the model returned no answer for the field rather than a poor one. That is defensible for emotional and social intent, which many sales calls simply do not contain, but it means those fields describe the calls where intent was expressed, not all callers. Job themes are shown as a current snapshot and are not compared across periods.</p>
   <p><strong>Frozen snapshot</strong> taken 1 August 2026. Companion to “Keeping the Promise”, Claire Mula and Josh Hancock, CEO Magazine.</p>
  </div>
 </footer>

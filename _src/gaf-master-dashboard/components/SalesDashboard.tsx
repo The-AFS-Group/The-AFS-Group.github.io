@@ -573,7 +573,7 @@ export default function SalesDashboard() {
           <div className="flex items-center justify-between w-full md:w-auto gap-4">
             <div>
               <h1 className="text-base md:text-lg font-bold tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif", color: GAF_COLORS.black }}>
-                Sales Health
+                Saless Health
               </h1>
               <div className="flex items-center gap-2 text-[10px] md:text-xs" style={{ color: GAF_COLORS.darkGrey }}>
                 <Calendar className="w-3 h-3" />

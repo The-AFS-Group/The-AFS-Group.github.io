@@ -70,10 +70,10 @@ const Dashboard: React.FC = () => {
                 ? 'bg-[#ffebe3] text-[#F26422] shadow-sm border border-[#ffdbcc]'
                 : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
             } ${isCollapsed ? 'justify-center' : ''}`}
-            title={isCollapsed ? "Saless Health" : ""}
+            title={isCollapsed ? "Sales Health" : ""}
           >
             <BarChart3 size={20} className="shrink-0" />
-            {!isCollapsed && <span>Saless Health</span>}
+            {!isCollapsed && <span>Sales Health</span>}
           </button>
 
           <button

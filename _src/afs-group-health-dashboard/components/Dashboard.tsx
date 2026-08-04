@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Activity, Flag, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Activity, Flag, Compass, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import GroupHealthDashboard from './GroupHealthDashboard';
 import StrategicPrioritiesDashboard from './StrategicPrioritiesDashboard';
+import OPSPDashboard from './OPSPDashboard';
 
-type View = 'health' | 'priorities';
+type View = 'health' | 'opsp' | 'priorities';
 
 const NAV: { id: View; label: string; icon: React.ElementType }[] = [
   { id: 'health', label: 'Group Health', icon: Activity },
+  { id: 'opsp', label: 'OPSP', icon: Compass },
   { id: 'priorities', label: 'Strategic Priorities', icon: Flag },
 ];
 
@@ -85,7 +87,9 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="flex-1">
-          {activeView === 'priorities' ? <StrategicPrioritiesDashboard /> : <GroupHealthDashboard />}
+          {activeView === 'opsp' ? <OPSPDashboard />
+            : activeView === 'priorities' ? <StrategicPrioritiesDashboard />
+            : <GroupHealthDashboard />}
         </div>
       </div>
 

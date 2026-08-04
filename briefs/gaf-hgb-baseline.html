@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Home Gym Builder Sale — Baseline &amp; Pressure Test | GAF</title>
+<title>Home Gym Builder Sale - Baseline (Three-Path Rule) | GAF</title>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -42,12 +42,12 @@
   .kpi .l{margin-top:8px;font-size:13px;color:var(--g600);font-weight:600}
   .kpi.hot{border-color:var(--gaf-orange);background:var(--gaf-orange-soft)}
   .kpi.hot .n{color:var(--gaf-orange-700)}
-  .paths{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:6px}
+  .paths{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:6px}
   .path{border:1px solid var(--g200);border-radius:12px;padding:24px;background:#fff}
   .path .tag{display:inline-block;font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.1em;color:#fff;background:var(--gaf-black);padding:4px 10px;border-radius:5px;text-transform:uppercase}
-  .path h3{font-size:19px;font-weight:800;margin:14px 0 8px}
-  .path p{color:var(--g600);font-size:15px}
-  .path .formula{font-family:var(--display);font-weight:700;color:var(--gaf-orange-700);margin-top:12px;font-size:15px}
+  .path h3{font-size:18px;font-weight:800;margin:14px 0 8px}
+  .path p{color:var(--g600);font-size:14.5px}
+  .path .formula{font-family:var(--display);font-weight:700;color:var(--gaf-orange-700);margin-top:12px;font-size:14px}
   .path .hits{margin-top:12px;font-size:13px;color:var(--g500);font-weight:600;border-top:1px solid var(--g200);padding-top:10px}
   .path .hits b{font-family:var(--display);color:var(--gaf-black);font-size:15px}
   .funnel{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
@@ -55,7 +55,7 @@
   .fbar{height:52px;border-radius:8px;display:flex;align-items:center;padding:0 18px;color:#fff;font-family:var(--display);font-weight:800;white-space:nowrap}
   .fbar.f1{background:var(--g700);width:100%}
   .fbar.f2{background:var(--g500);width:52%}
-  .fbar.f3{background:var(--gaf-orange);width:30%}
+  .fbar.f3{background:var(--gaf-orange);width:43%}
   .fmeta{font-size:13.5px;color:var(--g600)}
   .fmeta b{font-family:var(--display);color:var(--gaf-ink)}
   .bars{margin-top:8px}
@@ -73,32 +73,16 @@
   .cov .cell .s{font-size:12.5px;color:var(--g700);font-weight:600;line-height:1.25}
   .cov .cell .c{font-family:var(--display);font-weight:900;font-size:20px;color:var(--gaf-orange-700);margin-top:4px}
   .cov .cell .c span{font-size:12px;color:var(--g500);font-weight:600}
-  .reject{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:8px}
-  .rej{background:#fff;border:1px solid var(--g200);border-left:4px solid var(--g400);border-radius:10px;padding:18px 20px}
-  .rej .n{font-family:var(--display);font-weight:900;font-size:28px;color:var(--gaf-ink)}
-  .rej .t{font-weight:700;color:var(--g800);margin:2px 0 4px;font-size:15px}
-  .rej .d{font-size:13.5px;color:var(--g600)}
-  .wexample{margin-top:22px;border:1px solid var(--g200);border-radius:12px;overflow:hidden;background:#fff}
-  .wex-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--g50);border-bottom:1px solid var(--g200);padding:12px 18px}
-  .wex-tag{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--g700)}
-  .wex-stamp{font-family:var(--display);font-weight:900;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#fff;background:var(--g600);padding:4px 12px;border-radius:20px}
-  .wex-cart{padding:4px 18px}
-  .wex-line{display:grid;grid-template-columns:118px 1fr auto;gap:14px;align-items:center;padding:11px 0;border-bottom:1px solid var(--g100);font-size:14.5px}
-  .wex-line:last-child{border-bottom:none}
-  .wex-role{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--g500)}
-  .wex-line.anchor .wex-role{color:var(--gaf-orange-700)}
-  .wex-prod{color:var(--gaf-ink);font-weight:600}
-  .wex-line.anchor .wex-prod{font-weight:800}
-  .wex-amt{font-family:var(--display);font-weight:800;color:var(--gaf-ink);white-space:nowrap}
-  .wex-line.missing{opacity:.65}
-  .wex-line.missing .wex-prod{font-style:italic;color:var(--g500);font-weight:500}
-  .wex-verdict{padding:16px 18px;background:var(--gaf-orange-soft);font-size:14px;color:var(--g700);border-top:1px solid var(--gaf-orange)}
-  .wex-verdict strong{color:var(--gaf-orange-700)}
+  .comp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:6px}
+  .cc{border:1px solid var(--g200);border-radius:12px;padding:22px 20px;background:#fff}
+  .cc.now{border-color:var(--gaf-orange);background:var(--gaf-orange-soft)}
+  .cc .rule{font-family:var(--display);font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--g600)}
+  .cc.now .rule{color:var(--gaf-orange-700)}
+  .cc .num{font-family:var(--display);font-weight:900;font-size:38px;color:var(--gaf-ink);line-height:1;margin:8px 0 2px}
+  .cc.now .num{color:var(--gaf-orange-700)}
+  .cc .sub{font-size:13px;color:var(--g600)}
   .note{font-size:13.5px;color:var(--g500);margin-top:14px;border-left:3px solid var(--g300);padding-left:12px}
   section.dark .note{color:var(--g400);border-color:var(--g700)}
-  .chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
-  .chip{font-size:12px;font-weight:600;background:#fff;border:1px solid var(--g300);border-radius:20px;padding:5px 12px;color:var(--g700)}
-  .chip.ex{background:var(--g100);color:var(--g500);text-decoration:line-through}
   .bhag{display:flex;flex-wrap:wrap;gap:26px;align-items:center;justify-content:space-between;background:var(--gaf-orange-soft);border:1px solid var(--gaf-orange);border-radius:14px;padding:28px 30px;margin-top:6px}
   .bhag .big{font-family:var(--display);font-weight:900;font-size:clamp(34px,6vw,60px);color:var(--gaf-orange-700);line-height:1}
   .bhag .big span{font-size:16px;color:var(--g600);font-weight:700;display:block;margin-top:6px;font-family:var(--sans)}
@@ -107,7 +91,7 @@
   footer strong{color:#fff}
   footer a{color:var(--gaf-orange);font-weight:600;text-decoration:none;border-bottom:1px solid rgba(242,100,34,.4)}
   footer a:hover{border-bottom-color:var(--gaf-orange)}
-  @media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}.paths,.reject{grid-template-columns:1fr}.bar-row{grid-template-columns:96px 1fr 48px}.wex-line{grid-template-columns:90px 1fr auto;gap:10px}}
+  @media(max-width:820px){.kpis{grid-template-columns:repeat(2,1fr)}.paths,.comp{grid-template-columns:1fr}.bar-row{grid-template-columns:96px 1fr 48px}}
 </style>
 </head>
 <body>
@@ -116,13 +100,13 @@
   <div class="wrap">
     <div class="eyebrow">GAF · Home Gym Builder BHAG · KPI Baseline</div>
     <h1>What counts as a<br>Home Gym Builder sale</h1>
-    <p class="sub">The locked success metric, pressure-tested against Chris's completed NetSuite categorisation and run over the last 12 months of GAF AU retail trade. The baseline: <strong style="color:#fff">894 Home Gym Builder sales</strong> a year, 97% of them consumers. This is the number we grow toward the 30,000-by-2030 BHAG.</p>
+    <p class="sub">The definition locked with Adam Carter on 4 Aug 2026: a qualifying sale is any cart over $3,376 that contains a training anchor. Run over the last 12 months of GAF AU retail trade, the baseline is <strong style="color:#fff">1,408 Home Gym Builder sales</strong> a year, 98% of them consumers. This is the number we grow toward the 30,000-by-2030 BHAG.</p>
   </div>
 </header>
 
 <div class="rule-band">
   <div class="wrap">
-    <div class="rule">A sale qualifies on <strong>either</strong> path — anchor(s) + real cart value.</div>
+    <div class="rule">A sale qualifies on <strong>any</strong> of three paths - an anchor plus real cart value.</div>
     <div class="gate">Cart &gt; $3,376</div>
   </div>
 </div>
@@ -130,26 +114,33 @@
 <!-- THE RULE -->
 <section>
   <div class="wrap">
-    <div class="eyebrow">The metric</div>
-    <h2>Two qualifying paths</h2>
-    <p class="lead">A single strict "1 anchor + 2 attachments" test undercounts our strongest builders — a cart of an All-In-One trainer plus a treadmill is two centrepieces but reads as only one anchor and one attachment. A second path fixes that.</p>
+    <div class="eyebrow">The metric · locked 4 Aug 2026</div>
+    <h2>Three qualifying paths</h2>
+    <p class="lead">A cart is a Home Gym Builder sale if it clears the $3,376 value gate and satisfies any one of the three paths below. In practice the three collapse to a single test, since Path 1 already contains the other two: a value-cart qualifies whenever it holds at least one training anchor.</p>
     <div class="paths">
       <div class="path">
-        <span class="tag">Path A · Anchor + build-out</span>
-        <h3>One centrepiece, kitted out</h3>
-        <p>One anchor product, plus at least two attachment items, with a total cart value over the threshold. The everyday home-gym build.</p>
-        <div class="formula">1 anchor &nbsp;+&nbsp; 2 attachments &nbsp;+&nbsp; cart &gt; $3,376</div>
-        <div class="hits"><b>648</b> of the 894 qualifying sales (72%)</div>
+        <span class="tag">Path 1 · Single anchor</span>
+        <h3>One centrepiece over the gate</h3>
+        <p>One anchor product with a total cart value over the threshold, no attachment required.</p>
+        <div class="formula">1 anchor &nbsp;+&nbsp; cart &gt; $3,376</div>
+        <div class="hits"><b>495</b> qualify on this path alone (single anchor, under two attachments)</div>
       </div>
       <div class="path">
-        <span class="tag">Path B · Multi-anchor</span>
+        <span class="tag">Path 2 · Anchor + attachment</span>
+        <h3>One centrepiece, kitted out</h3>
+        <p>One anchor plus one or more attachment items, over the threshold. The everyday build.</p>
+        <div class="formula">1 anchor &nbsp;+&nbsp; 1 attachment &nbsp;+&nbsp; cart &gt; $3,376</div>
+        <div class="hits"><b>660</b> carts pair an anchor with two or more attachments</div>
+      </div>
+      <div class="path">
+        <span class="tag">Path 3 · Multi-anchor</span>
         <h3>Two centrepieces in one cart</h3>
-        <p>Two or more anchor products, with a total cart value over the threshold — regardless of attachment count. Two centrepieces is self-evidently a gym build.</p>
+        <p>Two or more anchors over the threshold, regardless of attachment count.</p>
         <div class="formula">2+ anchors &nbsp;+&nbsp; cart &gt; $3,376</div>
-        <div class="hits"><b>246</b> of the 894 qualifying sales (28%)</div>
+        <div class="hits"><b>253</b> carts carry two or more anchors</div>
       </div>
     </div>
-    <p class="note">The $3,376 gate is the average Home Gym Builder cart value from our archetype economics. The lever that makes the metric decisive is the <strong>anchor list</strong>, not the gate — anchors are project-defining training centrepieces only.</p>
+    <p class="note">Change from the prior baseline: the earlier rule required an anchor plus two attachments (or two anchors). The three-path rule, locked with Adam on 4 Aug, admits a single anchor over $3,376 on its own. That is the lever that moves the number.</p>
   </div>
 </section>
 
@@ -157,95 +148,80 @@
 <section class="dark">
   <div class="wrap">
     <div class="eyebrow">The baseline · last 12 months of GAF AU trade</div>
-    <h2>894 Home Gym Builder sales a year</h2>
-    <p class="lead">Scoped to the GAF AU and GAF Online-AU sales channels (matching the standing NetSuite report, so no commercial, wholesale, NZ, export or staff orders), the two-path rule applied to the real order-line composition of each cart.</p>
+    <h2>1,408 Home Gym Builder sales a year</h2>
+    <p class="lead">Scoped to the GAF AU and GAF Online-AU sales channels (matching the standing NetSuite report, so no commercial, wholesale, NZ, export or staff orders), the three-path rule applied to the real order-line composition of each cart.</p>
     <div class="kpis">
-      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">894</div><div class="l" style="color:var(--g400)">Home Gym Builder sales / year</div></div>
-      <div class="kpi hot"><div class="n">869</div><div class="l">Of them are B2C consumers (97%)</div></div>
-      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">$7.7<span class="u">M</span></div><div class="l" style="color:var(--g400)">Revenue ($7.1M from consumers)</div></div>
-      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">$8,636</div><div class="l" style="color:var(--g400)">Average builder cart value</div></div>
+      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">1,408</div><div class="l" style="color:var(--g400)">Home Gym Builder sales / year</div></div>
+      <div class="kpi hot"><div class="n">1,374</div><div class="l">Of them are B2C consumers (98%)</div></div>
+      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">$10.95<span class="u">M</span></div><div class="l" style="color:var(--g400)">Revenue ($10.2M from consumers)</div></div>
+      <div class="kpi" style="background:#141414;border-color:#333"><div class="n" style="color:#fff">$7,780</div><div class="l" style="color:var(--g400)">Average builder cart value</div></div>
     </div>
     <h3 style="font-size:16px;font-weight:800;margin:30px 0 12px;color:#fff">Home Gym Builder sales by month</h3>
     <div class="bars">
-      <div class="bar-row"><div class="lbl">Aug 25</div><div class="bar-track"><div class="bar-fill" style="width:32%"></div></div><div class="val">52</div></div>
-      <div class="bar-row"><div class="lbl">Sep 25</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="val">71</div></div>
-      <div class="bar-row"><div class="lbl">Oct 25</div><div class="bar-track"><div class="bar-fill" style="width:30%"></div></div><div class="val">49</div></div>
-      <div class="bar-row"><div class="lbl">Nov 25</div><div class="bar-track"><div class="bar-fill" style="width:72%"></div></div><div class="val">116</div></div>
-      <div class="bar-row"><div class="lbl">Dec 25</div><div class="bar-track"><div class="bar-fill" style="width:59%"></div></div><div class="val">95</div></div>
-      <div class="bar-row"><div class="lbl">Jan 26</div><div class="bar-track"><div class="bar-fill" style="width:34%"></div></div><div class="val">55</div></div>
-      <div class="bar-row"><div class="lbl">Feb 26</div><div class="bar-track"><div class="bar-fill" style="width:33%"></div></div><div class="val">53</div></div>
-      <div class="bar-row"><div class="lbl">Mar 26</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="val">71</div></div>
-      <div class="bar-row"><div class="lbl">Apr 26</div><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div><div class="val">59</div></div>
-      <div class="bar-row"><div class="lbl">May 26</div><div class="bar-track"><div class="bar-fill" style="width:43%"></div></div><div class="val">69</div></div>
-      <div class="bar-row"><div class="lbl">Jun 26</div><div class="bar-track"><div class="bar-fill peak" style="width:100%"></div></div><div class="val">162</div></div>
-      <div class="bar-row"><div class="lbl">Jul (part)</div><div class="bar-track"><div class="bar-fill" style="width:26%"></div></div><div class="val">42</div></div>
+      <div class="bar-row"><div class="lbl">Aug 25</div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div><div class="val">86</div></div>
+      <div class="bar-row"><div class="lbl">Sep 25</div><div class="bar-track"><div class="bar-fill" style="width:52%"></div></div><div class="val">118</div></div>
+      <div class="bar-row"><div class="lbl">Oct 25</div><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div><div class="val">91</div></div>
+      <div class="bar-row"><div class="lbl">Nov 25</div><div class="bar-track"><div class="bar-fill" style="width:79%"></div></div><div class="val">177</div></div>
+      <div class="bar-row"><div class="lbl">Dec 25</div><div class="bar-track"><div class="bar-fill" style="width:63%"></div></div><div class="val">141</div></div>
+      <div class="bar-row"><div class="lbl">Jan 26</div><div class="bar-track"><div class="bar-fill" style="width:40%"></div></div><div class="val">91</div></div>
+      <div class="bar-row"><div class="lbl">Feb 26</div><div class="bar-track"><div class="bar-fill" style="width:36%"></div></div><div class="val">81</div></div>
+      <div class="bar-row"><div class="lbl">Mar 26</div><div class="bar-track"><div class="bar-fill" style="width:51%"></div></div><div class="val">115</div></div>
+      <div class="bar-row"><div class="lbl">Apr 26</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="val">100</div></div>
+      <div class="bar-row"><div class="lbl">May 26</div><div class="bar-track"><div class="bar-fill" style="width:44%"></div></div><div class="val">98</div></div>
+      <div class="bar-row"><div class="lbl">Jun 26</div><div class="bar-track"><div class="bar-fill peak" style="width:100%"></div></div><div class="val">225</div></div>
+      <div class="bar-row"><div class="lbl">Jul (part)</div><div class="bar-track"><div class="bar-fill" style="width:38%"></div></div><div class="val">85</div></div>
     </div>
-    <p class="note">EOFY June (162) and Black Friday November (116) carry the year. The metric is strongly seasonal, so judge it on a rolling 12 months or same-month-last-year, never month on month. "Jul (part)" combines the two partial July tails of the trailing window.</p>
+    <p class="note">EOFY June (225) and Black Friday November (177) carry the year. The metric is strongly seasonal, so judge it on a rolling 12 months or same-month-last-year, never month on month. "Jul (part)" combines the two partial July and August tails of the trailing window.</p>
   </div>
 </section>
 
-<!-- DECISIVENESS FUNNEL -->
+<!-- COMPOSITION -->
 <section>
   <div class="wrap">
-    <div class="eyebrow">Is the metric decisive?</div>
-    <h2>It rejects nearly half of big carts as "not a build"</h2>
-    <p class="lead">Decisiveness is the whole point — the measure has to separate a Home Gym Builder from a Performance Optimiser and a Budget-Conscious Seeker. Of the 1,696 GAF AU carts a year that clear the $3,376 value gate, the composition rule passes 894. Value alone is not enough; the build has to be there.</p>
+    <div class="eyebrow">What is inside the number</div>
+    <h2>1,408 carts, by how much was built</h2>
+    <p class="lead">Of the 1,725 GAF AU carts a year that clear the $3,376 value gate, the three-path rule passes 1,408. Only carts with no training anchor at all are turned away. The composition below shows how much of a build each qualifying cart actually represents.</p>
     <div class="funnel">
-      <div class="frow"><div class="fbar f1">~15,400 GAF AU sales orders</div><div class="fmeta">Every GAF AU / Online-AU order, last 12 months — the full population.</div></div>
-      <div class="frow"><div class="fbar f2">1,696 clear the $3,376 gate</div><div class="fmeta"><b>11%</b> of orders. The value gate alone — the candidate universe.</div></div>
-      <div class="frow"><div class="fbar f3">894 are Home Gym Builder sales</div><div class="fmeta"><b>53%</b> of value-carts pass composition · <b>6%</b> of all GAF AU orders.</div></div>
+      <div class="frow"><div class="fbar f1">~15,400 GAF AU sales orders</div><div class="fmeta">Every GAF AU / Online-AU order, last 12 months - the full population.</div></div>
+      <div class="frow"><div class="fbar f2">1,725 clear the $3,376 gate</div><div class="fmeta"><b>11%</b> of orders. The value gate alone - the candidate universe.</div></div>
+      <div class="frow"><div class="fbar f3">1,408 are Home Gym Builder sales</div><div class="fmeta"><b>82%</b> of value-carts hold an anchor · <b>9%</b> of all GAF AU orders.</div></div>
     </div>
-    <h3 style="font-size:16px;font-weight:800;margin:30px 0 10px">The 802 value-carts the rule correctly turns away</h3>
-    <div class="reject">
-      <div class="rej"><div class="n">508</div><div class="t">One centrepiece, no build-out</div><div class="d">A single anchor over $3,376 (a lone treadmill or AIO) with fewer than two attachments. High value, but no gym was built — this is the key definitional call for the team: is a standalone AIO or treadmill a Home Gym Builder sale, or not?</div></div>
-      <div class="rej"><div class="n">294</div><div class="t">No training centrepiece</div><div class="d">Over $3,376 of plates, barbells, dumbbells or benches with no anchor present. This is the Performance Optimiser (barbell-and-plates) — correctly excluded from home-gym demand.</div></div>
+    <h3 style="font-size:16px;font-weight:800;margin:30px 0 10px">The 1,408 by build depth</h3>
+    <div class="cov" style="grid-template-columns:repeat(auto-fill,minmax(210px,1fr))">
+      <div class="cell"><div class="s">Single anchor, no attachment (Path 1 only, a lone trainer over the gate)</div><div class="c">331 <span>carts</span></div></div>
+      <div class="cell"><div class="s">Anchor + one attachment</div><div class="c">164 <span>carts</span></div></div>
+      <div class="cell"><div class="s">Anchor + two or more attachments (a full build)</div><div class="c">660 <span>carts</span></div></div>
+      <div class="cell"><div class="s">Two or more anchors</div><div class="c">253 <span>carts</span></div></div>
     </div>
-    <div class="wexample">
-      <div class="wex-head"><span class="wex-tag">Worked example · a real cart the rule rejects</span><span class="wex-stamp">Not counted</span></div>
-      <div class="wex-cart">
-        <div class="wex-line anchor"><span class="wex-role">Anchor</span><span class="wex-prod">Force USA C20 All-In-One Trainer</span><span class="wex-amt">$7,705</span></div>
-        <div class="wex-line"><span class="wex-role">Attachment 1</span><span class="wex-prod">Sliding bench</span><span class="wex-amt">$477</span></div>
-        <div class="wex-line missing"><span class="wex-role">Attachment 2</span><span class="wex-prod">nothing else in the cart</span><span class="wex-amt">&mdash;</span></div>
-      </div>
-      <div class="wex-verdict"><strong>$9,000 cart &mdash; rejected.</strong> A flagship all-in-one and a bench, bought by a consumer, well over the $3,376 gate. It has a genuine training centrepiece, but only one attachment, so it fails the two-attachment test and does not count as a Home Gym Builder sale today. This single order is the 508-cart question made concrete: if a C20-plus-bench is not a home-gym build, what is? The team's call on this edge sets the baseline.</div>
+    <p class="note">The 495 single-anchor carts (331 with no attachment, 164 with one) are new under the three-path rule; the prior two-attachment rule set them aside. They are genuine anchor purchases over $3,376, but lighter builds: their average cart value is lower than the multi-attachment builds.</p>
+    <h3 style="font-size:16px;font-weight:800;margin:30px 0 10px">What is still excluded</h3>
+    <div class="cov" style="grid-template-columns:1fr">
+      <div class="cell"><div class="s"><strong>290 value-carts with no training centrepiece.</strong> Over $3,376 of plates, barbells, dumbbells or benches with no anchor present. This is the Performance Optimiser (barbell-and-plates), correctly excluded from home-gym demand. The anchor requirement is the one gate the three-path rule keeps.</div></div>
     </div>
-    <p class="note">97% of the qualifying builders are individual consumers, not companies — with commercial and wholesale channels scoped out, the metric is now almost purely a consumer measure, exactly what the archetype needs.</p>
   </div>
 </section>
 
-<!-- RULE SENSITIVITY -->
+<!-- COMPARISON -->
 <section class="alt">
   <div class="wrap">
-    <div class="eyebrow">Rule sensitivity · Adam's proposal (3 Aug 2026)</div>
-    <h2>What if one attachment counted?</h2>
-    <p class="lead">Adam asked a fair question: if a cart qualifies on <strong>one anchor plus one attachment</strong> over $3,376, dropping the two-attachment requirement, what does the baseline become? Re-run read-only on the same scope, like-for-like with the locked rule on today's trailing-12-month window.</p>
-    <div class="bhag">
-      <div class="big">913<span>Locked rule &nbsp;·&nbsp; 1 anchor + 2 attachments (or 2+ anchors)</span></div>
-      <div class="arrow">&rarr;</div>
-      <div class="big">1,077<span>Loose rule &nbsp;·&nbsp; 1 anchor + 1 attachment</span></div>
+    <div class="eyebrow">How the definition has moved</div>
+    <h2>Three rules, three baselines</h2>
+    <p class="lead">The same 12 months of trade, counted three ways. Loosening the composition test lifts the baseline and lowers the average cart value, because each step admits lighter builds. All three run off the same read-only NetSuite pull.</p>
+    <div class="comp">
+      <div class="cc"><div class="rule">Prior · anchor + 2 attach</div><div class="num">913</div><div class="sub">The locked rule before today. AOV $8,679. The strictest "a gym was built" test.</div></div>
+      <div class="cc"><div class="rule">Interim · anchor + 1 attach</div><div class="num">1,077</div><div class="sub">Adam's 3 Aug proposal. AOV $8,396. Adds 164 anchor-plus-one carts.</div></div>
+      <div class="cc now"><div class="rule">Locked · three-path (≥1 anchor)</div><div class="num">1,408</div><div class="sub">Adopted 4 Aug. AOV $7,780. Adds a further 331 single-anchor carts.</div></div>
     </div>
-    <p class="note" style="text-align:center;border:none;padding-left:0"><strong style="color:var(--gaf-orange-700);font-family:var(--display)">+164 carts, an 18% lift.</strong> Applied to the 894 baseline of record (21 Jul), the equivalent is roughly 1,055.</p>
-    <div class="kpis" style="margin-top:24px">
-      <div class="kpi"><div class="n">+164</div><div class="l">Extra carts admitted (+18%)</div></div>
-      <div class="kpi"><div class="n">$6,816</div><div class="l">Avg value of the added carts</div></div>
-      <div class="kpi hot"><div class="n">$8,680</div><div class="l">Avg value of carts that already qualify</div></div>
-      <div class="kpi"><div class="n">100<span class="u">%</span></div><div class="l">Of the added carts are B2C consumers</div></div>
-    </div>
-    <p class="lead" style="margin-top:28px">Every one of the 164 extra carts is a <strong>single anchor bought with exactly one attachment</strong>, the same bucket the two-attachment gate deliberately sets aside. The worked example above, a $9,000 C20 plus one sliding bench, is exactly this cart: under the loose rule it now counts. Their $6,816 average, well below the $8,680 of genuine builds, shows they are smaller, accessory-light baskets rather than full build-outs.</p>
-    <div class="reject">
-      <div class="rej" style="border-left-color:var(--gaf-orange)"><div class="n" style="font-size:20px">Locked rule</div><div class="t">1 anchor + 2 attachments</div><div class="d">Counts a cart as a build only when a centrepiece is kitted out with two or more distinct attachments. The more honest denominator against the 30,000 BHAG.</div></div>
-      <div class="rej"><div class="n" style="font-size:20px">Loose rule</div><div class="t">1 anchor + 1 attachment</div><div class="d">Simpler, and lifts the number 18%, but counts a big-ticket single purchase plus one add-on as a build. It re-admits part of the 508-cart "one centrepiece, no build-out" group above.</div></div>
-    </div>
-    <p class="note"><strong>Recommendation.</strong> Keep the two-attachment rule as the headline BHAG denominator, and report the looser figure alongside it as "anchor plus one accessory" where that view is useful, so the KPI's meaning stays fixed rather than quietly shifting. Both numbers come from the same read-only NetSuite pull (saved search 6022 scope): locked 913 = $7.92M revenue, loose 1,077 = $9.04M.</p>
+    <p class="note">The three-path rule is +54% on the prior baseline of 913. The trade-off is deliberate and on the record: the definition now counts a single big-ticket anchor over $3,376 as a Home Gym Builder sale, where the prior rule required a build-out around it.</p>
   </div>
 </section>
 
 <!-- ANCHORS -->
-<section class="alt">
+<section>
   <div class="wrap">
     <div class="eyebrow">The anchor set · 14 sub-categories</div>
     <h2>Project-defining centrepieces only</h2>
-    <p class="lead">Every anchor is a big-ticket training centrepiece that implies a build-out. Saunas, ice baths and pin/plate-loaded machines were deliberately dropped from the anchor slot — a $6k sauna clears the gate on its own without a gym being built, and it is Revel's wellness category, not gym demand. They still count as attachments once a training anchor is present.</p>
+    <p class="lead">The anchor requirement is what keeps the metric a home-gym measure. Every anchor is a big-ticket training centrepiece. Saunas, ice baths and pin/plate-loaded machines are deliberately not anchors - they count only as attachments once a training anchor is present.</p>
     <div class="cov">
       <div class="cell"><div class="s">All-In-One Trainers</div><div class="c">74 <span>SKUs</span></div></div>
       <div class="cell"><div class="s">Home Gyms &amp; Multi-Station</div><div class="c">11 <span>SKUs</span></div></div>
@@ -262,51 +238,45 @@
       <div class="cell"><div class="s">Ellipticals</div><div class="c">13 <span>SKUs</span></div></div>
       <div class="cell"><div class="s">Stair Climbers</div><div class="c">7 <span>SKUs</span></div></div>
     </div>
-    <p class="note"><strong>Attachments</strong> (any 2 alongside an anchor) are a curated set — anchors themselves, plus storage, benches, dumbbells &amp; kettlebells, barbells &amp; plates, saunas, ice baths, and functional kit (hyrox, sleds, balls, bags, vests, boxes, training aids, flooring, turf). Deliberately excluded so a cart padded with recovery gadgets or spare parts cannot trip the metric:</p>
-    <div class="chips">
-      <span class="chip ex">Compression Boots</span>
-      <span class="chip ex">Massage Tools</span>
-      <span class="chip ex">Cable / spare-part attachments</span>
-      <span class="chip">Skipping / power ropes — candidate to add</span>
-    </div>
+    <p class="note"><strong>Attachments</strong> (which lift a cart onto Path 2) are a curated set - storage, benches, dumbbells &amp; kettlebells, barbells &amp; plates, saunas, ice baths, and functional kit (hyrox, sleds, balls, bags, vests, boxes, training aids, flooring, turf). Recovery gadgets and spare parts (compression boots, massage tools, cable and spare-part attachments, ropes) are excluded so a padded cart cannot trip the metric.</p>
   </div>
 </section>
 
 <!-- BHAG -->
-<section>
+<section class="alt">
   <div class="wrap">
     <div class="eyebrow">The point of the number</div>
     <h2>The baseline we grow from</h2>
-    <p class="lead">The BHAG is 30,000 home gyms built by 2030. This baseline is the starting line and the yardstick — every campaign, the AI Gym Designer, and the Home Gym Builder journey map now move a number we can actually see.</p>
+    <p class="lead">The BHAG is 30,000 home gyms built by 2030. This baseline is the starting line and the yardstick - every campaign, the AI Gym Designer, and the Home Gym Builder journey map now move a number we can actually see, tracked daily on the GAF master dashboard.</p>
     <div class="bhag">
-      <div class="big">869<span>B2C Home Gym Builder sales — last-12-month baseline</span></div>
+      <div class="big">1,374<span>B2C Home Gym Builder sales - last-12-month baseline</span></div>
       <div class="arrow">&rarr;</div>
-      <div class="big">30,000<span>Home gyms built by 2030 — the BHAG</span></div>
+      <div class="big">30,000<span>Home gyms built by 2030 - the BHAG</span></div>
     </div>
-    <p class="note">Read as a run-rate, not a cumulative total — the baseline is consumer builds per year. The gap between the two numbers is the growth job the whole Home Gym Builder strategy exists to close.</p>
+    <p class="note">Read as a run-rate, not a cumulative total - the baseline is consumer builds per year. The gap between the two numbers is the growth job the whole Home Gym Builder strategy exists to close.</p>
   </div>
 </section>
 
 <!-- METHOD -->
-<section class="alt">
+<section>
   <div class="wrap">
     <div class="eyebrow">Method &amp; assumptions</div>
     <h2>How the number was built</h2>
     <p class="lead">So the team can trust, challenge and reproduce it.</p>
     <div class="cov" style="grid-template-columns:1fr">
-      <div class="cell"><div class="s"><strong>Scope.</strong> Sales orders on the GAF AU + GAF Online-AU departments (matching the standing NetSuite saved search 6022), dated the last 12 months, excluding cancelled and closed orders. This excludes GAF Commercial, Wholesale, Warranty, NZ and Export. ~15,400 orders. Read-only throughout.</div></div>
-      <div class="cell"><div class="s"><strong>Value gate.</strong> Order total over $3,376, inclusive of GST and freight (the cart value the customer is charged). 1,696 orders clear it.</div></div>
-      <div class="cell"><div class="s"><strong>Composition.</strong> For each cart, the priced order lines were taken (kit parents counted once, their exploded component and box lines collapsed to the parent, tax/discount/shipping lines dropped), each distinct product mapped to its sub-category, then tagged anchor / attachment / neither and the two-path rule applied.</div></div>
-      <div class="cell"><div class="s"><strong>Attachments are counted by distinct SKU</strong> — two different attachment products, per Adam's "any 2 other SKUs" rule. A single line bought in quantity 2 is one attachment, not two.</div></div>
-      <div class="cell"><div class="s"><strong>Coverage.</strong> 96% of the 14,200 priced lines matched the categorisation sheet directly; the remaining 4% (REP racks and Ares trainers, STEPR cardio, Impulse machines, flooring and plate bundles) were classified from their NetSuite descriptions. Unresolved lines were treated as "neither" (the conservative direction — it cannot manufacture a false builder).</div></div>
-      <div class="cell"><div class="s"><strong>Residual caveats, flagged not hidden.</strong> The saved search's staff/warranty/test order-source exclusion is not yet applied in this run (small effect). The bundle and variant SKUs should be folded into Chris's categorisation sheet so the KPI runs automatically. Re-running with both will firm the number.</div></div>
+      <div class="cell"><div class="s"><strong>Rule.</strong> Locked with Adam Carter 4 Aug 2026: a cart qualifies if its total is over $3,376 and it contains at least one training anchor (Path 1 single anchor, Path 2 anchor plus attachment, Path 3 two or more anchors). Read-only throughout.</div></div>
+      <div class="cell"><div class="s"><strong>Scope.</strong> Sales orders on the GAF AU + GAF Online-AU departments (matching the standing NetSuite saved search 6022), dated the last 12 months, excluding cancelled and closed orders. This excludes GAF Commercial, Wholesale, Warranty, NZ and Export. ~15,400 orders.</div></div>
+      <div class="cell"><div class="s"><strong>Value gate.</strong> Order total over $3,376, inclusive of GST and freight (the cart value the customer is charged). 1,725 orders clear it.</div></div>
+      <div class="cell"><div class="s"><strong>Composition.</strong> For each cart, the priced order lines were taken (kit parents counted once, exploded component and box lines collapsed to the parent, tax and shipping lines dropped), each distinct product mapped to its sub-category, then tagged anchor / attachment / neither and the three-path rule applied. Attachments counted by distinct SKU.</div></div>
+      <div class="cell"><div class="s"><strong>Coverage.</strong> The bulk of priced lines matched the categorisation directly; a tail of bundle and variant SKUs (REP racks and Ares trainers, STEPR cardio, Impulse machines, flooring and plate bundles) were classified from their NetSuite descriptions. Unresolved lines were treated as "neither", the conservative direction.</div></div>
+      <div class="cell"><div class="s"><strong>Daily tracking.</strong> A BHAG tracker on the GAF master dashboard reads the current rolling count and target. The underlying count is refreshed from this same read-only pull; see the dashboard for the live figure.</div></div>
     </div>
   </div>
 </section>
 
 <footer>
   <div class="wrap">
-    <strong>GAF — Home Gym Builder KPI baseline.</strong> Prepared for the Gym and Fitness Brand Meeting rhythm. Categorisation: Chris (NetSuite, 20260601). Rule: Adam Carter + Gary. Order + line data: NetSuite, last 12 months, read-only. Baseline run 21 Jul 2026; rule-sensitivity re-run 3 Aug 2026 (Adam's 1-anchor-plus-1-attachment proposal). Source: <a href="https://3522640.app.netsuite.com/app/common/search/search.nl?cu=T&amp;e=T&amp;id=6022">NetSuite saved search 6022</a> (access required). Internal — not for distribution.
+    <strong>GAF - Home Gym Builder KPI baseline (three-path rule).</strong> Prepared for the Gym and Fitness Brand Meeting rhythm. Rule locked with Adam Carter 4 Aug 2026. Categorisation: Chris (NetSuite, 20260601). Order + line data: NetSuite, last 12 months, read-only. Prior two-attachment baseline (913) run 21 Jul 2026; three-path recalc 4 Aug 2026. Source: <a href="https://3522640.app.netsuite.com/app/common/search/search.nl?cu=T&amp;e=T&amp;id=6022">NetSuite saved search 6022</a> (access required). Internal - not for distribution.
   </div>
 </footer>
 

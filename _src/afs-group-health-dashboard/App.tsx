@@ -4,7 +4,7 @@ import { KPIDefinition, KPIResult, FilterOptions, CSVRow } from './types';
 import { fetchCSV, processKPI } from './utils/parsers';
 import KPICard from './components/KPICard';
 import { subMonths, format } from 'date-fns';
-import { Calendar, ChevronDown, RefreshCw, ExternalLink } from 'lucide-react';
+import { Calendar, ChevronDown, RefreshCw } from 'lucide-react';
 
 const App: React.FC = () => {
   // Default to one month prior to current (Last Full Month)
@@ -278,29 +278,6 @@ const App: React.FC = () => {
         <p className="mt-1">Data updated as of {format(lastRefreshed, 'PPpp')}</p>
       </footer>
 
-      {/* Migration Modal Overlay */}
-      <div className="fixed inset-0 z-[100] bg-black/60 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl max-w-lg w-full p-8 text-center shadow-2xl animate-in zoom-in-95 fade-in duration-200">
-          <div className="mx-auto w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-6">
-            <ExternalLink size={32} strokeWidth={2} />
-          </div>
-          
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            This Dashboard Has Moved
-          </h2>
-          
-          <p className="text-gray-500 mb-8 leading-relaxed">
-            We've migrated to a new, updated version of the Master Dashboard. You can find the most up-to-date version at the link below.
-          </p>
-          
-          <a
-            href="https://gary-afs.github.io/afs-pages/afs-group-health-dashboard/"
-            className="block w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors focus:ring-4 focus:ring-blue-100"
-          >
-            Go to New Dashboard
-          </a>
-        </div>
-      </div>
     </div>
   );
 };

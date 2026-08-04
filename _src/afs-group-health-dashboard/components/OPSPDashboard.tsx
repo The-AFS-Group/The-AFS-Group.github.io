@@ -11,14 +11,22 @@ import {
 const DOC_PUB_URL =
     "https://docs.google.com/document/d/e/2PACX-1vRLQYhap5BCf68LkicBYx49OS4GscAYXFEWuBERKhg4vJlrcuIxZ6UlQ68wPxDDxDvsNbWkTxT7HqVP/pub";
 
-// As at 04/08/2026 the Group doc is a near-verbatim copy of GAF's OPSP: GAF's BHAG,
-// GAF's thrusts, and critical numbers literally named "Increase GAF AOV by 4%". Left
-// unlabelled, this tab would present GAF's plan as the Group's. These markers drive a
-// warning banner and clear themselves the moment the doc is rewritten for Group.
-const GAF_TEMPLATE_MARKERS = [/home gyms/i, /home gym builder/i];
+// The Group doc began as a near-verbatim copy of GAF's OPSP. On 04/08/2026 the BHAG,
+// theme, critical number and FY27 initiatives were rewritten for Group, but the brand
+// promises, thrusts, targets, SWOT and sandbox are still GAF's. Scan ALL of those
+// fields, not just the BHAG: a marker set narrow enough to clear on a partial rewrite
+// would drop the warning while GAF content was still on screen, which is worse than
+// never having warned. Clears itself once the remaining sections are rewritten.
+const GAF_MARKER = /home gym|gym and fitness|\bGAF\b/i;
 function looksLikeGafTemplate(d: OpspData): boolean {
-    if (GAF_TEMPLATE_MARKERS.some((m) => m.test(d.bhag))) return true;
-    return d.criticalNumbers.some((cn) => /\bGAF\b/i.test(cn.name));
+    return (
+        GAF_MARKER.test(d.bhag) ||
+        d.brandPromises.some((p) => GAF_MARKER.test(p)) ||
+        d.keyThrusts.some((t) => GAF_MARKER.test(`${t.title} ${t.desc}`)) ||
+        d.criticalNumbers.some((cn) => GAF_MARKER.test(cn.name)) ||
+        d.sandbox.some((kv) => GAF_MARKER.test(kv.value)) ||
+        d.initiatives.some((i) => GAF_MARKER.test(i.text))
+    );
 }
 
 interface Thrust { title: string; desc: string; }
@@ -437,14 +445,16 @@ export default function OPSPDashboard() {
                     <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4">
                         <AlertTriangle size={20} className="mt-0.5 shrink-0 text-amber-600" />
                         <div className="text-sm text-amber-900">
-                            <p className="font-bold">Template only, not yet the Group plan</p>
+                            <p className="font-bold">Partly rewritten for Group</p>
                             <p className="mt-1 leading-relaxed">
-                                The source document is still a copy of GAF's One Page Plan, so the BHAG,
-                                thrusts and critical numbers below are GAF's rather than the Group's. The
-                                Group BHAG agreed on 30 July is "Scaling Fitness and Wellness Brands
-                                through Best in Class Global Distribution", and the Group critical number
-                                is Retailer Inventory Fill Rate. This notice disappears on its own once
-                                the document is rewritten.
+                                This plan began as a copy of GAF's. The BHAG, theme, critical number and
+                                FY27 annual priorities have been updated to the Group positions agreed on
+                                30 July. Still carried over from GAF and not yet Group's: the brand
+                                promises and their KPIs, the key thrusts, the FY26 to FY30 target table,
+                                the SWOT and the sandbox. FY27 revenue and GP targets are pending Louis's
+                                revised Revel financials, and the fill-rate bands are pending Steven and
+                                the Exec. This notice disappears on its own once those sections are
+                                rewritten.
                             </p>
                         </div>
                     </div>

@@ -15,7 +15,7 @@ import { BHAGData } from '../types';
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
 // Shows two pacing numbers: % to target and % elapsed through the BHAG period.
-interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; note?: string; }
+interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; fy27ToDate?: number; fy26Baseline?: number; fy26SamePoint?: number; note?: string; }
 const HGBTracker: React.FC = () => {
     const [t, setT] = useState<HGBTrackerData | null>(null);
     useEffect(() => {
@@ -53,6 +53,24 @@ const HGBTracker: React.FC = () => {
                 <span className="text-gray-400">{elapsed.toFixed(0)}% through period</span>
                 <span className={paceColor}>{paceLabel}</span>
             </div>
+            {t.fy27ToDate != null && t.fy26Baseline ? (() => {
+                const yoyPct = t.fy26SamePoint ? Math.round(((t.fy27ToDate! - t.fy26SamePoint) / t.fy26SamePoint) * 100) : null;
+                const up = t.fy26SamePoint != null && t.fy27ToDate! >= t.fy26SamePoint;
+                const yoyW = Math.max(0, Math.min(100, (t.fy27ToDate! / t.fy26Baseline!) * 100));
+                return (
+                    <div className="mt-3 pt-3 border-t border-white/10">
+                        <div className="flex items-center justify-between gap-2 text-[11px] font-bold">
+                            <span className="text-gray-300">FY27 to date</span>
+                            <span className="text-white">{t.fy27ToDate!.toLocaleString()} <span className="text-gray-500 font-semibold">/ {t.fy26Baseline!.toLocaleString()} FY26</span></span>
+                            {yoyPct != null && <span className={up ? 'text-green-300' : 'text-red-300'}>{up ? '+' : ''}{yoyPct}% YoY</span>}
+                        </div>
+                        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mt-2">
+                            <div className="h-full bg-orange-400 rounded-full transition-all" style={{ width: `${yoyW}%` }} />
+                        </div>
+                        {t.fy26SamePoint != null && <div className="text-[10px] text-gray-500 font-semibold mt-1.5">vs {t.fy26SamePoint} at the same point in FY26</div>}
+                    </div>
+                );
+            })() : null}
         </div>
     );
 };

@@ -5,5 +5,8 @@
   "window": "cumulative since 1 Jul 2025 (FY26 start)",
   "periodStart": "2025-07-01",
   "periodEnd": "2030-12-31",
+  "fy27ToDate": 79,
+  "fy26Baseline": 1257,
+  "fy26SamePoint": 68,
   "note": "Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). FY26 baseline 1,257 builds. Read-only NetSuite, GAF AU + Online-AU."
 }

@@ -12,6 +12,50 @@ import { GAF_COLORS } from '../constants';
 import { fetchBHAGData } from '../services/dataService';
 import { BHAGData } from '../types';
 
+// Home Gym Builder BHAG tracker. Reads a committed JSON refreshed from the
+// read-only NetSuite HGB recalc (three-path rule, locked w/ Adam 4 Aug 2026).
+// Data path is relative to the dashboard base so it works under /gaf-master-dashboard/.
+interface HGBTrackerData { count: number; target: number; asOf: string; window: string; note?: string; }
+const HGBTracker: React.FC = () => {
+    const [t, setT] = useState<HGBTrackerData | null>(null);
+    useEffect(() => {
+        fetch(`${import.meta.env.BASE_URL}hgb-tracker.json?cb=${Date.now()}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((d) => d && setT(d))
+            .catch(() => {});
+    }, []);
+    if (!t) return null;
+    const pct = Math.max(0, Math.min(100, (t.count / t.target) * 100));
+    return (
+        <div className="bg-gradient-to-br from-orange-600 to-orange-500 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
+            <div className="relative z-10">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-bold uppercase tracking-widest mb-5">
+                    <Target size={12} /> Home Gym Builder Tracker
+                </div>
+                <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
+                    <div>
+                        <div className="text-5xl md:text-6xl font-black tracking-tight font-montserrat leading-none">{t.count.toLocaleString()}</div>
+                        <div className="text-sm text-orange-50/90 font-semibold mt-2">Home Gym builds · {t.window}</div>
+                    </div>
+                    <div className="text-right">
+                        <div className="text-2xl md:text-3xl font-black font-montserrat leading-none">{t.target.toLocaleString()}</div>
+                        <div className="text-xs text-orange-50/80 font-semibold mt-1">BHAG target by 2030</div>
+                    </div>
+                </div>
+                <div className="h-3 w-full bg-black/25 rounded-full overflow-hidden">
+                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
+                </div>
+                <div className="flex flex-wrap items-center justify-between gap-2 mt-3 text-xs text-orange-50/80 font-medium">
+                    <span>{pct.toFixed(1)}% of the 2030 BHAG (run-rate)</span>
+                    <span>Updated {t.asOf}</span>
+                </div>
+                {t.note && <div className="text-[11px] text-orange-50/70 mt-3 leading-snug">{t.note}</div>}
+            </div>
+        </div>
+    );
+};
+
 // Published-to-web copy of "GAF - One Page Plan (Scaling Up Scoreboard)".
 // If this tab ever shows the fallback snapshot, the first thing to check is that the
 // doc is still File > Share > Publish to web. An unpublished doc returns 401 to the
@@ -559,6 +603,9 @@ export default function OPSPDashboard() {
                         </div>
                     </div>
                 </div>
+
+                {/* HOME GYM BUILDER BHAG TRACKER */}
+                <HGBTracker />
 
                 {/* QUARTERLY CRITICAL NUMBERS + THEME */}
                 <div className="bg-gray-900 rounded-2xl shadow-md p-6 md:p-8 text-white relative overflow-hidden">

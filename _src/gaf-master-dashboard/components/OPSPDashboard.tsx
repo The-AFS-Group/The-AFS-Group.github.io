@@ -12,10 +12,10 @@ import { GAF_COLORS } from '../constants';
 import { fetchBHAGData } from '../services/dataService';
 import { BHAGData } from '../types';
 
-// Home Gym Builder BHAG tracker. Reads a committed JSON refreshed from the
-// read-only NetSuite HGB recalc (three-path rule, locked w/ Adam 4 Aug 2026).
-// Data path is relative to the dashboard base so it works under /gaf-master-dashboard/.
-interface HGBTrackerData { count: number; target: number; asOf: string; window: string; note?: string; }
+// Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
+// Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
+// Shows two pacing numbers: % to target and % elapsed through the BHAG period.
+interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; note?: string; }
 const HGBTracker: React.FC = () => {
     const [t, setT] = useState<HGBTrackerData | null>(null);
     useEffect(() => {
@@ -25,32 +25,33 @@ const HGBTracker: React.FC = () => {
             .catch(() => {});
     }, []);
     if (!t) return null;
-    const pct = Math.max(0, Math.min(100, (t.count / t.target) * 100));
+    const toTarget = Math.max(0, Math.min(100, (t.count / t.target) * 100));
+    // % elapsed through the BHAG time period (computed live)
+    const start = new Date(t.periodStart || '2025-07-01').getTime();
+    const end = new Date(t.periodEnd || '2030-12-31').getTime();
+    const elapsed = Math.max(0, Math.min(100, ((Date.now() - start) / (end - start)) * 100));
+    const behind = toTarget < elapsed - 1;
+    const ahead = toTarget > elapsed + 1;
+    const paceLabel = behind ? 'behind pace' : ahead ? 'ahead of pace' : 'on pace';
+    const paceColor = behind ? 'text-red-300' : ahead ? 'text-green-300' : 'text-orange-200';
     return (
-        <div className="bg-gradient-to-br from-orange-600 to-orange-500 rounded-3xl p-6 md:p-8 text-white shadow-xl relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-80 h-80 bg-white opacity-10 rounded-full blur-3xl -translate-y-1/3 translate-x-1/4 pointer-events-none" />
-            <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 border border-white/25 text-xs font-bold uppercase tracking-widest mb-5">
-                    <Target size={12} /> Home Gym Builder Tracker
-                </div>
-                <div className="flex flex-wrap items-end justify-between gap-4 mb-5">
-                    <div>
-                        <div className="text-5xl md:text-6xl font-black tracking-tight font-montserrat leading-none">{t.count.toLocaleString()}</div>
-                        <div className="text-sm text-orange-50/90 font-semibold mt-2">Home Gym builds · {t.window}</div>
-                    </div>
-                    <div className="text-right">
-                        <div className="text-2xl md:text-3xl font-black font-montserrat leading-none">{t.target.toLocaleString()}</div>
-                        <div className="text-xs text-orange-50/80 font-semibold mt-1">BHAG target by 2030</div>
-                    </div>
-                </div>
-                <div className="h-3 w-full bg-black/25 rounded-full overflow-hidden">
-                    <div className="h-full bg-white rounded-full transition-all" style={{ width: `${pct}%` }} />
-                </div>
-                <div className="flex flex-wrap items-center justify-between gap-2 mt-3 text-xs text-orange-50/80 font-medium">
-                    <span>{pct.toFixed(1)}% of the 2030 BHAG (run-rate)</span>
-                    <span>Updated {t.asOf}</span>
-                </div>
-                {t.note && <div className="text-[11px] text-orange-50/70 mt-3 leading-snug">{t.note}</div>}
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-orange-500/20 border border-orange-400/30 text-[10px] font-bold uppercase tracking-widest text-orange-300 mb-3">
+                <Target size={11} /> Home Gym Builder Tracker
+            </div>
+            <div className="flex items-baseline gap-2">
+                <span className="text-4xl font-black font-montserrat leading-none text-white">{t.count.toLocaleString()}</span>
+                <span className="text-lg font-bold text-gray-400">/ {t.target.toLocaleString()}</span>
+            </div>
+            <div className="text-[11px] text-gray-400 font-semibold mt-1">{t.window}</div>
+            <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden mt-3 relative">
+                <div className="h-full bg-orange-500 rounded-full transition-all" style={{ width: `${toTarget}%` }} />
+                <div className="absolute top-[-2px] bottom-[-2px] w-0.5 bg-white" style={{ left: `${elapsed}%` }} title="expected pace" />
+            </div>
+            <div className="flex items-center justify-between gap-2 mt-2.5 text-[11px] font-bold">
+                <span className="text-orange-300">{toTarget.toFixed(0)}% to target</span>
+                <span className="text-gray-400">{elapsed.toFixed(0)}% through period</span>
+                <span className={paceColor}>{paceLabel}</span>
             </div>
         </div>
     );
@@ -600,12 +601,10 @@ export default function OPSPDashboard() {
                                     </div>
                                 ))}
                             </div>
+                            <div className={d.bhagTargets.length ? 'mt-4' : ''}><HGBTracker /></div>
                         </div>
                     </div>
                 </div>
-
-                {/* HOME GYM BUILDER BHAG TRACKER */}
-                <HGBTracker />
 
                 {/* QUARTERLY CRITICAL NUMBERS + THEME */}
                 <div className="bg-gray-900 rounded-2xl shadow-md p-6 md:p-8 text-white relative overflow-hidden">

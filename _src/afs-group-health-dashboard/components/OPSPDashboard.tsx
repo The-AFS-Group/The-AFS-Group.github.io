@@ -185,7 +185,15 @@ function parseDoc(htmlText: string): OpspData {
     const bhag = valueAfter(/^BHAG/i);
     if (bhag) out.bhag = bhag;
 
-    const bhagTargets = between(/^BHAG/i, /^Brand Promises$/i).slice(1);
+    // Each sub-target renders as its own chip. Revel's doc puts one per line, but the
+    // Group's states all four on a single line separated by "|" (Claire's deck writes
+    // them with "•"), which would otherwise render as one long unreadable chip. Split
+    // on either so both authoring styles produce the same result.
+    const bhagTargets = between(/^BHAG/i, /^Brand Promises$/i)
+        .slice(1)
+        .flatMap((line) => line.split(/\s*[|•]\s*/))
+        .map((s) => s.trim())
+        .filter(Boolean);
     if (bhagTargets.length) out.bhagTargets = bhagTargets;
 
     const promises = between(/^Brand Promises$/i, /^Brand Promises KPIs/i);
@@ -205,7 +213,11 @@ function parseDoc(htmlText: string): OpspData {
     // table, and one row carries a stray "3. " prefix. Normalise both.
     const thrusts = numberedList(/^Key Thrusts/i).map((raw) => {
         const t = raw.replace(/^\d+\.\s*/, '').trim();
-        const m = t.match(/^(.*?)\s*[-–]\s*(.*)$/);
+        // Require whitespace AFTER the dash. Without it the lazy match splits on the
+        // first hyphen anywhere, so "Improve A-player density..." became title
+        // "Improve A" + desc "player density...". This still handles Revel's
+        // "Title- desc" and "Title - desc" while leaving hyphenated words intact.
+        const m = t.match(/^(.*?)\s*[-–]\s+(.*)$/);
         return m ? { title: m[1].trim(), desc: m[2].trim() } : { title: t, desc: '' };
     });
     if (thrusts.length) out.keyThrusts = thrusts;
@@ -532,10 +544,12 @@ export default function OPSPDashboard() {
                             <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-200 font-montserrat mb-6">
                                 {d.bhag}
                             </h2>
-                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            {/* Two across, not three: this column is half the hero, so a
+                                3-up grid squeezes anything longer than a couple of words. */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                 {d.bhagTargets.map((t, i) => (
-                                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl px-3 py-3 text-center">
-                                        <div className="text-sm font-bold text-white leading-snug">{t}</div>
+                                    <div key={i} className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                                        <div className="text-[13px] font-semibold text-white leading-snug text-balance">{t}</div>
                                     </div>
                                 ))}
                             </div>

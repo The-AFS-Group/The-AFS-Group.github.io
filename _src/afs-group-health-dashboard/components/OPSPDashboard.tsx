@@ -12,11 +12,14 @@ const DOC_PUB_URL =
     "https://docs.google.com/document/d/e/2PACX-1vRLQYhap5BCf68LkicBYx49OS4GscAYXFEWuBERKhg4vJlrcuIxZ6UlQ68wPxDDxDvsNbWkTxT7HqVP/pub";
 
 // The Group doc began as a near-verbatim copy of GAF's OPSP. On 04/08/2026 the BHAG,
-// theme, critical number and FY27 initiatives were rewritten for Group, but the brand
-// promises, thrusts, targets, SWOT and sandbox are still GAF's. Scan ALL of those
-// fields, not just the BHAG: a marker set narrow enough to clear on a partial rewrite
-// would drop the warning while GAF content was still on screen, which is worse than
-// never having warned. Clears itself once the remaining sections are rewritten.
+// theme, critical number and FY27 initiatives were rewritten for Group and every
+// remaining GAF-specific value was cleared to "(Not Yet Filled)".
+//
+// Two distinct warnings, because they mean different things. A GAF marker means the
+// plan is showing ANOTHER brand's content and is actively misleading. An unfilled
+// section is merely incomplete, which the doc states honestly about itself. Keep the
+// GAF check even though it should now never fire: if the doc is ever re-copied from
+// GAF, that is exactly when the warning matters and nobody will think to re-add it.
 const GAF_MARKER = /home gym|gym and fitness|\bGAF\b/i;
 function looksLikeGafTemplate(d: OpspData): boolean {
     return (
@@ -27,6 +30,24 @@ function looksLikeGafTemplate(d: OpspData): boolean {
         d.sandbox.some((kv) => GAF_MARKER.test(kv.value)) ||
         d.initiatives.some((i) => GAF_MARKER.test(i.text))
     );
+}
+
+// Which named sections are still entirely unfilled. Reported so the gaps are visible
+// on the tab rather than only discoverable by scrolling the whole plan.
+function unfilledSections(d: OpspData): string[] {
+    const blank = (v: string) => !v || PLACEHOLDER.test(v.trim());
+    const allBlank = (xs: string[]) => xs.length === 0 || xs.every(blank);
+    const out: string[] = [];
+    if (allBlank(d.brandPromises)) out.push('Brand promises');
+    if (allBlank(d.keyThrusts.map((t) => `${t.title} ${t.desc}`.trim()))) out.push('Key thrusts');
+    if (blank(d.fy27Revenue) && blank(d.fy27GrossProfit)) out.push('FY27 targets');
+    if (allBlank(d.strengths) && allBlank(d.weaknesses) &&
+        allBlank(d.opportunities) && allBlank(d.threats)) out.push('SWOT');
+    if (allBlank(d.sandbox.map((kv) => kv.value))) out.push('Sandbox');
+    if (d.criticalNumbers.every((cn) => blank(cn.green) && blank(cn.red))) {
+        out.push('Critical number bands');
+    }
+    return out;
 }
 
 interface Thrust { title: string; desc: string; }
@@ -312,7 +333,10 @@ const SwotCard: React.FC<{
 // The Scaling Up template writes an unfilled field several ways: "Not set",
 // "Not entered", "No theme entered", "No items entered." Treat them all as empty
 // so a placeholder never renders as if it were the actual theme.
-const PLACEHOLDER = /^(not (set|entered)|no [a-z ]+ entered\.?)$/i;
+// "(Not Yet Filled)" is the marker used when GAF's copied content was cleared out of
+// the Group doc on 04/08/2026. Treat it like the Scaling Up template's own empty
+// markers so it renders dimmed rather than as if it were a real value.
+const PLACEHOLDER = /^(not (set|entered)|\(?not yet filled\)?|no [a-z ]+ entered\.?)$/i;
 
 const KeyValueList: React.FC<{ rows: KeyValue[] }> = ({ rows }) => (
     <div className="space-y-3">
@@ -442,19 +466,30 @@ export default function OPSPDashboard() {
 
             {isLive && looksLikeGafTemplate(d) && (
                 <div className="mx-auto max-w-7xl px-4 pt-5">
+                    <div className="flex items-start gap-3 rounded-xl border border-red-300 bg-red-50 p-4">
+                        <AlertTriangle size={20} className="mt-0.5 shrink-0 text-red-600" />
+                        <div className="text-sm text-red-900">
+                            <p className="font-bold">This is showing GAF's plan, not the Group's</p>
+                            <p className="mt-1 leading-relaxed">
+                                The source document contains GAF-specific content. Treat nothing on this
+                                tab as the Group position until it is corrected.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {isLive && !looksLikeGafTemplate(d) && unfilledSections(d).length > 0 && (
+                <div className="mx-auto max-w-7xl px-4 pt-5">
                     <div className="flex items-start gap-3 rounded-xl border border-amber-300 bg-amber-50 p-4">
                         <AlertTriangle size={20} className="mt-0.5 shrink-0 text-amber-600" />
                         <div className="text-sm text-amber-900">
-                            <p className="font-bold">Partly rewritten for Group</p>
+                            <p className="font-bold">Plan still being completed</p>
                             <p className="mt-1 leading-relaxed">
-                                This plan began as a copy of GAF's. The BHAG, theme, critical number and
-                                FY27 annual priorities have been updated to the Group positions agreed on
-                                30 July. Still carried over from GAF and not yet Group's: the brand
-                                promises and their KPIs, the key thrusts, the FY26 to FY30 target table,
-                                the SWOT and the sandbox. FY27 revenue and GP targets are pending Louis's
-                                revised Revel financials, and the fill-rate bands are pending Steven and
-                                the Exec. This notice disappears on its own once those sections are
-                                rewritten.
+                                Not yet filled: {unfilledSections(d).join(', ')}. FY27 revenue and GP
+                                targets are pending Louis's revised Revel financials, and the fill-rate
+                                bands are pending Steven and the Exec. This notice updates itself as the
+                                document is completed.
                             </p>
                         </div>
                     </div>

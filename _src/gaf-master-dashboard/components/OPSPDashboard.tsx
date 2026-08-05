@@ -9,7 +9,7 @@ import {
     CartesianGrid, Tooltip, ReferenceLine, Label,
 } from 'recharts';
 import { GAF_COLORS } from '../constants';
-import { fetchBHAGData } from '../services/dataService';
+import { fetchBHAGData, fetchGCDeadStockTotal } from '../services/dataService';
 import { BHAGData } from '../types';
 
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
@@ -143,26 +143,23 @@ const AOV_BASELINE = 1454;
 const TARGET_CALLS = 40;
 
 // Measurable Target / Critical #: "Reduce GC Dead Stock: $573k ➔ <$400k" (locked when
-// the OPSP target was set). Not a row in the doc, so it's a separate card fed by a
-// committed JSON — same pattern as the HGB tracker above. No automated NetSuite pipeline
-// exists yet; gc-dead-stock-tracker.json is updated by hand from the "Dead Stock by Line"
-// saved search, total inv value filtered to location = AFS-Gold Coast only.
+// the OPSP target was set). Not a row in the doc, so it's a separate card. Live-fetches
+// the "Grand Total" cell from the GAF_DEADSTOCK sheet (published to web as CSV), same as
+// the AOV/inbound-call feeds above — no committed snapshot, always reflects the sheet.
+const GC_DEAD_STOCK_TARGET = 400000;
 const GC_DEAD_STOCK_BASELINE = 573000;
 
-interface DeadStockData { current: number; target: number; asOf: string; note?: string; }
 const GCDeadStockCard: React.FC = () => {
-    const [t, setT] = useState<DeadStockData | null>(null);
+    const [current, setCurrent] = useState<number | null>(null);
     useEffect(() => {
-        fetch(`${import.meta.env.BASE_URL}gc-dead-stock-tracker.json?cb=${Date.now()}`)
-            .then((r) => (r.ok ? r.json() : null))
-            .then((d) => d && setT(d))
-            .catch(() => {});
+        fetchGCDeadStockTotal().then((v) => v != null && setCurrent(v));
     }, []);
-    if (!t) return null;
+    if (current == null) return null;
     const fmtK = (n: number) => `$${Math.round(n / 1000)}k`;
     const tone: 'super' | 'yellow' | 'red' =
-        t.current < t.target ? 'super' : t.current < GC_DEAD_STOCK_BASELINE ? 'yellow' : 'red';
+        current < GC_DEAD_STOCK_TARGET ? 'super' : current < GC_DEAD_STOCK_BASELINE ? 'yellow' : 'red';
     const label = tone === 'super' ? 'Target Hit' : tone === 'yellow' ? 'Improving' : 'Red';
+    const asOf = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
     return (
         <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
             <div className="flex justify-between items-start gap-3 mb-4">
@@ -174,7 +171,7 @@ const GCDeadStockCard: React.FC = () => {
             </div>
             <div className="border-t border-white/10 pt-4">
                 <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">Current</div>
-                <div className="text-3xl font-black mb-4">{fmtK(t.current)}</div>
+                <div className="text-3xl font-black mb-4">{fmtK(current)}</div>
                 <div className="grid grid-cols-2 gap-1.5 text-center">
                     <div className="bg-white/5 rounded-lg py-2">
                         <div className="text-[9px] uppercase text-gray-500 font-bold">Start</div>
@@ -182,10 +179,10 @@ const GCDeadStockCard: React.FC = () => {
                     </div>
                     <div className="bg-white/5 rounded-lg py-2">
                         <div className="text-[9px] uppercase text-gray-500 font-bold">Target</div>
-                        <div className="text-xs font-bold text-gray-200">&lt;{fmtK(t.target)}</div>
+                        <div className="text-xs font-bold text-gray-200">&lt;{fmtK(GC_DEAD_STOCK_TARGET)}</div>
                     </div>
                 </div>
-                <div className="text-[10px] text-gray-500 font-semibold mt-3">As of {t.asOf}</div>
+                <div className="text-[10px] text-gray-500 font-semibold mt-3">As of {asOf}</div>
             </div>
         </div>
     );

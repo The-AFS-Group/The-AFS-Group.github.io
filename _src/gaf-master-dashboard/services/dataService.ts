@@ -25,6 +25,12 @@ const URLS = {
   },
   ETS: {
     main: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPpWKad4OJFAb7-SYb9-yz8sj1q8UpbcSoYTVwLUWvaqPsEMUunpZTlfiDdiLkqlRm3g9Y0_Zqxkqt/pub?gid=88121376&single=true&output=csv"
+  },
+  DEAD_STOCK: {
+    // "Deadstock Tracker - FY27", GAF_DEADSTOCK tab. A pivot-style report grouped by
+    // vendor with subtotal rows; the row/column position of the final total shifts
+    // month to month as lines are added, so it's found by label, not position.
+    gc: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxikJQSlITmNCmiUewAGxefehrRFcJ2s-syIiKQoZsTyhH58hcVNrVfr1GRxtc0IRMVCU7Cbm_D9sB/pub?gid=1951515327&single=true&output=csv"
   }
 };
 
@@ -1050,5 +1056,34 @@ export const fetchETSData = async (): Promise<{ GAF: number, REVEL: number }> =>
   } catch (error) {
     console.error("Error fetching ETS data:", error);
     return { GAF: 0, REVEL: 0 };
+  }
+};
+
+// The "Grand Total" row's own dollar cell — found by label rather than a fixed row/column,
+// since the sheet is a pivot-style report whose row count (and therefore the total row's
+// position) grows as dead stock lines are added or cleared each month.
+const parseGCDeadStockTotal = (csvText: string): number | null => {
+  const rows = parseCSVRaw(csvText);
+  const totalRow = rows.find((cols) => cols.some((c) => /^grand total$/i.test((c || "").trim())));
+  if (!totalRow) return null;
+
+  for (let i = totalRow.length - 1; i >= 0; i--) {
+    const raw = (totalRow[i] || "").trim();
+    if (!raw) continue;
+    const num = parseFloat(cleanNumber(raw));
+    if (!isNaN(num)) return num;
+  }
+  return null;
+};
+
+export const fetchGCDeadStockTotal = async (): Promise<number | null> => {
+  try {
+    const res = await fetch(`${URLS.DEAD_STOCK.gc}&_t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+    return parseGCDeadStockTotal(text);
+  } catch (error) {
+    console.error("Error fetching GC Dead Stock total", error);
+    return null;
   }
 };

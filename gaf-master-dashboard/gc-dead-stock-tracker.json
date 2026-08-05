@@ -1,6 +1,0 @@
-{
-  "current": 573000,
-  "target": 400000,
-  "asOf": "5 Aug 2026",
-  "note": "Total inv value from NetSuite 'Dead Stock by Line' saved search, filtered to location = AFS-Gold Coast only. Read-only NetSuite, manually refreshed (no automated pipeline yet)."
-}

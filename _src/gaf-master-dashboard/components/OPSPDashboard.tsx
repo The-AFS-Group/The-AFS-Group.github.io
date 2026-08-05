@@ -843,11 +843,11 @@ export default function OPSPDashboard() {
                                 below — each gets its own sub-card so the column reads as filled. */}
                             <div className="flex-1 flex flex-col justify-between gap-4">
                                 {d.theme.map((t, i) => (
-                                    <div key={i} className="bg-white/5 rounded-xl p-4 border border-white/10">
-                                        <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">{t.key}</div>
+                                    <div key={i} className="flex-1 flex flex-col justify-center bg-white/5 rounded-xl p-6 border border-white/10">
+                                        <div className="text-xs uppercase tracking-wider text-gray-500 font-bold mb-2">{t.key}</div>
                                         <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
-                                            ? 'text-xl font-black text-orange-300 font-montserrat'
-                                            : 'text-base text-gray-200 font-medium'}`}>
+                                            ? 'text-2xl font-black text-orange-300 font-montserrat'
+                                            : 'text-lg text-gray-200 font-medium'}`}>
                                             {t.value && !PLACEHOLDER.test(t.value)
                                                 ? t.value
                                                 : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}

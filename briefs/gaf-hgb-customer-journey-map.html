@@ -220,7 +220,9 @@
   <div class="wrap">
     <div class="eyebrow sec-eyebrow">02 · Who this is (and is not)</div>
     <h2>Why this customer is the whole strategy</h2>
-    <p class="body">The <strong>Home Gym Builder</strong> is a project-mode buyer kitting out a garage or spare room — a household decision, $4k+ project value. Persona anchor: David Fowler (built from survey data, not a real customer). The locked "Home Gym Builder sale" (Adam Carter): <strong>1 anchor product + 2 attachment SKUs + total cart over $3,376.</strong></p>
+    <p class="body">The <strong>Home Gym Builder</strong> is a project-mode buyer kitting out a garage or spare room — a household decision, $4k+ project value. Persona anchor: David Fowler (built from survey data, not a real customer).</p>
+    <p class="body">The locked "Home Gym Builder sale" is <strong>definition v4</strong> (Adam Carter, 4 Aug 2026). A cart qualifies if the total clears <strong>$3,376</strong> and it meets any one of three paths: a <strong>single anchor, only if it is an All-In-One Trainer or Home Gym</strong> (180 FY26 builds); <strong>any anchor plus at least one attachment</strong> (832); or <strong>two or more anchors</strong> (245). FY26 total: <strong>1,257 builds</strong>, counted cumulatively from 1 July 2025 against the 10,000-by-2030 BHAG.</p>
+    <p class="body" style="border-left:3px solid #f26422;padding-left:14px;"><strong>Why a single item can count as a "build".</strong> Path 1 looks like exactly the scope creep the refusal list exists to prevent. It survives only because it is restricted to All-In-One Trainers and Home Gyms, and those units <em>are</em> a complete gym in one box. That restriction is load-bearing: widen Path 1 back to any anchor and a lone treadmill becomes a home gym build.</p>
     <div class="callout">
       <div class="t">Load-bearing refusal</div>
       <p>This map is <strong>NOT</strong> budget-conscious single-SKU shoppers. They get self-serve only — no consultant time, no freight subsidy. The Home Gym Builder is the <em>only</em> segment that makes money online; every other online archetype loses money without a consultant. The journey must never quietly widen to "for everyone."</p>
@@ -235,7 +237,24 @@
         <tr><td>Budget-Conscious Seeker, online</td><td class="r"><span class="neg">–$165</span></td><td class="r">1.16</td></tr>
       </tbody>
     </table>
-    <p class="tbl-note">Sales-assisted is <strong>2.5× the online version of the same person</strong> and 3.5× the next-best segment. The phone consultant does the profit heavy-lifting. The AI Gym Designer exists to give the self-serve lane some of that consultant leverage — and to feed the sales team the leads worth their time.</p>
+    <p class="tbl-note">On this lens sales-assisted is <strong>2.5× the online version of the same person</strong> and 3.5× the next-best segment.</p>
+
+    <p class="body" style="margin-top:32px"><strong>The v4 cart-rule cohort</strong> (FY26, re-run from NetSuite 5 Aug 2026) — the population we now actually <em>count</em> for the BHAG. Gross profit, before CAC:</p>
+    <table class="tbl">
+      <thead><tr><th>Channel</th><th class="r">Customers</th><th class="r">Median GP / customer</th><th class="r">Median revenue / customer</th></tr></thead>
+      <tbody>
+        <tr class="hot"><td><span class="star">★</span> Sales-assisted (GAF AU)</td><td class="r">1,041</td><td class="r">$2,376</td><td class="r">$6,555</td></tr>
+        <tr><td>Self-serve (GAF Online-AU)</td><td class="r">188</td><td class="r">$1,782</td><td class="r">$5,126</td></tr>
+      </tbody>
+    </table>
+    <p class="tbl-note">Cohort totals: <strong>1,257 builds, $9.82M revenue, $3.67M gross profit, 37.4% margin.</strong></p>
+
+    <div class="callout" style="margin-top:26px;border-left:3px solid #f26422;padding-left:16px">
+      <p><strong>Read these two tables carefully, because the obvious comparison is wrong.</strong> $2,376 is not an improvement on $1,271. They measure different populations on different bases: the first is archetype-segmented and net of CAC, the second is cart-rule-defined and gross. The conclusion that <em>does</em> travel between them:</p>
+      <p style="margin-top:10px"><strong>The v4 rule admits only big baskets, so the population we count for the BHAG is richer than the archetype population — and the sales-assisted premium is much smaller inside it. On the cart-rule cohort the assisted median is 1.33× self-serve, not 2.5×.</strong> The $3,376-plus-anchor gate does the work the consultant used to, by excluding the cheap online carts that dragged the archetype model's online figure down to $502.</p>
+      <p style="margin-top:10px">Two consequences. The consultant's value is real but is <strong>overstated by the 2.5× number</strong> whenever it is quoted against the cohort we count. And the BHAG's profit floor should <strong>not</strong> be modelled at $1,271 per build: at the cohort's actual median gross profit, 10,000 builds is roughly <strong>$24M of gross profit</strong> before CAC and before any Phase 2 reorder. The strategy is stronger than the $12.7m floor in the operating manual, not weaker.</p>
+    </div>
+    <p class="tbl-note" style="margin-top:18px">The AI Gym Designer still exists to give self-serve some consultant leverage and to feed the sales team leads worth their time. But the honest framing is now "self-serve is already profitable on big baskets and we want more of them", not "self-serve is a poor cousin at half the profit".</p>
   </div>
 </section>
 
@@ -255,6 +274,29 @@
       </tbody>
     </table>
     <p class="tbl-note">Cross-device and online-to-phone stitching is <strong>inferred, not observed</strong>. These gaps are named again in section 7 with how to close them.</p>
+
+    <p class="body" style="margin-top:26px"><strong>What is cohort-true vs still site-wide.</strong> The <strong>purchase end is cohort-isolated</strong>: build counts, revenue, gross profit, per-customer economics, channel split, seasonality and path mix all come from the v4 order-level cut. The <strong>front end is still site-wide</strong>: sessions, days-to-purchase, drop-off pages and the channel-role matrix in section 6 read from GA4 across all traffic. Treat section 6 as directional.</p>
+
+    <h3 style="margin-top:38px">Seasonality — the two months that carry the year</h3>
+    <table class="tbl">
+      <thead><tr><th>FY26</th><th class="r">Jul</th><th class="r">Aug</th><th class="r">Sep</th><th class="r">Oct</th><th class="r">Nov</th><th class="r">Dec</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">May</th><th class="r">Jun</th></tr></thead>
+      <tbody>
+        <tr><td>Builds</td><td class="r">67</td><td class="r">76</td><td class="r">103</td><td class="r">74</td><td class="r"><strong>162</strong></td><td class="r">135</td><td class="r">70</td><td class="r">66</td><td class="r">104</td><td class="r">93</td><td class="r">86</td><td class="r"><strong>221</strong></td></tr>
+        <tr><td>GP ($k)</td><td class="r">159</td><td class="r">194</td><td class="r">260</td><td class="r">246</td><td class="r"><strong>489</strong></td><td class="r">376</td><td class="r">198</td><td class="r">186</td><td class="r">308</td><td class="r">289</td><td class="r">278</td><td class="r"><strong>688</strong></td></tr>
+      </tbody>
+    </table>
+    <p class="tbl-note"><strong>June (EOFY) and November (Black Friday) alone are 30% of annual builds and 32% of annual gross profit.</strong> June is the biggest month at 221 builds, 3.3× the quietest (February, 66). Black Friday spills into a strong December, so Nov+Dec together are 24% of the year. For this cohort Black Friday is not a general-traffic event, it is one of only two moments when project-mode buyers actually commit — so the Designer needs to be live, linked and driving list traffic <em>well before</em> November.</p>
+
+    <h3 style="margin-top:38px">Build depth — where Phase 2 actually lives</h3>
+    <table class="tbl">
+      <thead><tr><th>Path</th><th>What they bought</th><th class="r">FY26 builds</th><th class="r">Share</th></tr></thead>
+      <tbody>
+        <tr><td>2</td><td>Anchor <strong>plus attachments</strong></td><td class="r">832</td><td class="r">66%</td></tr>
+        <tr><td>3</td><td><strong>Two or more</strong> anchors at once</td><td class="r">245</td><td class="r">19%</td></tr>
+        <tr><td>1</td><td>A single AIO or Home Gym, nothing else</td><td class="r">180</td><td class="r">14%</td></tr>
+      </tbody>
+    </table>
+    <p class="tbl-note">Only <strong>19% take a second big-ticket anchor up front</strong>, and 14% buy the centrepiece alone with no kit at all. Four in five builds leave the second anchor on the table; one in seven leaves everything on the table. Moving the 21.4% Phase 2 attach rate to 40% is not a vague nurture ambition, it is converting the <strong>1,012 builds a year that arrive with at most one anchor</strong>. The 180 single-anchor buyers have a complete gym and no bench, no bar and no flooring, which is the most legible reorder prompt we will ever have.</p>
   </div>
 </section>
 
@@ -411,7 +453,7 @@
         <p><strong>State of mind: proud.</strong> A home gym is a visible, social artefact, and the owner shows it off. This closes the loop: the cohort's largest discovery channel is existing-customer and referral — today's advocates are driving tomorrow's Consideration.</p>
         <p><strong>Dominant JTBD:</strong> Social / Status — signal the achievement, help my mates do the same.</p>
         <div class="label">GAF action</div>
-        <p>Make the referral easy and asked-for: the consultant asks at the right moment; self-serve makes the saved design shareable. Every referred customer re-enters at Trigger with pre-loaded trust — which is why sales-assisted HGBs are worth $1,271 each and compound.</p>
+        <p>Make the referral easy and asked-for: the consultant asks at the right moment; self-serve makes the saved design shareable. Every referred customer re-enters at Trigger with pre-loaded trust — and at a median $2,376 gross profit per assisted builder, that compounds.</p>
         <div class="stage-metric"><b>Metric:</b> Referral-attributed new customers (the third beat of the money phrase, "to refer the next one").</div>
       </div>
     </div>
@@ -457,7 +499,7 @@
       <div class="card tot"><div class="n">$7.06m</div><div class="l">Total sales (incl. offline / phone)</div></div>
     </div>
     <div class="attr-take">
-      More than <strong>50% of revenue closes in channels last-click cannot credit</strong> — phone, in-store pickup, cross-device, email-influenced. The phone consultant is the most profitable close in the company at <strong>$1,271 per customer</strong>, 2.5× the online version. Paid Social <em>initiates</em> (242k sessions, few conversions) while Paid Shopping and Paid Search <em>close</em>. Any budget decision that reads Paid Social's low last-click ROAS as "cut it" would be cutting the journey's biggest front door.
+      More than <strong>50% of revenue closes in channels last-click cannot credit</strong> — phone, in-store pickup, cross-device, email-influenced. The phone consultant is the most profitable close in the company, at a median <strong>$2,376 gross profit per customer</strong> against $1,782 self-serve on the cohort we count. Paid Social <em>initiates</em> (242k sessions, few conversions) while Paid Shopping and Paid Search <em>close</em>. Any budget decision that reads Paid Social's low last-click ROAS as "cut it" would be cutting the journey's biggest front door.
     </div>
   </div>
 </section>
@@ -482,7 +524,7 @@
 <section class="alt">
   <div class="wrap">
     <div class="eyebrow sec-eyebrow">08 · Open decisions for Josh</div>
-    <h2>Four calls needed before locking</h2>
+    <h2>Five calls needed before locking</h2>
     <p class="lead">These change the map, so I am not guessing them. Everything above is the draft; your answers here lock it.</p>
     <div class="decisions">
       <div class="dec">
@@ -496,9 +538,9 @@
       <div class="dec">
         <div class="dn">2</div>
         <div>
-          <h4>Cohort-isolate the quant numbers before the explorer ships?</h4>
-          <p>The section-4 numbers are site-wide, not yet filtered to the HGB order cohort. I can run the Shopify/NetSuite order-level cut against the locked definition to replace them with true cohort figures (days-to-purchase, sales-assisted split, real Phase 2 timing).</p>
-          <div class="opts"><span class="opt">Run the true cohort cut now</span><span class="opt">Ship on directional numbers, refine for Sept</span></div>
+          <h4><s>Cohort-isolate the quant numbers before the explorer ships?</s> &nbsp;RESOLVED 5 Aug</h4>
+          <p>The order-level cut has now been run against the locked v4 definition. The purchase end (builds, revenue, gross profit, per-customer economics, channel split, seasonality, path mix) is cohort-true. The front end (sessions, days-to-purchase, drop-off, channel-role matrix) remains site-wide. <strong>Residual call:</strong> is the front-end cut worth doing for the 30 Sept marketing plan, or is directional good enough there?</p>
+          <div class="opts"><span class="opt">Do the front-end cut for Sept</span><span class="opt">Directional is fine</span></div>
         </div>
       </div>
       <div class="dec">
@@ -517,6 +559,14 @@
           <div class="opts"><span class="opt">Explicit centrepiece</span><span class="opt">Closing line</span></div>
         </div>
       </div>
+      <div class="dec">
+        <div class="dn">5</div>
+        <div>
+          <h4>Which profit number do we put in front of the team? <span style="color:#f26422">NEW — this one matters most</span></h4>
+          <p>$1,271 is the figure everybody knows and it anchors the operating manual's "$12.7m profit floor". The v4 cohort re-run says the population we now count has a median <strong>$2,376 gross profit</strong> per customer and a <strong>1.33×</strong> assisted premium, not 2.5×. Keep quoting $1,271 with a footnote; switch to the cohort figure and restate the BHAG floor at roughly $24M gross; or commission a proper CAC allocation against the v4 cohort so we can quote true net profit per build on the old basis. <strong>Recommendation: the third</strong>, with the second as the interim.</p>
+          <div class="opts"><span class="opt">Keep $1,271 + footnote</span><span class="opt">Switch to cohort gross</span><span class="opt">Commission the CAC re-run</span></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -525,7 +575,7 @@
   <div class="wrap">
     <strong>Home Gym Builder — Customer Journey Map.</strong> Mini-goal 1 of the Home Gym Builder Persona &amp; Designer Launch mission. Feeds the archetype explorer (mini-goal 2), the persona walkthrough video (mini-goal 3), and the 30 Sept marketing plan.<br>
     <span class="src">
-      Sources: 935 HGB-cohort sales calls (Nov 25 – Apr 26), coded by stage, JTBD, sentiment, barrier, competitor, verbatim quote · Live performance dashboard, 90d to 19 Jul 2026 (GA4 356833601, Shopify, HubSpot, Search Console) · GAF Profit Per X by Archetype (Apr 25 – Mar 26) · Home Gym Builder sale definition (Adam Carter).<br>
+      Sources: 935 HGB-cohort sales calls (Nov 25 – Apr 26), coded by stage, JTBD, sentiment, barrier, competitor, verbatim quote · Live performance dashboard, 90d to 19 Jul 2026 (GA4 356833601, Shopify, HubSpot, Search Console) · GAF Profit Per X by Archetype (Apr 25 – Mar 26) · Home Gym Builder sale definition v4 (Adam Carter, 4 Aug 2026) · v4 cohort economics from a read-only NetSuite SuiteQL re-run, 5 Aug 2026 (depts 20/21, FY26), cohort reproduced at 1,257 against the locked control.<br>
       Draft prepared for Josh Hancock's review · GAF · Gym and Fitness.
     </span>
   </div>

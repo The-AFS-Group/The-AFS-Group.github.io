@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>The Home Gym Builder | GAF</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --orange:#F26422; --orange-700:#B34213;
+  --ink:#1A1A1A; --black:#000; --white:#fff;
+  --g300:#C9C9C9; --g400:#A0A0A0; --g500:#717171; --g600:#555; --g200:#E2E2E2; --g50:#FAFAFA;
+  --display:'Montserrat',"Helvetica Neue",Arial,sans-serif;
+  --sans:'Open Sans',"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:#000}
+body{font-family:var(--sans);background:#000;color:#fff;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+h1,h2,h3,.display,.eyebrow{font-family:var(--display)}
+.eyebrow{text-transform:uppercase;letter-spacing:.2em;font-weight:800;font-size:11px;color:var(--orange)}
+
+/* ---------- loader ---------- */
+#loader{position:fixed;inset:0;z-index:200;background:#000;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:20px;transition:opacity .6s ease}
+#loader.gone{opacity:0;pointer-events:none}
+#loader .bar{width:180px;height:2px;background:#222;overflow:hidden}
+#loader .bar i{display:block;height:100%;width:0;background:var(--orange);transition:width .3s ease}
+#loader .lbl{font-family:var(--display);font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--g500)}
+
+/* ---------- film sections ---------- */
+.film{position:relative;height:340vh}
+.film .stick{position:sticky;top:0;height:100vh;overflow:hidden;background:#000}
+.film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;will-change:transform}
+.vig{position:absolute;inset:0;pointer-events:none;
+     background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.62) 100%)}
+.grade{position:absolute;inset:0;pointer-events:none;mix-blend-mode:overlay;opacity:.30;
+     background:linear-gradient(200deg,rgba(242,100,34,.55),transparent 55%)}
+
+/* type over film */
+.cap{position:absolute;left:0;right:0;padding:0 7vw;opacity:0;will-change:opacity,transform}
+.cap.mid{top:50%;transform:translateY(-50%)}
+.cap.low{bottom:13vh}
+.cap .kicker{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.2em;
+             text-transform:uppercase;color:var(--orange);margin-bottom:14px}
+.cap .line{font-family:var(--display);font-weight:900;letter-spacing:-.022em;line-height:.95;
+           font-size:clamp(34px,7.4vw,104px);text-shadow:0 2px 40px rgba(0,0,0,.55);max-width:15ch}
+.cap .line.sm{font-size:clamp(24px,3.9vw,52px);max-width:22ch}
+.cap .sub{margin-top:18px;font-size:clamp(15px,1.5vw,19px);color:var(--g300);max-width:44ch;
+          text-shadow:0 2px 22px rgba(0,0,0,.7)}
+.cap .quote{font-family:var(--display);font-weight:900;font-style:italic;
+            font-size:clamp(28px,5.6vw,74px);line-height:1.02;letter-spacing:-.02em;max-width:16ch}
+.cap .quote .qm{color:var(--orange)}
+
+/* barrier flashes */
+.flash{position:absolute;left:7vw;right:7vw;bottom:24vh;display:flex;gap:12px;flex-wrap:wrap}
+.flash span{opacity:0;font-family:var(--display);font-weight:800;font-size:clamp(12px,1.5vw,17px);
+            letter-spacing:.04em;text-transform:uppercase;border:1px solid rgba(255,255,255,.32);
+            border-radius:999px;padding:9px 17px;background:rgba(0,0,0,.34);backdrop-filter:blur(3px)}
+
+/* ---------- code sections ---------- */
+.code-sec{position:relative;background:#000;padding:16vh 0;border-top:1px solid #141414}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.sec-head{max-width:760px;margin-bottom:52px}
+.sec-head h2{font-weight:900;font-size:clamp(28px,4.6vw,54px);letter-spacing:-.02em;line-height:1.04;margin-top:12px}
+.sec-head p{color:var(--g400);font-size:17px;margin-top:16px;max-width:56ch}
+
+/* three jobs */
+.jobs{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.job{border-top:2px solid #232323;padding-top:24px;opacity:0}
+.job .n{font-family:var(--display);font-weight:900;font-size:13px;color:var(--orange);letter-spacing:.14em}
+.job h3{font-family:var(--display);font-weight:900;font-size:clamp(20px,2.5vw,30px);margin:12px 0 10px;line-height:1.06}
+.job p{color:var(--g400);font-size:15px;line-height:1.5}
+@media(max-width:820px){.jobs{grid-template-columns:1fr;gap:30px}}
+
+/* journey loop */
+.loop-stage{position:relative;height:300vh}
+.loop-stage .stick{position:sticky;top:0;height:100vh;display:flex;align-items:center;background:#000}
+.ribbon{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;width:100%}
+.rstage{border:1px solid #262626;border-radius:12px;background:#0d0d0d;padding:18px 14px;opacity:.22;
+        transition:opacity .4s ease,border-color .4s ease,background .4s ease;min-height:190px;
+        display:flex;flex-direction:column}
+.rstage.on{opacity:1;border-color:var(--orange-700);background:#151008}
+.rstage .ix{font-family:var(--display);font-weight:900;font-size:11px;color:var(--orange);letter-spacing:.1em}
+.rstage .nm{font-family:var(--display);font-weight:900;font-size:17px;margin-top:6px;line-height:1.08}
+.rstage .md{font-size:12.5px;color:var(--g400);font-style:italic;margin-top:10px;line-height:1.42;flex:1}
+.rstage .ln{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.1em;
+            text-transform:uppercase;color:var(--g500);margin-top:12px;border-top:1px solid #232323;padding-top:9px}
+.loop-back{margin-top:22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+           border:1px solid var(--orange-700);border-radius:10px;padding:16px 20px;background:#120c07;opacity:0}
+.loop-back .lp{font-family:var(--display);font-weight:900;color:var(--orange);font-size:13px;white-space:nowrap;letter-spacing:.06em}
+.loop-back .lt{font-size:14px;color:var(--g300)}
+@media(max-width:960px){.ribbon{grid-template-columns:repeat(3,1fr)}.rstage{min-height:0}}
+@media(max-width:560px){.ribbon{grid-template-columns:repeat(2,1fr)}}
+
+/* money band */
+.band{background:var(--orange);color:#fff;padding:64px 0}
+.band .phrase{font-family:var(--display);font-weight:900;font-size:clamp(21px,3.5vw,44px);
+              line-height:1.14;letter-spacing:-.018em;max-width:20ch}
+.band .tag{display:inline-block;margin-top:20px;font-family:var(--display);font-weight:800;font-size:10.5px;
+           letter-spacing:.16em;text-transform:uppercase;background:rgba(0,0,0,.24);padding:8px 15px;border-radius:999px}
+
+/* evidence */
+.evidence{background:#fff;color:var(--ink);padding:14vh 0}
+.evidence .eyebrow{color:var(--orange-700)}
+.evidence h2{color:var(--ink)}
+.evidence .sec-head p{color:var(--g600)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:46px}
+.stat{border:1px solid var(--g200);border-radius:12px;padding:22px;background:var(--g50)}
+.stat.hot{background:#FDE9DD;border-color:#F3C3A6}
+.stat .v{font-family:var(--display);font-weight:900;font-size:clamp(24px,3vw,38px);color:var(--ink);letter-spacing:-.02em}
+.stat.hot .v{color:var(--orange-700)}
+.stat .l{font-family:var(--display);font-weight:800;font-size:11px;letter-spacing:.09em;
+         text-transform:uppercase;color:var(--g500);margin-top:8px}
+.stat .s{font-size:13px;color:var(--g600);margin-top:8px;line-height:1.45}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}}
+table.tbl{width:100%;border-collapse:collapse;font-size:14.5px;background:#fff;
+          border:1px solid var(--g200);border-radius:12px;overflow:hidden;margin-bottom:14px}
+.tbl th{background:var(--ink);color:#fff;font-family:var(--display);font-weight:800;text-align:left;
+        padding:13px 16px;font-size:11.5px;letter-spacing:.05em;text-transform:uppercase}
+.tbl th.r,.tbl td.r{text-align:right}
+.tbl td{padding:12px 16px;border-top:1px solid var(--g200);color:var(--g600)}
+.tbl tr.hot td{background:#FDE9DD;font-weight:700;color:var(--ink)}
+.note{font-size:13.5px;color:var(--g600);max-width:78ch;margin-bottom:30px}
+.note strong{color:var(--orange-700)}
+.warn{border-left:3px solid var(--orange);padding:16px 20px;background:var(--g50);
+      border-radius:0 8px 8px 0;margin:26px 0;font-size:14.5px;color:var(--g700,#424242);max-width:80ch}
+.warn b{color:var(--ink)}
+.links{display:flex;gap:12px;flex-wrap:wrap;margin-top:34px}
+.links a{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;
+         text-decoration:none;color:var(--ink);border:1px solid var(--g200);border-radius:999px;padding:11px 20px;background:#fff}
+.links a:hover{border-color:var(--orange);color:var(--orange-700)}
+footer{background:#000;color:var(--g500);font-size:12.5px;padding:44px 0;line-height:1.7}
+footer strong{color:var(--g300)}
+
+@media (prefers-reduced-motion: reduce){
+  .film{height:auto}.film .stick{position:relative;height:70vh}
+  .cap{opacity:1!important;position:relative;padding:28px 7vw}
+  .loop-stage{height:auto}.loop-stage .stick{position:relative;height:auto;padding:40px 0}
+  .rstage{opacity:1}.job{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="lbl">Loading film</div><div class="bar"><i id="lbar"></i></div></div>
+
+<!-- ══ M1 · THE DOOR ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m1.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.06" data-out="0.34">
+      <div class="kicker">Gym and Fitness · The customer we build for</div>
+      <div class="line">Every home gym<br>starts the<br>same way.</div>
+    </div>
+    <div class="cap low" data-cap data-in="0.48" data-out="0.94">
+      <div class="line sm">An empty room,<br>and no idea where to begin.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M2 · THE PROBLEM ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m2.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.08" data-out="0.52">
+      <div class="quote"><span class="qm">“</span>I just don't know<br>what I want.<span class="qm">”</span></div>
+      <div class="sub">The single most common sentence across 935 recorded Home Gym Builder calls. He is not price shopping. He is overwhelmed.</div>
+    </div>
+    <div class="flash" data-flash>
+      <span>Will it fit?</span><span>24 inches, max</span><span>The floor slopes</span>
+      <span>Ceiling height</span><span>What's the freight?</span><span>Is it in stock?</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M3 · THE THREE JOBS (code) ══ -->
+<section class="code-sec" data-jobs>
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The three jobs</span>
+      <h2>He is not buying equipment.<br>He is hiring us for three jobs.</h2>
+      <p>Every piece of creative, every product page and every sales call should pull on at least one of these. If it does not, it is decoration.</p>
+    </div>
+    <div class="jobs">
+      <div class="job" data-job><div class="n">01</div><h3>Convenience<br>&amp; Efficiency</h3><p>Train without losing an hour of the day to the commute. The most cited job in the cohort by a wide margin.</p></div>
+      <div class="job" data-job><div class="n">02</div><h3>Achievement<br>&amp; Progress</h3><p>See himself getting stronger. Something that keeps moving forward and can be measured.</p></div>
+      <div class="job" data-job><div class="n">03</div><h3>Control<br>&amp; Discipline</h3><p>His space, his rules, his routine. Nobody waiting on the rack, no opening hours.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M4 · THE LIFT ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m4.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.06" data-out="0.42">
+      <div class="line">Then someone<br>takes the plan<br>off him.</div>
+    </div>
+    <div class="cap low" data-cap data-in="0.55" data-out="0.96">
+      <div class="kicker">Brand promise 01</div>
+      <div class="line sm">You'll talk to a designer.</div>
+      <div class="sub">The moment the burden shifts, the mood flips from anxious to excited, and the basket grows on its own.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M5 · THE ARRIVAL ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m5.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.10" data-out="0.90">
+      <div class="line">Built once.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M6 · THE FIRST REP ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m6.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.12" data-out="0.62">
+      <div class="line">Grown forever.</div>
+    </div>
+    <div class="cap low" data-cap data-in="0.70" data-out="0.97">
+      <div class="sub">Only 19% take a second big-ticket piece up front. Four in five builds leave the next one on the table. That gap is the whole of Phase&nbsp;2.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M7 · THE LOOP (code) ══ -->
+<section class="loop-stage" data-loop>
+  <div class="stick">
+    <div class="wrap">
+      <div class="sec-head" style="margin-bottom:34px">
+        <span class="eyebrow">The journey</span>
+        <h2>It does not end. It loops.</h2>
+      </div>
+      <div class="ribbon">
+        <div class="rstage" data-rs><div class="ix">00</div><div class="nm">Trigger</div><div class="md">“Something changed. I need my own setup.”</div><div class="ln">Renovation · quit the gym · a sale</div></div>
+        <div class="rstage" data-rs><div class="ix">01</div><div class="nm">Consideration</div><div class="md">“I just don't know what I want.”</div><div class="ln">Overwhelmed · space is the barrier</div></div>
+        <div class="rstage" data-rs><div class="ix">02</div><div class="nm">Design</div><div class="md">“Show me my gym before I spend a cent.”</div><div class="ln">Designer · or a consultant on the phone</div></div>
+        <div class="rstage" data-rs><div class="ix">03</div><div class="nm">Purchase</div><div class="md">“Just the shipping, and is it in stock?”</div><div class="ln">Freight and stock decide it</div></div>
+        <div class="rstage" data-rs><div class="ix">04</div><div class="nm">Build</div><div class="md">“It arrived. Now help me set it up right.”</div><div class="ln">Delivery to first session</div></div>
+        <div class="rstage" data-rs><div class="ix">05</div><div class="nm">Grow</div><div class="md">“I've outgrown the starter kit.”</div><div class="ln">Phase 2 · 21.4% today, 40% the target</div></div>
+        <div class="rstage" data-rs><div class="ix">06</div><div class="nm">Advocacy</div><div class="md">“You have to see my garage.”</div><div class="ln">Feeds the next Trigger</div></div>
+      </div>
+      <div class="loop-back" data-loopback>
+        <span class="lp">ADVOCACY → TRIGGER</span>
+        <span class="lt">Existing customers and referral are already the single largest source of new Home Gym Builders. <strong style="color:#fff">The loop is running whether we feed it or not.</strong></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ M8 · THE NEXT DOOR ══ -->
+<section class="film" data-film>
+  <div class="stick">
+    <video data-v src="clips/m8.mp4" muted playsinline preload="auto"></video>
+    <div class="grade"></div><div class="vig"></div>
+    <div class="cap mid" data-cap data-in="0.42" data-out="0.95">
+      <div class="line sm">And it starts<br>again next door.</div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap">
+    <div class="phrase">Every gym we design pays us three times: to build it, to grow it, to refer the next one.</div>
+    <span class="tag">The money phrase · locked 28 Apr 2026</span>
+  </div>
+</section>
+
+<!-- ══ M9 · THE EVIDENCE ══ -->
+<section class="evidence">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">The evidence</span>
+      <h2>If you want to interrogate it</h2>
+      <p>Everything above is reconstructed from our own data, not a workshop. The numbers are here rather than in the film because the film is for the story and this is for the argument.</p>
+    </div>
+
+    <div class="stats">
+      <div class="stat hot"><div class="v">$2,376</div><div class="l">Median GP, assisted</div><div class="s">Against $1,782 self serve, on the cohort we count.</div></div>
+      <div class="stat"><div class="v">1,257</div><div class="l">Builds, FY26</div><div class="s">Under the locked v4 definition. 1,229 customers.</div></div>
+      <div class="stat"><div class="v">$7,811</div><div class="l">Average build</div><div class="s">$9.82m revenue, $3.67m gross profit, 37.4% margin.</div></div>
+      <div class="stat"><div class="v">30%</div><div class="l">Of builds in two months</div><div class="s">June (EOFY) and November (Black Friday) carry the year.</div></div>
+    </div>
+
+    <h3 style="font-family:var(--display);font-weight:900;font-size:22px;margin:34px 0 14px">What counts as a build</h3>
+    <table class="tbl">
+      <thead><tr><th>Path</th><th>Rule (all require a cart over $3,376)</th><th class="r">FY26</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>A single anchor, <b>only</b> if it is an All-In-One Trainer or Home Gym</td><td class="r">180</td></tr>
+        <tr class="hot"><td>2</td><td>Any anchor <b>plus at least one attachment</b></td><td class="r">832</td></tr>
+        <tr><td>3</td><td><b>Two or more</b> anchors</td><td class="r">245</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Definition v4, locked with Adam Carter 4 Aug 2026. Counted cumulatively from 1 July 2025 against the 10,000-by-2030 BHAG. <strong>Path 1 only survives because it is restricted to All-In-One Trainers and Home Gyms</strong> — those are a complete gym in one box. Widen it back to any anchor and a lone treadmill becomes a home gym build.</p>
+
+    <h3 style="font-family:var(--display);font-weight:900;font-size:22px;margin:34px 0 14px">Seasonality</h3>
+    <table class="tbl">
+      <thead><tr><th>FY26</th><th class="r">Jul</th><th class="r">Aug</th><th class="r">Sep</th><th class="r">Oct</th><th class="r">Nov</th><th class="r">Dec</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">May</th><th class="r">Jun</th></tr></thead>
+      <tbody>
+        <tr><td>Builds</td><td class="r">67</td><td class="r">76</td><td class="r">103</td><td class="r">74</td><td class="r"><b>162</b></td><td class="r">135</td><td class="r">70</td><td class="r">66</td><td class="r">104</td><td class="r">93</td><td class="r">86</td><td class="r"><b>221</b></td></tr>
+      </tbody>
+    </table>
+    <p class="note">June is 3.3× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments when project-mode buyers actually commit.</p>
+
+    <div class="warn">
+      <b>One number to handle carefully.</b> You may know the Home Gym Builder as "$1,271 median profit, 2.5× online". That comes from the archetype model, which is a different population from the cart-rule cohort we now count. On the cohort we count, the assisted premium is <b>1.33×</b>, not 2.5×, and the median gross profit is higher, not lower. Do not quote "$1,271 per home gym build" — the builds we count are worth more than that. Which figure becomes the official one is an open decision.
+    </div>
+
+    <div class="links">
+      <a href="gaf-hgb-customer-journey-map.html">Full journey map</a>
+      <a href="gaf-hgb-baseline.html">Baseline working</a>
+      <a href="https://gaf-gym-designer.pages.dev" target="_blank" rel="noopener">Try the Gym Designer</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <strong>The Home Gym Builder.</strong> Internal brief for the GAF team. Film generated with Veo 3.1, each shot conditioned on the closing frame of the one before it so the take runs unbroken.<br>
+    Sources: 935 coded Home Gym Builder sales calls (Nov 25 – Apr 26) · HGB sale definition v4 (Adam Carter, 4 Aug 2026) · FY26 cohort economics from a read-only NetSuite pull, 5 Aug 2026, reproducing the locked 1,257 baseline exactly.
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lenis/1.1.13/lenis.min.js"></script>
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  gsap.registerPlugin(ScrollTrigger);
+
+  /* ---- preload every clip, then reveal ---- */
+  var vids = Array.prototype.slice.call(document.querySelectorAll('[data-v]'));
+  var ready = 0, bar = document.getElementById('lbar'), loader = document.getElementById('loader');
+  function tick(){
+    ready++;
+    bar.style.width = Math.round(ready / Math.max(vids.length,1) * 100) + '%';
+    if (ready >= vids.length) setTimeout(start, 260);
+  }
+  vids.forEach(function(v){
+    var done = false;
+    function ok(){ if(!done){ done = true; tick(); } }
+    v.addEventListener('loadeddata', ok, {once:true});
+    v.addEventListener('error', ok, {once:true});   // a missing clip must not block the page
+    if (v.readyState >= 2) ok();
+    v.load();
+  });
+  setTimeout(function(){ if(ready < vids.length){ ready = vids.length; start(); } }, 15000);
+
+  var started = false;
+  function start(){
+    if (started) return; started = true;
+    loader.classList.add('gone');
+    if (reduce) { document.querySelectorAll('[data-cap]').forEach(function(c){c.style.opacity=1;}); return; }
+
+    /* smooth scroll */
+    if (window.Lenis){
+      var lenis = new Lenis({ duration:1.05, smoothWheel:true });
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+      gsap.ticker.lagSmoothing(0);
+    }
+
+    /* ---- film: scrub each clip to scroll ---- */
+    document.querySelectorAll('[data-film]').forEach(function(sec){
+      var v = sec.querySelector('[data-v]');
+      var dur = 0;
+      function setDur(){ dur = (isFinite(v.duration) && v.duration>0) ? v.duration : 0; }
+      setDur(); v.addEventListener('loadedmetadata', setDur);
+
+      ScrollTrigger.create({
+        trigger: sec, start:'top top', end:'bottom bottom', scrub: 0.35,
+        onUpdate: function(self){
+          if (!dur) return;
+          var t = self.progress * (dur - 0.05);
+          if (Math.abs(v.currentTime - t) > 0.01) { try { v.currentTime = t; } catch(e){} }
+        }
+      });
+
+      /* captions keyed to scroll progress windows */
+      sec.querySelectorAll('[data-cap]').forEach(function(cap){
+        var a = parseFloat(cap.dataset.in), b = parseFloat(cap.dataset.out);
+        gsap.set(cap, {y:26});
+        ScrollTrigger.create({
+          trigger: sec, start:'top top', end:'bottom bottom', scrub:true,
+          onUpdate: function(self){
+            var p = self.progress, o = 0, y = 26;
+            var fade = Math.min(0.09, (b-a)/3);
+            if (p >= a && p <= b){
+              o = 1; y = 0;
+              if (p < a+fade) { o = (p-a)/fade; y = 26*(1-o); }
+              else if (p > b-fade) { o = (b-p)/fade; y = -18*(1-o); }
+            }
+            gsap.set(cap, {opacity:o, y:y});
+          }
+        });
+      });
+
+      /* barrier chips stagger in */
+      var flash = sec.querySelector('[data-flash]');
+      if (flash){
+        ScrollTrigger.create({
+          trigger: sec, start:'top top', end:'bottom bottom', scrub:true,
+          onUpdate: function(self){
+            var chips = flash.children, p = self.progress;
+            for (var i=0;i<chips.length;i++){
+              var s = 0.30 + i*0.055, e = s + 0.10;
+              var o = p < s ? 0 : (p > e ? 1 : (p-s)/(e-s));
+              if (p > 0.88) o *= Math.max(0, (0.97-p)/0.09);
+              gsap.set(chips[i], {opacity:o, y:(1-o)*14});
+            }
+          }
+        });
+      }
+    });
+
+    /* ---- three jobs ---- */
+    gsap.to('[data-job]', {
+      opacity:1, y:0, duration:.7, stagger:.14, ease:'power2.out',
+      scrollTrigger:{ trigger:'[data-jobs]', start:'top 62%' }
+    });
+    gsap.set('[data-job]', {y:30});
+
+    /* ---- journey loop: light each stage in turn, then the loop-back ---- */
+    var loop = document.querySelector('[data-loop]');
+    if (loop){
+      var stages = loop.querySelectorAll('[data-rs]');
+      var back = loop.querySelector('[data-loopback]');
+      ScrollTrigger.create({
+        trigger: loop, start:'top top', end:'bottom bottom', scrub:true,
+        onUpdate: function(self){
+          var p = self.progress;
+          var lit = Math.floor(p / 0.115);
+          for (var i=0;i<stages.length;i++) stages[i].classList.toggle('on', i <= lit);
+          gsap.set(back, {opacity: p > 0.84 ? Math.min(1,(p-0.84)/0.08) : 0,
+                          y: p > 0.84 ? 0 : 16});
+        }
+      });
+    }
+  }
+})();
+</script>
+</body>
+</html>

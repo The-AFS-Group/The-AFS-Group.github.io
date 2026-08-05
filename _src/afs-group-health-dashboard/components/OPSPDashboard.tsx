@@ -376,10 +376,12 @@ export default function OPSPDashboard() {
     useEffect(() => {
         let cancelled = false;
 
-        // Google serves the doc cross-origin, so it has to be proxied. allorigins is
-        // flaky (rate-limits, hangs), which would otherwise leave the tab stuck on the
-        // loader, so race a timeout and fall through to a second proxy before degrading.
+        // Google serves the doc cross-origin, so it has to be proxied. Primary is our
+        // own Cloudflare Worker (afs-docs-proxy) — the public proxies below both broke
+        // on 2026-08-05 (allorigins down, corsproxy locked out our production origin),
+        // which silently froze this tab. Keep them as fallbacks, but ours comes first.
         const proxies = (url: string) => [
+            `https://afs-docs-proxy.josh-03c.workers.dev/?url=${encodeURIComponent(url)}`,
             `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
             `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
         ];

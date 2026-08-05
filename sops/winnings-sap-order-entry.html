@@ -80,16 +80,16 @@
       <img src="https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105" alt="The AFS Group">
       <p class="eyebrow">Standard Operating Procedure</p>
       <h1>Winnings SAP Order Entry</h1>
-      <p class="sub">How Revel sales orders flow from NetSuite into the Winnings 3PL SAP system for dispatch — the process, the rules, and the safeguards.</p>
+      <p class="sub">How Revel sales orders flow from NetSuite into the Winnings 3PL SAP system for dispatch: the process, the rules, and the safeguards.</p>
     </div>
   </header>
 
   <div class="meta">
     <div class="wrap">
       <span><strong>Owner:</strong> AFS Group</span>
-      <span><strong>Operated by:</strong> Gary (AI Assistant) + CSR / Logistics</span>
-      <span><strong>Systems:</strong> NetSuite → Winnings SAP (VA01)</span>
-      <span><strong>Last updated:</strong> 17 June 2026</span>
+      <span><strong>Operated by:</strong> AI assistant + CSR / Logistics</span>
+      <span><strong>Systems:</strong> NetSuite saved-search export → Winnings SAP (VA01)</span>
+      <span><strong>Last updated:</strong> 5 August 2026</span>
       <span><span class="pill">Live process</span></span>
     </div>
   </div>
@@ -98,43 +98,44 @@
 
     <section>
       <h2>Purpose</h2>
-      <p>Revel orders are created in <strong>NetSuite</strong> (the source of truth) and must be re-keyed into the <strong>Winnings 3PL SAP system</strong> as Standard Orders so the warehouse can pick, pack and dispatch. This SOP documents how that transfer is done accurately and safely, and mirrors the automation skill Gary runs. It is a transparent reflection of the process so the team can see exactly what is happening at each step.</p>
+      <p>Revel orders are created in <strong>NetSuite</strong> (the source of truth) and must be re-keyed into the <strong>Winnings 3PL SAP system</strong> as Standard Orders so the warehouse can pick, pack and dispatch. This SOP documents how that transfer is done accurately and safely, and mirrors the automation skill that runs it. It is a transparent reflection of the process so the team can see exactly what happens at each step.</p>
     </section>
 
     <section>
       <h2>How it works</h2>
-      <p>The work is split so that the thinking is automated and the production system write stays supervised.</p>
+      <p>The work is split three ways, so that order selection stays with the system that owns it, the thinking is automated, and the write to the production system stays supervised.</p>
       <div class="steps">
         <div class="step">
-          <span class="n">Step 1 — Request</span>
-          <h4>An order list is raised in Asana</h4>
-          <p>The CSR team tags Gary in an Asana card with the NetSuite sales orders that need entering into Winnings. Gary can also compile the list directly from NetSuite.</p>
+          <span class="n">Step 1 — Select</span>
+          <h4>The work-list comes from the picking queue</h4>
+          <p>A person runs NetSuite's <strong>Print Picking Tickets</strong> page for each Winnings site in turn, with <strong>Filter By set to Respect Ship Complete</strong>. That page decides which orders are genuinely pickable at the location. Nothing else is treated as authoritative for what to key.</p>
         </div>
         <div class="step">
           <span class="n">Step 2 — Prepare (automated)</span>
-          <h4>Gary reads and validates each order</h4>
-          <p>For every order, Gary pulls the details from NetSuite, pre-resolves the routine decisions, checks for duplicates, and flags any exceptions back on the card. No SAP access is needed for this stage.</p>
+          <h4>Order detail comes from a saved-search export</h4>
+          <p>A saved search, <code>Winnings SAP Export</code>, is run and exported to CSV. The assistant reads that file, pre-resolves the routine decisions for each order on the work-list, and flags exceptions before anything is typed. No SAP access is needed at this stage, and no NetSuite login is needed to read the export.</p>
         </div>
         <div class="step">
           <span class="n">Step 3 — Execute (supervised)</span>
           <h4>Orders are keyed into SAP, then checked</h4>
-          <p>In a logged-in SAP session, Gary keys the batch one order at a time, pausing only on genuine exceptions. Every order is built and left for a person to review and save. Gary never saves to the production system on its own.</p>
+          <p>In a session a person is already logged into, the batch is keyed one order at a time, pausing on genuine exceptions. Every order is built and left at the save step for a person to review. Nothing is saved to the production system unattended.</p>
         </div>
       </div>
     </section>
 
     <section>
       <h2>What gets mapped</h2>
-      <p>Each NetSuite order becomes a SAP Standard Order (type ZWSO). The customer is never the SAP account — they are entered as a one-time delivery address.</p>
+      <p>Each NetSuite order becomes a SAP Standard Order (type ZWSO). The customer is never the SAP account. They are entered as a one-time delivery address.</p>
       <table>
         <thead><tr><th>SAP field</th><th>Where it comes from</th></tr></thead>
         <tbody>
-          <tr><td>Sold-To Party</td><td>Fixed Revel account (pre-filled) — not the customer</td></tr>
+          <tr><td>Sold-To Party</td><td>Fixed Revel account, pre-filled. Never the customer</td></tr>
           <tr><td>Ship-To Party</td><td>One-time delivery address built from the NetSuite shipping address</td></tr>
-          <tr><td>Customer Reference</td><td>The NetSuite sales order number — the link between the two systems</td></tr>
-          <tr><td>Requested Delivery Date</td><td>The order's expected delivery date (EDC)</td></tr>
-          <tr><td>Line items</td><td>Physical goods only (SKU + quantity); freight, deposit and balance lines are excluded</td></tr>
-          <tr><td>Weight / Volume / Plant / Pricing</td><td>Derived automatically by SAP — used as a cross-check, never overridden</td></tr>
+          <tr><td>Customer Reference</td><td>The NetSuite sales order number, the link between the two systems</td></tr>
+          <tr><td>Requested Delivery Date</td><td>The next available delivery date, unless the order memo carries a customer-requested date</td></tr>
+          <tr><td>Line items</td><td><strong>Stocked goods and kits only.</strong> Freight, discount, subtotal, deposit, tax and description lines are all excluded</td></tr>
+          <tr><td>Quantity</td><td>The <strong>outstanding</strong> quantity on each line, never the originally ordered quantity</td></tr>
+          <tr><td>Weight / Volume / Plant / Pricing</td><td>Derived automatically by SAP. Never overridden</td></tr>
         </tbody>
       </table>
     </section>
@@ -144,11 +145,12 @@
       <table>
         <thead><tr><th>Question</th><th>Rule</th></tr></thead>
         <tbody>
-          <tr><td>Delivery date</td><td>Default to the <strong>next available delivery date</strong>. If the NetSuite memo notes a <strong>customer-requested date</strong>, use that. If that date <strong>isn't available, flag it on the Asana card</strong> rather than guessing. The date is set before items are added.</td></tr>
-          <tr><td>Is installation required?</td><td><strong>Yes</strong> only if the order has a <code>Winnings Install</code> line item. Otherwise <strong>No</strong>.</td></tr>
-          <tr><td>Australian phone number</td><td>Use as entered; normalise to local format if it carries the AU country code.</td></tr>
+          <tr><td>Delivery date</td><td>Default to the <strong>next available delivery date</strong>. If the order memo notes a <strong>customer-requested date</strong>, use that. If that date <strong>is not available, flag it</strong> rather than guessing. The date is set before items are added, because changing it afterwards does not carry through to the lines.</td></tr>
+          <tr><td>Is installation required?</td><td><strong>Yes</strong> if the order carries <strong>any installation line</strong>. Several installation SKUs are in use, not just one, so the check is made on the whole family rather than a single product name.</td></tr>
+          <tr><td>Australian phone number</td><td>Normalise to local format. Numbers arrive with a leading zero, with a country code, and occasionally with a country code but <strong>no plus sign and no leading zero</strong>. All three resolve to the same local number. SAP rejects any country code.</td></tr>
+          <tr><td>Customer name</td><td>Taken from the shipping address. Where the primary name field is blank, the secondary one is used. SAP requires a name, so a blank on both is an exception, not a default.</td></tr>
           <tr><td>Which email?</td><td>Use the main order email on the sales order.</td></tr>
-          <tr><td>Address format</td><td>Split the street line into house number and street name (separate SAP fields).</td></tr>
+          <tr><td>Address format</td><td>Split the street line into house number and street name, which are separate SAP fields.</td></tr>
         </tbody>
       </table>
     </section>
@@ -159,34 +161,55 @@
         <h3>▲ Foreign contact number (e.g. Hong Kong +852) — do not complete the order</h3>
         <p>A foreign phone number on an Australian Revel delivery is treated as an <strong>incorrect contact number</strong>. The order must not be keyed or saved into SAP with that number.</p>
         <ol>
-          <li>Stop — do not complete the SAP entry.</li>
-          <li>Flag it to the <strong>CSR team on the Asana card</strong>, noting that the contact number on the order is incorrect.</li>
+          <li>Stop. Do not complete the SAP entry.</li>
+          <li>Flag it to the <strong>CSR team</strong>, noting that the contact number on the order is incorrect.</li>
           <li>CSR sources the correct Australian contact number.</li>
-          <li>The order is only finished once a valid number is supplied. It is tracked as "blocked — awaiting contact number" so it is never lost.</li>
+          <li>The order is only finished once a valid number is supplied. It is tracked as "blocked, awaiting contact number" so it is never lost.</li>
         </ol>
+      </div>
+    </section>
+
+    <section>
+      <h2>Critical safeguard — stock held outside Winnings</h2>
+      <div class="alert">
+        <h3>▲ A line stocked elsewhere must never be keyed to Winnings</h3>
+        <p>An order can have some lines held at a Winnings site and others held at a different warehouse entirely. Only lines at the four Winnings dispatch sites are keyed. Anything else is raised with the approver <strong>before</strong> the order is saved, because Winnings cannot dispatch stock they do not hold.</p>
+        <p style="margin-top:10px;">This also means the number of lines in the export can be lower than the number of lines on the order. That difference is a signal to check, not a discrepancy to ignore.</p>
       </div>
     </section>
 
     <section>
       <h2>Built-in checks</h2>
       <ul class="clean">
-        <li><strong>Ready to Send only:</strong> only orders flagged "Ready to Send" in NetSuite are in scope; orders not yet marked ready are left out of the work-list.</li>
-        <li><strong>Ship Complete respected:</strong> orders flagged ship-complete are held out of the work-list until every line is available, so they are only entered when the whole order can ship together.</li>
-        <li><strong>Duplicate guard:</strong> SAP blocks a sales order whose reference has already been entered, preventing double-keying. If flagged, the order is already in SAP and is skipped.</li>
-        <li><strong>System prompts:</strong> expected SAP messages (oversized items, a known time-zone notice, installation question) are handled to a defined rule rather than guessed.</li>
-        <li><strong>Cross-check:</strong> the weight, volume and warehouse SAP derives are compared back to NetSuite before the order is handed over for review.</li>
+        <li><strong>Ready to Send only:</strong> only orders flagged "Ready to Send" are in scope. Orders not yet marked ready are left out of the work-list.</li>
+        <li><strong>Ship Complete respected:</strong> the picking queue holds ship-complete orders back until every line is available, so they are only entered when the whole order can ship together.</li>
+        <li><strong>Outstanding quantities only:</strong> lines already dispatched are excluded, and partially dispatched lines carry only the remainder. This is what prevents an order being shipped twice.</li>
+        <li><strong>Revel only:</strong> the export is scoped to Revel orders, so other brands dispatching from the same sites do not appear.</li>
+        <li><strong>Duplicate guard:</strong> SAP blocks a sales order whose reference has already been entered. This is the reliable check. Notes written into the order memo are treated as a hint only, because an order can be dispatched in several parts and the memo formats vary.</li>
+        <li><strong>System prompts:</strong> expected SAP messages, such as oversized items, a known time-zone notice, and the installation question, are handled to a defined rule rather than guessed.</li>
         <li><strong>No silent saves:</strong> orders are built and left at the save step for a person to confirm. Writing to the production system always has a human in the loop.</li>
       </ul>
     </section>
 
     <section>
+      <h2>Known limits</h2>
+      <p>Worth understanding before relying on the export.</p>
+      <ul class="clean">
+        <li><strong>The export does not choose the batch.</strong> It is a lookup table keyed by order number. The picking queue is the only authority on which orders are pickable.</li>
+        <li><strong>The export is a snapshot.</strong> It is accurate as at the moment it was produced, so it is run fresh on the day it is used.</li>
+        <li><strong>It is not a duplicate guard.</strong> It filters out orders carrying one common prior-dispatch marker, but other formats exist. SAP's own check is the backstop.</li>
+        <li><strong>Weight and volume are not exported.</strong> Those figures are calculated when a NetSuite order is opened on screen and cannot be carried into a file, so they are no longer used as a cross-check.</li>
+      </ul>
+    </section>
+
+    <section>
       <h2>After an order is saved</h2>
-      <p>Once an order is confirmed and saved, SAP issues an order number. That number is recorded against the original NetSuite order — this is both the record of completion and the marker that prevents the order being entered twice.</p>
+      <p>Once an order is confirmed and saved, SAP issues an order number. That number is recorded by hand against the original NetSuite order by the person reviewing it. This is both the record of completion and the human sign-off on the entry.</p>
     </section>
 
     <div class="note">
       <h3>Kept in sync</h3>
-      <p>This page is the human-readable companion to Gary's working skill file. Both are updated together whenever the process changes, so what is published here always reflects how orders are actually being entered.</p>
+      <p>This page is the human-readable companion to the working skill file. Both are updated together whenever the process changes, so what is published here always reflects how orders are actually being entered.</p>
     </div>
 
   </main>
@@ -194,7 +217,7 @@
   <footer>
     <div class="wrap">
       <span>The AFS Group — Operations</span>
-      <span>Maintained by <strong>Gary</strong> · Reflects the live Winnings SAP order-entry process · Last updated 17 June 2026</span>
+      <span>Reflects the live Winnings SAP order-entry process · Last updated 5 August 2026</span>
     </div>
   </footer>
 </body>

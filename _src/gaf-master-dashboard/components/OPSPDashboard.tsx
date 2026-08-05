@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
     Compass, Heart, Mountain, Star, MapPin, Target, Flag, Rocket, Loader2,
     ShieldCheck, AlertTriangle, Lightbulb, TrendingUp, Users, Settings, CheckCircle2,
-    PhoneIncoming, Info,
+    PhoneIncoming, Info, PencilRuler,
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis,
@@ -73,6 +73,59 @@ const HGBTracker: React.FC = () => {
             })() : null}
         </div>
     );
+};
+
+/* ------------------------------------------------------ AI Gym Designer usage
+ * "Gym designs created" is a GAF Critical Number (Adam Carter, Aug 2026).
+ *
+ * The count comes live from the designer app's own Cloudflare Pages function,
+ * which owns the permanent `stat:design:` marker keys. Deliberately NOT a nightly
+ * job on anyone's Mac, and deliberately not a count of live `design:` keys, which
+ * carry a 90-day TTL and would make the number silently fall over time.
+ *
+ * The OPSP doc still owns the name, owner and bands. This only ever supplies the
+ * Current value, so Adam never types this one in.
+ */
+const DESIGN_STATS_URL = 'https://gaf-gym-designer.pages.dev/api/stats';
+const DESIGN_STATS_CACHE = 'gaf-design-stats-v1';
+const GYM_DESIGN_CN = /gym\s*design/i;
+
+interface DesignStats {
+    total: number;
+    last30: number;
+    daily: { date: string; count: number }[];
+    firstDesign: string | null;
+    asOf: string;
+}
+
+const useDesignStats = () => {
+    const [stats, setStats] = useState<DesignStats | null>(null);
+    const [stale, setStale] = useState(false);
+
+    useEffect(() => {
+        let cancelled = false;
+        // Paint the last good response first, then correct it. HGBTracker returns
+        // null on failure and vanishes silently; a Critical Number should degrade
+        // to a visibly dated number rather than disappear.
+        try {
+            const cached = localStorage.getItem(DESIGN_STATS_CACHE);
+            if (cached) { setStats(JSON.parse(cached)); setStale(true); }
+        } catch { /* private mode / quota — not worth failing over */ }
+
+        fetch(DESIGN_STATS_URL)
+            .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+            .then((d: DesignStats) => {
+                if (cancelled || typeof d?.total !== 'number') return;
+                setStats(d);
+                setStale(false);
+                try { localStorage.setItem(DESIGN_STATS_CACHE, JSON.stringify(d)); } catch { /* ignore */ }
+            })
+            .catch(() => { /* keep the cached figure, already flagged stale */ });
+
+        return () => { cancelled = true; };
+    }, []);
+
+    return { stats, stale };
 };
 
 // Published-to-web copy of "GAF - One Page Plan (Scaling Up Scoreboard)".
@@ -578,6 +631,54 @@ export default function OPSPDashboard() {
         return isNaN(pct) ? AOV_BASELINE : AOV_BASELINE * (1 + pct / 100);
     }, [data]);
 
+    const { stats: designStats, stale: designStatsStale } = useDesignStats();
+
+    // Merge the live designs-created count into the doc's critical numbers. The doc
+    // owns name/owner/bands; the app owns Current. If the row is not in the doc yet,
+    // render a clearly-marked placeholder rather than hiding the number, so the tile
+    // is live immediately and visibly nags until Adam sets the bands.
+    const criticalNumbers = useMemo<(CriticalNumber & { note?: string })[]>(() => {
+        const rows: (CriticalNumber & { note?: string })[] = (data?.criticalNumbers || []).map((c) => ({ ...c }));
+        if (!designStats) return rows;
+
+        const live = designStats.total.toLocaleString();
+        const hit = rows.find((c) => GYM_DESIGN_CN.test(c.name));
+        if (hit) {
+            hit.current = live;
+            if (!num(hit.green)) hit.note = 'Bands not set in the OPSP doc.';
+        } else {
+            rows.push({
+                name: 'Gym designs created',
+                owner: 'Adam Carter',
+                superGreen: '', green: '', yellow: '', red: '',
+                current: live,
+                note: 'Not yet in the OPSP doc. Add a row whose name contains "gym design", with bands, and this card takes its place.',
+            });
+        }
+        return rows;
+    }, [data, designStats]);
+
+    // Last 30 calendar days, zero-filled, so a quiet stretch reads as a gap rather
+    // than collapsing the axis into a handful of busy days.
+    const designDailyData = useMemo(() => {
+        if (!designStats) return [];
+        const counts = new Map(designStats.daily.map((x) => [x.date, x.count]));
+        const out: { date: string; label: string; designs: number }[] = [];
+        for (let i = 29; i >= 0; i--) {
+            const dt = new Date();
+            dt.setDate(dt.getDate() - i);
+            const key = new Intl.DateTimeFormat('en-CA', {
+                timeZone: 'Australia/Adelaide', year: 'numeric', month: '2-digit', day: '2-digit',
+            }).format(dt);
+            out.push({
+                date: key,
+                label: dt.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' }),
+                designs: counts.get(key) ?? 0,
+            });
+        }
+        return out;
+    }, [designStats]);
+
     if (isLoading || !data) {
         return (
             <div className="flex flex-col items-center justify-center h-screen gap-4">
@@ -685,10 +786,12 @@ export default function OPSPDashboard() {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* A fixed 2-col grid leaves a dead half-width hole when there's only
                             one card total, so only split above one. GC Dead Stock isn't a doc
-                            row (see GCDeadStockCard above), so it counts toward the total here. */}
-                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${d.criticalNumbers.length + 1 > 1 ? 'md:grid-cols-2' : ''}`}>
+                            row (see GCDeadStockCard above), so it counts toward the total here.
+                            `criticalNumbers` is the doc's rows with the live designs-created
+                            count merged in, so it may run one longer than the doc itself. */}
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${criticalNumbers.length + 1 > 1 ? 'md:grid-cols-2' : ''}`}>
                             <GCDeadStockCard />
-                            {d.criticalNumbers.map((cn, i) => {
+                            {criticalNumbers.map((cn, i) => {
                                 const band = bandFor(cn);
                                 return (
                                     <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
@@ -714,6 +817,20 @@ export default function OPSPDashboard() {
                                                     </div>
                                                 ))}
                                             </div>
+                                            {cn.note && (
+                                                <div className="flex items-start gap-1.5 mt-3 text-[11px] text-amber-300/90 font-medium">
+                                                    <AlertTriangle size={12} className="shrink-0 mt-0.5" />
+                                                    <span>{cn.note}</span>
+                                                </div>
+                                            )}
+                                            {GYM_DESIGN_CN.test(cn.name) && designStats && (
+                                                <div className="text-[10px] text-gray-500 font-semibold mt-2">
+                                                    Live from the designer app
+                                                    {designStatsStale
+                                                        ? ' • app unreachable, showing last known figure'
+                                                        : ` • as at ${new Date(designStats.asOf).toLocaleString('en-AU', { timeZone: 'Australia/Adelaide', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}`}
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 );
@@ -837,6 +954,55 @@ export default function OPSPDashboard() {
                                 </ResponsiveContainer>
                             </div>
                         </div>
+
+                        {/* Gym designs created — the third critical number with a live feed.
+                            Unlike AOV and calls, this one comes straight from the app that
+                            creates the designs, not from a spreadsheet. */}
+                        {designStats && (
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
+                                <div className="flex justify-between items-start gap-4 mb-6">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <div className="p-1.5 bg-orange-100 text-orange-700 rounded-lg"><PencilRuler size={16} /></div>
+                                            <h3 className="font-bold text-gray-900">Gym Designs Created</h3>
+                                            <a
+                                                href="https://gaf-gym-designer.pages.dev"
+                                                target="_blank" rel="noopener noreferrer"
+                                                className="text-gray-400 hover:text-blue-500 transition-colors ml-1"
+                                                title="Open the Home Gym Designer"
+                                            ><Info size={16} /></a>
+                                        </div>
+                                        <p className="text-xs text-gray-500 ml-9">
+                                            Last 30 days
+                                            {designStats.firstDesign && (
+                                                <> <span className="mx-1">•</span> since {new Date(designStats.firstDesign).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}</>
+                                            )}
+                                        </p>
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <div className="text-2xl font-bold text-gray-900">{designStats.total.toLocaleString()}</div>
+                                        <div className="text-xs font-bold text-gray-500">{designStats.last30.toLocaleString()} in 30d</div>
+                                    </div>
+                                </div>
+                                <div className="flex-1 min-h-[300px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RechartsBarChart data={designDailyData} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                                            <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} dy={10} interval={4} />
+                                            <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} allowDecimals={false} />
+                                            <Tooltip
+                                                formatter={(val: number) => [val, 'Designs created']}
+                                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                                            />
+                                            <Bar dataKey="designs" fill={GAF_COLORS.orange} radius={[4, 4, 0, 0]} barSize={14} />
+                                        </RechartsBarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                <p className="text-[10px] text-gray-400 font-semibold mt-3">
+                                    Includes the 20-22 Jul internal test round. Counted in Adelaide time.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </div>
 

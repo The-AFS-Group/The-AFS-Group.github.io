@@ -834,21 +834,27 @@ export default function OPSPDashboard() {
                             })}
                         </div>
 
-                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 flex flex-col">
                             <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4">Theme (Qtr / Annual)</div>
                             {d.theme.length === 0 && <p className="text-sm text-gray-400 italic">Not entered.</p>}
-                            {d.theme.map((t, i) => (
-                                <div key={i} className="mb-4 last:mb-0">
-                                    <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">{t.key}</div>
-                                    <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
-                                        ? 'text-lg font-black text-orange-300 font-montserrat'
-                                        : 'text-sm text-gray-200 font-medium'}`}>
-                                        {t.value && !PLACEHOLDER.test(t.value)
-                                            ? t.value
-                                            : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}
+                            {/* justify-between spreads the items across the full stretched height of
+                                this column (it sits beside the 2x2 critical-number grid, which is
+                                usually taller), rather than clumping them at the top with dead space
+                                below — each gets its own sub-card so the column reads as filled. */}
+                            <div className="flex-1 flex flex-col justify-between gap-4">
+                                {d.theme.map((t, i) => (
+                                    <div key={i} className="bg-white/5 rounded-xl p-4 border border-white/10">
+                                        <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1.5">{t.key}</div>
+                                        <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
+                                            ? 'text-xl font-black text-orange-300 font-montserrat'
+                                            : 'text-base text-gray-200 font-medium'}`}>
+                                            {t.value && !PLACEHOLDER.test(t.value)
+                                                ? t.value
+                                                : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>

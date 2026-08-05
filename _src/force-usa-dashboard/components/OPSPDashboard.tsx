@@ -5,6 +5,9 @@ import { Target, Flag, Star, Heart, Mountain, Compass, MapPin, Rocket, TrendingU
 const FORCE_USA_DOC_URL = "https://docs.google.com/document/d/e/2PACX-1vQPEzXwMibBUTbQ8CzisOeZmHNUypfxF-vQtJvCdv32pa6PN5gnQYlMZTzYiJFPd0OVg8OJFkr9mgxe/pub";
 
 const PROXIES = [
+  // Primary: our own Cloudflare proxy. The public ones below both broke 2026-08-05
+  // (allorigins down, corsproxy locked out prod origins) and froze this tab.
+  (url: string) => `https://afs-docs-proxy.josh-03c.workers.dev/?url=${encodeURIComponent(url)}`,
   (url: string) => `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
   (url: string) => `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
   (url: string) => `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,

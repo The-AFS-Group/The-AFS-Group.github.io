@@ -342,6 +342,7 @@ export default function OPSPDashboard() {
         // flaky (rate-limits, hangs), which would otherwise leave the tab stuck on the
         // loader, so race a timeout and fall through to a second proxy before degrading.
         const proxies = (url: string) => [
+            `https://afs-docs-proxy.josh-03c.workers.dev/?url=${encodeURIComponent(url)}`,
             `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
             `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
         ];

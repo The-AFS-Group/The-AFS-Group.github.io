@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
-import { Activity, Flag, Compass, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
-import GroupHealthDashboard from './GroupHealthDashboard';
+import { Flag, Compass, Menu, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import StrategicPrioritiesDashboard from './StrategicPrioritiesDashboard';
 import OPSPDashboard from './OPSPDashboard';
 
-type View = 'health' | 'opsp' | 'priorities';
+type View = 'opsp' | 'priorities';
 
 const NAV: { id: View; label: string; icon: React.ElementType }[] = [
-  { id: 'health', label: 'Group Health', icon: Activity },
   { id: 'opsp', label: 'OPSP', icon: Compass },
   { id: 'priorities', label: 'Strategic Priorities', icon: Flag },
 ];
@@ -16,7 +14,7 @@ const AFS_LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.
 const AFS_ICON = '/images/afs-group-icon-orange.png';
 
 const Dashboard: React.FC = () => {
-  const [activeView, setActiveView] = useState<View>('health');
+  const [activeView, setActiveView] = useState<View>('opsp');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -87,9 +85,8 @@ const Dashboard: React.FC = () => {
         </div>
 
         <div className="flex-1">
-          {activeView === 'opsp' ? <OPSPDashboard />
-            : activeView === 'priorities' ? <StrategicPrioritiesDashboard />
-            : <GroupHealthDashboard />}
+          {activeView === 'priorities' ? <StrategicPrioritiesDashboard />
+            : <OPSPDashboard />}
         </div>
       </div>
 

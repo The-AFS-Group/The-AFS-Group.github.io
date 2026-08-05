@@ -561,41 +561,66 @@ export default function OPSPDashboard() {
                 <div className="bg-gray-900 rounded-2xl shadow-md p-6 md:p-8 text-white relative overflow-hidden">
                     <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-orange-500 to-gray-500" />
 
-                    <div className="flex items-center gap-2 mb-8">
+                    {(() => {
+                        const cns = d.criticalNumbers;
+                        // A Critical Number is a placeholder until it is quantified: the exec
+                        // has named it in the OPSP doc but left every band and the current value
+                        // unset ("Not set" / "Not yet filled"). Render those cleanly as TBC rather
+                        // than printing "Not set" five times, and auto-promote to a live card the
+                        // moment the bands are filled in the source doc.
+                        const isUnset = (cn: CriticalNumber) =>
+                            [cn.current, cn.superGreen, cn.green, cn.yellow, cn.red]
+                                .every((v) => !v || PLACEHOLDER.test(String(v).trim()));
+                        const beingRefined = cns.length === 0 || cns.every(isUnset);
+                        return (
+                    <>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-8">
                         <div className="p-2 bg-white/10 text-white rounded-lg"><Rocket size={20} /></div>
                         <h3 className="font-bold text-xl">Critical Numbers • {d.quarterLabel.replace(/^Quarterly\s*/i, '').replace(/[()]/g, '')}</h3>
+                        {beingRefined && (
+                            <span className="inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide">
+                                Placeholder • Being Refined
+                            </span>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* A fixed 2-col grid leaves a dead half-width hole when the doc
                             carries a single critical number, so only split above one. */}
-                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${d.criticalNumbers.length > 1 ? 'md:grid-cols-2' : ''}`}>
-                            {d.criticalNumbers.length === 0 && (
-                                <p className="text-sm text-gray-400 italic">No critical numbers entered in the source document.</p>
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${cns.length > 1 ? 'md:grid-cols-2' : ''}`}>
+                            {cns.length === 0 && (
+                                <div className="bg-white/5 rounded-2xl p-6 border border-dashed border-white/20 backdrop-blur-sm">
+                                    <div className="font-bold text-lg leading-tight text-gray-300">Group Critical Numbers</div>
+                                    <div className="text-xs text-gray-400 mt-1">To be added and quantified in the source OPSP</div>
+                                    <div className="mt-4 inline-flex items-center gap-1.5 bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wide">TBC</div>
+                                </div>
                             )}
-                            {d.criticalNumbers.map((cn, i) => {
+                            {cns.map((cn, i) => {
+                                const unset = isUnset(cn);
                                 const band = bandFor(cn);
                                 return (
-                                    <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+                                    <div key={i} className={`bg-white/5 rounded-2xl p-6 border backdrop-blur-sm ${unset ? 'border-dashed border-white/20' : 'border-white/10'}`}>
                                         <div className="flex justify-between items-start gap-3 mb-4">
                                             <div>
                                                 <div className="font-bold text-lg leading-tight">{cn.name}</div>
                                                 {cn.owner && <div className="text-xs text-gray-400 mt-1">{cn.owner}</div>}
                                             </div>
-                                            <div className={`px-2 py-1 text-xs font-bold rounded border shrink-0 ${TONE[band.tone]}`}>
-                                                {band.label}
+                                            <div className={`px-2 py-1 text-xs font-bold rounded border shrink-0 ${unset ? 'bg-amber-500/20 text-amber-300 border-amber-500/30' : TONE[band.tone]}`}>
+                                                {unset ? 'TBC' : band.label}
                                             </div>
                                         </div>
                                         <div className="border-t border-white/10 pt-4">
                                             <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">Current</div>
                                             <div className="text-3xl font-black mb-4">
-                                                {cn.current || <span className="text-base font-medium text-gray-500">Not recorded</span>}
+                                                {unset
+                                                    ? <span className="text-base font-medium text-gray-500">To be set</span>
+                                                    : (cn.current || <span className="text-base font-medium text-gray-500">Not recorded</span>)}
                                             </div>
                                             <div className="grid grid-cols-4 gap-1.5 text-center">
                                                 {([['Super', cn.superGreen], ['Green', cn.green], ['Yellow', cn.yellow], ['Red', cn.red]] as const).map(([lbl, val]) => (
                                                     <div key={lbl} className="bg-white/5 rounded-lg py-2">
                                                         <div className="text-[9px] uppercase text-gray-500 font-bold">{lbl}</div>
-                                                        <div className="text-xs font-bold text-gray-200">{val || '—'}</div>
+                                                        <div className="text-xs font-bold text-gray-200">{unset ? '—' : (val || '—')}</div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -622,6 +647,8 @@ export default function OPSPDashboard() {
                             ))}
                         </div>
                     </div>
+                    </>
+                    ); })()}
                 </div>
 
                 {/* No Trend Detail block here: those were Revel's brand-specific

@@ -459,11 +459,15 @@ footer a{color:var(--g400)}
       prog = document.getElementById('prog'),
       chap = document.getElementById('chap');
 
-  /* progress while the film buffers */
+  /* Wait for the film to actually BUFFER, not merely to have metadata.
+     loadeddata fires almost instantly and leaves scrubbing starved on a cold
+     network load, so the loader stays up until the file is essentially resident. */
   var poll = setInterval(function(){
     try {
-      if (v.buffered.length && v.duration) {
-        lbar.style.width = Math.min(100, v.buffered.end(0)/v.duration*100).toFixed(0)+'%';
+      if (v.buffered.length && v.duration){
+        var pct = Math.min(100, v.buffered.end(v.buffered.length-1)/v.duration*100);
+        lbar.style.width = pct.toFixed(0)+'%';
+        if (pct >= 98) go();
       }
     } catch(e){}
   }, 180);
@@ -532,10 +536,10 @@ footer a{color:var(--g400)}
 
   var began = false;
   function go(){ if (began) return; began = true; start(); }
-  v.addEventListener('loadeddata', go, {once:true});
+  /* only hard-fail cases release the gate early; the buffer poll above is the normal path */
   v.addEventListener('error', go, {once:true});
-  if (v.readyState >= 2) go();
-  setTimeout(go, 20000);
+  v.addEventListener('canplaythrough', function(){ setTimeout(go, 1200); }, {once:true});
+  setTimeout(go, 45000);   /* backstop: never trap someone on a slow line forever */
   v.load();
 })();
 </script>

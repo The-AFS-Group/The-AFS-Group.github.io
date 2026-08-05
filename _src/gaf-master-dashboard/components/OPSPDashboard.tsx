@@ -89,6 +89,55 @@ const DOC_PUB_URL =
 const AOV_BASELINE = 1454;
 const TARGET_CALLS = 40;
 
+// Measurable Target / Critical #: "Reduce GC Dead Stock: $573k ➔ <$400k" (locked when
+// the OPSP target was set). Not a row in the doc, so it's a separate card fed by a
+// committed JSON — same pattern as the HGB tracker above. No automated NetSuite pipeline
+// exists yet; gc-dead-stock-tracker.json is updated by hand from the "Dead Stock by Line"
+// saved search, total inv value filtered to location = AFS-Gold Coast only.
+const GC_DEAD_STOCK_BASELINE = 573000;
+
+interface DeadStockData { current: number; target: number; asOf: string; note?: string; }
+const GCDeadStockCard: React.FC = () => {
+    const [t, setT] = useState<DeadStockData | null>(null);
+    useEffect(() => {
+        fetch(`${import.meta.env.BASE_URL}gc-dead-stock-tracker.json?cb=${Date.now()}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((d) => d && setT(d))
+            .catch(() => {});
+    }, []);
+    if (!t) return null;
+    const fmtK = (n: number) => `$${Math.round(n / 1000)}k`;
+    const tone: 'super' | 'yellow' | 'red' =
+        t.current < t.target ? 'super' : t.current < GC_DEAD_STOCK_BASELINE ? 'yellow' : 'red';
+    const label = tone === 'super' ? 'Target Hit' : tone === 'yellow' ? 'Improving' : 'Red';
+    return (
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+            <div className="flex justify-between items-start gap-3 mb-4">
+                <div>
+                    <div className="font-bold text-lg leading-tight">Reduce GC Dead Stock</div>
+                    <div className="text-xs text-gray-400 mt-1">AFS-Gold Coast only</div>
+                </div>
+                <div className={`px-2 py-1 text-xs font-bold rounded border shrink-0 ${TONE[tone]}`}>{label}</div>
+            </div>
+            <div className="border-t border-white/10 pt-4">
+                <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">Current</div>
+                <div className="text-3xl font-black mb-4">{fmtK(t.current)}</div>
+                <div className="grid grid-cols-2 gap-1.5 text-center">
+                    <div className="bg-white/5 rounded-lg py-2">
+                        <div className="text-[9px] uppercase text-gray-500 font-bold">Start</div>
+                        <div className="text-xs font-bold text-gray-200">{fmtK(GC_DEAD_STOCK_BASELINE)}</div>
+                    </div>
+                    <div className="bg-white/5 rounded-lg py-2">
+                        <div className="text-[9px] uppercase text-gray-500 font-bold">Target</div>
+                        <div className="text-xs font-bold text-gray-200">&lt;{fmtK(t.target)}</div>
+                    </div>
+                </div>
+                <div className="text-[10px] text-gray-500 font-semibold mt-3">As of {t.asOf}</div>
+            </div>
+        </div>
+    );
+};
+
 interface Thrust { title: string; desc: string; }
 interface Initiative { text: string; started: string; status: string; }
 interface CriticalNumber {
@@ -634,12 +683,11 @@ export default function OPSPDashboard() {
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        {/* A fixed 2-col grid leaves a dead half-width hole when the doc
-                            carries a single critical number, so only split above one. */}
-                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${d.criticalNumbers.length > 1 ? 'md:grid-cols-2' : ''}`}>
-                            {d.criticalNumbers.length === 0 && (
-                                <p className="text-sm text-gray-400 italic">No critical numbers entered in the source document.</p>
-                            )}
+                        {/* A fixed 2-col grid leaves a dead half-width hole when there's only
+                            one card total, so only split above one. GC Dead Stock isn't a doc
+                            row (see GCDeadStockCard above), so it counts toward the total here. */}
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${d.criticalNumbers.length + 1 > 1 ? 'md:grid-cols-2' : ''}`}>
+                            <GCDeadStockCard />
                             {d.criticalNumbers.map((cn, i) => {
                                 const band = bandFor(cn);
                                 return (

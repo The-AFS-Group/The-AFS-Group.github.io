@@ -142,12 +142,12 @@ const DOC_PUB_URL =
 const AOV_BASELINE = 1454;
 const TARGET_CALLS = 40;
 
-// Measurable Target / Critical #: "Reduce GC Dead Stock: $573k ➔ <$400k" (locked when
+// Measurable Target / Critical #: "Reduce GC Dead Stock: $692k ➔ <$400k" (locked when
 // the OPSP target was set). Not a row in the doc, so it's a separate card. Live-fetches
 // the "Grand Total" cell from the GAF_DEADSTOCK sheet (published to web as CSV), same as
 // the AOV/inbound-call feeds above — no committed snapshot, always reflects the sheet.
 const GC_DEAD_STOCK_TARGET = 400000;
-const GC_DEAD_STOCK_BASELINE = 573000;
+const GC_DEAD_STOCK_BASELINE = 692000;
 
 const GCDeadStockCard: React.FC = () => {
     const [current, setCurrent] = useState<number | null>(null);

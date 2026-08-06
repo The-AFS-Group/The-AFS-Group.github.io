@@ -220,7 +220,7 @@ footer a{color:var(--g400)}
         <div class="no">Myth 02</div>
         <div class="bd">
           <div class="say">He's chasing the cheapest</div>
-          <div class="real">He has a number. It isn't a wall.</div>
+          <div class="real">His budget bends.</div>
           <div class="ev">Price is the most-mentioned friction in the whole dataset (<b>485</b>), yet only <b>19%</b> hold a strict maximum and <b>79%</b> have some flexibility. Compared to a competitor we read as similar or cheaper <b>363</b> times against premium <b>73</b>. He is not looking for the cheapest option, he is looking to be convinced the number is right.</div>
         </div>
       </div>
@@ -333,7 +333,8 @@ footer a{color:var(--g400)}
       <div class="stat"><div class="v">30</div><div class="l">Emotional</div><div class="s">Rarely stated out loud, but it drives the upgrade.</div></div>
       <div class="stat"><div class="v">4</div><div class="l">Social</div><div class="s">Almost never admitted, yet 162 want to be seen as knowledgeable.</div></div>
     </div>
-    <p class="note"><strong>Triggers are events, not moods.</strong> A new house, a renovation, quitting a gym, or a sale with a deadline. He does not drift into this. Something happens, and then he starts looking. Two of those we cannot control. The fourth we schedule ourselves.</p>
+    <p class="note"><strong>Separate the trigger from the catalyst.</strong> The <em>trigger</em> is what puts him in the market, and it is always a change in his life: he has outgrown what he owns (<b>73</b>), a renovation or move has made room (<b>54</b>), an injury has changed what he needs (<b>20</b>). The <em>catalyst</em> is what makes him act on a particular Tuesday, and that is usually a deadline (<b>113</b>).</p>
+    <p class="note"><strong>A sale is a catalyst, never a trigger.</strong> Nobody wants a home gym because it is discounted. Confusing the two sends us upstream in the wrong direction: we end up trying to buy demand in November that we should have been building in August. Caveat worth stating plainly — the coded trigger field is the weakest in the dataset, roughly two thirds of entries are circular ("wants to buy gym equipment"), so treat these as directional, not precise.</p>
   </div>
 </section>
 
@@ -399,7 +400,7 @@ footer a{color:var(--g400)}
       <thead><tr><th>FY26</th><th class="r">Jul</th><th class="r">Aug</th><th class="r">Sep</th><th class="r">Oct</th><th class="r">Nov</th><th class="r">Dec</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">May</th><th class="r">Jun</th></tr></thead>
       <tbody><tr><td>Builds</td><td class="r">67</td><td class="r">76</td><td class="r">103</td><td class="r">74</td><td class="r"><b>162</b></td><td class="r">135</td><td class="r">70</td><td class="r">66</td><td class="r">104</td><td class="r">93</td><td class="r">86</td><td class="r"><b>221</b></td></tr></tbody>
     </table>
-    <p class="note">June is 3.3× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments in the year when project-mode buyers actually commit.</p>
+    <p class="note">June is 3.3× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments in the year when project-mode buyers actually commit. But read it correctly: <strong>these months convert demand, they do not create it.</strong> The trigger that put him in the market happened weeks or months earlier, and the sale only decided the date. The implication is uncomfortable and worth saying out loud — <strong>the pipeline has to be full before November, not during it.</strong></p>
 
     <div class="warn">
       <b>One number to handle carefully.</b> You may know this customer as “$1,271 median profit, 2.5× online”. That comes from the archetype model, which is a different population from the cart-rule cohort we now count. On the cohort we count, the assisted premium is <b>1.33×</b>, not 2.5×, and median gross profit is higher, not lower. Do not quote “$1,271 per home gym build”. Which figure becomes official is an open decision.
@@ -429,18 +430,18 @@ footer a{color:var(--g400)}
   var BEATS = [
     {t:[0.4,7.4],   ch:'01 · The wait',          k:'Trigger',
      l:'Dave is done waiting for a bench.',
-     s:'Something has to break first. For this cohort it is most often a sale with a deadline, outgrowing the setup they already have, or a renovation or move that suddenly makes room. Dave’s queue is one version of it.',
-     d:['Sale deadline <b>113</b>','Outgrew setup <b>73</b>','Reno or move <b>54</b>']},
+     s:'Something has to break first, and it is a change in his life rather than a change in our pricing. He has outgrown the setup he already has, a renovation or a move has suddenly made room, or an injury has changed what he needs. Dave’s queue is one version of it.',
+     d:['Outgrew setup <b>73</b>','Reno or move <b>54</b>','Injury or health <b>20</b>']},
 
     {t:[8.4,15.4],  ch:'02 · The overwhelm',     k:'Consideration',
      l:'Three weeks of tabs. He’s no closer.',
-     s:'He isn’t comparing prices, he’s trying to work out what he needs. The three things he cannot resolve on our own site: which model differs from which, whether it is actually in stock, and what is compatible with what.',
-     d:['Model &amp; spec <b>234</b>','Stock <b>218</b>','Compatibility <b>127</b>']},
+     s:'He isn’t comparing prices, he’s trying to work out what he needs: which model differs from which, whether it is actually in stock, what is compatible with what. A deadline is usually what finally breaks the deadlock. It does not create the want, it forces the decision.',
+     d:['Model &amp; spec <b>234</b>','Stock <b>218</b>','Sale forced the call <b>113</b>']},
 
     {t:[16.4,23.4], ch:'03 · The empty room',    k:'The money question',
-     l:'He has a number in his head. It isn’t a wall.',
-     s:'Price is the most-mentioned friction in the entire dataset. But only 19% hold a strict maximum. He is not looking for the cheapest option, he is looking to be convinced the number is right.',
-     d:['Some flexibility <b>79%</b>','Strict maximum <b>19%</b>','Similar or cheaper <b>363</b> v premium <b>73</b>']},
+     l:'His budget bends.',
+     s:'Price is the most-mentioned friction in the whole dataset, so it is easy to read him as a bargain hunter. He isn’t. Only 19% hold a strict maximum, 79% have some flexibility, and he is not chasing the cheapest option — he is waiting to be convinced the number is right.',
+     d:['Budget has some flex <b>79%</b>','Strict maximum <b>19%</b>','Price is his #1 stated friction <b>485</b>']},
 
     {t:[24.4,31.4], ch:'04 · The constraint',    k:'The wedge',
      l:'The rack he wants is 24 inches too deep.',

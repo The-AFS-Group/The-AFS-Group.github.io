@@ -173,6 +173,61 @@ footer a{color:var(--g400)}
   .chapter{position:relative;opacity:1;top:auto;left:auto;padding:20px 6vw 0}
   .rs{opacity:1}
 }
+
+/* journey — scrolling detail */
+.jrn{position:relative;height:760vh;background:#fff}
+.jrn-stick{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding:5vh 0}
+.ribbon{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:22px}
+.rs{border:1px solid var(--g200);border-radius:10px;background:#fff;padding:11px 9px;text-align:center;
+    opacity:.34;transition:opacity .35s ease,border-color .35s ease,background .35s ease,transform .35s ease}
+.rs.done{opacity:1}
+.rs.on{opacity:1;border-color:var(--orange);background:var(--orange-soft);transform:translateY(-3px)}
+.rs .ix{font-family:var(--display);font-weight:900;font-size:10px;color:var(--orange-700);letter-spacing:.1em}
+.rs .nm{font-family:var(--display);font-weight:900;font-size:13px;margin-top:3px;line-height:1.1}
+@media(max-width:900px){.ribbon{grid-template-columns:repeat(4,1fr)}.rs .nm{font-size:11px}}
+.jd{border:1px solid var(--g200);border-radius:16px;background:var(--g50);padding:26px 28px;min-height:340px}
+.jd-top{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.jd-num{font-family:var(--display);font-weight:900;font-size:30px;color:var(--orange);line-height:1}
+.jd-name{font-family:var(--display);font-weight:900;font-size:clamp(21px,2.7vw,30px)}
+.jd-ev{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+       border:1px solid var(--g300);border-radius:999px;padding:4px 10px;color:var(--g600)}
+.jd-jtbd{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;
+       background:var(--ink);color:#fff;border-radius:999px;padding:5px 11px}
+.jd-mind{font-family:var(--display);font-weight:800;font-size:clamp(17px,2vw,22px);line-height:1.25;color:var(--ink);margin-bottom:14px}
+.jd-quote{border-left:3px solid var(--orange);padding:2px 0 2px 15px;margin:0 0 18px}
+.jd-quote q{font-size:15.5px;color:var(--g700);font-style:italic}
+.jd-quote .qs{display:block;margin-top:6px;font-family:var(--display);font-weight:700;font-size:10px;
+       letter-spacing:.09em;text-transform:uppercase;color:var(--g500)}
+.jd-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.jd-cl{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.12em;text-transform:uppercase;
+       color:var(--orange-700);margin-bottom:5px}
+.jd-cols p{font-size:14px;color:var(--g600);line-height:1.5}
+.jd-action{font-size:14.5px;color:var(--g700);line-height:1.55;border-top:1px solid var(--g200);padding-top:14px}
+.jd-metric{margin-top:12px;font-size:13px;color:var(--g600);display:flex;gap:10px;align-items:baseline;flex-wrap:wrap}
+.jd-ml{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--g500)}
+@media(max-width:760px){.jd-cols{grid-template-columns:1fr}.jd{min-height:0}}
+@media (prefers-reduced-motion: reduce){.jrn{height:auto}.jrn-stick{position:relative;min-height:0}.rs{opacity:1}}
+
+
+/* journey layout corrections — override the older .rs rules and fit one viewport */
+.jrn .rs{min-height:0;display:block}
+.jrn .sec-head{margin-bottom:18px}
+.jrn .sec-head h2{font-size:clamp(23px,3.1vw,38px)}
+.jrn .sec-head p{font-size:15px;margin-top:10px;max-width:70ch}
+.jrn .ribbon{margin-bottom:16px}
+.jrn .jd{min-height:0;padding:22px 24px}
+.jrn .jd-mind{font-size:clamp(16px,1.8vw,20px);margin-bottom:12px}
+.jrn .jd-quote{margin:0 0 14px}
+.jrn .jd-cols{margin-bottom:12px}
+.jrn .loopback{margin-top:14px;padding:12px 18px}
+.jrn .loopback .lt{font-size:13px}
+@media(max-height:860px){
+  .jrn .sec-head h2{font-size:26px}
+  .jrn .sec-head p{font-size:13.5px}
+  .jrn .jd-cols{display:none}
+  .jrn .loopback{display:none}
+}
+
 </style>
 </head>
 <body>
@@ -200,25 +255,46 @@ footer a{color:var(--g400)}
 </section>
 
 <!-- ═══ JOURNEY ═══ -->
-<section class="pad" id="journey">
-  <div class="wrap">
-    <div class="sec-head">
-      <span class="eyebrow">01 · The journey</span>
-      <h2>It does not end. It loops.</h2>
-      <p>That is the journey you just watched, laid out. Six stages and a trigger, run in two lanes: self serve, and the phone. Advocacy is not the finish, it is the top of the next person's journey.</p>
-    </div>
-    <div class="ribbon" id="ribbon">
-      <div class="rs"><div class="ix">00</div><div class="nm">Trigger</div><div class="md">“Something changed. I need my own setup.”</div></div>
-      <div class="rs"><div class="ix">01</div><div class="nm">Consideration</div><div class="md">“I just don't know what I want.”</div></div>
-      <div class="rs"><div class="ix">02</div><div class="nm">Design</div><div class="md">“Show me my gym before I spend a cent.”</div></div>
-      <div class="rs"><div class="ix">03</div><div class="nm">Purchase</div><div class="md">“Just the shipping, and is it in stock?”</div></div>
-      <div class="rs"><div class="ix">04</div><div class="nm">Build</div><div class="md">“It arrived. Now help me set it up right.”</div></div>
-      <div class="rs"><div class="ix">05</div><div class="nm">Grow</div><div class="md">“I've outgrown the starter kit.”</div></div>
-      <div class="rs"><div class="ix">06</div><div class="nm">Advocacy</div><div class="md">“You have to see my garage.”</div></div>
-    </div>
-    <div class="loopback">
-      <span class="lp">ADVOCACY → TRIGGER</span>
-      <span class="lt">Existing customers and referral are already our largest discovery channel for this cohort. The loop is running whether we feed it or not.</span>
+<section id="journey" class="jrn">
+  <div class="jrn-stick">
+    <div class="wrap">
+      <div class="sec-head" style="margin-bottom:26px">
+        <span class="eyebrow">01 · The journey</span>
+        <h2>It does not end. It loops.</h2>
+        <p>That is the journey you just watched, laid out. This is a typical path for someone like Gary: seven stages, starting with whatever set him off, and ending somewhere that is really the beginning of somebody else's.</p>
+      </div>
+
+      <div class="ribbon" id="ribbon">
+        <div class="rs" data-i="0"><div class="ix">00</div><div class="nm">Trigger</div></div>
+        <div class="rs" data-i="1"><div class="ix">01</div><div class="nm">Consideration</div></div>
+        <div class="rs" data-i="2"><div class="ix">02</div><div class="nm">Design</div></div>
+        <div class="rs" data-i="3"><div class="ix">03</div><div class="nm">Purchase</div></div>
+        <div class="rs" data-i="4"><div class="ix">04</div><div class="nm">Build</div></div>
+        <div class="rs" data-i="5"><div class="ix">05</div><div class="nm">Grow</div></div>
+        <div class="rs" data-i="6"><div class="ix">06</div><div class="nm">Advocacy</div></div>
+      </div>
+
+      <div class="jd" id="jd">
+        <div class="jd-top">
+          <span class="jd-num" id="jdNum">00</span>
+          <span class="jd-name" id="jdName">Trigger</span>
+          <span class="jd-ev" id="jdEv">Partly observed</span>
+          <span class="jd-jtbd" id="jdJtbd">Control / Discipline</span>
+        </div>
+        <p class="jd-mind" id="jdMind"></p>
+        <blockquote class="jd-quote"><q id="jdQuote"></q><span class="qs" id="jdQsrc"></span></blockquote>
+        <div class="jd-cols">
+          <div class="jd-col"><div class="jd-cl">Online</div><p id="jdSs"></p></div>
+          <div class="jd-col"><div class="jd-cl">On the phone</div><p id="jdSa"></p></div>
+        </div>
+        <p class="jd-action" id="jdAction"></p>
+        <div class="jd-metric"><span class="jd-ml">Metric</span><span id="jdMetric"></span></div>
+      </div>
+
+      <div class="loopback">
+        <span class="lp">ADVOCACY → TRIGGER</span>
+        <span class="lt">Existing customers and referral are already our largest discovery channel for this cohort. The loop is running whether we feed it or not.</span>
+      </div>
     </div>
   </div>
 </section>
@@ -558,13 +634,78 @@ footer a{color:var(--g400)}
       }
     });
 
-    /* journey ribbon lights in sequence */
+    /* journey: ribbon + detail panel driven by scroll */
+    var STAGES=[
+    {n:"00",name:"Trigger",ev:"Partly observed",jtbd:"Control / Discipline",
+     mind:"Something changed, and now he needs his own setup.",
+     q:"I want to set up a home gym in that house.",qs:"Home Gym Builder call, Consideration",
+     ss:"A renovation, a move, outgrowing what he already owns, or an injury that changes what he needs.",
+     sa:"The same triggers, usually surfaced in the first minute of an inbound call.",
+     metric:"Triggered sessions and inbound call volume, by source",
+     action:"Be present at the trigger. Retarget renovators and movers, and remember that a sale is a catalyst rather than a trigger: it sets the date, it does not create the want. Existing customers and referrals are already the single largest discovery channel here, so protect that loop before spending to replace it."},
+    {n:"01",name:"Consideration",ev:"Observed",jtbd:"Convenience / Efficiency",
+     mind:"Overwhelmed. Decision paralysis colliding with a room that will not cooperate.",
+     q:"I'm limited by my space. So the rack has maximum is 24 inch.",qs:"Home Gym Builder call, Consideration",
+     ss:"Browses collections, compares models, reads specs, and quietly worries the thing will not fit. He cannot tell our models apart (234), cannot confirm stock (218), and cannot work out what is compatible with what (127).",
+     sa:"Rings to ask the three questions he cannot answer alone: will it fit, is it in stock, what is your best price.",
+     metric:"Session to enquiry rate, and call to qualified lead rate",
+     action:"78% of calls land here rather than at decision, so this is the stage that decides everything downstream. Space and fit are the wedge. He also cross-shops Rogue, Rep Fitness, Force USA sold elsewhere, Vulcan and Nordic."},
+    {n:"02",name:"Design",ev:"Observed",jtbd:"Achievement / Progress",
+     mind:"Ready to be led. The mood flips from anxious to excited the moment somebody else holds the plan.",
+     q:"I had a plan to finish off my gym, now you've given me some different things to think about.",qs:"Home Gym Builder call, Decision",
+     ss:"He gives us the space, we give him a real plan: one centrepiece plus the pieces that complete it, written down and easy to share with whoever else has a say.",
+     sa:"The consultant builds the same picture live on the phone and expands a single item enquiry into a whole project. This is the highest leverage move in the business.",
+     metric:"Enquiry to plan rate, and average plan value",
+     action:"The plan and the sale are the same object. This is also where his budget moves: only 19% hold a strict maximum, so the conversation is what turns the number he arrived with into the number he actually spends."},
+    {n:"03",name:"Purchase",ev:"Observed",jtbd:"Convenience / Efficiency",
+     mind:"Positive and close to committed. Three small objections left, and none of them are the equipment.",
+     q:"I just wanted to check that on stock before I made the drive down for you, boys.",qs:"Home Gym Builder call, Decision",
+     ss:"Self checkout of the planned cart, which means freight and stock have to be visible and honest before checkout, not discovered inside it.",
+     sa:"The consultant closes with a quote, a freight solution, finance, and local pickup where it is available.",
+     metric:"Plan to purchase conversion, and average order value above $3,376",
+     action:"Purchase is won by neutralising freight. Decision stage sentiment is positive in 160 of 173 calls, so this is not a persuasion problem. Our named advantages are stock, local pickup and the offer. Our named disadvantages are shipping cost and headline price."},
+    {n:"04",name:"Build",ev:"Designed intent",jtbd:"Control / Discipline",
+     mind:"Excited, then daunted by a pallet of boxes in the driveway.",
+     q:"Always gonna fit if designed correctly.",qs:"Internal, the promise this stage has to deliver",
+     ss:"Delivery, assembly guides and video, and a fit confirmed moment where the room proves the plan.",
+     sa:"Consultant follow up and install coordination.",
+     metric:"Delivery to first workout time, and support contacts per order",
+     action:"The fit anxiety from Consideration comes back as assembly anxiety. Proactive support turns a daunting unbox into a first workout, which is the real activation moment. Honest note: the call data rarely reaches past delivery, so this stage is designed intent rather than observation."},
+    {n:"05",name:"Grow",ev:"Observed",jtbd:"Achievement / Progress",
+     mind:"Confident and capable. The starter kit did its job, and now he wants more of it.",
+     q:"I've outgrown the starter kit. What's next?",qs:"The behaviour the repeat data implies",
+     ss:"Reorder prompts driven off what he already owns, so nothing here requires him to explain his gym to us twice.",
+     sa:"Consultant reactivation on a sensible cadence, anchored to the original plan.",
+     metric:"Repeat rate, and share of repeat revenue from second builds",
+     action:"45% come back. But 53% of those repeat orders are under $300 and together they are worth about 2% of follow-up value, so chasing accessories is chasing nothing. The money is the 212 who came back and spent over $3,376 again: 13% of repeat orders carrying 78% of repeat revenue. Find the next 212."},
+    {n:"06",name:"Advocacy",ev:"Partly observed",jtbd:"Social / Status",
+     mind:"Proud. A home gym is a visible, social thing and he wants people to see it.",
+     q:"You have to see my garage.",qs:"The behaviour the referral data implies",
+     ss:"Reviews, and the finished room shared as proof of what he built.",
+     sa:"The consultant asks for the referral at the right moment, which is the cheapest acquisition in the business.",
+     metric:"Referral attributed new customers",
+     action:"This is not the end of the journey, it is the top of the next one. Existing customer and referral is already the cohort's largest discovery channel, so today's advocates are driving tomorrow's Consideration. Caveat worth stating: only about 126 of 964 calls have a discovery channel coded, so this is the largest coded category rather than a robust majority."}
+    ];
     var rs = document.querySelectorAll('#ribbon .rs');
+    var IDS = {n:'jdNum',name:'jdName',ev:'jdEv',jtbd:'jdJtbd',mind:'jdMind',q:'jdQuote',qs:'jdQsrc',
+               ss:'jdSs',sa:'jdSa',action:'jdAction',metric:'jdMetric'};
+    var el = {}; for (var k in IDS) el[k] = document.getElementById(IDS[k]);
+    var cur = -1;
+    function paintStage(i){
+      if (i === cur) return; cur = i;
+      var st = STAGES[i];
+      for (var k in IDS){ if (el[k]) el[k].textContent = st[k]; }
+      rs.forEach(function(r, ix){
+        r.classList.toggle('on', ix === i);
+        r.classList.toggle('done', ix < i);
+      });
+    }
+    paintStage(0);
     ScrollTrigger.create({
-      trigger:'#journey', start:'top 62%', end:'bottom 70%', scrub:true,
+      trigger:'#journey', start:'top top', end:'bottom bottom', scrub:true,
       onUpdate:function(self){
-        var lit = Math.floor(self.progress / 0.13);
-        rs.forEach(function(el,i){ el.classList.toggle('on', i <= lit); });
+        var i = Math.min(STAGES.length - 1, Math.floor(self.progress * STAGES.length));
+        paintStage(i);
       }
     });
   }

@@ -220,8 +220,8 @@ footer a{color:var(--g400)}
         <div class="no">Myth 02</div>
         <div class="bd">
           <div class="say">He's chasing the cheapest</div>
-          <div class="real">He's price aware, not price led.</div>
-          <div class="ev">Price sensitivity is <b>moderate for 568</b> and high for only 192. He'll pay. He won't pay blind.</div>
+          <div class="real">He has a number. It isn't a wall.</div>
+          <div class="ev">Price is the most-mentioned friction in the whole dataset (<b>485</b>), yet only <b>19%</b> hold a strict maximum and <b>79%</b> have some flexibility. Compared to a competitor we read as similar or cheaper <b>363</b> times against premium <b>73</b>. He is not looking for the cheapest option, he is looking to be convinced the number is right.</div>
         </div>
       </div>
       <div class="myth">
@@ -297,7 +297,19 @@ footer a{color:var(--g400)}
       <div class="bar" data-v="19"><div class="bl">Decision</div><div class="bt"><i></i></div><div class="bn">19</div></div>
       <div class="bar" data-v="18"><div class="bl">Support</div><div class="bt"><i></i></div><div class="bn">18</div></div>
     </div>
-    <p class="note" style="margin-top:26px"><strong>Technical is second, at 275.</strong> That is not a price problem, it is a “what do I actually need and will it physically fit” problem. It is the cheapest barrier we have to remove and the one most within our control. In his own words:</p>
+    <p class="note" style="margin-top:14px" id="barnote">Each call's <em>single primary</em> barrier, coded by type. n=964.</p>
+
+    <p class="note" style="margin-top:26px"><strong>Technical is second, at 275.</strong> That is not a price problem, it is a “what do I actually need and will it physically fit” problem. It is the cheapest barrier we have to remove and the one most within our control.</p>
+
+    <h3 style="font-family:var(--display);font-weight:900;font-size:21px;margin:34px 0 6px">What he actually says</h3>
+    <p class="note" style="margin-bottom:16px">The same barriers read a second way: every barrier he raises, primary, secondary or tertiary, grouped by what he is actually describing. <strong>This is the cut that surfaces stock</strong>, which the type-level view above hides inside “technical”. 1,539 mentions.</p>
+    <div class="stats">
+      <div class="stat hot"><div class="v">485</div><div class="l">Price or budget</div><div class="s">The most-mentioned friction in the dataset. Not a wall: only 19% hold a strict maximum.</div></div>
+      <div class="stat"><div class="v">247</div><div class="l">Stock &amp; availability</div><div class="s">Second biggest, and invisible in the type-level chart. An information problem, not a price one.</div></div>
+      <div class="stat"><div class="v">184</div><div class="l">Which product is right</div><div class="s">He cannot tell our models apart well enough to choose.</div></div>
+      <div class="stat"><div class="v">173</div><div class="l">Space &amp; fit</div><div class="s">Will it physically go in the room. The wedge.</div></div>
+    </div>
+    <p class="note"><strong>Three of the top four are ours to fix without discounting.</strong> Stock visibility, model differentiation and fit guidance cost us nothing in margin. In his own words:</p>
     <div class="quotes">
       <div class="q">spare bedroom, limited to 24 inch depth for equipment</div>
       <div class="q">concern about garage slope and ceiling height</div>
@@ -415,32 +427,54 @@ footer a{color:var(--g400)}
   /* Each scene is 8s of an 80s film. Callouts are keyed to VIDEO TIME, not scroll,
      so retiming the film only means editing these numbers. */
   var BEATS = [
-    {t:[0.4,7.4],   ch:'01 · The wait',        k:'The trigger',
-     l:'Something has to change.', s:'He is not shopping yet. He is fed up.'},
-    {t:[8.4,15.4],  ch:'02 · The overwhelm',   k:'Consideration',
-     l:'“I just don’t know what I want.”', s:'The most common sentence in the entire call set. He is not price shopping. He is lost.',
-     d:['<b>78%</b> of calls are consideration, not decision']},
-    {t:[16.4,23.4], ch:'03 · The empty room',  k:'What stops him',
-     l:'Money first. Then something we can actually fix.', s:'Coded barriers across 964 calls.',
-     d:['Financial <b>382</b>','Technical <b>275</b>','Confidence <b>93</b>','Space <b>84</b>']},
-    {t:[24.4,31.4], ch:'04 · The constraint',  k:'The wedge',
-     l:'It has to fit. That is the whole problem.', s:'“spare bedroom, limited to 24 inch depth” · “concern about garage slope and ceiling height”'},
-    {t:[32.4,39.4], ch:'05 · The help',        k:'The functional job',
-     l:'Take the plan off him.', s:'The moment somebody else holds the plan, the mood flips from anxious to excited and the basket grows on its own.',
-     d:['Convenience &amp; Efficiency <b>660</b> of 964']},
-    {t:[40.4,47.4], ch:'06 · The arrival',     k:'What moves him',
-     l:'He is buying time, not equipment.', s:'Coded motivation type across the cohort.',
+    {t:[0.4,7.4],   ch:'01 · The wait',          k:'Trigger',
+     l:'Dave is done waiting for a bench.',
+     s:'Something has to break first. For this cohort it is most often a sale with a deadline, outgrowing the setup they already have, or a renovation or move that suddenly makes room. Dave’s queue is one version of it.',
+     d:['Sale deadline <b>113</b>','Outgrew setup <b>73</b>','Reno or move <b>54</b>']},
+
+    {t:[8.4,15.4],  ch:'02 · The overwhelm',     k:'Consideration',
+     l:'Three weeks of tabs. He’s no closer.',
+     s:'He isn’t comparing prices, he’s trying to work out what he needs. The three things he cannot resolve on our own site: which model differs from which, whether it is actually in stock, and what is compatible with what.',
+     d:['Model &amp; spec <b>234</b>','Stock <b>218</b>','Compatibility <b>127</b>']},
+
+    {t:[16.4,23.4], ch:'03 · The empty room',    k:'The money question',
+     l:'He has a number in his head. It isn’t a wall.',
+     s:'Price is the most-mentioned friction in the entire dataset. But only 19% hold a strict maximum. He is not looking for the cheapest option, he is looking to be convinced the number is right.',
+     d:['Some flexibility <b>79%</b>','Strict maximum <b>19%</b>','Similar or cheaper <b>363</b> v premium <b>73</b>']},
+
+    {t:[24.4,31.4], ch:'04 · The constraint',    k:'The wedge',
+     l:'The rack he wants is 24 inches too deep.',
+     s:'Fit is where the project stalls, and it is ours to fix without touching price. It arrives as a 24-inch spare-room limit, a sloped garage slab, or a ceiling too low for the rack he has already chosen.',
+     d:['Space &amp; fit <b>173</b>','Which product <b>184</b>','Stock <b>247</b>']},
+
+    {t:[32.4,39.4], ch:'05 · The help',          k:'What moves the number',
+     l:'Someone picks up and takes the plan off him.',
+     s:'This is why the conversation is worth what it is. The moment another person holds the plan, the mood flips from anxious to excited, the basket grows on its own, and the number he arrived with stops being the number he spends.',
+     d:['Assisted <b>$2,376</b> median GP','Self-serve <b>$1,782</b>']},
+
+    {t:[40.4,47.4], ch:'06 · The arrival',       k:'What he’s actually buying',
+     l:'He’s not buying steel. He’s buying his mornings back.',
+     s:'Functional motives outweigh financial ones nearly six to one. The equipment is the means. Not getting in the car is the point.',
      d:['Functional <b>791</b>','Financial <b>131</b>','Emotional <b>30</b>']},
-    {t:[48.4,55.4], ch:'07 · The build',       k:'The emotional job',
-     l:'Progress he can see. Control he can keep.', s:'What he actually wanted, underneath the equipment.',
+
+    {t:[48.4,55.4], ch:'07 · The build',         k:'The emotional job',
+     l:'Every bolt is proof he’s started.',
+     s:'Three feelings sit underneath the equipment, in this order: progress he can see, control he can keep, and confidence he hasn’t got it wrong.',
      d:['Achievement <b>405</b>','Control <b>221</b>','Confidence <b>117</b>']},
+
     {t:[56.4,63.4], ch:'08 · The first session', k:'Grow',
-     l:'Four in five leave the next one on the table.', s:'Only 19% take a second big-ticket piece up front. Phase 2 attach is 21.4% today against a 40% target.'},
-    {t:[64.4,71.4], ch:'09 · The mate',        k:'The social job',
-     l:'He wants to be the one who knew what he was doing.', s:'The layer we consistently ignore in how we write and merchandise.',
-     d:['Expertise &amp; Authority <b>162</b>','Status &amp; Impression <b>144</b>']},
-    {t:[72.4,79.6], ch:'10 · The loop',        k:'Advocacy → Trigger',
-     l:'And it starts again next door.', s:'Existing customers and referral are already our largest discovery channel for this cohort.'}
+     l:'This is where we stop paying attention. He doesn’t.',
+     s:'Four in five builds arrive with at most one anchor, and only 19% take a second up front. Phase 2 attach sits at 21.4% against a 40% target. The next piece is the one we never ask about.',
+     d:['Second anchor up front <b>19%</b>','Phase 2 attach <b>21.4% → 40%</b>']},
+
+    {t:[64.4,71.4], ch:'09 · The mate',          k:'The social job',
+     l:'He wants to be the mate who got it right.',
+     s:'Nobody says this out loud on a call, and 162 of them mean it: to be seen as knowledgeable, to have a room that doesn’t look like a commercial gym, to have done it himself.',
+     d:['Expertise <b>162</b>','Status <b>144</b>','Independence <b>85</b>']},
+
+    {t:[72.4,79.6], ch:'10 · The loop',          k:'Advocacy → Trigger',
+     l:'And his mate’s garage is empty.',
+     s:'Existing customers and referral are already the biggest discovery channel we have for this cohort. The last stage of his journey is the first stage of somebody else’s.'}
   ];
 
   var host = document.getElementById('callouts');

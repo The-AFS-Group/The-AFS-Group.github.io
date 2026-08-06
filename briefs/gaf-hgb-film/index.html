@@ -174,7 +174,7 @@ footer a{color:var(--g400)}
   .rs{opacity:1}
 }
 
-/* journey — scrolling detail */
+/* journey: scrolling detail */
 .jrn{position:relative;height:760vh;background:#fff}
 .jrn-stick{position:sticky;top:0;min-height:100vh;display:flex;align-items:center;padding:5vh 0}
 .ribbon{display:grid;grid-template-columns:repeat(7,1fr);gap:7px;margin-bottom:22px}
@@ -209,7 +209,7 @@ footer a{color:var(--g400)}
 @media (prefers-reduced-motion: reduce){.jrn{height:auto}.jrn-stick{position:relative;min-height:0}.rs{opacity:1}}
 
 
-/* journey layout corrections — override the older .rs rules and fit one viewport */
+/* journey layout corrections: override the older .rs rules and fit one viewport */
 .jrn .rs{min-height:0;display:block}
 .jrn .sec-head{margin-bottom:18px}
 .jrn .sec-head h2{font-size:clamp(23px,3.1vw,38px)}
@@ -228,18 +228,124 @@ footer a{color:var(--g400)}
   .jrn .loopback{display:none}
 }
 
+
+/* ── sticky section nav (appears once the film is behind you) ── */
+#snav{position:fixed;top:0;left:0;right:0;z-index:120;background:rgba(255,255,255,.94);
+  backdrop-filter:blur(10px);border-bottom:1px solid var(--g200);
+  transform:translateY(-100%);transition:transform .35s ease;pointer-events:none}
+#snav.on{transform:translateY(0);pointer-events:auto}
+#snav .wrap{display:flex;align-items:center;gap:8px;height:52px;overflow-x:auto;scrollbar-width:none}
+#snav .wrap::-webkit-scrollbar{display:none}
+#snav .brand{font-family:var(--display);font-weight:900;font-size:12px;letter-spacing:.04em;
+  color:var(--ink);white-space:nowrap;margin-right:6px;flex:none}
+#snav a{font-family:var(--display);font-weight:800;font-size:11.5px;letter-spacing:.03em;
+  color:var(--g500);text-decoration:none;white-space:nowrap;padding:7px 11px;border-radius:999px;flex:none;
+  transition:color .2s ease,background .2s ease}
+#snav a:hover{color:var(--ink);background:var(--g50)}
+#snav a.on{color:#fff;background:var(--orange)}
+@media(max-width:700px){#snav .brand{display:none}#snav a{font-size:11px;padding:6px 9px}}
+
+.hero .skip{display:inline-block;margin-top:20px;font-family:var(--display);font-weight:800;font-size:11px;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--g400);text-decoration:none;
+  border:1px solid #2a2a2a;border-radius:999px;padding:9px 16px}
+.hero .skip:hover{color:#fff;border-color:var(--orange)}
+
+/* ── shared sub-heading ── */
+.sub-h{font-family:var(--display);font-weight:900;font-size:clamp(19px,2.4vw,26px);margin:44px 0 12px}
+
+/* ── jobs to be done, deep dive ── */
+.job3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.j3{border:1px solid var(--g200);border-radius:16px;background:#fff;padding:24px 22px;display:flex;flex-direction:column}
+.j3-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:12px}
+.j3-n{font-family:var(--display);font-weight:900;font-size:24px;color:var(--orange);line-height:1}
+.j3-k{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--g500);border:1px solid var(--g300);border-radius:999px;padding:3px 9px}
+.j3-t{font-family:var(--display);font-weight:900;font-size:18px;width:100%;line-height:1.15;margin-top:2px}
+.j3-out{font-size:14px;color:var(--g700);line-height:1.5;margin-bottom:16px}
+.j3-ol{display:block;font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.13em;
+  text-transform:uppercase;color:var(--orange-700);margin-bottom:4px}
+.j3-rows{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.j3-r{display:grid;grid-template-columns:1fr 52px 42px;align-items:center;gap:8px}
+.j3-l{font-size:12.5px;color:var(--g600);line-height:1.3}
+.j3-b{height:6px;background:var(--g200);border-radius:4px;overflow:hidden}
+.j3-b i{display:block;height:100%;background:var(--orange);border-radius:4px}
+.j3-v{font-family:var(--display);font-weight:900;font-size:12.5px;color:var(--ink);text-align:right}
+.j3-q{border-left:3px solid var(--orange);padding:2px 0 2px 14px;margin:auto 0 0;font-size:13.5px;
+  color:var(--g600);font-style:italic;line-height:1.5}
+.j3-note{margin-top:14px;padding-top:12px;border-top:1px solid var(--g200);font-size:13px;color:var(--g600);line-height:1.5}
+.j3-note strong{color:var(--orange-700)}
+.j3-close{margin-top:20px;border:1px solid var(--orange);background:var(--orange-soft);border-radius:14px;padding:22px 26px}
+.j3-close p{font-family:var(--display);font-weight:800;font-size:clamp(16px,2vw,21px);line-height:1.35;color:var(--ink)}
+@media(max-width:960px){.job3{grid-template-columns:1fr}}
+
+/* ── definition ── */
+.gate-band{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:var(--ink);color:#fff;
+  border-radius:14px;padding:18px 24px;margin-bottom:18px}
+.gate-lbl{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--g400)}
+.gate-val{font-family:var(--display);font-weight:900;font-size:clamp(20px,2.6vw,30px);color:var(--orange)}
+.gate-note{font-size:13.5px;color:var(--g300)}
+.paths{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.path{border:1px solid var(--g200);border-radius:14px;background:#fff;padding:20px 20px;display:flex;flex-direction:column}
+.path.hot{border-color:var(--orange);background:var(--orange-soft)}
+.path-h{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap;margin-bottom:9px}
+.path-n{font-family:var(--display);font-weight:900;font-size:12px;color:var(--orange-700);letter-spacing:.08em}
+.path-t{font-family:var(--display);font-weight:900;font-size:17px;width:100%}
+.path-d{font-size:13.5px;color:var(--g600);line-height:1.5;flex:1}
+.path-f{margin-top:14px;font-family:var(--display);font-weight:800;font-size:11.5px;color:var(--ink);
+  background:#fff;border:1px dashed var(--g300);border-radius:8px;padding:9px 11px;text-align:center}
+.path-c{margin-top:10px;font-size:13px;color:var(--g600)}
+.path-c b{font-family:var(--display);font-weight:900;font-size:19px;color:var(--ink)}
+@media(max-width:900px){.paths{grid-template-columns:1fr}}
+
+.funnel{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fn{border:1px solid var(--g200);border-radius:14px;background:#fff;padding:20px}
+.fn.hot{border-color:var(--orange);background:var(--orange-soft)}
+.fn-v{font-family:var(--display);font-weight:900;font-size:clamp(26px,3.4vw,40px);letter-spacing:-.02em}
+.fn.hot .fn-v{color:var(--orange-700)}
+.fn-l{font-family:var(--display);font-weight:800;font-size:12px;margin-top:6px;line-height:1.25}
+.fn-s{font-size:12.5px;color:var(--g600);margin-top:7px;line-height:1.45}
+@media(max-width:900px){.funnel{grid-template-columns:1fr}}
+
+.method{border:1px solid var(--g200);border-radius:14px;background:#fff;overflow:hidden}
+.mrow{display:grid;grid-template-columns:130px 1fr;gap:14px;padding:14px 20px;border-top:1px solid var(--g200)}
+.mrow:first-child{border-top:0}
+.mk{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:var(--orange-700);padding-top:2px}
+.mv{font-size:13.5px;color:var(--g600);line-height:1.55}
+@media(max-width:700px){.mrow{grid-template-columns:1fr;gap:5px}}
+
+.bhag{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:26px;
+  border:1px solid var(--orange);border-radius:14px;background:var(--orange-soft);padding:22px 26px}
+.bhag-v{font-family:var(--display);font-weight:900;font-size:clamp(24px,3.2vw,36px);color:var(--orange-700);line-height:1}
+.bhag-t{font-size:12.5px;color:var(--g600);margin-top:5px;max-width:22ch}
+.bhag-arrow{font-family:var(--display);font-weight:900;font-size:26px;color:var(--orange)}
+.bhag-pct{margin-left:auto;font-family:var(--display);font-weight:900;font-size:13px;
+  background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px}
+
 </style>
 </head>
 <body>
 
 <div id="loader"><div class="lbl">Loading film</div><div class="bar"><i id="lbar"></i></div></div>
 
+<nav id="snav" aria-label="Section navigation">
+  <div class="wrap">
+    <span class="brand">The Home Gym Builder</span>
+    <a href="#journey" data-s="journey">01 Journey</a>
+    <a href="#who" data-s="who">02 Who he is</a>
+    <a href="#jobs" data-s="jobs">03 Jobs</a>
+    <a href="#barriers" data-s="barriers">04 Barriers</a>
+    <a href="#motivations" data-s="motivations">05 Motivations</a>
+    <a href="#definition" data-s="definition">06 How we count him</a>
+    <a href="#evidence" data-s="evidence">07 Evidence</a>
+  </div>
+</nav>
 <header class="hero">
   <div class="wrap">
     <span class="eyebrow">Gym and Fitness · Primary archetype</span>
     <h1>The Home Gym<br>Builder</h1>
     <p>Who he is, the jobs he hires us for, what stops him, what moves him, and the journey he actually takes. Built from 964 recorded calls with him.</p>
     <div class="scroll-cue">Scroll</div>
+    <a class="skip" href="#journey">Seen the film? Skip to the detail</a>
   </div>
 </header>
 
@@ -300,7 +406,7 @@ footer a{color:var(--g400)}
 </section>
 
 <!-- ═══ WHO HE IS ═══ -->
-<section class="pad alt">
+<section class="pad alt" id="who">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">02 · Who he is</span>
@@ -337,13 +443,75 @@ footer a{color:var(--g400)}
 </section>
 
 <!-- ═══ THE JOBS ═══ -->
-<section class="pad">
+<section class="pad" id="jobs">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">03 · Jobs to be done</span>
       <h2>He hires us for three jobs at once</h2>
-      <p>Every call was coded for a functional, an emotional and a social job. The functional one is what he says. The other two are why he actually buys, and the social layer is the one we consistently ignore.</p>
+      <p>Every call was coded for a functional, an emotional and a social job. The functional one is what he says out loud. The other two are why he actually buys. Underneath each job sits the language he uses himself, with the share of the cohort who used it.</p>
     </div>
+
+    <div class="job3">
+      <div class="j3">
+        <div class="j3-h">
+          <span class="j3-n">01</span>
+          <span class="j3-k">Functional job</span>
+          <span class="j3-t">Convenience / Efficiency</span>
+        </div>
+        <p class="j3-out"><span class="j3-ol">Desired outcome</span> Save time against my old gym, and get the most out of the time I do have to train.</p>
+        <div class="j3-rows">
+          <div class="j3-r"><span class="j3-l">Fit training around the family</span><span class="j3-b"><i style="width:100%"></i></span><span class="j3-v">10.6%</span></div>
+          <div class="j3-r"><span class="j3-l">Most out of every session</span><span class="j3-b"><i style="width:36%"></i></span><span class="j3-v">3.8%</span></div>
+          <div class="j3-r"><span class="j3-l">Eliminate the gym commute</span><span class="j3-b"><i style="width:29%"></i></span><span class="j3-v">3.1%</span></div>
+          <div class="j3-r"><span class="j3-l">Replicate gym capability at home</span><span class="j3-b"><i style="width:25%"></i></span><span class="j3-v">2.7%</span></div>
+          <div class="j3-r"><span class="j3-l">Train when I want, 24/7</span><span class="j3-b"><i style="width:7%"></i></span><span class="j3-v">0.7%</span></div>
+        </div>
+        <blockquote class="j3-q">It's better to get a home gym. It's the amount of time you spend going to the gym and actually not going, because it just takes too much time.</blockquote>
+      </div>
+
+      <div class="j3">
+        <div class="j3-h">
+          <span class="j3-n">02</span>
+          <span class="j3-k">Emotional job</span>
+          <span class="j3-t">Achievement / Progress</span>
+        </div>
+        <p class="j3-out"><span class="j3-ol">Desired outcome</span> Visible signs of improved strength, fitness and body composition.</p>
+        <div class="j3-rows">
+          <div class="j3-r"><span class="j3-l">Lose weight, improve health</span><span class="j3-b"><i style="width:100%"></i></span><span class="j3-v">28.6%</span></div>
+          <div class="j3-r"><span class="j3-l">Long-term investment in self</span><span class="j3-b"><i style="width:23%"></i></span><span class="j3-v">6.5%</span></div>
+          <div class="j3-r"><span class="j3-l">See measurable progress</span><span class="j3-b"><i style="width:21%"></i></span><span class="j3-v">5.9%</span></div>
+          <div class="j3-r"><span class="j3-l">Build muscle, transform body</span><span class="j3-b"><i style="width:13%"></i></span><span class="j3-v">3.8%</span></div>
+          <div class="j3-r"><span class="j3-l">Build strength, lift heavier</span><span class="j3-b"><i style="width:6%"></i></span><span class="j3-v">1.6%</span></div>
+        </div>
+        <blockquote class="j3-q">I'm getting back into it. This is more a long-term investment because I've got a bunch of health conditions. If I don't get fit, I'm in trouble.</blockquote>
+        <p class="j3-note"><strong>Read the order carefully.</strong> "Lift heavier" is last at 1.6%, and "lose weight or improve health" is first at 28.6%. He is not a lifter chasing a PB. That is why the fixed weight set is not the interesting part of a build.</p>
+      </div>
+
+      <div class="j3">
+        <div class="j3-h">
+          <span class="j3-n">03</span>
+          <span class="j3-k">Emotional job</span>
+          <span class="j3-t">Control / Discipline</span>
+        </div>
+        <p class="j3-out"><span class="j3-ol">Desired outcome</span> Control my time and routine, and train on my terms rather than someone else's.</p>
+        <div class="j3-rows">
+          <div class="j3-r"><span class="j3-l">Own my schedule, no fixed hours</span><span class="j3-b"><i style="width:100%"></i></span><span class="j3-v">9.7%</span></div>
+          <div class="j3-r"><span class="j3-l">Train without waiting or queueing</span><span class="j3-b"><i style="width:48%"></i></span><span class="j3-v">4.7%</span></div>
+          <div class="j3-r"><span class="j3-l">Privacy, control of environment</span><span class="j3-b"><i style="width:39%"></i></span><span class="j3-v">3.8%</span></div>
+          <div class="j3-r"><span class="j3-l">Independence from gym contracts</span><span class="j3-b"><i style="width:20%"></i></span><span class="j3-v">1.9%</span></div>
+          <div class="j3-r"><span class="j3-l">Build the daily habit</span><span class="j3-b"><i style="width:13%"></i></span><span class="j3-v">1.3%</span></div>
+        </div>
+        <blockquote class="j3-q">I spend more time waiting than I do actually training there. I want to set it up at home so I can just go when I want.</blockquote>
+        <p class="j3-note">This is the row that opens the film. <strong>4.7% name queueing directly</strong>, which is why Gary is standing there with his arms folded.</p>
+      </div>
+    </div>
+
+    <div class="j3-close">
+      <p>They are not buying equipment. They are buying back <strong>time</strong>, <strong>progress</strong> and <strong>control</strong>. The three things their old gym was taking from them.</p>
+    </div>
+
+    <h3 class="sub-h">The same jobs, counted across all 964 calls</h3>
+    <p class="note">The percentages above come from the 678-call convenience-dominant cut (Apr 2026 deep dive). Counted across the full 964-call Home Gym Builder cohort, the theme totals are:</p>
 
     <div class="layer">
       <div class="lh"><span class="lt">Functional</span><span class="lq">what he is trying to get done</span></div>
@@ -353,9 +521,7 @@ footer a{color:var(--g400)}
         <div class="theme"><div class="tn">56</div><div class="tl">Health &amp; Recovery</div></div>
         <div class="theme"><div class="tn">45</div><div class="tl">Performance</div></div>
       </div>
-      <div class="verb">“enable home workouts with familiar gym equipment”</div>
     </div>
-
     <div class="layer">
       <div class="lh"><span class="lt">Emotional</span><span class="lq">how he wants to feel</span></div>
       <div class="themes">
@@ -364,11 +530,9 @@ footer a{color:var(--g400)}
         <div class="theme"><div class="tn">117</div><div class="tl">Confidence</div></div>
         <div class="theme"><div class="tn">73</div><div class="tl">Stress Relief</div></div>
       </div>
-      <div class="verb">“regain control over fitness routine and ensure satisfaction with purchase”</div>
     </div>
-
     <div class="layer">
-      <div class="lh"><span class="lt">Social</span><span class="lq">how he wants to be seen — the layer we ignore</span></div>
+      <div class="lh"><span class="lt">Social</span><span class="lq">how he wants to be seen, the layer we ignore</span></div>
       <div class="themes">
         <div class="theme top"><div class="tn">162</div><div class="tl">Expertise &amp; Authority</div></div>
         <div class="theme"><div class="tn">144</div><div class="tl">Status &amp; Impression</div></div>
@@ -381,7 +545,7 @@ footer a{color:var(--g400)}
 </section>
 
 <!-- ═══ BARRIERS ═══ -->
-<section class="pad alt">
+<section class="pad alt" id="barriers">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">04 · Barriers</span>
@@ -420,7 +584,7 @@ footer a{color:var(--g400)}
 </section>
 
 <!-- ═══ MOTIVATIONS ═══ -->
-<section class="pad">
+<section class="pad" id="motivations">
   <div class="wrap">
     <div class="sec-head">
       <span class="eyebrow">05 · Motivations &amp; triggers</span>
@@ -434,7 +598,7 @@ footer a{color:var(--g400)}
       <div class="stat"><div class="v">4</div><div class="l">Social</div><div class="s">Almost never admitted, yet 162 want to be seen as knowledgeable.</div></div>
     </div>
     <p class="note"><strong>Separate the trigger from the catalyst.</strong> The <em>trigger</em> is what puts him in the market, and it is always a change in his life: he has outgrown what he owns (<b>73</b>), a renovation or move has made room (<b>54</b>), an injury has changed what he needs (<b>20</b>). The <em>catalyst</em> is what makes him act on a particular Tuesday, and that is usually a deadline (<b>113</b>).</p>
-    <p class="note"><strong>A sale is a catalyst, never a trigger.</strong> Nobody wants a home gym because it is discounted. Confusing the two sends us upstream in the wrong direction: we end up trying to buy demand in November that we should have been building in August. Caveat worth stating plainly — the coded trigger field is the weakest in the dataset, roughly two thirds of entries are circular ("wants to buy gym equipment"), so treat these as directional, not precise.</p>
+    <p class="note"><strong>A sale is a catalyst, never a trigger.</strong> Nobody wants a home gym because it is discounted. Confusing the two sends us upstream in the wrong direction: we end up trying to buy demand in November that we should have been building in August. Caveat worth stating plainly: the coded trigger field is the weakest in the dataset, roughly two thirds of entries are circular ("wants to buy gym equipment"), so treat these as directional, not precise.</p>
   </div>
 </section>
 
@@ -445,11 +609,75 @@ footer a{color:var(--g400)}
   </div>
 </section>
 
-<!-- ═══ EVIDENCE ═══ -->
-<section class="pad">
+<!-- ═══ HOW WE COUNT HIM ═══ -->
+<section class="pad alt" id="definition">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">06 · The evidence</span>
+      <span class="eyebrow">06 · How we count him</span>
+      <h2>What counts as a Home Gym Builder build</h2>
+      <p>Everything above describes who he is. This is how we turn that into a number we can track. The rule was locked with Adam Carter on 4 August 2026, and it is what feeds the 10,000-by-2030 BHAG tracker.</p>
+    </div>
+
+    <div class="gate-band">
+      <span class="gate-lbl">The value gate</span>
+      <span class="gate-val">Cart &gt; $3,376</span>
+      <span class="gate-note">Every path below must also clear this.</span>
+    </div>
+
+    <div class="paths">
+      <div class="path">
+        <div class="path-h"><span class="path-n">Path 1</span><span class="path-t">Centrepiece</span></div>
+        <p class="path-d">A single anchor, <strong>but only</strong> if it is an All-In-One Trainer or a Home Gym / Multi-Station unit. A lone treadmill, bike, rower or rack does not qualify on its own.</p>
+        <div class="path-f">AIO or Home Gym &nbsp;+&nbsp; cart &gt; $3,376</div>
+        <div class="path-c"><b>180</b> builds</div>
+      </div>
+      <div class="path hot">
+        <div class="path-h"><span class="path-n">Path 2</span><span class="path-t">Anchor + attachment</span></div>
+        <p class="path-d">Any anchor product plus at least one attachment item. The everyday build, and by far the most common.</p>
+        <div class="path-f">1 anchor &nbsp;+&nbsp; 1 attachment &nbsp;+&nbsp; cart &gt; $3,376</div>
+        <div class="path-c"><b>832</b> builds</div>
+      </div>
+      <div class="path">
+        <div class="path-h"><span class="path-n">Path 3</span><span class="path-t">Multi-anchor</span></div>
+        <p class="path-d">Two or more anchors in the same cart, regardless of how many attachments come with them.</p>
+        <div class="path-f">2+ anchors &nbsp;+&nbsp; cart &gt; $3,376</div>
+        <div class="path-c"><b>245</b> builds</div>
+      </div>
+    </div>
+
+    <div class="warn" style="margin-top:26px">
+      <b>Path 1 is deliberately narrow, and that is what makes the metric defensible.</b> It was tightened on 4 August from "any anchor" to "All-In-One or Home Gym only". Widen it back and a customer who buys a single treadmill and nothing else becomes a "home gym build", which would quietly turn this into a big-ticket-sales metric rather than a home-gym one.
+    </div>
+
+    <h3 class="sub-h">What the rule sets aside</h3>
+    <div class="funnel">
+      <div class="fn"><div class="fn-v">1,708</div><div class="fn-l">FY26 carts clearing the $3,376 gate</div><div class="fn-s">The candidate universe, GAF AU and Online-AU.</div></div>
+      <div class="fn hot"><div class="fn-v">1,257</div><div class="fn-l">Are Home Gym Builder builds</div><div class="fn-s">74% of value-carts pass the composition rule.</div></div>
+      <div class="fn"><div class="fn-v">451</div><div class="fn-l">Set aside</div><div class="fn-s">No anchor at all, or a lone non-centrepiece anchor with nothing built around it.</div></div>
+    </div>
+
+    <h3 class="sub-h">Method, so it can be challenged</h3>
+    <div class="method">
+      <div class="mrow"><span class="mk">Window</span><span class="mv">FY26 is 1 July 2025 to 30 June 2026. The BHAG tracker counts cumulatively from 1 July 2025.</span></div>
+      <div class="mrow"><span class="mk">Scope</span><span class="mv">Sales orders on GAF AU and GAF Online-AU only, matching NetSuite saved search 6022 / “GAF BHAG Data”. Excludes cancelled and closed orders, and Commercial, Wholesale, Warranty, NZ and Export.</span></div>
+      <div class="mrow"><span class="mk">Composition</span><span class="mv">Line-level, priced product lines only. Kit parents counted once, tax and shipping dropped. Each SKU mapped to its sub-category and tagged anchor, attachment or neither. Attachments counted by distinct SKU.</span></div>
+      <div class="mrow"><span class="mk">Access</span><span class="mv">Read-only throughout. Reproduced independently on 5 August 2026 and landed on 1,257 exactly.</span></div>
+    </div>
+
+    <div class="bhag">
+      <div class="bhag-l"><div class="bhag-v">1,336</div><div class="bhag-t">builds since 1 July 2025, cumulative</div></div>
+      <div class="bhag-arrow">→</div>
+      <div class="bhag-r"><div class="bhag-v">10,000</div><div class="bhag-t">home gyms built by 2030, the BHAG</div></div>
+      <div class="bhag-pct">13.4% of the way</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EVIDENCE ═══ -->
+<section class="pad" id="evidence">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">07 · The evidence</span>
       <h2>If you want to interrogate it</h2>
       <p>The film is the story. This is the argument underneath it.</p>
     </div>
@@ -469,14 +697,14 @@ footer a{color:var(--g400)}
         <tr><td>3</td><td><b>Two or more</b> anchors</td><td class="r">245</td></tr>
       </tbody>
     </table>
-    <p class="note">Definition v4, locked with Adam Carter 4 Aug 2026, counted cumulatively from 1 July 2025 against the 10,000-by-2030 BHAG. <strong>Path 1 survives only because it is restricted to All-In-One Trainers and Home Gyms</strong> — those are a complete gym in one box. Widen it back to any anchor and a lone treadmill becomes a home gym build.</p>
+    <p class="note">Definition v4, locked with Adam Carter 4 Aug 2026, counted cumulatively from 1 July 2025 against the 10,000-by-2030 BHAG. <strong>Path 1 survives only because it is restricted to All-In-One Trainers and Home Gyms</strong>, because those are a complete gym in one box. Widen it back to any anchor and a lone treadmill becomes a home gym build.</p>
 
     <h3 style="font-family:var(--display);font-weight:900;font-size:21px;margin:30px 0 13px">Seasonality</h3>
     <table class="tbl">
       <thead><tr><th>FY26</th><th class="r">Jul</th><th class="r">Aug</th><th class="r">Sep</th><th class="r">Oct</th><th class="r">Nov</th><th class="r">Dec</th><th class="r">Jan</th><th class="r">Feb</th><th class="r">Mar</th><th class="r">Apr</th><th class="r">May</th><th class="r">Jun</th></tr></thead>
       <tbody><tr><td>Builds</td><td class="r">67</td><td class="r">76</td><td class="r">103</td><td class="r">74</td><td class="r"><b>162</b></td><td class="r">135</td><td class="r">70</td><td class="r">66</td><td class="r">104</td><td class="r">93</td><td class="r">86</td><td class="r"><b>221</b></td></tr></tbody>
     </table>
-    <p class="note">June is 3.3× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments in the year when project-mode buyers actually commit. But read it correctly: <strong>these months convert demand, they do not create it.</strong> The trigger that put him in the market happened weeks or months earlier, and the sale only decided the date. The implication is uncomfortable and worth saying out loud — <strong>the pipeline has to be full before November, not during it.</strong></p>
+    <p class="note">June is 3.3× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments in the year when project-mode buyers actually commit. But read it correctly: <strong>these months convert demand, they do not create it.</strong> The trigger that put him in the market happened weeks or months earlier, and the sale only decided the date. The implication is uncomfortable and worth saying out loud: <strong>the pipeline has to be full before November, not during it.</strong></p>
 
     <div class="warn">
       <b>One number to handle carefully.</b> You may know this customer as “$1,271 median profit, 2.5× online”. That comes from the archetype model, which is a different population from the cart-rule cohort we now count. On the cohort we count, the assisted premium is <b>1.33×</b>, not 2.5×, and median gross profit is higher, not lower. Do not quote “$1,271 per home gym build”. Which figure becomes official is an open decision.
@@ -516,7 +744,7 @@ footer a{color:var(--g400)}
 
     {t:[16.4,23.4], ch:'03 · The empty room',    k:'The money question',
      l:'His budget bends.',
-     s:'Price is the most-mentioned friction in the whole dataset, so it is easy to read him as a bargain hunter. He isn’t. Only 19% hold a strict maximum, 79% have some flexibility, and he is not chasing the cheapest option — he is waiting to be convinced the number is right.',
+     s:'Price is the most-mentioned friction in the whole dataset, so it is easy to read him as a bargain hunter. He isn’t. Only 19% hold a strict maximum, 79% have some flexibility, and he is not chasing the cheapest option, he is waiting to be convinced the number is right.',
      d:['Budget has some flex <b>79%</b>','Strict maximum <b>19%</b>','Price is his #1 stated friction <b>485</b>']},
 
     {t:[24.4,31.4], ch:'04 · The constraint',    k:'The wedge',
@@ -589,8 +817,9 @@ footer a{color:var(--g400)}
     loader.classList.add('gone');
     if (reduce){ BEATS.forEach(function(b){ b.el.style.opacity = 1; }); return; }
 
+    var lenis = null;
     if (window.Lenis){
-      var lenis = new Lenis({duration:1.05, smoothWheel:true});
+      lenis = new Lenis({duration:1.05, smoothWheel:true});
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add(function(t){ lenis.raf(t*1000); });
       gsap.ticker.lagSmoothing(0);
@@ -707,6 +936,43 @@ footer a{color:var(--g400)}
         var i = Math.min(STAGES.length - 1, Math.floor(self.progress * STAGES.length));
         paintStage(i);
       }
+    });
+
+    /* sticky section nav: hidden during the film, index afterwards */
+    var snav = document.getElementById('snav');
+    ScrollTrigger.create({
+      trigger:'#film-sec', start:'bottom top+=90',
+      onEnter:function(){ snav.classList.add('on'); },
+      onLeaveBack:function(){ snav.classList.remove('on'); }
+    });
+
+    var navLinks = Array.prototype.slice.call(document.querySelectorAll('#snav a'));
+    navLinks.forEach(function(a){
+      var sec = document.getElementById(a.getAttribute('data-s'));
+      if (!sec) return;
+      ScrollTrigger.create({
+        trigger: sec, start:'top 55%', end:'bottom 55%',
+        onToggle:function(self){
+          a.classList.toggle('on', self.isActive);
+          if (self.isActive && snav.classList.contains('on')){
+            var r = a.getBoundingClientRect(), w = snav.querySelector('.wrap');
+            if (r.left < 0 || r.right > window.innerWidth) w.scrollLeft += r.left - 90;
+          }
+        }
+      });
+    });
+
+    /* anchor jumps have to go through Lenis or they fight the smooth scroller */
+    document.querySelectorAll('#snav a, .hero .skip').forEach(function(a){
+      a.addEventListener('click', function(e){
+        var id = a.getAttribute('href');
+        if (!id || id.charAt(0) !== '#') return;
+        var el = document.querySelector(id);
+        if (!el) return;
+        e.preventDefault();
+        if (lenis) lenis.scrollTo(el, {offset:-56, duration:1.1});
+        else window.scrollTo({top: el.offsetTop - 56, behavior:'smooth'});
+      });
     });
   }
 

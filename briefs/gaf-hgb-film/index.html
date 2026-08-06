@@ -321,6 +321,26 @@ footer a{color:var(--g400)}
 .bhag-pct{margin-left:auto;font-family:var(--display);font-weight:900;font-size:13px;
   background:var(--ink);color:#fff;border-radius:999px;padding:8px 16px}
 
+
+/* journey: click to switch stages, no scroll-jacking */
+.jrn{height:auto !important}
+.jrn-stick{position:static !important;min-height:0 !important;padding:13vh 0 !important;display:block !important}
+.jrn .rs{cursor:pointer;font:inherit;text-align:center;appearance:none;-webkit-appearance:none;width:100%}
+.jrn .rs:hover{opacity:1;border-color:var(--g400)}
+.jrn .rs:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(242,100,34,.45)}
+.jrn .rs.on{transform:none}
+.jrn .jd{transition:opacity .18s ease}
+.jrn .jd.swap{opacity:0}
+.jrn-hint{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--g500);margin-bottom:10px}
+/* the one-viewport compromises are no longer needed */
+@media(max-height:860px){
+  .jrn .jd-cols{display:grid}
+  .jrn .loopback{display:flex}
+  .jrn .sec-head h2{font-size:clamp(23px,3.1vw,38px)}
+  .jrn .sec-head p{font-size:15px}
+}
+
 </style>
 </head>
 <body>
@@ -370,14 +390,15 @@ footer a{color:var(--g400)}
         <p>That is the journey you just watched, laid out. This is a typical path for someone like Gary: seven stages, starting with whatever set him off, and ending somewhere that is really the beginning of somebody else's.</p>
       </div>
 
-      <div class="ribbon" id="ribbon">
-        <div class="rs" data-i="0"><div class="ix">00</div><div class="nm">Trigger</div></div>
-        <div class="rs" data-i="1"><div class="ix">01</div><div class="nm">Consideration</div></div>
-        <div class="rs" data-i="2"><div class="ix">02</div><div class="nm">Design</div></div>
-        <div class="rs" data-i="3"><div class="ix">03</div><div class="nm">Purchase</div></div>
-        <div class="rs" data-i="4"><div class="ix">04</div><div class="nm">Build</div></div>
-        <div class="rs" data-i="5"><div class="ix">05</div><div class="nm">Grow</div></div>
-        <div class="rs" data-i="6"><div class="ix">06</div><div class="nm">Advocacy</div></div>
+      <div class="jrn-hint">Select a stage</div>
+      <div class="ribbon" id="ribbon" role="tablist" aria-label="Journey stages">
+        <button type="button" class="rs" data-i="0" aria-selected="true"><div class="ix">00</div><div class="nm">Trigger</div></button>
+        <button type="button" class="rs" data-i="1" aria-selected="false"><div class="ix">01</div><div class="nm">Consideration</div></button>
+        <button type="button" class="rs" data-i="2" aria-selected="false"><div class="ix">02</div><div class="nm">Design</div></button>
+        <button type="button" class="rs" data-i="3" aria-selected="false"><div class="ix">03</div><div class="nm">Purchase</div></button>
+        <button type="button" class="rs" data-i="4" aria-selected="false"><div class="ix">04</div><div class="nm">Build</div></button>
+        <button type="button" class="rs" data-i="5" aria-selected="false"><div class="ix">05</div><div class="nm">Grow</div></button>
+        <button type="button" class="rs" data-i="6" aria-selected="false"><div class="ix">06</div><div class="nm">Advocacy</div></button>
       </div>
 
       <div class="jd" id="jd">
@@ -930,12 +951,22 @@ footer a{color:var(--g400)}
       });
     }
     paintStage(0);
-    ScrollTrigger.create({
-      trigger:'#journey', start:'top top', end:'bottom bottom', scrub:true,
-      onUpdate:function(self){
-        var i = Math.min(STAGES.length - 1, Math.floor(self.progress * STAGES.length));
-        paintStage(i);
-      }
+    var jdEl = document.getElementById('jd');
+    function selectStage(i){
+      if (i === cur) return;
+      jdEl.classList.add('swap');
+      setTimeout(function(){ paintStage(i); jdEl.classList.remove('swap'); }, 150);
+      rs.forEach(function(r,ix){ r.setAttribute('aria-selected', ix === i ? 'true' : 'false'); });
+    }
+    rs.forEach(function(r, i){
+      r.addEventListener('click', function(){ selectStage(i); });
+      r.addEventListener('keydown', function(e){
+        var n = null;
+        if (e.key === 'ArrowRight') n = (i + 1) % rs.length;
+        else if (e.key === 'ArrowLeft') n = (i - 1 + rs.length) % rs.length;
+        if (n === null) return;
+        e.preventDefault(); rs[n].focus(); selectStage(n);
+      });
     });
 
     /* sticky section nav: hidden during the film, index afterwards */

@@ -606,7 +606,8 @@ export default function OPSPDashboard() {
                   <span className="bg-[#185787] px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">FY30 Revenue BHAG</span>
                 </div>
                 <div className="text-4xl md:text-5xl font-black mb-2 tracking-tight">$100.00M USD</div>
-                <div className="text-gray-400 font-medium text-lg mb-6">in a financial year by FY2030</div>
+                <div className="text-gray-400 font-medium text-lg mb-3">in a financial year by FY2030</div>
+                <div className="inline-flex items-center rounded-full bg-white/10 border border-white/10 px-3 py-1 text-xs font-semibold text-gray-300 mb-4">Target excludes the USA business</div>
               </div>
               <div className="relative z-10 pt-6 border-t border-white/10">
                 <div className="flex justify-between items-end mb-2">
@@ -631,7 +632,8 @@ export default function OPSPDashboard() {
                   <span className="bg-blue-50 text-[#185787] px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase">2030 Showroom BHAG</span>
                 </div>
                 <div className="text-4xl md:text-5xl font-black text-[#081C28] mb-2 tracking-tight">1,000 Stores</div>
-                <div className="text-gray-500 font-medium text-lg mb-6">globally with an Ai1 Unit by 2030</div>
+                <div className="text-gray-500 font-medium text-lg mb-3">globally with an Ai1 Unit by 2030</div>
+                <div className="inline-flex items-center rounded-full bg-blue-50 border border-blue-100 px-3 py-1 text-xs font-semibold text-[#185787] mb-4">Target includes the USA</div>
               </div>
               <div className="relative z-10 pt-6 border-t border-gray-100">
                 <div className="flex justify-between items-end mb-2">

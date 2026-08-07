@@ -234,10 +234,24 @@ export default function OPSPDashboard() {
           .map((el) => (el.textContent || '').trim())
           .filter(Boolean);
 
+        // Normalise a label for matching: lowercase, collapse whitespace, and strip
+        // trailing noise like "$", ":" or "." so a doc row relabelled "GROSS PROFIT $"
+        // still matches "GROSS PROFIT". "%" is preserved so "GROSS PROFIT %" stays
+        // distinct from the dollar row. Applied to exact matches only, which is every
+        // field pulled by label (goals, sandbox, processes, people, theme, FY30).
+        const normLabel = (s: string) => (s || '')
+          .toLowerCase()
+          .replace(/ /g, ' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+          .replace(/[\s$*:.]+$/g, '')
+          .trim();
+
         const valueAfter = (label: string, opts: { exact?: boolean; from?: number } = {}) => {
           const { exact = false, from = 0 } = opts;
+          const target = normLabel(label);
           const i = blocks.findIndex((b, idx) => idx >= from && (exact
-            ? b.toLowerCase() === label.toLowerCase()
+            ? normLabel(b) === target
             : b.toLowerCase().includes(label.toLowerCase())));
           return i !== -1 && blocks[i + 1] ? blocks[i + 1] : null;
         };

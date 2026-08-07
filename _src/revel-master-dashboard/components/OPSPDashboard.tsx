@@ -192,10 +192,13 @@ function parseDoc(htmlText: string): OpspData {
 
     for (const cells of tableAfter(/^One Year - Goals FY/i)) {
         if (cells.length < 2) continue;
-        const cat = cells[0].toUpperCase();
-        if (cat === 'REVENUE') out.fy27Revenue = cells[1];
-        else if (cat === 'GROSS PROFIT') out.fy27GrossProfit = cells[1];
-        else if (cat === 'GROSS PROFIT %') out.fy27GPMargin = cells[1];
+        // Normalise the label: lowercase, collapse whitespace, strip trailing noise like
+        // "$", ":" or "." so a doc row relabelled "GROSS PROFIT $" still matches. "%" is
+        // preserved so the margin row stays distinct from the dollar row.
+        const cat = cells[0].toLowerCase().replace(/\s+/g, ' ').trim().replace(/[\s$*:.]+$/g, '').trim();
+        if (cat === 'revenue') out.fy27Revenue = cells[1];
+        else if (cat === 'gross profit') out.fy27GrossProfit = cells[1];
+        else if (cat === 'gross profit %') out.fy27GPMargin = cells[1];
     }
 
     const initiatives = tableAfter(/^Key Initiatives/i)

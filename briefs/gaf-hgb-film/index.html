@@ -454,6 +454,49 @@ footer a{color:var(--g400)}
   #film-stick.playing #film{position:sticky;top:56px;z-index:3}
 }
 
+
+/* ── what he buys ── */
+.bstep{margin:34px 0 16px;max-width:760px}
+.bstep-n{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+.bstep-h{font-family:var(--display);font-weight:900;font-size:clamp(20px,2.6vw,28px);margin:6px 0 8px;line-height:1.15}
+.bstep-p{font-size:14.5px;color:var(--g600);line-height:1.55}
+.prods{display:grid;gap:14px}
+.prods.anchors{grid-template-columns:repeat(3,1fr)}
+.prods.kit{grid-template-columns:repeat(4,1fr)}
+.pc{display:flex;flex-direction:column;border:1px solid var(--g200);border-radius:14px;background:#fff;
+    padding:16px;color:inherit;position:relative}
+
+.pc img{width:100%;aspect-ratio:4/3;object-fit:contain;background:var(--g50);border-radius:10px;margin-bottom:12px}
+.pc-n{font-family:var(--display);font-weight:900;font-size:16px;line-height:1.2}
+.pc-sub{font-size:12.5px;color:var(--g500);margin-top:3px;line-height:1.35}
+.pc-meta{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-top:auto;padding-top:12px}
+.pc-meta b{font-family:var(--display);font-weight:900;font-size:16px;color:var(--ink)}
+.pc-meta i{font-family:var(--display);font-weight:800;font-size:11px;font-style:normal;letter-spacing:.05em;
+  color:var(--orange-700);background:var(--orange-soft);border-radius:999px;padding:5px 10px;white-space:nowrap}
+.pc.hero{border-color:var(--orange);background:var(--orange-soft)}
+.pc.hero img{background:#fff}
+.pc-rank{position:absolute;top:-9px;left:16px;font-family:var(--display);font-weight:800;font-size:9.5px;
+  letter-spacing:.13em;text-transform:uppercase;background:var(--orange);color:#fff;border-radius:999px;padding:4px 11px}
+.pc-rank.alt{background:var(--ink)}
+.pc.sm img{aspect-ratio:1/1}
+.pc.sm .pc-n{font-size:14.5px}
+.pc.cardio{background:var(--g50);justify-content:center}
+.pc-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+.pc-list span{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;color:var(--g700);
+  border-bottom:1px solid var(--g200);padding-bottom:7px}
+.pc-list i{font-family:var(--display);font-weight:900;font-style:normal;font-size:13px;color:var(--ink)}
+.pc-note{font-size:12.5px;color:var(--g500);margin-top:12px;line-height:1.45}
+.bsum{display:grid;grid-template-columns:1fr 220px;gap:20px;align-items:center;margin-top:30px;
+  border:1px solid var(--orange);border-radius:16px;background:var(--orange-soft);padding:24px 26px}
+.bsum-k{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-700)}
+.bsum-l p{font-size:14.5px;color:var(--g700);line-height:1.55;margin-top:8px}
+.bsum-r{text-align:right}
+.bsum-v{font-family:var(--display);font-weight:900;font-size:clamp(30px,4vw,46px);color:var(--orange-700);line-height:1}
+.bsum-t{font-size:12.5px;color:var(--g600);margin-top:6px}
+@media(max-width:1000px){.prods.anchors{grid-template-columns:repeat(2,1fr)}.prods.kit{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.prods.anchors,.prods.kit{grid-template-columns:repeat(2,1fr)}
+  .bsum{grid-template-columns:1fr}.bsum-r{text-align:left}}
+
 </style>
 </head>
 <body>
@@ -469,8 +512,9 @@ footer a{color:var(--g400)}
     <a href="#barriers" data-s="barriers">04 Barriers</a>
     <a href="#motivations" data-s="motivations">05 Motivations</a>
     <a href="#definition" data-s="definition">06 How we count him</a>
-    <a href="#evidence" data-s="evidence">07 What he is worth</a>
-    <a href="#profitperx" data-s="profitperx">08 Profit per X</a>
+    <a href="#buys" data-s="buys">07 What he buys</a>
+    <a href="#evidence" data-s="evidence">08 What he is worth</a>
+    <a href="#profitperx" data-s="profitperx">09 Profit per X</a>
   </div>
 </nav>
 <header class="hero">
@@ -848,11 +892,130 @@ footer a{color:var(--g400)}
   </div>
 </section>
 
+<!-- ═══ WHAT HE BUYS ═══ -->
+<section class="pad" id="buys">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">07 · What he buys</span>
+      <h2>The build itself</h2>
+      <p>Everything above describes the customer. This is the cart. Real products, live prices, and how often each one turns up across the FY26 builds. It is what $7,970 actually looks like.</p>
+    </div>
+
+    <div class="bstep">
+      <span class="bstep-n">Step one</span>
+      <h3 class="bstep-h">He picks a centrepiece</h3>
+      <p class="bstep-p">Almost always one, almost always a Force USA all-in-one. The order below is how often each appears.</p>
+    </div>
+
+    <div class="prods anchors">
+      <div class="pc hero">
+        <span class="pc-rank">Most common</span>
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/files/02_f4d03508-f759-4ffa-9d00-fed28592c2c4.jpg" alt="Force USA C20 All-In-One Trainer">
+        <span class="pc-n">Force USA C20</span><span class="pc-sub">Cornerstone all-in-one</span>
+        <span class="pc-meta"><b>$8,999</b><i>191 builds</i></span>
+      </div>
+      <div class="pc">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_7ccff53d-812e-4638-9e99-8d7ecc091cd0.jpg" alt="Force USA C10 All-In-One Trainer">
+        <span class="pc-n">Force USA C10</span><span class="pc-sub">All-in-one trainer</span>
+        <span class="pc-meta"><b>$6,999</b><i>152 builds</i></span>
+      </div>
+      <div class="pc">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/files/745EF284-A945-4AC9-BB7C-D20495316082.jpg" alt="Force USA G4 All-In-One Trainer">
+        <span class="pc-n">Force USA G4</span><span class="pc-sub">All-in-one trainer</span>
+        <span class="pc-meta"><b>$3,999</b><i>103 builds</i></span>
+      </div>
+      <div class="pc">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/files/0004_3.jpg" alt="Force USA G12 All-In-One Trainer">
+        <span class="pc-n">Force USA G12</span><span class="pc-sub">All-in-one trainer</span>
+        <span class="pc-meta"><b>$4,999</b><i>99 builds</i></span>
+      </div>
+      <div class="pc">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/ForceUSAG3_0001_2.jpg" alt="Force USA G3 All-In-One Trainer">
+        <span class="pc-n">Force USA G3</span><span class="pc-sub">All-in-one trainer</span>
+        <span class="pc-meta"><b>$2,699</b><i>98 builds</i></span>
+      </div>
+      <div class="pc cardio">
+        <span class="pc-rank alt">Or cardio</span>
+        <div class="pc-list">
+          <span>Assault Runner Pro <i>66</i></span>
+          <span>Concept2 RowErg <i>37</i></span>
+          <span>AssaultBike Classic <i>36</i></span>
+          <span>Force USA R3 Air Rower <i>27</i></span>
+          <span>Concept2 SkiErg <i>23</i></span>
+        </div>
+        <span class="pc-note">A real minority, and notably premium cardio rather than budget treadmills.</span>
+      </div>
+    </div>
+
+    <div class="bstep">
+      <span class="bstep-n">Step two</span>
+      <h3 class="bstep-h">Then the same kit goes around it</h3>
+      <p class="bstep-p">This part barely varies. Whatever centrepiece he chooses, these are what fill the rest of the room.</p>
+    </div>
+
+    <div class="prods kit">
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/1_03e024b1-9fa4-490a-ac56-6b4a9d7ded99.png" alt="Rubber coated Olympic weight plates">
+        <span class="pc-n">Weight plates</span><span class="pc-sub">Rubber coated Olympic</span>
+        <span class="pc-meta"><b>from $110</b><i>340 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/HERO_9fff3294-ce2b-4f7e-ab48-ce63f0a1faaa.jpg" alt="Force USA 20kg 7ft Olympic Barbell">
+        <span class="pc-n">The barbell</span><span class="pc-sub">20kg 7ft Olympic</span>
+        <span class="pc-meta"><b>$275</b><i>267 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/files/01_HERO_a256e4cc-19e2-41f6-a68a-d7b748e846da.jpg" alt="Force USA Sliding Bench">
+        <span class="pc-n">A bench</span><span class="pc-sub">Sliding, FID or studio</span>
+        <span class="pc-meta"><b>from $314</b><i>232 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/HERO_082958da-a85a-45ea-a9f8-496f9837ee02.jpg" alt="Force USA Rubber Hex Dumbbells">
+        <span class="pc-n">Dumbbells</span><span class="pc-sub">Rubber hex, right across the range</span>
+        <span class="pc-meta"><b>from $90</b><i>170 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/F-UTBP-0-HERO.jpg" alt="Force USA Ultimate Training Bumper Plates">
+        <span class="pc-n">Bumper plates</span><span class="pc-sub">On top of the iron</span>
+        <span class="pc-meta"><b>from $115</b><i>176 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/Hero-1.png" alt="Force USA 3 Tier Dumbbell Rack">
+        <span class="pc-n">Storage</span><span class="pc-sub">3 tier dumbbell rack</span>
+        <span class="pc-meta"><b>$499</b><i>159 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/VF_0012_1-HERO.jpg" alt="VersaFit rubber flooring tiles">
+        <span class="pc-n">Flooring</span><span class="pc-sub">VersaFit rubber tiles</span>
+        <span class="pc-meta"><b>$30 each</b><i>142 builds</i></span>
+      </div>
+      <div class="pc sm">
+        <img loading="lazy" src="https://cdn.shopify.com/s/files/1/1950/1891/products/0003_HERO_6ab0c03a-0ab6-4d4d-8eaa-c121a0fa16b0.jpg" alt="Force USA Olympic Quick Lock Collars">
+        <span class="pc-n">Collars</span><span class="pc-sub">Olympic quick lock, pair</span>
+        <span class="pc-meta"><b>$30</b><i>157 builds</i></span>
+      </div>
+    </div>
+
+    <div class="bsum">
+      <div class="bsum-l">
+        <span class="bsum-k">Read the shape, not the list</span>
+        <p><b>One big decision, then a predictable tail.</b> He agonises over the centrepiece, which is where every barrier on this page lives: will it fit, which model, is it in stock, can I afford it. Then the rest of the room fills itself with the same eight things almost every time. Everything after the centrepiece is a bundling problem, not a selling problem.</p>
+        <p style="margin-top:12px"><b>And the numbers explain each other.</b> A C20 is $8,999 on its own, which is why C20 builds sit above the $7,970 average, and why <b>Path 1</b> in section 06 exists at all: for 180 customers the centrepiece <em>was</em> the whole gym.</p>
+      </div>
+      <div class="bsum-r">
+        <div class="bsum-v">$7,970</div>
+        <div class="bsum-t">average build, FY26</div>
+      </div>
+    </div>
+    <p class="note" style="margin-top:16px">Counts are how many carts each product appears in across the 1,733 FY26 value-carts, not units sold. Prices are live from the site today and will move with campaigns. This is what a typical build contains, not a recommended bundle.</p>
+  </div>
+</section>
+
 <!-- ═══ EVIDENCE ═══ -->
 <section class="pad" id="evidence">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">07 · What he is worth</span>
+      <span class="eyebrow">08 · What he is worth</span>
       <h2>The commercial case</h2>
       <p>Section 06 is how we count him. This is what that count is worth, when it lands, and one number to stop repeating.</p>
     </div>
@@ -871,7 +1034,7 @@ footer a{color:var(--g400)}
     <p class="note">June is 3.2× the quietest month. For this customer <strong>Black Friday is not a general traffic event</strong>, it is one of only two moments in the year when project-mode buyers actually commit. But read it correctly: <strong>these months convert demand, they do not create it.</strong> The trigger that put him in the market happened weeks or months earlier, and the sale only decided the date. The implication is uncomfortable and worth saying out loud: <strong>the pipeline has to be full before November, not during it.</strong></p>
 
     <div class="warn">
-      <b>This page carries two profit numbers, and they are not comparable.</b> <b>$2,376</b> here, and <b>$1,271</b> in section 08. Neither is wrong and neither supersedes the other, because they measure different things on different populations. This one is <b>gross profit, before acquisition cost</b>, on the cart-rule cohort we count for the BHAG. That one is <b>net profit, after acquisition cost and cost to serve</b>, on the behavioural archetype model. The assisted premium is 1.33× on this basis and 2.5× on that one, for the same reason. In one line: <b>section 08 tells you which customer to chase, section 07 tells you what a counted build is worth.</b> What you must not do is quote either as “$X per home gym build”.
+      <b>This page carries two profit numbers, and they are not comparable.</b> <b>$2,376</b> here, and <b>$1,271</b> in section 09. Neither is wrong and neither supersedes the other, because they measure different things on different populations. This one is <b>gross profit, before acquisition cost</b>, on the cart-rule cohort we count for the BHAG. That one is <b>net profit, after acquisition cost and cost to serve</b>, on the behavioural archetype model. The assisted premium is 1.33× on this basis and 2.5× on that one, for the same reason. In one line: <b>section 09 tells you which customer to chase, section 08 tells you what a counted build is worth.</b> What you must not do is quote either as “$X per home gym build”.
     </div>
   </div>
 </section>
@@ -880,7 +1043,7 @@ footer a{color:var(--g400)}
 <section class="pad alt" id="profitperx">
   <div class="wrap">
     <div class="sec-head">
-      <span class="eyebrow">08 · Profit per X</span>
+      <span class="eyebrow">09 · Profit per X</span>
       <h2>Why him, and not the others</h2>
       <p>Every B2C customer type, plotted on what it costs to win them against what they are worth once we have. This is the evidence behind choosing the Home Gym Builder: after acquisition cost and cost to serve, he is the <strong>only archetype that makes money online</strong>.</p>
     </div>
@@ -949,7 +1112,7 @@ footer a{color:var(--g400)}
     </div>
 
     <div class="warn">
-      <b>How this sits with section 07.</b> This chart is the <b>archetype</b> model: it segments customers by behaviour and nets off acquisition cost and cost to serve, answering "which type should we chase". Section 07 is the <b>cart-rule</b> cohort, gross profit before acquisition cost, answering "what is a counted build worth". Different populations, different bases. That is why the assisted premium reads 2.5× here and 1.33× there, and why $1,271 belongs on this chart and never against a build count.
+      <b>How this sits with section 08.</b> This chart is the <b>archetype</b> model: it segments customers by behaviour and nets off acquisition cost and cost to serve, answering "which type should we chase". Section 08 is the <b>cart-rule</b> cohort, gross profit before acquisition cost, answering "what is a counted build worth". Different populations, different bases. That is why the assisted premium reads 2.5× here and 1.33× there, and why $1,271 belongs on this chart and never against a build count.
     </div>
   </div>
 </section>

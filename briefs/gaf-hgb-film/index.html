@@ -433,6 +433,27 @@ footer a{color:var(--g400)}
 }
 @media(max-width:420px){ .ribbon{grid-template-columns:repeat(2,1fr)} }
 
+
+/* mobile: captions track the film instead of sitting in a separate list */
+.mcap{display:none}
+@media(max-width:820px){
+  #film-stick.playing .mcap{display:block;margin:0 6vw 22px;padding:20px 20px 22px;
+    background:#101010;border:1px solid #232323;border-radius:14px;min-height:210px}
+  #film-stick.playing .mcap[hidden]{display:block}
+  #film-stick.playing #callouts{display:none}
+  .mcap-ch{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--g500);margin-bottom:10px}
+  .mcap-k{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+  .mcap-l{font-family:var(--display);font-weight:900;font-size:23px;line-height:1.1;color:#fff;margin-bottom:10px}
+  .mcap-s{font-size:14.5px;color:#C9C9C9;line-height:1.5}
+  .mcap-d{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .mcap-d span{font-family:var(--display);font-weight:800;font-size:11.5px;color:#fff;
+    background:#1c1c1c;border:1px solid #333;border-radius:999px;padding:7px 13px}
+  .mcap-d span b{color:var(--orange);font-weight:900}
+  #film-stick.playing #film{position:sticky;top:56px;z-index:3}
+}
+
 </style>
 </head>
 <body>
@@ -469,6 +490,13 @@ footer a{color:var(--g400)}
     <div class="film-vig"></div>
     <div class="progress" id="prog"></div>
     <div class="chapter" id="chap"></div>
+    <div class="mcap" id="mcap" hidden>
+      <div class="mcap-ch" id="mcapCh"></div>
+      <div class="mcap-k" id="mcapK"></div>
+      <div class="mcap-l" id="mcapL"></div>
+      <div class="mcap-s" id="mcapS"></div>
+      <div class="mcap-d" id="mcapD"></div>
+    </div>
     <div class="mfilm" id="mfilm">
       <img class="mfilm-poster" src="film/poster.jpg" alt="Still from the Home Gym Builder film">
       <div class="mfilm-body">
@@ -1304,6 +1332,24 @@ footer a{color:var(--g400)}
       stick.classList.add('playing');
       v.setAttribute('controls','');
       v.load(); v.play().catch(function(){});
+      /* the callouts are half the film, so track them to the clock rather than
+         leaving them stranded in a list further down the page */
+      var cap = document.getElementById('mcap'),
+          cCh = document.getElementById('mcapCh'), cK = document.getElementById('mcapK'),
+          cL  = document.getElementById('mcapL'),  cS = document.getElementById('mcapS'),
+          cD  = document.getElementById('mcapD');
+      cap.hidden = false;
+      var shown = -1;
+      v.addEventListener('timeupdate', function(){
+        var t = v.currentTime, i = -1;
+        for (var n = 0; n < BEATS.length; n++){ if (t >= BEATS[n].t[0] - 0.4 && t <= BEATS[n].t[1] + 0.4){ i = n; break; } }
+        if (i === -1 || i === shown) return;
+        shown = i;
+        var b = BEATS[i];
+        cCh.textContent = b.ch; cK.textContent = b.k; cL.textContent = b.l;
+        cS.textContent = b.s || '';
+        cD.innerHTML = b.d ? b.d.map(function(x){ return '<span>' + x + '</span>'; }).join('') : '';
+      });
     });
     go();
   } else {

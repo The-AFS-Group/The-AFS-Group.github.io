@@ -341,6 +341,63 @@ footer a{color:var(--g400)}
   .jrn .sec-head p{font-size:15px}
 }
 
+
+/* ── profit per X ── */
+.ppx{margin:0;border:1px solid var(--g200);border-radius:16px;background:#fcfcfb;padding:22px 24px;position:relative}
+.ppx-cap{display:flex;flex-direction:column;gap:3px;margin-bottom:14px}
+.ppx-t{font-family:var(--display);font-weight:900;font-size:15px;color:var(--ink)}
+.ppx-s{font-size:12.5px;color:var(--g500)}
+.ppx-legend{display:flex;gap:26px;flex-wrap:wrap;margin-bottom:12px}
+.lg-group{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.lg-lbl{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--g500)}
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--g700)}
+.lg .sw{width:11px;height:11px;border-radius:50%;flex:none}
+.lg .sw.solid{background:var(--g600)}
+.lg .sw.hollow{background:#fff;border:3px solid var(--g600)}
+.ppx-plot{overflow-x:auto}
+.ppx-plot svg{width:100%;min-width:620px;height:auto;display:block}
+.ppx .grid{stroke:#E8E8E6;stroke-width:1}
+.ppx .zero{stroke:#1A1A1A;stroke-width:1.5;stroke-dasharray:4 4;opacity:.55}
+.ppx .ax{font-family:'Open Sans',sans-serif;font-size:11px;fill:#717171}
+.ppx .ax-t{font-family:'Montserrat',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.14em;fill:#717171}
+.ppx .ax-note{font-family:'Montserrat',sans-serif;font-weight:800;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;fill:#A0A0A0}
+.ppx .lbl{font-family:'Montserrat',sans-serif;font-weight:900;font-size:13px;fill:#1A1A1A}
+.ppx .pt{cursor:default}
+.ppx .pt:focus{outline:none}
+.ppx .pt:focus circle,.ppx .pt:hover circle{stroke-width:4}
+.ppx-tip[hidden]{display:none}
+.ppx-tip{position:absolute;z-index:5;background:#1A1A1A;color:#fff;border-radius:10px;padding:11px 13px;
+  width:180px;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,.22);display:flex;flex-direction:column;gap:3px}
+.ppx-tip b{font-family:var(--display);font-weight:800}
+.ppx-tip>b{font-size:12.5px;margin-bottom:4px;line-height:1.25}
+.ppx-tip span{font-size:11.5px;color:var(--g300);display:flex;justify-content:space-between;gap:10px}
+.ppx-tip span b{color:#fff}
+.ppx-read{margin-top:14px;border-top:1px solid var(--g200);padding-top:12px}
+.rd{display:flex;gap:12px;flex-wrap:wrap;align-items:baseline}
+.rd-k{font-family:var(--display);font-weight:800;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--orange-700);flex:none}
+.rd-v{font-size:13.5px;color:var(--g600);line-height:1.5}
+
+.ppx-tbl .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:8px;vertical-align:-1px}
+.ppx-tbl .dot.ring{background:#fff;border:3px solid}
+.ppx-tbl .neg{color:#B3261E}
+.ppx-points{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.pp{display:flex;gap:12px;border:1px solid var(--g200);border-radius:14px;background:#fff;padding:20px}
+.pp-n{font-family:var(--display);font-weight:900;font-size:20px;color:var(--orange);line-height:1;flex:none}
+.pp-b h4{font-family:var(--display);font-weight:900;font-size:15.5px;line-height:1.25;margin-bottom:7px}
+.pp-b p{font-size:13.5px;color:var(--g600);line-height:1.5}
+@media(max-width:960px){.ppx-points{grid-template-columns:1fr}}
+
+
+#snav .wrap{position:relative}
+#snav:after{content:'';position:absolute;top:0;right:0;width:44px;height:52px;pointer-events:none;
+  background:linear-gradient(to right,rgba(255,255,255,0),rgba(255,255,255,.96))}
+@media(min-width:1180px){#snav:after{display:none}}
+
+.crm td.c,.crm th.c{text-align:center;width:88px}
+.crm td.c b{display:inline-block;width:20px;height:20px;line-height:20px;border-radius:50%;
+  background:var(--orange);color:#fff;font-family:var(--display);font-weight:900;font-size:11px}
+.crm td.c{font-family:var(--display);font-weight:800;font-size:11.5px;color:var(--g400)}
+.crm{min-width:820px}
 </style>
 </head>
 <body>
@@ -357,6 +414,7 @@ footer a{color:var(--g400)}
     <a href="#motivations" data-s="motivations">05 Motivations</a>
     <a href="#definition" data-s="definition">06 How we count him</a>
     <a href="#evidence" data-s="evidence">07 What he is worth</a>
+    <a href="#profitperx" data-s="profitperx">08 Profit per X</a>
   </div>
 </nav>
 <header class="hero">
@@ -416,6 +474,27 @@ footer a{color:var(--g400)}
         </div>
         <p class="jd-action" id="jdAction"></p>
         <div class="jd-metric"><span class="jd-ml">Metric</span><span id="jdMetric"></span></div>
+      </div>
+
+      <h3 class="sub-h" style="margin-top:38px">Which channel does which job</h3>
+      <p class="note">The stage detail above says what happens to him. This says who does it. Roles read from the 90-day channel mix: <b>I</b> initiates, <b>N</b> nurtures, <b>C</b> closes, <b>G</b> grows.</p>
+      <div style="overflow-x:auto">
+      <table class="tbl crm">
+        <thead><tr><th>Channel</th><th class="c">Consideration</th><th class="c">Design</th><th class="c">Purchase</th><th class="c">Grow</th><th>What the 90-day numbers say</th></tr></thead>
+        <tbody>
+          <tr><td>Paid Social</td><td class="c"><b>I</b></td><td class="c">I</td><td class="c"></td><td class="c"></td><td>242k sessions, 4,254 conversions. A front door, not a closer.</td></tr>
+          <tr><td>Paid Shopping</td><td class="c">I</td><td class="c"></td><td class="c"><b>C</b></td><td class="c"></td><td>166k sessions, 9,541 conversions. The best-converting paid channel.</td></tr>
+          <tr><td>Paid Search</td><td class="c"></td><td class="c">N</td><td class="c"><b>C</b></td><td class="c"></td><td>48k sessions, 7,506 conversions. Catches brand and model intent.</td></tr>
+          <tr><td>Organic / SEO</td><td class="c"><b>I</b></td><td class="c">N</td><td class="c"></td><td class="c">G</td><td>Informational content ranks; transactional queries convert.</td></tr>
+          <tr><td>AI answers (ChatGPT and similar)</td><td class="c"><b>I</b></td><td class="c">N</td><td class="c"></td><td class="c"></td><td>2,192 sessions, 478 conversions, about $50k in 90 days. Up 378% year on year.</td></tr>
+          <tr><td>Email</td><td class="c"></td><td class="c">N</td><td class="c"></td><td class="c"><b>G</b></td><td>43,370 contacts. A nurture and reactivation engine, never an initiator.</td></tr>
+          <tr><td>Direct and referral</td><td class="c">N</td><td class="c"></td><td class="c">C</td><td class="c"><b>G</b></td><td>Existing customers are the cohort's largest discovery channel.</td></tr>
+          <tr class="hot"><td>Phone consultant</td><td class="c">N</td><td class="c"><b>C</b></td><td class="c"><b>C</b></td><td class="c"><b>G</b></td><td>The most profitable close in the business, and invisible to last-click.</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <div class="warn" style="margin-top:18px">
+        <b>The attribution truth, and why it matters here.</b> Over the same 90 days, Google Analytics attributes <b>$3.25m</b> of revenue. Shopify records <b>$6.21m</b>. Total sales including phone and pickup are <b>$7.06m</b>. So last-click can see under half the money, and the half it cannot see contains the highest-profit close we have. Judging a channel like Paid Social on last-click ROAS would mean cutting the journey's biggest front door because the till it eventually rings is in another room.
       </div>
 
       <div class="loopback">
@@ -722,6 +801,84 @@ footer a{color:var(--g400)}
   </div>
 </section>
 
+<!-- ═══ PROFIT PER X ═══ -->
+<section class="pad alt" id="profitperx">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow">08 · Profit per X</span>
+      <h2>Why him, and not the others</h2>
+      <p>Every B2C customer type, plotted on what it costs to win them against what they are worth once we have. This is the evidence behind choosing the Home Gym Builder: after acquisition cost and cost to serve, he is the <strong>only archetype that makes money online</strong>.</p>
+    </div>
+
+    <figure class="ppx">
+      <figcaption class="ppx-cap">
+        <span class="ppx-t">Median CAC against median profit per customer</span>
+        <span class="ppx-s">Apr 2025 to Mar 2026 · 11,228 B2C customers · bubble area is customer count</span>
+      </figcaption>
+
+      <div class="ppx-legend">
+        <div class="lg-group">
+          <span class="lg-lbl">Archetype</span>
+          <span class="lg"><i class="sw" style="background:#F26422"></i>Home Gym Builder</span>
+          <span class="lg"><i class="sw" style="background:#1B6CA8"></i>Performance Optimiser</span>
+          <span class="lg"><i class="sw" style="background:#4C9A2A"></i>Budget-Conscious Seeker</span>
+          <span class="lg"><i class="sw" style="background:#7B5EA7"></i>Unidentified</span>
+        </div>
+        <div class="lg-group">
+          <span class="lg-lbl">Channel</span>
+          <span class="lg"><i class="sw solid"></i>Sales-assisted</span>
+          <span class="lg"><i class="sw hollow"></i>Online</span>
+        </div>
+      </div>
+
+      <div class="ppx-plot"><svg id="ppxSvg" viewBox="0 0 920 470" role="img"
+        aria-label="Scatter plot of median customer acquisition cost against median profit per customer for seven B2C segments. Both Home Gym Builder segments sit in profit; every Budget-Conscious and Online Performance Optimiser segment sits in loss."></svg></div>
+      <div id="ppxTip" class="ppx-tip" hidden></div>
+
+      <div class="ppx-read">
+        <div class="rd"><span class="rd-k">Read it like this</span><span class="rd-v">Right of the zero line is profit. Left is loss. Lower on the chart is cheaper to acquire. The best place to be is <strong>bottom right</strong>.</span></div>
+        <div class="rd" style="margin-top:9px"><span class="rd-k">The nested green</span><span class="rd-v">The two Budget-Conscious marks sit almost on top of each other, and that overlap is the point: <strong>this customer loses us money whether we sell to them online or put a consultant on the phone</strong>. The channel does not rescue them. Contrast the two orange marks, which are far apart because the channel changes the Home Gym Builder's value a great deal.</span></div>
+      </div>
+    </figure>
+
+    <h3 class="sub-h">The same numbers, exactly</h3>
+    <table class="tbl ppx-tbl">
+      <thead><tr><th>Segment</th><th class="r">Customers</th><th class="r">Orders each</th><th class="r">Median CAC</th><th class="r">Median GP / order</th><th class="r">Median profit</th></tr></thead>
+      <tbody>
+        <tr class="hot"><td><i class="dot" style="background:#F26422"></i>Home Gym Builder, sales-assisted</td><td class="r">627</td><td class="r">1.65</td><td class="r">$161</td><td class="r">$2,160</td><td class="r"><b>$1,271</b></td></tr>
+        <tr><td><i class="dot ring" style="border-color:#F26422"></i>Home Gym Builder, online</td><td class="r">392</td><td class="r">1.99</td><td class="r">$147</td><td class="r">$1,044</td><td class="r"><b>$502</b></td></tr>
+        <tr><td><i class="dot" style="background:#1B6CA8"></i>Performance Optimiser, sales-assisted</td><td class="r">585</td><td class="r">1.48</td><td class="r">$224</td><td class="r">$1,305</td><td class="r"><b>$358</b></td></tr>
+        <tr><td><i class="dot ring" style="border-color:#1B6CA8"></i>Performance Optimiser, online</td><td class="r">837</td><td class="r">1.34</td><td class="r">$224</td><td class="r">$303</td><td class="r"><b class="neg">-$25</b></td></tr>
+        <tr><td><i class="dot" style="background:#4C9A2A"></i>Budget-Conscious Seeker, sales-assisted</td><td class="r">1,496</td><td class="r">1.29</td><td class="r">$298</td><td class="r">$478</td><td class="r"><b class="neg">-$150</b></td></tr>
+        <tr><td><i class="dot ring" style="border-color:#4C9A2A"></i>Budget-Conscious Seeker, online</td><td class="r">6,322</td><td class="r">1.16</td><td class="r">$298</td><td class="r">$192</td><td class="r"><b class="neg">-$165</b></td></tr>
+        <tr><td><i class="dot ring" style="border-color:#7B5EA7"></i>Unidentified, online</td><td class="r">114</td><td class="r">1.04</td><td class="r">$223</td><td class="r">$171</td><td class="r"><b class="neg">-$338</b></td></tr>
+      </tbody>
+    </table>
+
+    <div class="ppx-points">
+      <div class="pp">
+        <div class="pp-n">01</div>
+        <div class="pp-b"><h4>He is the only archetype that survives online</h4>
+        <p>Sold online without a consultant, the Performance Optimiser loses $25 a customer and the Budget-Conscious Seeker loses $165. The Home Gym Builder makes <strong>$502</strong>. That single fact is the argument for pointing self-serve at him and nobody else.</p></div>
+      </div>
+      <div class="pp">
+        <div class="pp-n">02</div>
+        <div class="pp-b"><h4>He is also the cheapest to win</h4>
+        <p>His CAC is the lowest on the board, $147 online and $161 assisted, against $298 for a Budget-Conscious Seeker. We are currently paying twice as much to acquire the customer who loses us money.</p></div>
+      </div>
+      <div class="pp">
+        <div class="pp-n">03</div>
+        <div class="pp-b"><h4>The biggest bubble is the biggest problem</h4>
+        <p><strong>6,322</strong> online Budget-Conscious Seekers, more than half of all B2C customers, each losing about $165. That is roughly <strong>$1m of median losses a year</strong> and it dwarfs every other segment by volume.</p></div>
+      </div>
+    </div>
+
+    <div class="warn">
+      <b>How this sits with section 07.</b> This chart is the <b>archetype</b> model: it segments customers by behaviour and answers "which type should we chase". Section 07 is the <b>cart-rule</b> cohort: it answers "what is a counted build worth". They are different populations and the numbers are not interchangeable, which is why $1,271 belongs here and not against a build count.
+    </div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <strong>The Home Gym Builder.</strong> Internal brief for the GAF team.<br>
@@ -959,6 +1116,90 @@ footer a{color:var(--g400)}
         e.preventDefault(); rs[n].focus(); selectStage(n);
       });
     });
+
+
+    /* ── Profit per X scatter ── */
+    (function(){
+      var svg = document.getElementById('ppxSvg');
+      if (!svg) return;
+      var NS = 'http://www.w3.org/2000/svg';
+      var HUE = { hgb:'#F26422', po:'#1B6CA8', bcs:'#4C9A2A', un:'#7B5EA7' };
+      var DATA = [
+        {n:'Home Gym Builder, sales-assisted', a:'hgb', online:false, cust:627,  cac:161, profit:1271},
+        {n:'Home Gym Builder, online',         a:'hgb', online:true,  cust:392,  cac:147, profit:502},
+        {n:'Performance Optimiser, sales-assisted', a:'po', online:false, cust:585, cac:224, profit:358},
+        {n:'Performance Optimiser, online',    a:'po',  online:true,  cust:837,  cac:224, profit:-25},
+        {n:'Budget-Conscious Seeker, sales-assisted', a:'bcs', online:false, cust:1496, cac:298, profit:-150},
+        {n:'Budget-Conscious Seeker, online',  a:'bcs', online:true,  cust:6322, cac:298, profit:-165},
+        {n:'Unidentified, online',             a:'un',  online:true,  cust:114,  cac:223, profit:-338}
+      ];
+      var W=920, H=470, M={t:26,r:30,b:56,l:74};
+      var x0=-500, x1=1450, y0=0, y1=330;
+      function X(v){ return M.l + (v-x0)/(x1-x0) * (W-M.l-M.r); }
+      function Y(v){ return H-M.b - (v-y0)/(y1-y0) * (H-M.t-M.b); }
+      var rMin=6, rMax=34, sMin=Math.sqrt(114), sMax=Math.sqrt(6322);
+      function R(c){ return rMin + (Math.sqrt(c)-sMin)/(sMax-sMin)*(rMax-rMin); }
+      function el(t,at){ var e=document.createElementNS(NS,t); for(var k in at) e.setAttribute(k,at[k]); return e; }
+
+      /* loss region */
+      svg.appendChild(el('rect',{x:X(x0),y:M.t,width:X(0)-X(x0),height:H-M.t-M.b,fill:'#1A1A1A','fill-opacity':'0.035'}));
+      svg.appendChild(el('text',{x:X(0)-12,y:H-M.b-10,'text-anchor':'end',class:'ax-note'})).textContent='loses money';
+      svg.appendChild(el('text',{x:X(0)+12,y:H-M.b-10,'text-anchor':'start',class:'ax-note'})).textContent='makes money';
+
+      /* gridlines + x axis ticks */
+      [0,75,150,225,300].forEach(function(v){
+        svg.appendChild(el('line',{x1:M.l,y1:Y(v),x2:W-M.r,y2:Y(v),class:'grid'}));
+        var t=el('text',{x:M.l-12,y:Y(v)+4,'text-anchor':'end',class:'ax'}); t.textContent='$'+v; svg.appendChild(t);
+      });
+      [-450,0,450,900,1350].forEach(function(v){
+        var t=el('text',{x:X(v),y:H-M.b+22,'text-anchor':'middle',class:'ax'});
+        t.textContent=(v<0?'-$':'$')+Math.abs(v); svg.appendChild(t);
+      });
+      /* zero line */
+      svg.appendChild(el('line',{x1:X(0),y1:M.t,x2:X(0),y2:H-M.b,class:'zero'}));
+
+      /* axis titles */
+      var xt=el('text',{x:(M.l+W-M.r)/2,y:H-10,'text-anchor':'middle',class:'ax-t'});
+      xt.textContent='MEDIAN PROFIT PER CUSTOMER'; svg.appendChild(xt);
+      var yt=el('text',{x:18,y:(M.t+H-M.b)/2,'text-anchor':'middle',class:'ax-t',transform:'rotate(-90 18 '+((M.t+H-M.b)/2)+')'});
+      yt.textContent='MEDIAN CAC'; svg.appendChild(yt);
+
+      /* bubbles, largest first so small ones stay clickable */
+      var tip=document.getElementById('ppxTip');
+      DATA.slice().sort(function(a,b){return b.cust-a.cust;}).forEach(function(d){
+        var g=el('g',{class:'pt', tabindex:'0', role:'img',
+          'aria-label': d.n+': median profit '+(d.profit<0?'minus $':'$')+Math.abs(d.profit)+', median CAC $'+d.cac+', '+d.cust+' customers'});
+        var c=el('circle',{cx:X(d.profit),cy:Y(d.cac),r:R(d.cust),
+          fill: d.online ? '#ffffff' : HUE[d.a], stroke: HUE[d.a],
+          'stroke-width': d.online ? 3 : 2, 'fill-opacity': d.online ? 1 : 0.9});
+        g.appendChild(c);
+        g.addEventListener('mouseenter', function(e){ show(d, e); });
+        g.addEventListener('focus', function(){ show(d, {clientX:0,clientY:0}, c); });
+        g.addEventListener('mouseleave', hide);
+        g.addEventListener('blur', hide);
+        svg.appendChild(g);
+      });
+
+      /* selective direct labels: the two that carry the argument */
+      [{d:DATA[0],dx:-16,dy:-24,anchor:'end'},{d:DATA[1],dx:-14,dy:26,anchor:'end'},{d:DATA[5],dx:-42,dy:5,anchor:'end'}]
+      .forEach(function(o){
+        var t=el('text',{x:X(o.d.profit)+o.dx,y:Y(o.d.cac)+o.dy,'text-anchor':o.anchor,class:'lbl'});
+        t.textContent=(o.d.profit<0?'-$':'$')+Math.abs(o.d.profit); svg.appendChild(t);
+      });
+
+      function show(d, e, node){
+        tip.hidden=false;
+        tip.innerHTML='<b>'+d.n+'</b><span>Median profit <b>'+(d.profit<0?'-$':'$')+Math.abs(d.profit)+
+          '</b></span><span>Median CAC <b>$'+d.cac+'</b></span><span>Customers <b>'+d.cust.toLocaleString()+'</b></span>';
+        var host=tip.parentElement.getBoundingClientRect();
+        var cx, cy;
+        if (node){ var b=node.getBoundingClientRect(); cx=b.left+b.width/2; cy=b.top; }
+        else { cx=e.clientX; cy=e.clientY; }
+        tip.style.left=Math.max(8, Math.min(host.width-190, cx-host.left-90))+'px';
+        tip.style.top=Math.max(4, cy-host.top-96)+'px';
+      }
+      function hide(){ tip.hidden=true; }
+    })();
 
     /* sticky section nav: hidden during the film, index afterwards */
     var snav = document.getElementById('snav');

@@ -156,13 +156,16 @@ const Dashboard: React.FC = () => {
             rel="noopener noreferrer"
             onClick={() => setIsSidebarOpen(false)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${isCollapsed ? 'justify-center' : ''}`}
-            title={isCollapsed ? "Home Gym Builder (opens in a new tab)" : ""}
+            title={isCollapsed ? "Gary, The Home Gym Builder - archetype brief (opens in a new tab)" : ""}
           >
             <Users size={20} className="shrink-0" />
             {!isCollapsed && (
-              <span className="flex items-center gap-1.5">
-                Home Gym Builder
-                <ExternalLink size={13} className="shrink-0 opacity-60" />
+              <span className="flex flex-col leading-tight min-w-0">
+                <span className="flex items-center gap-1.5">
+                  Gary, The Home Gym Builder
+                  <ExternalLink size={13} className="shrink-0 opacity-60" />
+                </span>
+                <span className="text-[11px] text-gray-400 font-normal">Archetype brief</span>
               </span>
             )}
           </a>

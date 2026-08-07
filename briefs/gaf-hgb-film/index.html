@@ -398,6 +398,41 @@ footer a{color:var(--g400)}
   background:var(--orange);color:#fff;font-family:var(--display);font-weight:900;font-size:11px}
 .crm td.c{font-family:var(--display);font-weight:800;font-size:11.5px;color:var(--g400)}
 .crm{min-width:820px}
+
+/* ── mobile: the film is landscape-composed, so stop pretending it works cropped ── */
+.mfilm{display:none}
+@media(max-width:820px){
+  #film-sec{height:auto}
+  #film-stick{position:static;height:auto;display:block;padding:0 0 8vh}
+  #film{display:none}
+  #film-stick.playing #film{display:block;position:static;width:100%;height:auto;aspect-ratio:16/9;
+    background:#000;border-radius:12px;margin-bottom:18px}
+  #film-stick.playing .mfilm{display:none}
+  .film-vig,.progress,.chapter{display:none}
+  .mfilm{display:block;background:#0d0d0d;border:1px solid #262626;border-radius:14px;overflow:hidden;margin:0 6vw 26px}
+  .mfilm-poster{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;opacity:.5}
+  .mfilm-body{padding:20px 20px 22px}
+  .mfilm-k{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--orange)}
+  .mfilm h3{font-family:var(--display);font-weight:900;font-size:20px;line-height:1.2;color:#fff;margin:8px 0 10px}
+  .mfilm p{font-size:14px;color:var(--g400);line-height:1.55;margin-bottom:16px}
+  .mfilm-btn{font-family:var(--display);font-weight:800;font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;
+    background:var(--orange);color:#fff;border:0;border-radius:999px;padding:13px 22px;cursor:pointer}
+  .mfilm-note{display:block;margin-top:12px;font-size:11.5px;color:var(--g500)}
+  /* the beats become the readable story */
+  #callouts{padding:0 6vw;display:flex;flex-direction:column;gap:14px}
+  .callout{position:static!important;opacity:1!important;transform:none!important;padding:20px 20px 22px;
+    background:#101010;border:1px solid #232323;border-radius:14px;bottom:auto}
+  .callout .cl{font-size:24px;max-width:none;text-shadow:none}
+  .callout .cs{font-size:14.5px;max-width:none;text-shadow:none;color:#C9C9C9}
+  .callout .cd span{background:#1c1c1c;border-color:#333}
+  .hero{padding:12vh 0 9vh}
+  .hero .skip{display:none}
+  /* wide tables get an explicit scroll box */
+  .tbl{display:block;overflow-x:auto;white-space:nowrap}
+  .ribbon{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:420px){ .ribbon{grid-template-columns:repeat(2,1fr)} }
+
 </style>
 </head>
 <body>
@@ -434,6 +469,16 @@ footer a{color:var(--g400)}
     <div class="film-vig"></div>
     <div class="progress" id="prog"></div>
     <div class="chapter" id="chap"></div>
+    <div class="mfilm" id="mfilm">
+      <img class="mfilm-poster" src="film/poster.jpg" alt="Still from the Home Gym Builder film">
+      <div class="mfilm-body">
+        <span class="mfilm-k">The film</span>
+        <h3>An 80 second film, built for a wide screen</h3>
+        <p>It is one continuous shot and it is composed for landscape, so a phone crops most of it away. The story it tells is written out underneath, so you lose nothing by reading on.</p>
+        <button type="button" class="mfilm-btn" id="mfilmPlay">Play it here anyway</button>
+        <span class="mfilm-note">Best on a desktop</span>
+      </div>
+    </div>
     <div id="callouts"></div>
   </div>
 </section>
@@ -963,6 +1008,7 @@ footer a{color:var(--g400)}
     host.appendChild(el); b.el = el;
   });
 
+  var MOBILE = window.matchMedia('(max-width: 820px)').matches;
   var v = document.getElementById('film'),
       loader = document.getElementById('loader'),
       lbar = document.getElementById('lbar'),
@@ -986,7 +1032,8 @@ footer a{color:var(--g400)}
     clearInterval(poll);
     lbar.style.width = '100%';
     loader.classList.add('gone');
-    if (reduce){ BEATS.forEach(function(b){ b.el.style.opacity = 1; }); return; }
+    if (reduce || MOBILE){ BEATS.forEach(function(b){ b.el.style.opacity = 1; }); }
+    if (reduce) return;
 
     var lenis = null;
     if (window.Lenis){
@@ -999,7 +1046,7 @@ footer a{color:var(--g400)}
     var sec = document.getElementById('film-sec');
     var dur = (isFinite(v.duration) && v.duration > 0) ? v.duration : 80;
 
-    ScrollTrigger.create({
+    if (!MOBILE) ScrollTrigger.create({
       trigger: sec, start:'top top', end:'bottom bottom', scrub: 0.4,
       onUpdate: function(self){
         var p = self.progress, t = p * (dur - 0.06);
@@ -1247,7 +1294,21 @@ footer a{color:var(--g400)}
   v.addEventListener('error', go, {once:true});
   v.addEventListener('canplaythrough', function(){ setTimeout(go, 1200); }, {once:true});
   setTimeout(go, 45000);   /* backstop: never trap someone on a slow line forever */
-  v.load();
+  if (MOBILE){
+    /* 15MB is rude on cellular, and the film is cropped to nothing in portrait anyway.
+       Leave it unfetched until the reader explicitly asks for it. */
+    v.removeAttribute('preload'); v.setAttribute('preload','none');
+    var playBtn = document.getElementById('mfilmPlay');
+    if (playBtn) playBtn.addEventListener('click', function(){
+      var stick = document.getElementById('film-stick');
+      stick.classList.add('playing');
+      v.setAttribute('controls','');
+      v.load(); v.play().catch(function(){});
+    });
+    go();
+  } else {
+    v.load();
+  }
 })();
 </script>
 </body>

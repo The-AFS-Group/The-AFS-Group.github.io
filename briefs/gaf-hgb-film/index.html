@@ -497,6 +497,21 @@ footer a{color:var(--g400)}
 @media(max-width:700px){.prods.anchors,.prods.kit{grid-template-columns:repeat(2,1fr)}
   .bsum{grid-template-columns:1fr}.bsum-r{text-align:left}}
 
+
+/* live-tracker CTA */
+.dash-cta{display:flex;align-items:center;gap:22px;flex-wrap:wrap;justify-content:space-between;
+  margin-top:26px;border:1px solid var(--ink);border-radius:16px;background:var(--ink);color:#fff;
+  padding:24px 26px;text-decoration:none;transition:background .2s ease}
+.dash-cta:hover{background:#000}
+.dash-l{display:flex;flex-direction:column;gap:5px;max-width:64ch}
+.dash-k{font-family:var(--display);font-weight:800;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--orange)}
+.dash-t{font-family:var(--display);font-weight:900;font-size:clamp(18px,2.2vw,24px);line-height:1.2}
+.dash-s{font-size:13.5px;color:var(--g400);line-height:1.5;margin-top:4px}
+.dash-btn{display:inline-flex;align-items:center;gap:8px;flex:none;font-family:var(--display);font-weight:800;
+  font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--orange);color:#fff;
+  border-radius:999px;padding:14px 22px;white-space:nowrap}
+@media(max-width:700px){.dash-cta{flex-direction:column;align-items:flex-start;gap:16px}}
+
 </style>
 </head>
 <body>
@@ -882,6 +897,15 @@ footer a{color:var(--g400)}
       <div class="mrow"><span class="mk">Composition</span><span class="mv">Line-level, priced product lines only. Kit parents counted once, tax and shipping dropped. Each SKU mapped to its sub-category and tagged anchor, attachment or neither. Attachments counted by distinct SKU.</span></div>
       <div class="mrow"><span class="mk">Access</span><span class="mv">Read-only throughout. Reproduced independently on 5 August 2026 and landed on 1,257 exactly.</span></div>
     </div>
+
+    <a class="dash-cta" href="https://the-afs-group.github.io/gaf-master-dashboard/?view=opsp#hgb-tracker" target="_blank" rel="noopener">
+      <div class="dash-l">
+        <span class="dash-k">Tracked live</span>
+        <span class="dash-t">See the current count on the GAF master dashboard</span>
+        <span class="dash-s">Opens the OPSP tab at the Home Gym Builder tracker, with pacing against the 10,000 target and year on year against the FY26 baseline. Refreshed daily.</span>
+      </div>
+      <span class="dash-btn">Open the tracker <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></span>
+    </a>
 
     <div class="bhag">
       <div class="bhag-l"><div class="bhag-v">1,336</div><div class="bhag-t">builds since 1 July 2025, cumulative</div></div>

@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Target, Flag } from 'lucide-react';
+import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Target, Flag, Users, ExternalLink } from 'lucide-react';
 import CallInsightsDashboard from './CallInsightsDashboard';
 import SalesDashboard from './SalesDashboard';
 import ProductInsightsDashboard from './ProductInsightsDashboard';
@@ -10,7 +10,28 @@ import { GAF_COLORS } from '../constants';
 
 const Dashboard: React.FC = () => {
   // Default to 'sales' view as requested
-  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives'>('sales');
+  // A deep link can name its tab (?view=opsp#hgb-tracker). Without this the
+  // dashboard always opens on Sales and an anchor from another page never lands.
+  const initialView = (() => {
+    if (typeof window === 'undefined') return 'sales';
+    const valid = ['call-insights','sales','product-insights','opsp','initiatives'];
+    const q = new URLSearchParams(window.location.search).get('view');
+    if (q && valid.includes(q)) return q;
+    const h = window.location.hash.replace('#','');
+    if (h === 'hgb-tracker') return 'opsp';
+    return 'sales';
+  })() as 'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives';
+  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives'>(initialView);
+
+  // once the OPSP tab has painted, honour the anchor
+  React.useEffect(() => {
+    if (activeView !== 'opsp') return;
+    if (window.location.hash !== '#hgb-tracker') return;
+    const t = setTimeout(() => {
+      document.getElementById('hgb-tracker')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [activeView]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -127,6 +148,24 @@ const Dashboard: React.FC = () => {
             <Phone size={20} className="shrink-0" />
             {!isCollapsed && <span>Call Insights</span>}
           </button>
+
+          {/* External: the archetype brief lives on its own page, so this opens in a new tab */}
+          <a
+            href="https://the-afs-group.github.io/briefs/gaf-hgb-film/"
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setIsSidebarOpen(false)}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${isCollapsed ? 'justify-center' : ''}`}
+            title={isCollapsed ? "Home Gym Builder (opens in a new tab)" : ""}
+          >
+            <Users size={20} className="shrink-0" />
+            {!isCollapsed && (
+              <span className="flex items-center gap-1.5">
+                Home Gym Builder
+                <ExternalLink size={13} className="shrink-0 opacity-60" />
+              </span>
+            )}
+          </a>
         </nav>
       </aside>
 

@@ -770,7 +770,7 @@ export default function OPSPDashboard() {
                                     </div>
                                 ))}
                             </div>
-                            <div className={d.bhagTargets.length ? 'mt-4' : ''}><HGBTracker /></div>
+                            <div id="hgb-tracker" className={d.bhagTargets.length ? 'mt-4 scroll-mt-24' : 'scroll-mt-24'}><HGBTracker /></div>
                         </div>
                     </div>
                 </div>

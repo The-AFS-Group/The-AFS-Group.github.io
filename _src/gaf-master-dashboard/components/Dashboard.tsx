@@ -149,14 +149,14 @@ const Dashboard: React.FC = () => {
             {!isCollapsed && <span>Call Insights</span>}
           </button>
 
-          {/* External: the archetype brief lives on its own page, so this opens in a new tab */}
+          {/* External: the archetype page is its own site, so this opens in a new tab */}
           <a
             href="https://the-afs-group.github.io/briefs/gaf-hgb-film/"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => setIsSidebarOpen(false)}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${isCollapsed ? 'justify-center' : ''}`}
-            title={isCollapsed ? "Gary, The Home Gym Builder - archetype brief (opens in a new tab)" : ""}
+            title={isCollapsed ? "Gary, The Home Gym Builder - our primary archetype (opens in a new tab)" : ""}
           >
             <Users size={20} className="shrink-0" />
             {!isCollapsed && (
@@ -165,7 +165,7 @@ const Dashboard: React.FC = () => {
                   Gary, The Home Gym Builder
                   <ExternalLink size={13} className="shrink-0 opacity-60" />
                 </span>
-                <span className="text-[11px] text-gray-400 font-normal">Archetype brief</span>
+                <span className="text-[11px] text-gray-400 font-normal">Our primary archetype</span>
               </span>
             )}
           </a>

@@ -1,7 +1,0 @@
-name = "gaf-hgb-tracker"
-main = "hgb-tracker-worker.js"
-compatibility_date = "2026-06-01"
-
-kv_namespaces = [
-  { binding = "HGB_KV", id = "REPLACE_WITH_KV_NAMESPACE_ID" }
-]

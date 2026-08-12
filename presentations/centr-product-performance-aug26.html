@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CENTR Product Performance · 12 Months to July 2026</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+
+<!-- ============================================================
+     GYM AND FITNESS BRAND BLOCK
+     ============================================================ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { accent: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a', dim: '#6e6e6e' },
+        lt:    { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#767676' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body:    ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.slide-enter{animation:se .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes se{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*{animation:st .42s cubic-bezier(.2,.8,.2,1) both}
+.stagger>*:nth-child(1){animation-delay:.04s}
+.stagger>*:nth-child(2){animation-delay:.08s}
+.stagger>*:nth-child(3){animation-delay:.12s}
+.stagger>*:nth-child(4){animation-delay:.16s}
+.stagger>*:nth-child(5){animation-delay:.20s}
+.stagger>*:nth-child(6){animation-delay:.24s}
+.stagger>*:nth-child(7){animation-delay:.28s}
+@keyframes st{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.slide-enter,.stagger>*{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+/* ===================== BRAND ASSETS ===================== */
+const LOGO_LIGHT = 'assets/gaf-logo-on-light.png';
+const LOGO_DARK  = 'assets/gaf-logo-on-dark.png';
+
+/* ===================== THEME ===================== */
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    bodyBg: '#f0f0f0', logoSrc: LOGO_LIGHT,
+    kpiAccentBg: 'bg-brand-accent/5',
+    track: 'bg-lt-card2', barMuted: 'bg-lt-muted/45',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-600',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-600',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-lt-muted',
+  },
+  dark: {
+    bg: 'bg-brand-black', bg2: 'bg-brand-dark', bg3: 'bg-brand-mid',
+    border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
+    text: 'text-white', sub: 'text-brand-ash', muted: 'text-brand-dim', textInv: 'text-brand-black',
+    cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
+    bodyBg: '#0a0a0a', logoSrc: LOGO_DARK,
+    kpiAccentBg: 'bg-brand-accent/5',
+    track: 'bg-brand-mid', barMuted: 'bg-brand-ash/45',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent',
+    navDisabled: 'bg-brand-steel/20 text-brand-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-400',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-400',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-brand-dim',
+  }
+};
+
+/* ===================== ICONS ===================== */
+const I = p => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+       className={p.className||''}>
+    {Array.isArray(p.d) ? p.d.map((d,i) => <path key={i} d={d} />) : <path d={p.d} />}
+  </svg>
+);
+const ChevL  = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR  = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Sun    = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon   = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Users  = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Pkg    = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Target = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
+const TrendUp= p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
+const Warn   = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Grid   = p => <I {...p} d={["M3 3h7v7H3z","M14 3h7v7h-7z","M14 14h7v7h-7z","M3 14h7v7H3z"]} />;
+const Muscle = p => <I {...p} d={["M12 20V10","M18 20V4","M6 20v-6"]} />;
+const Life   = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 16a4 4 0 100-8 4 4 0 000 8","M4.93 4.93l4.24 4.24","M14.83 14.83l4.24 4.24","M14.83 9.17l4.24-4.24","M4.93 19.07l4.24-4.24"]} />;
+const Hand   = p => <I {...p} d={["M18 11V6a2 2 0 00-4 0v5","M14 10V4a2 2 0 00-4 0v6","M10 10.5V6a2 2 0 00-4 0v8","M18 8a2 2 0 114 0v6a8 8 0 01-8 8h-2a8 8 0 01-8-8v-1a2 2 0 114 0"]} />;
+
+/* ===================== BRAND ASSETS =====================
+   Two real assets rather than one plus a CSS filter. The primary lockup has a
+   white plate behind it, so `brightness-0 invert` turns the whole thing into a
+   white rectangle on an ink background. These are transparent, with the wordmark
+   in ink for light grounds and white for dark ones; the orange mark is untouched
+   in both. Cover and close sit on ink whatever the theme, so they take LOGO_DARK. */
+const Logo = () => {
+  const th = useTheme();
+  return <img src={th.logoSrc} alt="Gym and Fitness" className="h-7 w-auto" />;
+};
+
+/* ===================== SLIDE PRIMITIVES ===================== */
+const Slide = ({ children, num, total, noPad, dark }) => {
+  const th = useTheme();
+  return (
+    <div className={`w-full h-full ${dark ? 'bg-brand-black' : th.bg} flex flex-col ${noPad ? '' : 'px-16 py-12'} relative overflow-hidden`}>
+      {children}
+      {/* Full-bleed slides (cover, close) carry their own footer, so the frame skips
+          its own and the logo isn't drawn twice in the same corner. */}
+      {!noPad && (
+        <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
+          <Logo />
+          <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+            {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+          </span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+    <div className="mb-6 shrink-0">
+      {pre && <p className="text-[13px] font-heading font-bold tracking-[.3em] uppercase text-brand-accent mb-2">{pre}</p>}
+      <h2 className={`font-display text-5xl uppercase leading-[1.05] ${th.text}`}>{title}</h2>
+      {sub && <p className={`text-[16px] font-body ${th.sub} mt-3 max-w-4xl leading-snug`}>{sub}</p>}
+    </div>
+  );
+};
+
+const Callout = ({ icon: Icon = Target, children }) => {
+  const th = useTheme();
+  return (
+    <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-4 flex items-start gap-3 shrink-0">
+      <Icon size={18} className="text-brand-accent shrink-0 mt-0.5" />
+      <p className={`text-[15px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+const Source = ({ children, pin }) => {
+  const th = useTheme();
+  return <p className={`text-[12px] font-body ${th.muted} leading-snug shrink-0 ${pin ? 'mt-auto' : ''}`}>{children}</p>;
+};
+
+/* Placeholder chip — makes an unwritten slide impossible to mistake for a finished one. */
+const PlaceholderTag = () => {
+  const th = useTheme();
+  return (
+    <span className={`text-[11px] font-heading font-bold tracking-[.2em] uppercase px-2 py-1 rounded ${th.amberBg} ${th.amber}`}>
+      Placeholder
+    </span>
+  );
+};
+
+/* Horizontal bar row. Highlight bar is orange, everything else greys out —
+   one orange element per slide, per the GAF slide colour rules. */
+const BarRow = ({ rank, label, meta, value, pct, hi, right }) => {
+  const th = useTheme();
+  return (
+    <div className="flex items-center gap-4">
+      {rank && (
+        <span className={`w-7 shrink-0 font-heading font-bold text-[15px] tabular-nums ${hi ? 'text-brand-accent' : th.muted}`}>
+          {String(rank).padStart(2,'0')}
+        </span>
+      )}
+      <div className="w-[300px] shrink-0">
+        <p className={`text-[16px] font-heading font-semibold leading-tight ${th.text}`}>{label}</p>
+        {meta && <p className={`text-[12px] font-body ${th.muted} leading-tight mt-0.5`}>{meta}</p>}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className={`h-7 rounded-md ${th.track} overflow-hidden`}>
+          <div className={`h-full rounded-md ${hi ? 'bg-brand-accent' : th.barMuted}`} style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+      <div className="w-[124px] shrink-0 text-right">
+        <p className={`text-[19px] font-heading font-bold tabular-nums ${hi ? 'text-brand-accent' : th.text}`}>{value}</p>
+      </div>
+      {right && (
+        <div className="w-[112px] shrink-0 text-right">
+          <p className={`text-[15px] font-body tabular-nums ${right.tone === 'warn' ? th.amber : th.sub}`}>{right.value}</p>
+          <p className={`text-[11px] font-heading tracking-[.16em] uppercase ${th.muted}`}>{right.label}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ===================== 01 · COVER ===================== */
+const TitleSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col justify-center px-24 relative">
+      <p className="text-[14px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent mb-6">Centr · GAF Direct and Wholesale</p>
+      <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Product Performance</h1>
+      <p className="text-[20px] font-body text-white/70 mt-8 max-w-3xl leading-snug">
+        Where the Centr range earned its revenue over the last twelve months -- by department, by SKU and by category -- and what we do with that next.
+      </p>
+      <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
+        <img src={LOGO_DARK} alt="Gym and Fitness" className="h-8 w-auto" />
+        <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">August 2026</span>
+      </div>
+    </div>
+  </Slide>
+);
+
+/* ===================== 02 · KPI RECAP ===================== */
+const KpiSlide = ({ n, t }) => {
+  const th = useTheme();
+  const headline = [
+    { label: "Revenue", value: "$1.89M", icon: Dollar, sub: "Twelve months, Aug 2025 to Jul 2026, AUD ex GST" },
+    { label: "Gross Profit", value: "$513K", icon: TrendUp, sub: "27.1% margin on estimated extended cost" },
+  ];
+  const supporting = [
+    { label: "Units", value: "5,155", icon: Pkg,    sub: "Across all four departments" },
+    { label: "SKUs Sold", value: "88",  icon: Grid,  sub: "Of the Centr range" },
+    { label: "Avg Unit Value", value: "$367", icon: Target, sub: "Revenue divided by units" },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="The Twelve Months" title="WHERE CENTR LANDED"
+        sub="One brand, four routes to market. The headline is healthy, but the mix underneath it moved a long way through the year." />
+      <div className="flex-1 flex flex-col justify-center gap-4 min-h-0">
+        <div className="grid grid-cols-2 gap-5 stagger">
+          {headline.map((m, i) => (
+            <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-7 flex flex-col gap-3`}>
+              <div className="flex items-center justify-between">
+                <p className="text-[14px] font-heading font-medium tracking-[.3em] uppercase text-brand-accent">{m.label}</p>
+                <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center">
+                  <m.icon size={22} className="text-brand-accent" />
+                </div>
+              </div>
+              <p className="font-display text-7xl tracking-wide leading-[0.9] text-brand-accent">{m.value}</p>
+              <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-4 stagger">
+          {supporting.map((m, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+              <div className="flex items-center justify-between">
+                <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+                <m.icon size={16} className="text-brand-accent" />
+              </div>
+              <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.text}`}>{m.value}</p>
+              <p className={`text-[13px] font-body ${th.muted} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+        <Source>Source: GAF Direct &amp; Wholesale product sales performance export, Aug 2025 -- Jul 2026. Centr brand only, AUD. Gross profit is estimated from extended line cost.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 03 · STRENGTHS (PLACEHOLDER) ===================== */
+const StrengthsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const items = [
+    { title: "Strength one",   body: "What is working, and the evidence for it. One clause, no adjectives." },
+    { title: "Strength two",   body: "What is working, and the evidence for it. One clause, no adjectives." },
+    { title: "Strength three", body: "What is working, and the evidence for it. One clause, no adjectives." },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <div className="flex items-start justify-between gap-6 shrink-0">
+        <SectionTitle pre="Strengths" title="WHAT IS WORKING"
+          sub="Three things we are genuinely good at right now, each with a number behind it." />
+        <div className="pt-1"><PlaceholderTag /></div>
+      </div>
+      <div className="flex-1 flex flex-col justify-center gap-5 min-h-0">
+        <div className="grid grid-cols-3 gap-5 stagger">
+          {items.map((it, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} border-dashed rounded-lg p-7 flex flex-col gap-3 min-h-[240px]`}>
+              <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center">
+                <Muscle size={22} className="text-brand-accent" />
+              </div>
+              <p className={`text-[22px] font-heading font-semibold ${th.text} leading-tight mt-1`}>{it.title}</p>
+              <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{it.body}</p>
+            </div>
+          ))}
+        </div>
+        <Source>Placeholder slide -- to be written once the trading commentary is confirmed.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 04 · OPPORTUNITY (PLACEHOLDER) ===================== */
+const OpportunitySlide = ({ n, t }) => {
+  const th = useTheme();
+  const items = [
+    { title: "Opportunity one",   body: "The gap, sized. What it is worth if we take it, and by when." },
+    { title: "Opportunity two",   body: "The gap, sized. What it is worth if we take it, and by when." },
+    { title: "Opportunity three", body: "The gap, sized. What it is worth if we take it, and by when." },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <div className="flex items-start justify-between gap-6 shrink-0">
+        <SectionTitle pre="Opportunity" title="WHERE THE UPSIDE IS"
+          sub="The gaps worth chasing next, each one sized rather than asserted." />
+        <div className="pt-1"><PlaceholderTag /></div>
+      </div>
+      <div className="flex-1 flex flex-col justify-center gap-5 min-h-0">
+        <div className="grid grid-cols-3 gap-5 stagger">
+          {items.map((it, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} border-dashed rounded-lg p-7 flex flex-col gap-3 min-h-[240px]`}>
+              <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center">
+                <Life size={22} className="text-brand-accent" />
+              </div>
+              <p className={`text-[22px] font-heading font-semibold ${th.text} leading-tight mt-1`}>{it.title}</p>
+              <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{it.body}</p>
+              <div className="mt-auto pt-3">
+                <p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Value / Timing</p>
+                <p className={`text-[15px] font-body ${th.sub}`}>$000k -- by Q0</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Source>Placeholder slide -- sizing to be confirmed against the FY27 plan before this is shown outside the team.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 05 · SUPPORT (PLACEHOLDER) ===================== */
+const SupportSlide = ({ n, t }) => {
+  const th = useTheme();
+  const items = [
+    { ask: "Ask one",   from: "Owner / team", why: "What it unblocks, in one clause." },
+    { ask: "Ask two",   from: "Owner / team", why: "What it unblocks, in one clause." },
+    { ask: "Ask three", from: "Owner / team", why: "What it unblocks, in one clause." },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <div className="flex items-start justify-between gap-6 shrink-0">
+        <SectionTitle pre="Support" title="WHAT WE NEED FROM THE ROOM"
+          sub="Three specific asks, each with an owner against it. Anything without an owner does not belong on this slide." />
+        <div className="pt-1"><PlaceholderTag /></div>
+      </div>
+      <div className="flex-1 flex flex-col justify-center gap-4 min-h-0">
+        <div className="flex flex-col gap-4 stagger">
+          {items.map((it, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} border-dashed rounded-lg p-7 flex items-center gap-6`}>
+              <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center shrink-0">
+                <Hand size={22} className="text-brand-accent" />
+              </div>
+              <div className="w-[420px] shrink-0">
+                <p className={`text-[20px] font-heading font-semibold ${th.text} leading-tight`}>{it.ask}</p>
+              </div>
+              <div className="w-[220px] shrink-0">
+                <p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Owner</p>
+                <p className={`text-[16px] font-body ${th.sub}`}>{it.from}</p>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Unblocks</p>
+                <p className={`text-[16px] font-body ${th.sub} leading-snug`}>{it.why}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <Source>Placeholder slide -- owners to be named and agreed before this goes in front of the group.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 06 · REVENUE BY DEPARTMENT ===================== */
+const DepartmentSlide = ({ n, t }) => {
+  const th = useTheme();
+  const rows = [
+    { label: "Commercial Sales AU", meta: "1,862 units · avg $399",  rev: 743134, share: "39.3%", gp: "20.8%", hi: true },
+    { label: "GAF AU",              meta: "1,655 units · avg $391",  rev: 646521, share: "34.2%", gp: "28.7%" },
+    { label: "Online AU",           meta: "1,296 units · avg $327",  rev: 423259, share: "22.4%", gp: "37.8%" },
+    { label: "Wholesale AU",        meta: "342 units · avg $234",    rev:  80168, share: "4.2%",  gp: "16.1%" },
+  ];
+  const max = Math.max(...rows.map(r => r.rev));
+  const money = v => '$' + Math.round(v).toLocaleString('en-AU');
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Product Performance · Departments" title="REVENUE BY DEPARTMENT"
+        sub="Commercial is now the largest route to market for Centr, and it got there inside twelve months." />
+      <div className="flex-1 flex flex-col justify-center gap-5 min-h-0">
+        <div className="flex items-center gap-4 px-1">
+          <div className="w-[300px] shrink-0"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Department</p></div>
+          <div className="flex-1"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Share of revenue</p></div>
+          <div className="w-[124px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Revenue</p></div>
+          <div className="w-[112px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>GP margin</p></div>
+        </div>
+        <div className="flex flex-col gap-5 stagger">
+          {rows.map((r, i) => (
+            <BarRow key={i} label={r.label} meta={r.meta} value={money(r.rev)}
+                    pct={(r.rev / max) * 100} hi={r.hi}
+                    right={{ value: r.gp, label: r.share + ' of rev' }} />
+          ))}
+        </div>
+        <Callout icon={TrendUp}>
+          Commercial went from $52k in the first six months to $691k in the second. Online and GAF AU both went backwards over the same period, so the growth is a genuine channel shift, not a rising tide.
+        </Callout>
+        <Source>Source: GAF Direct &amp; Wholesale product sales performance export, Aug 2025 -- Jul 2026. Centr brand only, AUD. All four departments sit under GAF AU [Parent].</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 07 · TOP SKUs ===================== */
+const TopSkuSlide = ({ n, t }) => {
+  const th = useTheme();
+  const rows = [
+    { sku: "HPS",    name: "Competition Sled",                      meta: "445 units",  rev: 273209, gp: "24.8%", hi: true },
+    { sku: "HBR",    name: "Competition Power Rope",                meta: "495 units",  rev: 218709, gp: "50.0%" },
+    { sku: "HUBP25", name: "25kg Competition Interlocking Plate",   meta: "329 units",  rev: 110467, gp: "30.9%" },
+    { sku: "SF3.3",  name: "Centr 3 Functional Trainer",            meta: "28 units",   rev: 102765, gp: "39.8%" },
+    { sku: "HTURF4", name: "Perform Turf · 2 Full Lanes, Logo",     meta: "17 units",   rev:  87887, gp: "6.0%", warn: true },
+    { sku: "RUNR-S", name: "RUNR-S Treadmill",                      meta: "43 units",   rev:  76900, gp: "25.7%" },
+    { sku: "HSB20",  name: "20kg Competition Sand Bag",             meta: "367 units",  rev:  66585, gp: "32.8%" },
+  ];
+  const max = Math.max(...rows.map(r => r.rev));
+  const money = v => '$' + Math.round(v).toLocaleString('en-AU');
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Product Performance · SKUs" title="TOP SEVEN SKUs"
+        sub="These seven carry 49% of Centr revenue from a range of 88 SKUs that sold. The top five alone carry 42%." />
+      <div className="flex-1 flex flex-col justify-center gap-4 min-h-0">
+        <div className="flex items-center gap-4 px-1">
+          <span className="w-7 shrink-0" />
+          <div className="w-[300px] shrink-0"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>SKU</p></div>
+          <div className="flex-1"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Revenue, indexed to the leader</p></div>
+          <div className="w-[124px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Revenue</p></div>
+          <div className="w-[112px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>GP margin</p></div>
+        </div>
+        <div className="flex flex-col gap-3 stagger">
+          {rows.map((r, i) => (
+            <BarRow key={i} rank={i + 1} label={r.name} meta={`${r.sku} · ${r.meta}`} value={money(r.rev)}
+                    pct={(r.rev / max) * 100} hi={r.hi}
+                    right={{ value: r.gp, label: 'margin', tone: r.warn ? 'warn' : undefined }} />
+          ))}
+        </div>
+        <Callout icon={Warn}>
+          Two different stories here. Sled, rope and sandbag move in volume at healthy margin. HTURF4 is 17 units at 6% -- big revenue, almost no profit, and its no-logo twin HTURF3 sold at a loss.
+        </Callout>
+        <Source>Source: GAF Direct &amp; Wholesale product sales performance export, Aug 2025 -- Jul 2026. Centr brand only, AUD, all departments combined. Ranked on revenue.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 08 · TOP CATEGORIES ===================== */
+const CategorySlide = ({ n, t }) => {
+  const th = useTheme();
+  const rows = [
+    { label: "Hyrox",                   meta: "4,442 units · 54 SKUs",  rev: 1254452, share: "66.3%", gp: "32.8%", hi: true },
+    { label: "Turf",                    meta: "122 units",              rev:  294870, share: "15.6%", gp: "2.4%", warn: true },
+    { label: "All-In-One Trainers",     meta: "42 units",               rev:  118025, share: "6.2%",  gp: "34.2%" },
+    { label: "Motorised Treadmills",    meta: "67 units",               rev:  110433, share: "5.8%",  gp: "26.9%" },
+    { label: "Home Gyms & Multi-Station", meta: "35 units",             rev:   70360, share: "3.7%",  gp: "24.1%" },
+    { label: "Everything else",         meta: "9 categories combined",  rev:   44944, share: "2.4%",  gp: "15.9%" },
+  ];
+  const max = Math.max(...rows.map(r => r.rev));
+  const money = v => '$' + Math.round(v).toLocaleString('en-AU');
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Product Performance · Categories" title="TOP PRODUCT CATEGORIES"
+        sub="Two thirds of Centr revenue is Hyrox competition kit. Everything else is a rounding error next to it." />
+      <div className="flex-1 flex flex-col justify-center gap-4 min-h-0">
+        <div className="flex items-center gap-4 px-1">
+          <div className="w-[300px] shrink-0"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Category</p></div>
+          <div className="flex-1"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Share of revenue</p></div>
+          <div className="w-[124px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Revenue</p></div>
+          <div className="w-[112px] shrink-0 text-right"><p className={`text-[11px] font-heading tracking-[.2em] uppercase ${th.muted}`}>GP margin</p></div>
+        </div>
+        <div className="flex flex-col gap-3 stagger">
+          {rows.map((r, i) => (
+            <BarRow key={i} label={r.label} meta={r.meta} value={money(r.rev)}
+                    pct={(r.rev / max) * 100} hi={r.hi}
+                    right={{ value: r.gp, label: r.share + ' of rev', tone: r.warn ? 'warn' : undefined }} />
+          ))}
+        </div>
+        <Callout icon={Warn}>
+          Turf is the one to fix. It is our second biggest category on revenue and returns 2.4% -- $295k of sales for $7k of gross profit. Freight and install on lane sets are eating it.
+        </Callout>
+        <Source>Source: GAF Direct &amp; Wholesale product sales performance export, Aug 2025 -- Jul 2026. Centr brand only, AUD. Categories are the subcategory field, trimmed to the parent for readability.</Source>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 09 · CLOSE ===================== */
+const CloseSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6 relative">
+      <h2 className="font-display text-8xl uppercase text-white">Questions</h2>
+      <p className="text-[18px] font-body text-white/60">__CONTACT_LINE__ · josh@gymandfitness.com.au</p>
+      <img src={LOGO_DARK} alt="Gym and Fitness" className="h-8 w-auto absolute bottom-12 left-24" />
+    </div>
+  </Slide>
+);
+
+/* ===================== ENGINE ===================== */
+const SLIDES = [TitleSlide, KpiSlide, StrengthsSlide, OpportunitySlide, SupportSlide, DepartmentSlide, TopSkuSlide, CategorySlide, CloseSlide];
+
+function App() {
+  const [idx, setIdx]   = useState(0);
+  const [key, setKey]   = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    setIdx(prev => {
+      const next = prev + dir;
+      if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
+  useEffect(() => { document.body.style.background = th.bodyBg; }, [th.bodyBg]);
+
+  const Cur = SLIDES[idx];
+
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl shrink-0">
+          <div key={key} className="w-full h-full slide-enter">
+            <Cur n={idx + 1} t={SLIDES.length} />
+          </div>
+        </div>
+        <div className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)"
+            className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => go(-1)} disabled={idx === 0} title="Previous"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevL size={18} />
+          </button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1} title="Next"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevR size={18} />
+          </button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,11 +1,12 @@
 {
-  "count": 1357,
+  "count": 1388,
   "target": 10000,
   "asOf": "12 Aug 2026",
   "window": "cumulative since 1 Jul 2025 (FY26 start)",
   "periodStart": "2025-07-01",
   "periodEnd": "2030-12-31",
-  "fy27ToDate": 100,
+  "fy27ToDate": 102,
   "fy26Baseline": 1257,
-  "note": "Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). FY26 baseline 1,257 builds. Source: NetSuite saved search GAF BHAG Data via GURUS sheet feed, GAF AU + Online-AU."
+  "note": "Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). FY26 baseline 1,257 builds. Source: NetSuite saved search GAF BHAG Data via GURUS sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo.",
+  "fy26SamePoint": 104
 }

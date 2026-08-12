@@ -17,7 +17,9 @@ GAF AU / Online-AU cart with order total > $3,376 AND
   Path 2: >=1 anchor + >=1 other attach-eligible distinct SKU, OR
   Path 3: >=2 anchors.
 Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 2030.
-FY26 baseline of record: 1,257.
+FY26 baseline of record: 1,286 (re-locked with Adam Carter 12 Aug 2026 to the
+automated-instrument figure so numerator and denominator share one instrument;
+supersedes the 1,257 original manual pull, +2.3% from cleaner line capture).
 
 Modes:
   exact  — feed date floor <= 2025-07-01: everything computed from the feed,
@@ -34,7 +36,7 @@ FEED_URL = os.environ.get("HGB_FEED_URL", "").strip()
 if not FEED_URL:
     sys.exit("FATAL: HGB_FEED_URL env var is not set — add it as a repo Actions secret")
 TARGET = 10000
-FY26_BASELINE = 1257
+FY26_BASELINE = 1286
 FY26_START = datetime.date(2025, 7, 1)
 FY27_START = datetime.date(2026, 7, 1)
 GATE = 3376.0
@@ -217,7 +219,8 @@ def main():
         "periodStart": "2025-07-01", "periodEnd": "2030-12-31",
         "fy27ToDate": fy27, "fy26Baseline": FY26_BASELINE,
         "note": ("Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). "
-                 "FY26 baseline 1,257 builds. Source: NetSuite saved search GAF BHAG Data via GURUS "
+                 "FY26 baseline 1,286 builds (re-locked with Adam 12 Aug 2026 to the automated-instrument figure). "
+                 "Source: NetSuite saved search GAF BHAG Data via GURUS "
                  "sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo."),
     }
     if fy26_same is not None:

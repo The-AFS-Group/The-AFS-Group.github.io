@@ -1,0 +1,77 @@
+name: HGB BHAG Tracker
+
+# Unattended daily refresh of the Home Gym Builder BHAG tracker on the GAF
+# master dashboard (OPSP tab). Reads the GURUS-fed sheet's published CSV (no
+# NetSuite or Google auth), applies the locked v4 rule, and commits
+# hgb-tracker.json back to this repo with the workflow's own GITHUB_TOKEN —
+# no personal account, machine or external credential anywhere in the chain.
+# Pipeline code: _pipelines/hgb-tracker/update.py.
+#
+# GURUS exports daily at 03:24 US-Eastern. Runs twice daily:
+#   20:37 UTC = 6:07am ACST — the "every morning" update, Adelaide time
+#   09:07 UTC = 6:37pm ACST — picks up the GURUS afternoon export same day
+# (GitHub cron has no DST; TZ below keeps the run's own dates on Adelaide time.)
+#
+# HGB_FEED_URL lives in repo Actions secrets while the sheet export still
+# carries customer contact columns; once those are stripped from the saved
+# search it could move into code, but there is no need to.
+
+on:
+  schedule:
+    - cron: "37 20 * * *"
+    - cron: "7 9 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: hgb-tracker
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      TZ: Australia/Adelaide
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compute tracker figure from the GURUS feed
+        env:
+          HGB_FEED_URL: ${{ secrets.HGB_FEED_URL }}
+        working-directory: _pipelines/hgb-tracker
+        run: python update.py
+
+      - name: Commit if the figure changed
+        run: |
+          set -euo pipefail
+          cp _pipelines/hgb-tracker/hgb-tracker.json gaf-master-dashboard/hgb-tracker.json
+          cp _pipelines/hgb-tracker/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
+          git config user.name "hgb-tracker-bot"
+          git config user.email "hgb-tracker@users.noreply.github.com"
+          git add gaf-master-dashboard/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
+          if git diff --cached --quiet; then
+            echo "No change in tracker figure — nothing to publish."
+            exit 0
+          fi
+          COUNT=$(python -c "import json; print(json.load(open('gaf-master-dashboard/hgb-tracker.json'))['count'])")
+          git commit -m "HGB tracker: ${COUNT} builds (auto-update)"
+          git push origin HEAD || { git pull --rebase origin main && git push origin HEAD; }
+
+      # Pushes made with GITHUB_TOKEN do not reliably trigger the Pages build,
+      # so request one explicitly. 409 = a build is already queued; fine.
+      - name: Request a Pages build
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /tmp/pages-build.json -w "pages build request: HTTP %{http_code}\n"
+          cat /tmp/pages-build.json

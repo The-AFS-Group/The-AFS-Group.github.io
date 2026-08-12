@@ -148,8 +148,27 @@ def qualifies(o):
     return aio >= 1
 
 
+def fetch_feed():
+    """Fetch the published CSV with diagnostics and one retry — Google's edge
+    occasionally serves an empty/interstitial response to datacenter IPs."""
+    import time
+    last = None
+    for attempt in range(3):
+        req = urllib.request.Request(FEED_URL, headers={
+            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) hgb-tracker",
+            "Accept": "text/csv,*/*"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            data = r.read()
+            print(f"fetch attempt {attempt + 1}: HTTP {r.status}, {len(data)} bytes, final host {r.url.split('/')[2]}")
+            if len(data) > 100_000:
+                return data.decode("utf-8")
+            last = data[:300]
+        time.sleep(10)
+    sys.exit(f"FATAL: feed fetch returned a tiny/empty body after 3 attempts; first bytes: {last!r}")
+
+
 def main():
-    raw = urllib.request.urlopen(FEED_URL, timeout=120).read().decode('utf-8')
+    raw = fetch_feed()
     rows = list(csv.reader(io.StringIO(raw)))
     if len(rows) < 10000:
         sys.exit(f"FATAL: feed has only {len(rows)} rows — export looks broken or empty")

@@ -57,6 +57,10 @@ h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
 import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
 import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
 
+/* ===================== BRAND ASSETS ===================== */
+const LOGO_LIGHT = 'assets/gaf-logo-on-light.png';
+const LOGO_DARK  = 'assets/gaf-logo-on-dark.png';
+
 /* ===================== THEME ===================== */
 const ThemeCtx = createContext();
 const useTheme = () => useContext(ThemeCtx);
@@ -67,7 +71,7 @@ const themes = {
     border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
     text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
     cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
-    bodyBg: '#f0f0f0', logoFilter: '',
+    bodyBg: '#f0f0f0', logoSrc: LOGO_LIGHT,
     kpiAccentBg: 'bg-brand-accent/5',
     track: 'bg-lt-card2', barMuted: 'bg-lt-muted/45',
     navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
@@ -83,7 +87,7 @@ const themes = {
     border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
     text: 'text-white', sub: 'text-brand-ash', muted: 'text-brand-dim', textInv: 'text-brand-black',
     cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
-    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert',
+    bodyBg: '#0a0a0a', logoSrc: LOGO_DARK,
     kpiAccentBg: 'bg-brand-accent/5',
     track: 'bg-brand-mid', barMuted: 'bg-brand-ash/45',
     navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
@@ -119,12 +123,15 @@ const Muscle = p => <I {...p} d={["M12 20V10","M18 20V4","M6 20v-6"]} />;
 const Life   = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 16a4 4 0 100-8 4 4 0 000 8","M4.93 4.93l4.24 4.24","M14.83 14.83l4.24 4.24","M14.83 9.17l4.24-4.24","M4.93 19.07l4.24-4.24"]} />;
 const Hand   = p => <I {...p} d={["M18 11V6a2 2 0 00-4 0v5","M14 10V4a2 2 0 00-4 0v6","M10 10.5V6a2 2 0 00-4 0v8","M18 8a2 2 0 114 0v6a8 8 0 01-8 8h-2a8 8 0 01-8-8v-1a2 2 0 114 0"]} />;
 
-/* ===================== BRAND ASSETS ===================== */
-const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576';
-
+/* ===================== BRAND ASSETS =====================
+   Two real assets rather than one plus a CSS filter. The primary lockup has a
+   white plate behind it, so `brightness-0 invert` turns the whole thing into a
+   white rectangle on an ink background. These are transparent, with the wordmark
+   in ink for light grounds and white for dark ones; the orange mark is untouched
+   in both. Cover and close sit on ink whatever the theme, so they take LOGO_DARK. */
 const Logo = () => {
   const th = useTheme();
-  return <img src={LOGO} alt="" className={`h-7 w-auto ${th.logoFilter}`} />;
+  return <img src={th.logoSrc} alt="Gym and Fitness" className="h-7 w-auto" />;
 };
 
 /* ===================== SLIDE PRIMITIVES ===================== */
@@ -133,12 +140,16 @@ const Slide = ({ children, num, total, noPad, dark }) => {
   return (
     <div className={`w-full h-full ${dark ? 'bg-brand-black' : th.bg} flex flex-col ${noPad ? '' : 'px-16 py-12'} relative overflow-hidden`}>
       {children}
-      <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
-        <Logo />
-        <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
-          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
-        </span>
-      </div>
+      {/* Full-bleed slides (cover, close) carry their own footer, so the frame skips
+          its own and the logo isn't drawn twice in the same corner. */}
+      {!noPad && (
+        <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
+          <Logo />
+          <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+            {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -222,7 +233,7 @@ const TitleSlide = ({ n, t }) => (
         Where the Centr range earned its revenue over the last twelve months -- by department, by SKU and by category -- and what we do with that next.
       </p>
       <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
-        <img src={LOGO} alt="" className="h-8 w-auto brightness-0 invert" />
+        <img src={LOGO_DARK} alt="Gym and Fitness" className="h-8 w-auto" />
         <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">August 2026</span>
       </div>
     </div>
@@ -513,9 +524,10 @@ const CategorySlide = ({ n, t }) => {
 /* ===================== 09 · CLOSE ===================== */
 const CloseSlide = ({ n, t }) => (
   <Slide num={n} total={t} noPad>
-    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6">
+    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6 relative">
       <h2 className="font-display text-8xl uppercase text-white">Questions</h2>
       <p className="text-[18px] font-body text-white/60">__CONTACT_LINE__ · josh@gymandfitness.com.au</p>
+      <img src={LOGO_DARK} alt="Gym and Fitness" className="h-8 w-auto absolute bottom-12 left-24" />
     </div>
   </Slide>
 );

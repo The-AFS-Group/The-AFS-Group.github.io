@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Performance Review — Gym and Fitness</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+
+<!-- ============================================================
+     GYM AND FITNESS BRAND BLOCK
+     ============================================================ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { accent: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt:    { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body:    ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.slide-enter{animation:se .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes se{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*{animation:st .42s cubic-bezier(.2,.8,.2,1) both}
+.stagger>*:nth-child(1){animation-delay:.04s}
+.stagger>*:nth-child(2){animation-delay:.08s}
+.stagger>*:nth-child(3){animation-delay:.12s}
+.stagger>*:nth-child(4){animation-delay:.16s}
+.stagger>*:nth-child(5){animation-delay:.20s}
+.stagger>*:nth-child(6){animation-delay:.24s}
+@keyframes st{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.slide-enter,.stagger>*{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+/* ===================== THEME ===================== */
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    bodyBg: '#f0f0f0', logoFilter: '',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-600',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-600',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-lt-muted',
+    barTrack: 'bg-black/[0.06]', barFillMuted: 'bg-black/20',
+  },
+  dark: {
+    bg: 'bg-brand-black', bg2: 'bg-brand-dark', bg3: 'bg-brand-mid',
+    border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
+    text: 'text-white', sub: 'text-brand-ash', muted: 'text-brand-steel', textInv: 'text-brand-black',
+    cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent',
+    navDisabled: 'bg-brand-steel/20 text-brand-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-400',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-400',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-brand-steel',
+    barTrack: 'bg-white/[0.08]', barFillMuted: 'bg-white/25',
+  }
+};
+
+/* ===================== ICONS ===================== */
+const I = p => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+       className={p.className||''}>
+    {Array.isArray(p.d) ? p.d.map((d,i) => <path key={i} d={d} />) : <path d={p.d} />}
+  </svg>
+);
+const ChevL   = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR   = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Sun     = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon    = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Dollar  = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Users   = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Pkg     = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Target  = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
+const TrendUp = p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
+const Warn    = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const BarChartIcon = p => <I {...p} d={["M18 20V10","M12 20V4","M6 20v-6"]} />;
+const Layers  = p => <I {...p} d={["M12 2 2 7l10 5 10-5-10-5z","M2 17l10 5 10-5","M2 12l10 5 10-5"]} />;
+const ImgIcon = p => <I {...p} d={["M3 3h18v18H3z","M8.5 9.5a1.5 1.5 0 100-3 1.5 1.5 0 000 3z","M21 15l-5-5L5 21"]} />;
+
+/* ===================== BRAND ASSETS ===================== */
+const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576';
+
+const Logo = () => {
+  const th = useTheme();
+  return <img src={LOGO} alt="" className={`h-7 w-auto ${th.logoFilter}`} />;
+};
+
+/* ===================== SLIDE PRIMITIVES ===================== */
+const Slide = ({ children, num, total, noPad, dark }) => {
+  const th = useTheme();
+  return (
+    <div className={`w-full h-full ${dark ? 'bg-brand-black' : th.bg} flex flex-col ${noPad ? '' : 'px-16 py-12'} relative overflow-hidden`}>
+      {children}
+      <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
+        <Logo />
+        <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const SectionTitle = ({ pre, title, sub, tag }) => {
+  const th = useTheme();
+  return (
+    <div className="mb-7 shrink-0 flex items-start justify-between gap-6">
+      <div>
+        {pre && <p className="text-[13px] font-heading font-bold tracking-[.3em] uppercase text-brand-accent mb-2">{pre}</p>}
+        <h2 className={`font-display text-5xl uppercase leading-[1.05] ${th.text}`}>{title}</h2>
+        {sub && <p className={`text-[16px] font-body ${th.sub} mt-3 max-w-4xl leading-snug`}>{sub}</p>}
+      </div>
+      {tag && <div className="shrink-0 mt-1">{tag}</div>}
+    </div>
+  );
+};
+
+const Callout = ({ icon: Icon = Target, children }) => {
+  const th = useTheme();
+  return (
+    <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-4 flex items-start gap-3 shrink-0">
+      <Icon size={18} className="text-brand-accent shrink-0 mt-0.5" />
+      <p className={`text-[15px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+const PlaceholderTag = () => {
+  const th = useTheme();
+  return (
+    <span className={`text-[11px] font-heading font-bold tracking-[.2em] uppercase px-2.5 py-1 rounded ${th.amberBg} ${th.amber}`}>
+      Placeholder Data
+    </span>
+  );
+};
+
+/* ===================== BAR CHART ROW =====================
+   GAF horizontal bar spec: one orange highlight bar (the top item),
+   every other bar in a neutral track. Labels 20px left, bold value right. */
+const BarRow = ({ label, valueLabel, pct, top }) => {
+  const th = useTheme();
+  return (
+    <div className="flex items-center gap-4">
+      <span className={`w-[280px] text-[20px] font-body ${th.text} shrink-0 truncate`}>{label}</span>
+      <div className={`flex-1 h-3 rounded-full ${th.barTrack} overflow-hidden`}>
+        <div className={`h-full rounded-full ${top ? 'bg-brand-accent' : th.barFillMuted}`} style={{ width: pct + '%' }} />
+      </div>
+      <span className={`w-24 text-right text-[20px] font-heading font-bold ${top ? 'text-brand-accent' : th.text}`}>{valueLabel}</span>
+    </div>
+  );
+};
+
+/* ===================== ARCHETYPE 1: COVER ===================== */
+const TitleSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col justify-center px-24 relative">
+      <p className="text-[14px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent mb-6">Product Performance</p>
+      <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Product Performance Review</h1>
+      <p className="text-[20px] font-body text-white/70 mt-8 max-w-3xl leading-snug">A working draft — revenue by department, top SKUs and category mix, built on placeholder data pending the live sales export.</p>
+      <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
+        <img src={LOGO} alt="" className="h-8 w-auto brightness-0 invert" />
+        <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">August 2026 · Draft</span>
+      </div>
+    </div>
+  </Slide>
+);
+
+/* ===================== ARCHETYPE 2: KPI GRID (placeholder headline numbers) ===================== */
+const KpiSlide = ({ n, t }) => {
+  const th = useTheme();
+  const headline = [
+    { label: "Total Revenue", value: "$3.51M", icon: Dollar, sub: "Trailing 12 months, all departments — placeholder total" },
+    { label: "YoY Growth", value: "+18%", icon: TrendUp, sub: "Placeholder growth rate, pending the confirmed period" },
+  ];
+  const supporting = [
+    { label: "Active SKUs", value: "312", icon: Pkg, sub: "Placeholder" },
+    { label: "Departments", value: "6", icon: Layers, sub: "Placeholder" },
+    { label: "Avg Order Value", value: "$412", icon: Users, sub: "Placeholder" },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Section Label" title="Performance At A Glance" sub="One or two sentences of honest read go here once the real numbers land." tag={<PlaceholderTag />} />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-2 gap-5 stagger">
+          {headline.map((m, i) => (
+            <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-7 flex flex-col gap-3`}>
+              <div className="flex items-center justify-between">
+                <p className="text-[14px] font-heading font-medium tracking-[.3em] uppercase text-brand-accent">{m.label}</p>
+                <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center">
+                  <m.icon size={22} className="text-brand-accent" />
+                </div>
+              </div>
+              <p className="font-display text-7xl tracking-wide leading-[0.9] text-brand-accent">{m.value}</p>
+              <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-4 stagger">
+          {supporting.map((m, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+              <div className="flex items-center justify-between">
+                <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+                <m.icon size={16} className="text-brand-accent" />
+              </div>
+              <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.text}`}>{m.value}</p>
+              <p className={`text-[13px] font-body ${th.muted} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+        <Callout>Placeholder numbers throughout — swap for the live export before this goes to the room.</Callout>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== ARCHETYPE 3: OPPORTUNITY (hero play) ===================== */
+const OpportunitySlide = ({ n, t }) => {
+  const th = useTheme();
+  const points = [
+    ["Whitespace in Recovery & Wellness", "Smallest department by revenue today, fastest-growing category nationally — placeholder framing"],
+    ["Category concentration risk", "Top 2 categories placeholder-carry over half of revenue — worth a mitigation line once real"],
+    ["SKU rationalisation candidate", "Long tail of low-turn SKUs identified in the placeholder set — confirm against real data"],
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="The Opportunity" title="Where We Lean In Next" sub="Placeholder framing — replace with the confirmed opportunity once the data is live." tag={<PlaceholderTag />} />
+      <div className="flex-1 grid grid-cols-2 gap-8 min-h-0">
+        <div className={`${th.bg3} border ${th.cardBorder} rounded-lg overflow-hidden flex flex-col items-center justify-center min-h-0 gap-3`}>
+          <ImgIcon size={40} className={th.muted} />
+          <p className={`text-[13px] font-heading tracking-[.2em] uppercase ${th.muted}`}>Image Placeholder</p>
+        </div>
+        <div className="flex flex-col justify-center gap-4 stagger">
+          {points.map(([a, b], i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5`}>
+              <p className={`text-[19px] font-heading font-semibold ${th.text}`}>{a}</p>
+              <p className={`text-[15px] font-body ${th.sub} mt-1 leading-snug`}>{b}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== ARCHETYPE 4: SUPPORT NEEDED ===================== */
+const SupportSlide = ({ n, t }) => {
+  const th = useTheme();
+  const asks = [
+    { icon: Pkg, title: "Live Sales Data Feed", body: "Swap this placeholder set for the real product-performance export before the deck ships." },
+    { icon: Layers, title: "Department & Category Sign-off", body: "Confirm the department and category taxonomy against how Finance actually reports." },
+    { icon: Users, title: "Category Owner Review", body: "Each department owner checks their numbers before this goes external." },
+    { icon: Target, title: "Design QA", body: "Check both light/dark themes and small-window zoom before sending the link." },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="What We Need" title="Support To Get This Live" sub="Nothing here should be quoted or shared externally until each item below is closed out." tag={<PlaceholderTag />} />
+      <div className="flex-1 grid grid-cols-2 gap-5 stagger content-center">
+        {asks.map((a, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex items-start gap-4`}>
+            <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center shrink-0">
+              <a.icon size={20} className="text-brand-accent" />
+            </div>
+            <div>
+              <p className={`text-[18px] font-heading font-semibold ${th.text}`}>{a.title}</p>
+              <p className={`text-[14px] font-body ${th.sub} mt-1 leading-snug`}>{a.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== DATA: placeholder product performance ===================== */
+const DEPARTMENTS = [
+  { label: "Strength Equipment",   value: 1240000, valueLabel: "$1.24M" },
+  { label: "Cardio",                value: 860000,  valueLabel: "$860K" },
+  { label: "Functional Training",   value: 610000,  valueLabel: "$610K" },
+  { label: "Recovery & Wellness",   value: 340000,  valueLabel: "$340K" },
+  { label: "Flooring & Rigs",       value: 290000,  valueLabel: "$290K" },
+  { label: "Accessories",           value: 175000,  valueLabel: "$175K" },
+];
+
+const TOP_SKUS = [
+  { sku: "FU-PR-001",  name: "Force USA Power Rack",             revenue: "$214,500", units: "82 units" },
+  { sku: "RC-CB-014",  name: "Recovery Compression Boots",        revenue: "$168,300", units: "340 units" },
+  { sku: "GAF-BB-020", name: "Olympic Barbell 20kg",              revenue: "$146,900", units: "610 units" },
+  { sku: "FU-FT-009",  name: "Functional Trainer Pro",            revenue: "$131,200", units: "46 units" },
+  { sku: "CX-TM-500",  name: "Commercial Treadmill X500",         revenue: "$118,700", units: "39 units" },
+  { sku: "GAF-KB-SET", name: "Kettlebell Set (4–24kg)",           revenue: "$96,400",  units: "205 units" },
+];
+
+const TOP_CATEGORIES = [
+  { label: "Racks & Rigs",                  value: 482000, valueLabel: "$482K" },
+  { label: "Treadmills & Cardio Machines",   value: 398000, valueLabel: "$398K" },
+  { label: "Free Weights",                   value: 355000, valueLabel: "$355K" },
+  { label: "Recovery Tech",                  value: 312000, valueLabel: "$312K" },
+  { label: "Functional Trainers",            value: 268000, valueLabel: "$268K" },
+  { label: "Flooring",                       value: 214000, valueLabel: "$214K" },
+];
+
+/* ===================== ARCHETYPE 5: REVENUE BY DEPARTMENT ===================== */
+const DeptRevenueSlide = ({ n, t }) => {
+  const max = Math.max(...DEPARTMENTS.map(d => d.value));
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle
+        pre="Product Performance"
+        title="Revenue By Department"
+        sub="Illustrative split across departments — replace with the live sales feed before this ships."
+        tag={<PlaceholderTag />}
+      />
+      <div className="flex-1 flex flex-col justify-center gap-5 min-h-0 stagger">
+        {DEPARTMENTS.map((d, i) => (
+          <BarRow key={i} label={d.label} valueLabel={d.valueLabel} pct={(d.value / max) * 100} top={i === 0} />
+        ))}
+      </div>
+      <Callout icon={BarChartIcon}>Strength Equipment placeholder-leads at roughly a third of total revenue — confirm against the real department cut.</Callout>
+    </Slide>
+  );
+};
+
+/* ===================== ARCHETYPE 6: TOP SKUS ===================== */
+const TopSkusSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle
+        pre="Product Performance"
+        title="Top SKUs By Revenue"
+        sub="Placeholder top six — swap for the live SKU export before this ships."
+        tag={<PlaceholderTag />}
+      />
+      <div className="flex-1 flex flex-col gap-3 min-h-0 justify-center stagger">
+        {TOP_SKUS.map((s, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-5 py-4 flex items-center gap-5`}>
+            <span className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 font-heading font-bold text-[16px] ${i === 0 ? 'bg-brand-accent text-white' : `${th.bg3} ${th.sub}`}`}>{i + 1}</span>
+            <div className="flex-1 min-w-0">
+              <p className={`text-[18px] font-heading font-semibold ${th.text} truncate`}>{s.name}</p>
+              <p className={`text-[13px] font-body ${th.muted} mt-0.5`}>{s.sku}</p>
+            </div>
+            <span className={`text-[14px] font-body ${th.sub} w-24 text-right shrink-0`}>{s.units}</span>
+            <span className={`text-[22px] font-heading font-bold w-32 text-right shrink-0 ${i === 0 ? 'text-brand-accent' : th.text}`}>{s.revenue}</span>
+          </div>
+        ))}
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== ARCHETYPE 7: TOP PRODUCT CATEGORIES ===================== */
+const TopCategoriesSlide = ({ n, t }) => {
+  const max = Math.max(...TOP_CATEGORIES.map(c => c.value));
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle
+        pre="Product Performance"
+        title="Top Product Categories"
+        sub="Illustrative category mix, one level below department — replace before this ships."
+        tag={<PlaceholderTag />}
+      />
+      <div className="flex-1 flex flex-col justify-center gap-5 min-h-0 stagger">
+        {TOP_CATEGORIES.map((c, i) => (
+          <BarRow key={i} label={c.label} valueLabel={c.valueLabel} pct={(c.value / max) * 100} top={i === 0} />
+        ))}
+      </div>
+      <Callout icon={Layers}>Racks & Rigs placeholder-leads the category cut — check this still holds once the real numbers land.</Callout>
+    </Slide>
+  );
+};
+
+/* ===================== ARCHETYPE 8: CLOSE ===================== */
+const CloseSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6">
+      <h2 className="font-display text-8xl uppercase text-white">Questions</h2>
+      <p className="text-[18px] font-body text-white/60">josh@gymandfitness.com.au</p>
+    </div>
+  </Slide>
+);
+
+/* ===================== ENGINE (do not edit) ===================== */
+const SLIDES = [TitleSlide, KpiSlide, OpportunitySlide, SupportSlide, DeptRevenueSlide, TopSkusSlide, TopCategoriesSlide, CloseSlide];
+
+function App() {
+  const [idx, setIdx]   = useState(0);
+  const [key, setKey]   = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    setIdx(prev => {
+      const next = prev + dir;
+      if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
+  useEffect(() => { document.body.style.background = th.bodyBg; }, [th.bodyBg]);
+
+  const Cur = SLIDES[idx];
+
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
+          <div key={key} className="w-full h-full slide-enter">
+            <Cur n={idx + 1} t={SLIDES.length} />
+          </div>
+        </div>
+        <div className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)"
+            className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => go(-1)} disabled={idx === 0} title="Previous"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevL size={18} />
+          </button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1} title="Next"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevR size={18} />
+          </button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

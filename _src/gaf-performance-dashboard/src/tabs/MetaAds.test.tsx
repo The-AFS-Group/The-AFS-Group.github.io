@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MetaAds } from "./MetaAds";
 import { DateRangeProvider } from "../state/DateRangeContext";
+import { CompareProvider } from "../state/CompareContext";
 
 const data: any = {
   meta: {
@@ -32,9 +33,9 @@ const data: any = {
 
 function renderTab() {
   return render(
-    <DateRangeProvider>
+    <DateRangeProvider><CompareProvider>
       <MetaAds data={data} />
-    </DateRangeProvider>
+    </CompareProvider></DateRangeProvider>
   );
 }
 
@@ -79,9 +80,9 @@ test("Organic sub-tab renders IG KPIs and snapshot label", () => {
 
 test("empty window shows graceful empty state", () => {
   render(
-    <DateRangeProvider>
+    <DateRangeProvider><CompareProvider>
       <MetaAds data={{ meta: {} } as any} />
-    </DateRangeProvider>
+    </CompareProvider></DateRangeProvider>
   );
   expect(screen.getByText(/no meta ads data available/i)).toBeInTheDocument();
 });

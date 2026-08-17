@@ -1,6 +1,8 @@
 // src/tabs/google/GoogleAdGroups.tsx
 import { DataTable } from "../../components/DataTable";
 import { fmtCpc, fmtCurrency, fmtInt, fmtPct, fmtRoas } from "../../lib/format";
+import { CompareToggle } from "../../components/CompareToggle";
+import { useCompare } from "../../state/CompareContext";
 
 type Row = Record<string, unknown>;
 
@@ -13,30 +15,34 @@ const COLUMNS = [
   { key: "impressions" as const, label: "Impr.", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "clicks" as const, label: "Clicks", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr" as const, label: "CTR", align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)) },
+  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)), invert: true },
   { key: "conversions" as const, label: "Conv.", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1) },
   { key: "convValue" as const, label: "Conv. Value", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
   { key: "roas" as const, label: "ROAS", align: "right" as const, format: (v: unknown) => fmtRoas(Number(v ?? 0)) },
-  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
-] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string }[];
+  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)), invert: true },
+] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string; invert?: boolean }[];
 
 interface Props {
   googleWin: Record<string, any>;
 }
 
 export function GoogleAdGroups({ googleWin }: Props) {
+  const { compare } = useCompare();
   const adGroups = (googleWin.adGroups ?? []) as Row[];
 
   return (
     <div className="space-y-4 fade-in">
-      <h3
-        className="text-lg font-bold"
-        style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
-      >
-        Ad Group Performance
-      </h3>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <h3
+          className="text-lg font-bold"
+          style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
+        >
+          Ad Group Performance
+        </h3>
+        <CompareToggle />
+      </div>
 
-      <DataTable<Row> columns={COLUMNS} rows={adGroups} sortable />
+      <DataTable<Row> columns={COLUMNS} rows={adGroups} sortable compare={compare} />
 
       <p className="text-xs" style={{ color: "var(--gaf-text-muted)" }}>
         All figures reflect the selected window. Top 200 rows by spend.

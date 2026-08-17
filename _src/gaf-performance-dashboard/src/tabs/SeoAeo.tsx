@@ -9,6 +9,8 @@ import { TrendChart } from "../components/TrendChart";
 import { CaveatBanner } from "../components/CaveatBanner";
 import { fmtCompact, fmtCurrency, fmtInt, fmtPct } from "../lib/format";
 import type { PerfData } from "../lib/data";
+import { CompareToggle } from "../components/CompareToggle";
+import { useCompare } from "../state/CompareContext";
 
 interface Props {
   data: PerfData;
@@ -30,7 +32,7 @@ const QUERY_COLS = [
   { key: "clicks",      label: "Clicks",      align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "impressions", label: "Impressions", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr",         label: "CTR",         align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "position",    label: "Avg Position", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1) },
+  { key: "position",    label: "Avg Position", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1), invert: true },
 ];
 
 const PAGE_COLS = [
@@ -39,7 +41,7 @@ const PAGE_COLS = [
   { key: "clicks",      label: "Clicks",      align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "impressions", label: "Impressions", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr",         label: "CTR",         align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "position",    label: "Avg Position", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1) },
+  { key: "position",    label: "Avg Position", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1), invert: true },
 ];
 
 const AI_SOURCE_COLS = [
@@ -61,6 +63,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
 }
 
 export function SeoAeo({ data }: Props) {
+  const { compare } = useCompare();
   const { window } = useDateRange();
   const [active, setActive] = useState<SubTab>("search");
 
@@ -208,11 +211,15 @@ export function SeoAeo({ data }: Props) {
           )}
 
           <section aria-label="AI engines breakdown">
-            <SectionTitle>By AI Engine</SectionTitle>
+            <div className="flex items-center justify-between gap-3 flex-wrap">
+              <SectionTitle>By AI Engine</SectionTitle>
+              <CompareToggle />
+            </div>
             <DataTable<Row>
               columns={AI_SOURCE_COLS}
               rows={(aiTraffic?.sources ?? []) as Row[]}
               sortable
+              compare={compare}
             />
           </section>
 
@@ -223,11 +230,15 @@ export function SeoAeo({ data }: Props) {
       {/* --- Top queries --- */}
       {active === "queries" && (
         <section aria-label="Top search queries">
-          <SectionTitle>Top Queries (Google Search)</SectionTitle>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <SectionTitle>Top Queries (Google Search)</SectionTitle>
+            <CompareToggle />
+          </div>
           <DataTable<Row>
             columns={QUERY_COLS}
             rows={(seoWin?.topQueries ?? []) as Row[]}
             sortable
+            compare={compare}
           />
         </section>
       )}
@@ -235,11 +246,15 @@ export function SeoAeo({ data }: Props) {
       {/* --- Top pages --- */}
       {active === "pages" && (
         <section aria-label="Top pages in search">
-          <SectionTitle>Top Pages (Google Search)</SectionTitle>
+          <div className="flex items-center justify-between gap-3 flex-wrap">
+            <SectionTitle>Top Pages (Google Search)</SectionTitle>
+            <CompareToggle />
+          </div>
           <DataTable<Row>
             columns={PAGE_COLS}
             rows={(seoWin?.topPages ?? []) as Row[]}
             sortable
+            compare={compare}
           />
         </section>
       )}

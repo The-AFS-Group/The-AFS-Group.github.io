@@ -1,6 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MarketingExpenses } from "./MarketingExpenses";
 import { DateRangeProvider } from "../state/DateRangeContext";
+import { CompareProvider } from "../state/CompareContext";
 
 const data: any = {
   expenses: {
@@ -19,13 +20,13 @@ const data: any = {
 };
 
 test("defaults to excluding ad spend — media vendor hidden, non-media shown", () => {
-  render(<DateRangeProvider><MarketingExpenses data={data} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><MarketingExpenses data={data} /></CompareProvider></DateRangeProvider>);
   expect(screen.getByText("Smile, Inc.")).toBeInTheDocument();
   expect(screen.queryByText("Facebook (AFS)")).not.toBeInTheDocument();
 });
 
 test("toggling off reveals the ad-spend line item", () => {
-  render(<DateRangeProvider><MarketingExpenses data={data} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><MarketingExpenses data={data} /></CompareProvider></DateRangeProvider>);
   fireEvent.click(screen.getByRole("button", { name: /exclude ad spend/i }));
   expect(screen.getByText("Facebook (AFS)")).toBeInTheDocument();
 });

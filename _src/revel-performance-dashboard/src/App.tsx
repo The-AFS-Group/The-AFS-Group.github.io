@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useData } from "./lib/data";
 import type { PerfData, Window } from "./lib/data";
 import { DateRangeProvider, useDateRange } from "./state/DateRangeContext";
+import { CompareProvider } from "./state/CompareContext";
 import { Sidebar, NAV_ITEMS } from "./components/Sidebar";
 import type { TabId } from "./components/Sidebar";
 import { AiChat } from "./components/AiChat";
@@ -228,7 +229,9 @@ function AppInner() {
 export default function App() {
   return (
     <DateRangeProvider>
-      <AppInner />
+      <CompareProvider>
+        <AppInner />
+      </CompareProvider>
     </DateRangeProvider>
   );
 }

@@ -10,6 +10,9 @@ import { MetricFilter, applyMetricFilter } from "./MetricFilter";
 import type { MetricFilterState } from "./MetricFilter";
 import { OBJECTIVE_LABELS, OBJECTIVE_BADGE } from "./columns";
 import type { MetaWindow, MetaCreativeRow } from "../../lib/data";
+import { CompareToggle } from "../../components/CompareToggle";
+import { useCompare } from "../../state/CompareContext";
+import { Delta } from "../../components/Delta";
 
 interface Props {
   metaWin: MetaWindow;
@@ -56,8 +59,23 @@ const CREATIVE_FILTER_METRICS = [
   { key: "engagementRate", label: "Eng Rate" },
 ];
 
+
+/** Read one metric's period-on-period movement off a creative row. */
+function cd(row: Record<string, unknown>, key: string): number | null {
+  const map = row.d as Record<string, number | null | undefined> | undefined;
+  const pct = map?.[key];
+  return typeof pct === "number" ? pct : null;
+}
+
 // Small labelled stat used in the card footer grid.
-function Stat({ label, value, dash }: { label: string; value: string; dash?: boolean }) {
+function Stat({ label, value, dash, delta, invert }: {
+  label: string;
+  value: string;
+  dash?: boolean;
+  /** Period-on-period movement; null when there is nothing comparable */
+  delta?: number | null;
+  invert?: boolean;
+}) {
   return (
     <div className="flex flex-col min-w-0">
       <span
@@ -72,6 +90,11 @@ function Stat({ label, value, dash }: { label: string; value: string; dash?: boo
       >
         {dash ? "–" : value}
       </span>
+      {delta !== null && delta !== undefined && (
+        <span className="text-[10px] leading-tight">
+          <Delta pct={delta} invert={invert} />
+        </span>
+      )}
     </div>
   );
 }
@@ -123,6 +146,7 @@ const TABLE_COLS = [
 ];
 
 export function MetaCreative({ metaWin }: Props) {
+  const { compare } = useCompare();
   const [selectedCreative, setSelectedCreative] = useState<MetaCreativeRow | null>(null);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("All");
   const [campaignFilter, setCampaignFilter] = useState<string>("");
@@ -183,9 +207,12 @@ export function MetaCreative({ metaWin }: Props) {
         >
           Creative Performance
         </h3>
-        <span className="text-xs" style={{ color: "var(--gaf-text-muted)" }}>
-          {filtered.length} of {creative.length} ad{creative.length === 1 ? "" : "s"}
-        </span>
+        <div className="flex items-center gap-3 flex-wrap">
+          <CompareToggle />
+          <span className="text-xs" style={{ color: "var(--gaf-text-muted)" }}>
+            {filtered.length} of {creative.length} ad{creative.length === 1 ? "" : "s"}
+          </span>
+        </div>
       </div>
 
       {/* Filter / sort / view controls */}
@@ -376,19 +403,21 @@ export function MetaCreative({ metaWin }: Props) {
                   </div>
 
                   {/* 12-stat grid (reference parity) */}
-                  <div className="grid grid-cols-3 sm:grid-cols-6 gap-x-2 gap-y-1.5 mt-auto">
-                    <Stat label="Spend"    value={fmtCurrencyCompact(Number(c.spend ?? 0))} />
-                    <Stat label="ATC"      value={fmtInt(Number(c.addToCart ?? 0))}        dash={zero(Number(c.addToCart ?? 0))} />
-                    <Stat label="ATC Rate" value={fmtPct(Number(c.atcRate ?? 0))}          dash={zero(Number(c.atcRate ?? 0))} />
-                    <Stat label="Eng."     value={fmtCompact(Number(c.engagements ?? 0))}  dash={zero(Number(c.engagements ?? 0))} />
-                    <Stat label="Eng. Rate" value={fmtPct(Number(c.engagementRate ?? 0))}  dash={zero(Number(c.engagementRate ?? 0))} />
-                    <Stat label="Conv."    value={fmtInt(Number(c.purchases ?? 0))}        dash={zero(Number(c.purchases ?? 0))} />
-                    <Stat label="ROAS"     value={fmtRoas(Number(c.roas ?? 0))}            dash={zero(Number(c.roas ?? 0))} />
-                    <Stat label="CTR"      value={fmtPct(Number(c.ctr ?? 0))} />
+                  {/* Six columns is too tight once each stat carries a delta —
+                      the values truncate and the row overflows the card. */}
+                  <div className={`grid grid-cols-3 ${compare ? "sm:grid-cols-4" : "sm:grid-cols-6"} gap-x-2 gap-y-1.5 mt-auto`}>
+                    <Stat label="Spend"    value={fmtCurrencyCompact(Number(c.spend ?? 0))} delta={compare ? cd(c, "spend") : null} />
+                    <Stat label="ATC"      value={fmtInt(Number(c.addToCart ?? 0))}        dash={zero(Number(c.addToCart ?? 0))} delta={compare ? cd(c, "addToCart") : null} />
+                    <Stat label="ATC Rate" value={fmtPct(Number(c.atcRate ?? 0))}          dash={zero(Number(c.atcRate ?? 0))} delta={compare ? cd(c, "atcRate") : null} />
+                    <Stat label="Eng."     value={fmtCompact(Number(c.engagements ?? 0))}  dash={zero(Number(c.engagements ?? 0))} delta={compare ? cd(c, "engagements") : null} />
+                    <Stat label="Eng. Rate" value={fmtPct(Number(c.engagementRate ?? 0))}  dash={zero(Number(c.engagementRate ?? 0))} delta={compare ? cd(c, "engagementRate") : null} />
+                    <Stat label="Conv."    value={fmtInt(Number(c.purchases ?? 0))}        dash={zero(Number(c.purchases ?? 0))} delta={compare ? cd(c, "purchases") : null} />
+                    <Stat label="ROAS"     value={fmtRoas(Number(c.roas ?? 0))}            dash={zero(Number(c.roas ?? 0))} delta={compare ? cd(c, "roas") : null} />
+                    <Stat label="CTR"      value={fmtPct(Number(c.ctr ?? 0))} delta={compare ? cd(c, "ctr") : null} />
                     <Stat label="OB CTR"   value={fmtPct(Number(c.impressions ?? 0) > 0 ? (Number(c.outboundClicks ?? 0) / Number(c.impressions ?? 1)) * 100 : 0)} />
-                    <Stat label="LPV"      value={fmtCompact(Number(c.landingPageViews ?? 0))} dash={zero(Number(c.landingPageViews ?? 0))} />
-                    <Stat label="CPC"      value={fmtCpc(Number(c.cpc ?? 0))} />
-                    <Stat label="Revenue"  value={fmtCurrencyCompact(Number(c.purchaseValue ?? 0))} dash={zero(Number(c.purchaseValue ?? 0))} />
+                    <Stat label="LPV"      value={fmtCompact(Number(c.landingPageViews ?? 0))} dash={zero(Number(c.landingPageViews ?? 0))} delta={compare ? cd(c, "landingPageViews") : null} />
+                    <Stat label="CPC"      value={fmtCpc(Number(c.cpc ?? 0))} delta={compare ? cd(c, "cpc") : null} invert />
+                    <Stat label="Revenue"  value={fmtCurrencyCompact(Number(c.purchaseValue ?? 0))} dash={zero(Number(c.purchaseValue ?? 0))} delta={compare ? cd(c, "purchaseValue") : null} />
                   </div>
                 </div>
               </div>
@@ -403,6 +432,7 @@ export function MetaCreative({ metaWin }: Props) {
           columns={TABLE_COLS}
           rows={tableRows as Record<string, unknown>[]}
           sortable
+          compare={compare}
         />
       )}
 

@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useDateRange } from "../state/DateRangeContext";
 import { KpiCard } from "../components/KpiCard";
 import { DataTable } from "../components/DataTable";
+import { CompareToggle } from "../components/CompareToggle";
+import { useCompare } from "../state/CompareContext";
 import { TrendChart } from "../components/TrendChart";
 import { CaveatBanner } from "../components/CaveatBanner";
 import { fmtCurrency, fmtCurrencyCompact, fmtCpc, fmtInt, fmtPct, fmtRoas } from "../lib/format";
@@ -46,12 +48,12 @@ const CAMPAIGN_COLS = [
   { key: "impressions", label: "Impr.",        align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "clicks",      label: "Clicks",       align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr",         label: "CTR",          align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "cpc",         label: "CPC",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–") },
-  { key: "cpm",         label: "CPM",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–") },
+  { key: "cpc",         label: "CPC",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–"), invert: true },
+  { key: "cpm",         label: "CPM",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–"), invert: true },
   { key: "conversions", label: "Conv.",        align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "sales",       label: "Conv. Value",  align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
   { key: "roas",        label: "ROAS",         align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtRoas(Number(v)) : "–") },
-  { key: "cpa",         label: "CPA",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–") },
+  { key: "cpa",         label: "CPA",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–"), invert: true },
 ];
 
 const CREATIVE_SET_COLS = [
@@ -60,14 +62,15 @@ const CREATIVE_SET_COLS = [
   { key: "impressions", label: "Impr.",        align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "clicks",      label: "Clicks",       align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr",         label: "CTR",          align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "cpc",         label: "CPC",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–") },
-  { key: "cpm",         label: "CPM",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–") },
+  { key: "cpc",         label: "CPC",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–"), invert: true },
+  { key: "cpm",         label: "CPM",          align: "right" as const, format: (v: unknown) => (Number(v ?? 0) > 0 ? fmtCpc(Number(v)) : "–"), invert: true },
   { key: "conversions", label: "Conv.",        align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
 ];
 
 // ---- Component ----
 
 export function Axon({ data }: AxonProps) {
+  const { compare } = useCompare();
   const { window } = useDateRange();
   const [active, setActive] = useState<SubTab>("overview");
   const [activeMetric, setActiveMetric] = useState("spend");
@@ -300,13 +303,16 @@ export function Axon({ data }: AxonProps) {
       {/* --- Campaigns --- */}
       {active === "campaigns" && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
           <h3
             className="text-lg font-bold"
             style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
           >
             Campaign Performance
           </h3>
-          <DataTable<Row> columns={CAMPAIGN_COLS} rows={campaigns} sortable />
+          <CompareToggle />
+          </div>
+          <DataTable<Row> columns={CAMPAIGN_COLS} rows={campaigns} sortable compare={compare} />
           <p className="text-xs" style={{ color: "var(--gaf-text-muted)" }}>
             All figures reflect the selected window.
           </p>
@@ -316,14 +322,17 @@ export function Axon({ data }: AxonProps) {
       {/* --- Creative Sets --- */}
       {active === "creativeSets" && (
         <div className="space-y-4">
+          <div className="flex items-center justify-between gap-3 flex-wrap">
           <h3
             className="text-lg font-bold"
             style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
           >
             Creative Set Performance
           </h3>
+          <CompareToggle />
+          </div>
           {creativeSets.length > 0 ? (
-            <DataTable<Row> columns={CREATIVE_SET_COLS} rows={creativeSets} sortable />
+            <DataTable<Row> columns={CREATIVE_SET_COLS} rows={creativeSets} sortable compare={compare} />
           ) : (
             <p
               className="text-xs italic rounded-lg px-3 py-2"

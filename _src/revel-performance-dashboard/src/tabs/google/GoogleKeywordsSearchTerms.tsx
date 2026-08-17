@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { DataTable } from "../../components/DataTable";
 import { fmtCpc, fmtCurrency, fmtInt, fmtPct, fmtRoas } from "../../lib/format";
+import { CompareToggle } from "../../components/CompareToggle";
+import { useCompare } from "../../state/CompareContext";
 
 type Row = Record<string, unknown>;
 
@@ -16,11 +18,11 @@ const KEYWORD_COLS = [
   { key: "impressions" as const, label: "Impr.", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "clicks" as const, label: "Clicks", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr" as const, label: "CTR", align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)) },
+  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)), invert: true },
   { key: "conversions" as const, label: "Conv.", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1) },
   { key: "convValue" as const, label: "Conv. Value", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
   { key: "roas" as const, label: "ROAS", align: "right" as const, format: (v: unknown) => fmtRoas(Number(v ?? 0)) },
-  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
+  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)), invert: true },
   {
     key: "searchImprShare" as const,
     label: "Impr. Share",
@@ -28,7 +30,7 @@ const KEYWORD_COLS = [
     format: (v: unknown) =>
       v == null || v === "" ? "n/a" : fmtPct(Number(v)),
   },
-] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string }[];
+] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string; invert?: boolean }[];
 
 // Feed: { searchTerm, campaign, spend, impressions, clicks, ctr, avgCpc, conversions, convValue, roas, cpa, atc, atcRate }
 const SEARCH_TERM_COLS = [
@@ -40,12 +42,12 @@ const SEARCH_TERM_COLS = [
   { key: "impressions" as const, label: "Impr.", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "clicks" as const, label: "Clicks", align: "right" as const, format: (v: unknown) => fmtInt(Number(v ?? 0)) },
   { key: "ctr" as const, label: "CTR", align: "right" as const, format: (v: unknown) => fmtPct(Number(v ?? 0)) },
-  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)) },
+  { key: "avgCpc" as const, label: "CPC", align: "right" as const, format: (v: unknown) => fmtCpc(Number(v ?? 0)), invert: true },
   { key: "conversions" as const, label: "Conv.", align: "right" as const, format: (v: unknown) => Number(v ?? 0).toFixed(1) },
   { key: "convValue" as const, label: "Conv. Value", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
   { key: "roas" as const, label: "ROAS", align: "right" as const, format: (v: unknown) => fmtRoas(Number(v ?? 0)) },
-  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)) },
-] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string }[];
+  { key: "cpa" as const, label: "CPA", align: "right" as const, format: (v: unknown) => fmtCurrency(Number(v ?? 0)), invert: true },
+] satisfies { key: keyof Row & string; label: string; align: "left" | "right"; format?: (v: unknown) => string; isName?: boolean; tooltip?: string; sub?: (row: Row) => string; invert?: boolean }[];
 
 type ViewMode = "keywords" | "searchTerms";
 
@@ -54,6 +56,7 @@ interface Props {
 }
 
 export function GoogleKeywordsSearchTerms({ googleWin }: Props) {
+  const { compare } = useCompare();
   const [view, setView] = useState<ViewMode>("keywords");
 
   const keywords = (googleWin.keywords ?? []) as Row[];
@@ -68,6 +71,7 @@ export function GoogleKeywordsSearchTerms({ googleWin }: Props) {
         >
           {view === "keywords" ? "Keywords" : "Search Terms"}
         </h3>
+        <CompareToggle />
         {/* View toggle */}
         <div className="inline-flex gap-1 p-1 rounded-lg bg-gray-100">
           {(["keywords", "searchTerms"] as ViewMode[]).map((v) => {
@@ -91,9 +95,9 @@ export function GoogleKeywordsSearchTerms({ googleWin }: Props) {
       </div>
 
       {view === "keywords" ? (
-        <DataTable<Row> columns={KEYWORD_COLS} rows={keywords} sortable />
+        <DataTable<Row> columns={KEYWORD_COLS} rows={keywords} sortable compare={compare} />
       ) : (
-        <DataTable<Row> columns={SEARCH_TERM_COLS} rows={searchTerms} sortable />
+        <DataTable<Row> columns={SEARCH_TERM_COLS} rows={searchTerms} sortable compare={compare} />
       )}
 
       <p className="text-xs" style={{ color: "var(--gaf-text-muted)" }}>

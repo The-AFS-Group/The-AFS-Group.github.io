@@ -10,6 +10,8 @@ interface Col {
   format?: (v: unknown) => string;
   tooltip?: string;
   sub?: (row: Record<string, unknown>) => string;
+  /** Lower-is-better: the comparison delta reads a fall as an improvement */
+  invert?: boolean;
 }
 
 const cur = (v: unknown) => fmtCurrency(Number(v ?? 0));
@@ -62,17 +64,17 @@ export const META_CAMPAIGN_COLS: Col[] = [
   { key: "reach",            label: "Reach",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.reach },
   { key: "clicks",           label: "Clicks",       align: "right", format: int,  tooltip: METRIC_TOOLTIPS.clicks },
   { key: "ctr",              label: "CTR",          align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.ctr },
-  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc },
-  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm },
+  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc, invert: true },
+  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm, invert: true },
   { key: "frequency",        label: "Freq.",        align: "right", format: freq, tooltip: METRIC_TOOLTIPS.frequency },
   { key: "outboundClicks",   label: "Outbound",     align: "right", format: int,  tooltip: METRIC_TOOLTIPS.outboundClicks },
   { key: "outboundCtr",      label: "OB CTR",       align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.outboundCtr },
   { key: "landingPageViews", label: "LPV",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.landingPageViews },
   { key: "addToCart",        label: "ATC",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.addToCart },
   { key: "atcRate",          label: "ATC Rate",     align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.atcRate },
-  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc },
+  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc, invert: true },
   { key: "conversions",      label: "Conv.",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.conversions },
-  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa },
+  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa, invert: true },
   { key: "convValue",        label: "Revenue",      align: "right", format: cur,  tooltip: METRIC_TOOLTIPS.convValue },
   { key: "roas",             label: "ROAS",         align: "right", format: roas, tooltip: METRIC_TOOLTIPS.roas },
 ];
@@ -96,17 +98,17 @@ export const META_ADSET_COLS: Col[] = [
   { key: "reach",            label: "Reach",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.reach },
   { key: "clicks",           label: "Clicks",       align: "right", format: int,  tooltip: METRIC_TOOLTIPS.clicks },
   { key: "ctr",              label: "CTR",          align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.ctr },
-  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc },
-  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm },
+  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc, invert: true },
+  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm, invert: true },
   { key: "frequency",        label: "Freq.",        align: "right", format: freq, tooltip: METRIC_TOOLTIPS.frequency },
   { key: "outboundClicks",   label: "Outbound",     align: "right", format: int,  tooltip: METRIC_TOOLTIPS.outboundClicks },
   { key: "outboundCtr",      label: "OB CTR",       align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.outboundCtr },
   { key: "landingPageViews", label: "LPV",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.landingPageViews },
   { key: "addToCart",        label: "ATC",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.addToCart },
   { key: "atcRate",          label: "ATC Rate",     align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.atcRate },
-  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc },
+  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc, invert: true },
   { key: "conversions",      label: "Conv.",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.conversions },
-  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa },
+  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa, invert: true },
   { key: "roas",             label: "ROAS",         align: "right", format: roas, tooltip: METRIC_TOOLTIPS.roas },
 ];
 
@@ -119,14 +121,14 @@ export const META_BREAKDOWN_COLS: Col[] = [
   { key: "impressions",      label: "Impr.",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.impressions },
   { key: "clicks",           label: "Clicks",       align: "right", format: int,  tooltip: METRIC_TOOLTIPS.clicks },
   { key: "ctr",              label: "CTR",          align: "right", format: pct,  tooltip: METRIC_TOOLTIPS.ctr },
-  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc },
-  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm },
+  { key: "cpc",              label: "CPC",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpc, invert: true },
+  { key: "cpm",              label: "CPM",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpm, invert: true },
   { key: "outboundClicks",   label: "Outbound",     align: "right", format: int,  tooltip: METRIC_TOOLTIPS.outboundClicks },
   { key: "landingPageViews", label: "LPV",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.landingPageViews },
   { key: "addToCart",        label: "ATC",          align: "right", format: int,  tooltip: METRIC_TOOLTIPS.addToCart },
-  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc },
+  { key: "costPerAtc",       label: "Cost/ATC",     align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.costPerAtc, invert: true },
   { key: "purchases",        label: "Conv.",        align: "right", format: int,  tooltip: METRIC_TOOLTIPS.conversions },
-  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa },
+  { key: "cpa",              label: "CPA",          align: "right", format: cpc,  tooltip: METRIC_TOOLTIPS.cpa, invert: true },
   { key: "purchaseValue",    label: "Revenue",      align: "right", format: cur,  tooltip: METRIC_TOOLTIPS.purchaseValue },
   { key: "roas",             label: "ROAS",         align: "right", format: roas, tooltip: METRIC_TOOLTIPS.roas },
 ];

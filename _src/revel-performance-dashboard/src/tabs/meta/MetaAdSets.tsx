@@ -5,6 +5,8 @@ import { META_ADSET_COLS } from "./columns";
 import { MetricFilter, applyMetricFilter } from "./MetricFilter";
 import type { MetricFilterState } from "./MetricFilter";
 import type { MetaWindow, MetaEntityRow } from "../../lib/data";
+import { CompareToggle } from "../../components/CompareToggle";
+import { useCompare } from "../../state/CompareContext";
 
 type Row = Record<string, unknown>;
 
@@ -28,6 +30,7 @@ const ADSET_FILTER_METRICS = [
 ];
 
 export function MetaAdSets({ metaWin }: Props) {
+  const { compare } = useCompare();
   const [filters, setFilters] = useState<MetricFilterState[]>([]);
   const [campaignFilter, setCampaignFilter] = useState<string>("");
 
@@ -59,6 +62,7 @@ export function MetaAdSets({ metaWin }: Props) {
         >
           Ad Set Performance
         </h3>
+        <CompareToggle />
         {campaignNames.length > 0 && (
           <select
             value={campaignFilter}
@@ -94,7 +98,7 @@ export function MetaAdSets({ metaWin }: Props) {
         </p>
       )}
 
-      <DataTable<Row> columns={META_ADSET_COLS} rows={defaultSorted} sortable />
+      <DataTable<Row> columns={META_ADSET_COLS} rows={defaultSorted} sortable compare={compare} />
     </div>
   );
 }

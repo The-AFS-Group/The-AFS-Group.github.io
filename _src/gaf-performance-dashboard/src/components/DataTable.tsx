@@ -1,5 +1,6 @@
 // src/components/DataTable.tsx
 import { useState } from "react";
+import { Delta } from "./Delta";
 
 type Align = "left" | "right" | "center";
 
@@ -16,12 +17,30 @@ interface Column<T extends Record<string, unknown>> {
   sub?: (row: T) => string;
   /** When set and truthy for a row, the cell value renders as a link (new tab) */
   href?: (row: T) => string;
+  /** Lower-is-better metric (CPC, CPM, CPA): flips the delta colour, not the arrow */
+  invert?: boolean;
 }
 
 interface DataTableProps<T extends Record<string, unknown>> {
   columns: Column<T>[];
   rows: T[];
   sortable?: boolean;
+  /**
+   * Show period-on-period movement under each metric value. Rows carry it in
+   * `d` ({metric: pct}) with `isNew` for rows absent from the prior period,
+   * both written by the pipeline. A metric missing from `d` had no comparable
+   * prior value and correctly renders nothing at all.
+   */
+  compare?: boolean;
+}
+
+/** The delta map the pipeline attaches to a comparable row. */
+type RowDeltas = Record<string, number | null | undefined>;
+
+function deltaFor(row: Record<string, unknown>, key: string): number | null {
+  const map = row.d as RowDeltas | undefined;
+  const pct = map?.[key];
+  return typeof pct === "number" ? pct : null;
 }
 
 type SortDir = "asc" | "desc" | null;
@@ -36,6 +55,7 @@ export function DataTable<T extends Record<string, unknown>>({
   columns,
   rows,
   sortable = false,
+  compare = false,
 }: DataTableProps<T>) {
   const [sortKey, setSortKey] = useState<string | null>(null);
   const [sortDir, setSortDir] = useState<SortDir>(null);
@@ -138,6 +158,11 @@ export function DataTable<T extends Record<string, unknown>>({
                   const isName = col.isName ?? colIdx === 0;
                   const sub = col.sub ? col.sub(row) : "";
                   const link = col.href ? col.href(row) : "";
+                  // Deltas belong on metric cells only — a name column has no
+                  // movement, even if a metric happens to share its key.
+                  const isMetric = !isName && typeof raw === "number";
+                  const delta = compare && isMetric ? deltaFor(row, col.key) : null;
+                  const showNew = compare && isName && row.isNew === true;
                   return (
                     <td
                       key={col.key}
@@ -159,6 +184,15 @@ export function DataTable<T extends Record<string, unknown>>({
                           {cell}
                         </a>
                       ) : cell}
+                      {showNew && (
+                        <span
+                          className="ml-2 px-1.5 py-0.5 rounded text-[10px] font-semibold align-middle"
+                          style={{ background: "var(--gaf-primary-light)", color: "var(--gaf-primary)" }}
+                          title="No activity in the previous period"
+                        >
+                          New
+                        </span>
+                      )}
                       {sub && (
                         <div
                           className="text-[11px] font-normal truncate max-w-[280px]"
@@ -166,6 +200,11 @@ export function DataTable<T extends Record<string, unknown>>({
                           title={sub}
                         >
                           {sub}
+                        </div>
+                      )}
+                      {delta !== null && (
+                        <div className={alignClass(col.align) === "text-right" ? "flex justify-end" : ""}>
+                          <Delta pct={delta} invert={col.invert} />
                         </div>
                       )}
                     </td>

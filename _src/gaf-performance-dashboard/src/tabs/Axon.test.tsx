@@ -2,6 +2,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Axon } from "./Axon";
 import { DateRangeProvider } from "../state/DateRangeContext";
+import { CompareProvider } from "../state/CompareContext";
 
 // Fixture matches the REAL feed row keys: campaigns key on `campaign`,
 // creative sets on `creativeSet` (binding these to `name` blanked both
@@ -19,7 +20,7 @@ const data: any = {
 };
 
 test("renders Axon campaign, creative set and learning caveat across sub-tabs", () => {
-  render(<DateRangeProvider><Axon data={data} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><Axon data={data} /></CompareProvider></DateRangeProvider>);
   // Overview: caveat + top-campaigns panel
   expect(screen.getAllByText(/learning/i).length).toBeGreaterThanOrEqual(1);
   expect(screen.getByText(/GAF AU Conversion/)).toBeInTheDocument();
@@ -43,7 +44,7 @@ test("renders the GA4 Axon-channel add-to-cart card with its session base and GA
       },
     },
   };
-  render(<DateRangeProvider><Axon data={withAtc} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><Axon data={withAtc} /></CompareProvider></DateRangeProvider>);
   expect(screen.getByText("Add to Cart")).toBeInTheDocument();
   expect(screen.getByText(/of 918 GA4 sessions/)).toBeInTheDocument();
   // Tooltip opens on click and attributes the metric to GA4
@@ -63,7 +64,7 @@ test("shows a dash for ROAS/CPA when there are no conversions", () => {
       },
     },
   };
-  render(<DateRangeProvider><Axon data={zeroConv} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><Axon data={zeroConv} /></CompareProvider></DateRangeProvider>);
   // ROAS and CPA cards both show a dash rather than $0 / 0.00x
   expect(screen.getAllByText("–").length).toBeGreaterThanOrEqual(2);
 });

@@ -5,6 +5,8 @@ import { META_CAMPAIGN_COLS } from "./columns";
 import { MetricFilter, applyMetricFilter } from "./MetricFilter";
 import type { MetricFilterState } from "./MetricFilter";
 import type { MetaWindow, MetaEntityRow } from "../../lib/data";
+import { CompareToggle } from "../../components/CompareToggle";
+import { useCompare } from "../../state/CompareContext";
 
 type Row = Record<string, unknown>;
 
@@ -28,6 +30,7 @@ const CAMPAIGN_FILTER_METRICS = [
 ];
 
 export function MetaCampaigns({ metaWin }: Props) {
+  const { compare } = useCompare();
   const [filters, setFilters] = useState<MetricFilterState[]>([]);
 
   const campaigns = (metaWin.campaigns ?? []) as MetaEntityRow[] as Row[];
@@ -45,12 +48,15 @@ export function MetaCampaigns({ metaWin }: Props) {
 
   return (
     <div className="space-y-4 fade-in">
-      <h3
-        className="text-lg font-bold"
-        style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
-      >
-        Campaign Performance
-      </h3>
+      <div className="flex items-center justify-between gap-3 flex-wrap">
+        <h3
+          className="text-lg font-bold"
+          style={{ color: "var(--gaf-text-primary)", fontFamily: "var(--font-display)" }}
+        >
+          Campaign Performance
+        </h3>
+        <CompareToggle />
+      </div>
 
       {/* Metric filter */}
       <div className="dash-card p-3 sm:p-4">
@@ -67,7 +73,7 @@ export function MetaCampaigns({ metaWin }: Props) {
         </p>
       )}
 
-      <DataTable<Row> columns={META_CAMPAIGN_COLS} rows={defaultSorted} sortable />
+      <DataTable<Row> columns={META_CAMPAIGN_COLS} rows={defaultSorted} sortable compare={compare} />
     </div>
   );
 }

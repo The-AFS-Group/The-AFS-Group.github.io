@@ -2,6 +2,7 @@
 import { render, screen } from "@testing-library/react";
 import { Overview } from "./Overview";
 import { DateRangeProvider } from "../state/DateRangeContext";
+import { CompareProvider } from "../state/CompareContext";
 
 const data: any = {
   overview: { "30d": { kpis: { adSpend: 250, revenue: 1400, blendedMer: 5.6, sessions: 9000 }, deltas: {}, spendSplit: { meta: 100, google: 100, axon: 50 }, daily: [] } },
@@ -10,7 +11,7 @@ const data: any = {
 };
 
 test("renders blended MER and an anomaly", () => {
-  render(<DateRangeProvider><Overview data={data} /></DateRangeProvider>);
+  render(<DateRangeProvider><CompareProvider><Overview data={data} /></CompareProvider></DateRangeProvider>);
   expect(screen.getByText(/5.6/)).toBeInTheDocument();
   expect(screen.getByText(/Meta spend up 60%/)).toBeInTheDocument();
 });

@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, PhoneOutgoing, TrendingUp, TrendingDown, Video, Heart, MessageCircle, Repeat, Package, Trophy, PieChart as PieChartIcon, Activity, ChevronDown, ChevronRight, Target } from "lucide-react";
+import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, PhoneOutgoing, TrendingUp, TrendingDown, Video, Heart, MessageCircle, Repeat, Package, Trophy, PieChart as PieChartIcon, Activity, ChevronDown, ChevronRight, Target, Info, ExternalLink } from "lucide-react";
 import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
 import { BrandConfig, BrandData, BrandBudget, BrandInstagram, ProductInsightsData, LeadData } from "../types";
 import { GAF_COLORS, CHART_COLORS } from "../constants";
@@ -135,6 +135,7 @@ export default function SalesDashboard() {
   
   const [topProductsPeriod, setTopProductsPeriod] = useState<'30d' | '1d'>('30d');
   const [progressView, setProgressView] = useState<'month' | 'quarter'>('month');
+  const [showSalesSource, setShowSalesSource] = useState(false);
   
   // Month Selection State
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -629,6 +630,29 @@ export default function SalesDashboard() {
                   <BarChart3 className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-xl md:text-2xl font-bold text-gray-900">Sales Progress</h3>
+                <div className="relative">
+                  <button
+                    onClick={() => setShowSalesSource((v) => !v)}
+                    className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-gray-300 rounded-full px-2.5 py-1 transition-colors"
+                    title="Where does this data come from?"
+                  >
+                    <Info className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Source</span>
+                  </button>
+                  {showSalesSource && (
+                    <div className="absolute top-full left-0 mt-2 w-64 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-xl z-20">
+                      Website sessions, gross profit and targets on this tab come straight from the source spreadsheet.
+                      <a
+                        href="https://docs.google.com/spreadsheets/d/17an6G2laOVcI8t0nDNsRkiax-ihYUIUqGtviyfaX9Gw/edit?gid=0#gid=0"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1 text-blue-300 hover:underline mt-2 font-semibold"
+                      >
+                        <ExternalLink className="w-3 h-3" /> View source spreadsheet
+                      </a>
+                    </div>
+                  )}
+                </div>
                 <div className="flex gap-1 p-1 bg-gray-100 rounded-lg ml-auto">
                   <button
                     onClick={() => setProgressView("month")}

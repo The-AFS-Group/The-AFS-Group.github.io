@@ -1060,7 +1060,7 @@ const SalesHealthDashboard = () => {
                 <div className="w-2 h-8 bg-[#185787] rounded-full" />
                 <h1 className="text-3xl text-[#081C28] font-black">FORCE USA EXPORT SALES</h1>
               </div>
-              <p className="text-[#425660] text-lg">{fiscalYearLabel} Performance Dashboard</p>
+              <p className="text-[#425660] text-lg">{fiscalYearLabel.replace("FY", "FY ")} Performance Dashboard</p>
             </div>
             <div className="flex items-center">
               <img 

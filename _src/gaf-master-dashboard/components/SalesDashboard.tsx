@@ -136,7 +136,8 @@ export default function SalesDashboard() {
   const [topProductsPeriod, setTopProductsPeriod] = useState<'30d' | '1d'>('30d');
   const [progressView, setProgressView] = useState<'month' | 'quarter'>('month');
   const [showSalesSource, setShowSalesSource] = useState(false);
-  
+  const [openCallInfo, setOpenCallInfo] = useState<number | null>(null);
+
   // Month Selection State
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -863,8 +864,8 @@ export default function SalesDashboard() {
               },
               { title: "Abandoned Carts", icon: ShoppingCart, dataKey: "abandonedCarts", changeKey: "abandonedCarts", type: "bar" },
               { title: "Marketing Spend", icon: DollarSign, dataKey: "adSpend", changeKey: "adSpend", type: "bar" },
-              { title: "Inbound Sales Calls", icon: PhoneIncoming, dataKey: "inboundSalesCalls", changeKey: "inboundSalesCalls", type: "bar" },
-              { title: "Outbound Sales Calls", icon: PhoneOutgoing, dataKey: "outboundSalesCalls", changeKey: "outboundSalesCalls", type: "bar" },
+              { title: "Inbound Sales Calls", icon: PhoneIncoming, dataKey: "inboundSalesCalls", changeKey: "inboundSalesCalls", type: "bar", filterInfo: true },
+              { title: "Outbound Sales Calls", icon: PhoneOutgoing, dataKey: "outboundSalesCalls", changeKey: "outboundSalesCalls", type: "bar", filterInfo: true },
               { title: "New Marketing Contacts", icon: TrendingUp, dataKey: "dailyLeadDelta", changeKey: "dailyLeadDelta", type: "bar" },
             ].map((chart, i) => (
             <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6 h-96 relative overflow-hidden">
@@ -878,6 +879,32 @@ export default function SalesDashboard() {
                   <chart.icon className="w-5 h-5 text-white" />
                 </div>
                 <h3 className="text-lg font-semibold text-gray-900">{chart.title}</h3>
+                {(chart as any).filterInfo && (
+                  <div className="relative">
+                    <button
+                      onClick={() => setOpenCallInfo(openCallInfo === i ? null : i)}
+                      className="flex items-center text-gray-400 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-full p-1 transition-colors"
+                      title="How are these calls counted?"
+                      aria-label="How are these calls counted?"
+                    >
+                      <Info className="w-3.5 h-3.5" />
+                    </button>
+                    {openCallInfo === i && (
+                      <div className="absolute top-full left-0 mt-2 w-72 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-xl z-30">
+                        <p className="font-semibold mb-1">What counts as a sales call</p>
+                        Only genuine sales conversations are counted. A call must run at least 30 seconds, return a transcript, and contain 3 or more back-and-forth exchanges. Voicemails, quick hang-ups, wrong numbers and delivery / warranty / service calls are excluded, by keyword and an AI check.
+                        <a
+                          href="https://docs.google.com/spreadsheets/d/1VqUzZ70wnjiU4YEVJkybfaRidQEoldjSpFb33EUVeUg/edit?gid=1761896659#gid=1761896659"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1 text-blue-300 hover:underline mt-2 font-semibold"
+                        >
+                          <ExternalLink className="w-3 h-3" /> View source spreadsheet
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
                 {chart.changeKey && (
                   <div className="ml-auto flex items-center gap-1 text-xs font-medium text-gray-500 bg-gray-50 px-2 py-1 rounded-md border border-gray-100" title="Same period last month">
                     <span className={

@@ -120,6 +120,7 @@ export default function SalesDashboard() {
   const activeBrand = "REVEL";
   const [metricType, setMetricType] = useState<"created" | "fulfilled">("created");
   const [progress, setProgress] = useState(0);
+  const [openCallInfo, setOpenCallInfo] = useState<number | null>(null);
   
   const dashboardCacheKey = 'dashboard_data';
   const productCacheKey = 'product_insights_data';
@@ -702,8 +703,8 @@ export default function SalesDashboard() {
             },
             { title: "Abandoned Carts", icon: ShoppingCart, dataKey: "abandonedCarts", type: "bar" },
             { title: "Marketing Spend", icon: DollarSign, dataKey: "adSpend", type: "bar" },
-            { title: "Inbound Sales Calls", icon: PhoneIncoming, dataKey: "inboundSalesCalls", type: "bar" },
-            { title: "Outbound Sales Calls", icon: PhoneOutgoing, dataKey: "outboundSalesCalls", type: "bar" },
+            { title: "Inbound Sales Calls", icon: PhoneIncoming, dataKey: "inboundSalesCalls", type: "bar", filterInfo: true },
+            { title: "Outbound Sales Calls", icon: PhoneOutgoing, dataKey: "outboundSalesCalls", type: "bar", filterInfo: true },
           ].map((chart, i) => {
             const comparison = getPeriodComparison(chart.dataKey);
             return (
@@ -715,6 +716,32 @@ export default function SalesDashboard() {
                     <chart.icon className="w-5 h-5 text-white" />
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900">{chart.title}</h3>
+                  {(chart as any).filterInfo && (
+                    <div className="relative">
+                      <button
+                        onClick={() => setOpenCallInfo(openCallInfo === i ? null : i)}
+                        className="flex items-center text-gray-400 hover:text-gray-700 border border-gray-200 hover:border-gray-300 rounded-full p-1 transition-colors"
+                        title="How are these calls counted?"
+                        aria-label="How are these calls counted?"
+                      >
+                        <Info className="w-3.5 h-3.5" />
+                      </button>
+                      {openCallInfo === i && (
+                        <div className="absolute top-full left-0 mt-2 w-72 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-xl z-30">
+                          <p className="font-semibold mb-1">What counts as a sales call</p>
+                          Only genuine sales conversations are counted. A call must run at least 30 seconds, return a transcript, and contain 3 or more back-and-forth exchanges. Voicemails, quick hang-ups, wrong numbers and delivery / warranty / service calls are excluded, by keyword and an AI check.
+                          <a
+                            href="https://docs.google.com/spreadsheets/d/1eQaSF_VI2Q5dPoh0_ikCt4GNMzREi7uwMnvKy4y8uIA/edit?gid=1761896659#gid=1761896659"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-blue-300 hover:underline mt-2 font-semibold"
+                          >
+                            <ExternalLink className="w-3 h-3" /> View source spreadsheet
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
                 {comparison && (
                   <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${

@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Celsius Range — Market Price Benchmark | The AFS Group</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { accent: '#F26422', black: '#0E2A44', dark: '#14344F', mid: '#1B4468', steel: '#3F6C93', ash: '#9BAEBF' },
+        lt:    { bg: '#ffffff', card: '#EDEAE3', card2: '#E3DFD6', border: '#D8D3C9', text: '#232323', sub: '#545049', muted: '#A9A49B' },
+      },
+      fontFamily: {
+        display: ['"Archivo"', 'sans-serif'],
+        heading: ['"Archivo"', 'sans-serif'],
+        body:    ['"Lato"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Archivo',sans-serif}
+.font-display{font-weight:700;letter-spacing:.01em}
+.slide-enter{animation:se .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes se{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*{animation:st .42s cubic-bezier(.2,.8,.2,1) both}
+.stagger>*:nth-child(1){animation-delay:.04s}
+.stagger>*:nth-child(2){animation-delay:.08s}
+.stagger>*:nth-child(3){animation-delay:.12s}
+.stagger>*:nth-child(4){animation-delay:.16s}
+.stagger>*:nth-child(5){animation-delay:.20s}
+.stagger>*:nth-child(6){animation-delay:.24s}
+@keyframes st{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.slide-enter,.stagger>*{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+/* ===================== THEME ===================== */
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    bodyBg: '#EDEAE3', logoFilter: '',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/30',
+    amber: 'text-amber-600',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/30',
+    red:   'text-rose-600',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/30',
+    imgBg: 'bg-white', footerText: 'text-lt-muted', rowAlt: 'bg-black/[.02]',
+  },
+  dark: {
+    bg: 'bg-brand-black', bg2: 'bg-brand-dark', bg3: 'bg-brand-mid',
+    border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
+    text: 'text-white', sub: 'text-brand-ash', muted: 'text-brand-steel', textInv: 'text-brand-black',
+    cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
+    bodyBg: '#0E2A44', logoFilter: 'brightness-0 invert',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent',
+    navDisabled: 'bg-brand-steel/20 text-brand-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/30',
+    amber: 'text-amber-400',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/30',
+    red:   'text-rose-400',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/30',
+    imgBg: 'bg-white', footerText: 'text-brand-steel', rowAlt: 'bg-white/[.03]',
+  }
+};
+
+/* ===================== ICONS ===================== */
+const I = p => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+       className={p.className||''}>
+    {Array.isArray(p.d) ? p.d.map((d,i) => <path key={i} d={d} />) : <path d={p.d} />}
+  </svg>
+);
+const ChevL  = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR  = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Sun    = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon   = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Layers = p => <I {...p} d={["M12 2L2 7l10 5 10-5-10-5z","M2 17l10 5 10-5","M2 12l10 5 10-5"]} />;
+const Pkg    = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Target = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
+const Check  = p => <I {...p} d={["M22 11.08V12a10 10 0 11-5.93-9.14","M22 4L12 14.01l-3-3"]} />;
+const Warn   = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Gauge  = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 12l4-4","M8 12h.01"]} />;
+const Arrow  = p => <I {...p} d={["M5 12h14","M12 5l7 7-7 7"]} />;
+
+/* ===================== BRAND ASSETS ===================== */
+const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?v=1766395105';
+const Logo = () => { const th = useTheme(); return <img src={LOGO} alt="" className={`h-7 w-auto ${th.logoFilter}`} />; };
+
+/* ===================== PRIMITIVES ===================== */
+const Slide = ({ children, num, total, noPad }) => {
+  const th = useTheme();
+  return (
+    <div className={`w-full h-full ${th.bg} flex flex-col ${noPad ? '' : 'px-16 py-11'} relative overflow-hidden`}>
+      {children}
+      <div className="absolute bottom-5 left-16 right-16 flex items-center justify-between">
+        <Logo />
+        <span className={`text-[11px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+    <div className="mb-5 shrink-0">
+      {pre && <p className="text-[12px] font-heading font-bold tracking-[.3em] uppercase text-brand-accent mb-1.5">{pre}</p>}
+      <h2 className={`font-display text-4xl uppercase leading-[1.05] ${th.text}`}>{title}</h2>
+      {sub && <p className={`text-[15px] font-body ${th.sub} mt-2 max-w-5xl leading-snug`}>{sub}</p>}
+    </div>
+  );
+};
+
+const Callout = ({ icon: Icon = Target, children }) => {
+  const th = useTheme();
+  return (
+    <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-3.5 flex items-start gap-3 shrink-0">
+      <Icon size={18} className="text-brand-accent shrink-0 mt-0.5" />
+      <p className={`text-[14px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+const VERDICT = {
+  competitive: { label: 'COMPETITIVE', tone: 'green', icon: Check },
+  ceiling:     { label: 'AT CEILING',  tone: 'amber', icon: Gauge },
+  review:      { label: 'REVIEW',      tone: 'red',   icon: Warn },
+};
+const Badge = ({ v }) => {
+  const th = useTheme();
+  const cfg = VERDICT[v]; const Ic = cfg.icon;
+  return (
+    <span className={`inline-flex items-center gap-1.5 text-[11px] font-heading font-bold tracking-[.1em] uppercase px-2 py-1 rounded ${th[cfg.tone+'Bg']} ${th[cfg.tone]} border ${th[cfg.tone+'Border']} whitespace-nowrap`}>
+      <Ic size={13} /> {cfg.label}
+    </span>
+  );
+};
+
+/* ===================== 1. COVER ===================== */
+const TitleSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col justify-center px-24 relative">
+      <p className="text-[14px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent mb-6">AFS Group · Rebel Private Label</p>
+      <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Celsius Range<br/><span className="text-brand-accent">Market Price Benchmark</span></h1>
+      <p className="text-[20px] font-body text-white/70 mt-8 max-w-3xl leading-snug">The 23 SKUs of the refreshed Celsius range, benchmarked against live Australian retail pricing across value and specialist channels.</p>
+      <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
+        <img src={LOGO} alt="" className="h-8 w-auto brightness-0 invert" />
+        <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">8 September 2026 · Prices captured live</span>
+      </div>
+    </div>
+  </Slide>
+);
+
+/* ===================== 2. METHOD ===================== */
+const MethodSlide = ({ n, t }) => {
+  const th = useTheme();
+  const cards = [
+    { h: 'What this is', b: 'An independent price benchmark of the proposed Celsius RRPs against the live Australian market — a pressure-test of where the refreshed range sits before pricing is locked.', ic: Target },
+    { h: 'Two channels', b: 'Value / mass: Rebel, Amazon, Kmart, BIG W, Bunnings, Anaconda, Lifespan, Gym Direct, Everfit, Powertrain. Specialists: Gym & Fitness, Force USA, Bells of Steel, Sam’s, Vulcan, Cortex, World Fitness, Trojan, SMAI.', ic: Layers },
+    { h: 'Method', b: 'For each SKU we matched the closest spec-comparable model, captured its live advertised price on 8 Sep 2026, and rated the proposed RRP as under / at / over the comparable band.', ic: Gauge },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Approach" title="How we read the market" sub="One method applied across all 23 SKUs, so the verdicts are comparable line to line." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-3 gap-4 stagger">
+          {cards.map((c,i)=>(
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-3`}>
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-lg bg-brand-accent/10 flex items-center justify-center"><c.ic size={18} className="text-brand-accent"/></div>
+                <p className={`text-[16px] font-heading font-semibold ${th.text}`}>{c.h}</p>
+              </div>
+              <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{c.b}</p>
+            </div>
+          ))}
+        </div>
+        <div className={`${th.bg3} rounded-lg p-4`}>
+          <p className={`text-[12px] font-heading font-bold tracking-[.2em] uppercase ${th.sub} mb-2`}>Read these caveats before quoting</p>
+          <div className="grid grid-cols-3 gap-4">
+            <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Sale vs RRP.</span> Many comparators were captured mid-sale; regular RRPs are noted where shown, and the market gap widens against regular pricing.</p>
+            <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Own brands flagged.</span> Force USA and Gym & Fitness are AFS’s own brands — used as internal reference anchors, not independent competitors.</p>
+            <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Rebel’s own prices.</span> Celsius shelf prices are JS-rendered and could not be fetch-confirmed; current-Celsius figures are indicative, confirm in-browser before locking.</p>
+          </div>
+        </div>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 3. RANGE AT A GLANCE ===================== */
+const GlanceSlide = ({ n, t }) => {
+  const th = useTheme();
+  const headline = [
+    { label: 'SKUs Benchmarked', value: '23', icon: Pkg, sub: 'The full refreshed Celsius range, every line matched to the market' },
+    { label: 'Full-range RRP', value: '$16.7k', icon: Dollar, sub: 'Sum of all 23 proposed RRPs · span $109 to $2,599 per SKU' },
+  ];
+  const support = [
+    { label: 'New to range', value: '9', icon: Arrow, sub: 'No current Celsius line to compare against' },
+    { label: 'Replacements', value: '14', icon: Layers, sub: 'Refresh of an existing Celsius SKU' },
+    { label: 'Categories', value: '6', icon: Target, sub: 'All-in-ones, home gyms, racks, leg/tower, benches, storage' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="The Range" title="What we benchmarked" sub="A full house-brand fit-out, from a $109 plate tree to a $2,599 all-in-one trainer." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-2 gap-5 stagger">
+          {headline.map((m,i)=>(
+            <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-6 flex flex-col gap-2`}>
+              <div className="flex items-center justify-between">
+                <p className="text-[13px] font-heading font-medium tracking-[.3em] uppercase text-brand-accent">{m.label}</p>
+                <div className="w-10 h-10 rounded-lg bg-brand-accent/10 flex items-center justify-center"><m.icon size={20} className="text-brand-accent" /></div>
+              </div>
+              <p className="font-display text-7xl tracking-wide leading-[0.9] text-brand-accent">{m.value}</p>
+              <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+        <div className="grid grid-cols-3 gap-4 stagger">
+          {support.map((m,i)=>(
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-1.5`}>
+              <div className="flex items-center justify-between">
+                <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{m.label}</p>
+                <m.icon size={16} className="text-brand-accent" />
+              </div>
+              <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.text}`}>{m.value}</p>
+              <p className={`text-[12px] font-body ${th.muted} leading-snug`}>{m.sub}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 4. SCORECARD ===================== */
+const ScorecardSlide = ({ n, t }) => {
+  const th = useTheme();
+  const cols = [
+    { tone:'green', label:'Competitive', sub:'Under or at the comparable market', n:13, items:['C2 All-In-One','CDP Functional Trainer','CLP Leg Press','CHG Home Gym','CHGLP Leg Press Add-on','CPF Pro FID Bench','CFID FID Bench','CPC Preacher Curl','CRL Bench Lat Pulldown','CRKA Rack Cable Attach.','CUR Universal Rack','CSWR Standard Tree','COWR Olympic Tree'] },
+    { tone:'amber', label:'At ceiling', sub:'Top of the category band', n:6, items:['C1 All-In-One','CHGP Home Gym Pro','CSR Squat Stand','CPT Power Tower','CFB Flat Bench','CSB Standard Bench'] },
+    { tone:'red', label:'Review', sub:'Above the closest live comparators', n:4, items:['CHR Half Rack','CFR Full Rack','COWS Barbell + Plate Tree','CDR Dumbbell Rack'] },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Executive Summary" title="How the range prices against the market" sub="Most of the range is competitively pitched. Six lines sit at the top of their band, and four sit clearly above their closest live comparators." />
+      <div className="flex-1 grid grid-cols-3 gap-5 min-h-0 stagger">
+        {cols.map((c,i)=>(
+          <div key={i} className={`rounded-lg border ${th[c.tone+'Border']} ${th[c.tone+'Bg']} p-5 flex flex-col min-h-0`}>
+            <div className="flex items-baseline justify-between mb-1">
+              <p className={`font-display text-2xl uppercase ${th[c.tone]}`}>{c.label}</p>
+              <p className={`font-display text-5xl ${th[c.tone]}`}>{c.n}</p>
+            </div>
+            <p className={`text-[13px] font-body ${th.sub} mb-3`}>{c.sub}</p>
+            <div className="flex flex-col gap-1 overflow-hidden">
+              {c.items.map((it,j)=>(
+                <p key={j} className={`text-[13px] font-body ${th.text} leading-tight`}>{it}</p>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="mt-4"><Callout icon={Warn}>The sharpest pattern: the three racks (Squat Stand, Half Rack, Full Rack) took the range’s biggest RRP lifts (+25–+33%) and are the same lines sitting at or over the market. That is the first place to reconsider.</Callout></div>
+    </Slide>
+  );
+};
+
+/* ===================== 5–10. CATEGORY TABLES ===================== */
+const CAT = {
+  A: { pre:'Benchmark · 1 of 6', title:'All-in-ones & functional trainers', sub:'The hero, high-ticket lines — where the pricing story matters most.',
+    take:'The two flagships win on price: C2 undercuts every comparable full all-in-one, and CDP sits below the dual-stack functional-trainer peer set.',
+    rows:[
+      { sku:'C1', name:'All-In-One', rrp:'$1,799', comp:'Cortex PR-5 $1,349 (Lifespan, sale) · FU G3 $2,699', range:'$1,350–$1,800', v:'ceiling' },
+      { sku:'C2', name:'All-In-One', rrp:'$2,599', comp:'FU G3 $2,699 · Cortex SM-26 $2,999 · FU G12 $4,999', range:'$2,699–$5,999', v:'competitive' },
+      { sku:'CDP', name:'Functional Trainer', rrp:'$1,999', comp:'FU Functional Trainer $2,199 · Bells of Steel $2,999', range:'$2,199–$2,999', v:'competitive' },
+      { sku:'CRKA', name:'Rack Cable Attachment', rrp:'$299', comp:'FU PT lat / low-row bolt-on $279', range:'~$279–$300', v:'competitive' },
+    ]},
+  B: { pre:'Benchmark · 2 of 6', title:'Multi-station home gyms', sub:'Pin-loaded single-stack gyms — a crowded value-to-mid market.',
+    take:'CHG and the leg-press add-on are on the money. CHGP is fair against RRPs but reads a touch high against current street prices.',
+    rows:[
+      { sku:'CHG', name:'Home Gym', rrp:'$799', comp:'Marcy 68kg $749 · Bodyworx 91kg $799–899', range:'$750–$899', v:'competitive' },
+      { sku:'CHGP', name:'Home Gym Pro', rrp:'$1,699', comp:'Cortex GS7 $1,399 · Cross X300 $1,099 · BodyIron $2,099', range:'$1,099–$2,499', v:'ceiling' },
+      { sku:'CHGLP', name:'Home Gym Leg Press', rrp:'$499', comp:'Powerline PLPX add-on $490', range:'~$490', v:'competitive' },
+    ]},
+  C: { pre:'Benchmark · 3 of 6', title:'Racks & squat stands', sub:'The lines that took the biggest RRP lifts in the refresh.',
+    take:'The two enclosed racks are the clearest flags: the Half Rack sits ~$200–$300 over the value/specialist cluster, and the Full Rack is priced like a cage-plus-lat bundle against standalone cages.',
+    rows:[
+      { sku:'CSR', name:'Squat Stand', rrp:'$399', comp:'Vulcan Elite $399 · Gym Direct value $145–350', range:'$145–$549', v:'ceiling' },
+      { sku:'CHR', name:'Half Rack', rrp:'$799', comp:'Commando $499 · ATX HRX-620 $595 · FU Half Rack $549', range:'$499–$595', v:'review' },
+      { sku:'CFR', name:'Full Rack', rrp:'$999', comp:'Best Fitness $399 · FU PT $629 · Vulcan $649', range:'$399–$649', v:'review' },
+    ]},
+  D: { pre:'Benchmark · 4 of 6', title:'Leg press & power tower', sub:'One well-pitched machine, one at the top of its band.',
+    take:'The Leg Press is line-ball with its Force USA twin and has room to move up. The Power Tower sits above Rebel’s own current Celsius station.',
+    rows:[
+      { sku:'CLP', name:'Leg Press', rrp:'$1,499', comp:'FU Compact Leg Press $1,469 (same spec) · BoS $2,199', range:'$1,280–$2,200', v:'competitive' },
+      { sku:'CPT', name:'Power Tower', rrp:'$349', comp:'Celsius own ~$299 · Bunnings $249 · Cortex $429', range:'$160–$430', v:'ceiling' },
+    ]},
+  E: { pre:'Benchmark · 5 of 6', title:'Benches & attachments', sub:'Mostly on market, with two entry benches a touch high.',
+    take:'FID bench, Pro FID, preacher curl and lat pulldown are all well-pitched. The Flat Bench and the Standard bench-with-uprights sit above the value band.',
+    rows:[
+      { sku:'CFB', name:'Flat Bench', rrp:'$169.99', comp:'Everfit $142.99 · Muscle Motion $99', range:'$99–$143', v:'ceiling' },
+      { sku:'CFID', name:'FID Bench', rrp:'$249.99', comp:'Cortex BN-9 $279 · 247 FID $188', range:'$188–$279', v:'competitive' },
+      { sku:'CPF', name:'Pro FID Bench', rrp:'$499', comp:'Armortech $399 · FU $629 · Trojan $730', range:'$399–$730', v:'competitive' },
+      { sku:'CSB', name:'Standard Bench (w/ uprights)', rrp:'$349.99', comp:'Everfit station $167 · commercial $765+', range:'$167–$765', v:'ceiling' },
+      { sku:'CPC', name:'Preacher Curl', rrp:'$119', comp:'Kinta $195 · Body Solid $199', range:'$195–$199', v:'competitive' },
+      { sku:'CRL', name:'Bench Lat Pulldown', rrp:'$159', comp:'GymKing $229 · Dshop $70', range:'$70–$229', v:'competitive' },
+    ]},
+  F: { pre:'Benchmark · 6 of 6', title:'Storage', sub:'The plate trees are on market; the barbell tree and dumbbell rack are not.',
+    take:'The two plate trees hold market pricing. COWS sits ~$100 over a near-identical Force USA unit, and CDR sits above comparable 3-tier dumbbell racks.',
+    rows:[
+      { sku:'CUR', name:'Universal Rack', rrp:'$299', comp:'Celsius own $299.99 · Everfit $133 · commercial $790+', range:'$130–$790', v:'competitive' },
+      { sku:'CSWR', name:'Standard Weight Tree', rrp:'$109', comp:'BIG W $109.99 · Bunnings tree $79.95', range:'$80–$110', v:'competitive' },
+      { sku:'COWR', name:'Olympic Weight Tree', rrp:'$129', comp:'Bunnings Bodyworx $135 · Celsius own $119.99', range:'$120–$135', v:'competitive' },
+      { sku:'COWS', name:'Barbell + Plate Tree', rrp:'$399', comp:'FU near-identical $279 · Nike Strength $299', range:'$279–$300', v:'review' },
+      { sku:'CDR', name:'Dumbbell Rack (3-tier)', rrp:'$499', comp:'Muscle Motion $325 · SMAI $459 · Titanium $423', range:'$325–$460', v:'review' },
+    ]},
+};
+
+const CategorySlide = ({ n, t, data }) => {
+  const th = useTheme();
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre={data.pre} title={data.title} sub={data.sub} />
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="grid gap-2 px-3 pb-2" style={{gridTemplateColumns:'2.1fr 0.9fr 3.2fr 1.3fr 1.4fr'}}>
+          {['SKU / Product','Proposed RRP','Closest market comparators','Market range','Verdict'].map((h,i)=>(
+            <p key={i} className={`text-[11px] font-heading font-bold tracking-[.15em] uppercase ${th.muted} ${i===1?'text-right':''}`}>{h}</p>
+          ))}
+        </div>
+        <div className="flex-1 flex flex-col gap-1.5 min-h-0 overflow-hidden stagger">
+          {data.rows.map((r,i)=>(
+            <div key={i} className={`grid gap-2 items-center rounded-lg border ${th.cardBorder} ${th.cardBg} px-3 py-2.5`} style={{gridTemplateColumns:'2.1fr 0.9fr 3.2fr 1.3fr 1.4fr'}}>
+              <div>
+                <span className="text-[13px] font-heading font-bold text-brand-accent tracking-wide">{r.sku}</span>
+                <span className={`text-[14px] font-heading font-semibold ${th.text} ml-2`}>{r.name}</span>
+              </div>
+              <p className={`text-[17px] font-heading font-bold ${th.text} text-right tabular-nums`}>{r.rrp}</p>
+              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{r.comp}</p>
+              <p className={`text-[13px] font-heading font-semibold ${th.text} tabular-nums`}>{r.range}</p>
+              <div><Badge v={r.v} /></div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3"><Callout>{data.take}</Callout></div>
+      </div>
+    </Slide>
+  );
+};
+const CatA = p => <CategorySlide {...p} data={CAT.A} />;
+const CatB = p => <CategorySlide {...p} data={CAT.B} />;
+const CatC = p => <CategorySlide {...p} data={CAT.C} />;
+const CatD = p => <CategorySlide {...p} data={CAT.D} />;
+const CatE = p => <CategorySlide {...p} data={CAT.E} />;
+const CatF = p => <CategorySlide {...p} data={CAT.F} />;
+
+/* ===================== 11. INTERNAL LIFTS ===================== */
+const LiftSlide = ({ n, t }) => {
+  const th = useTheme();
+  const rows = [
+    { sku:'CSR', name:'Squat Stand', from:'SR1 $299.99', to:'$399', d:'+$99', pct:'+33%', flag:true },
+    { sku:'CHR', name:'Half Rack', from:'RK1 $599.00', to:'$799', d:'+$200', pct:'+33%', flag:true },
+    { sku:'CFR', name:'Full Rack', from:'RK2 $799.00', to:'$999', d:'+$200', pct:'+25%', flag:true },
+    { sku:'CRL', name:'Bench Lat Pulldown', from:'BC3 Lat $139.99', to:'$159', d:'+$19', pct:'+14%', flag:false },
+    { sku:'CFB', name:'Flat Bench', from:'BC1 $149.99', to:'$169.99', d:'+$20', pct:'+13%', flag:false },
+    { sku:'CSWR', name:'Standard Weight Tree', from:'$99.99', to:'$109', d:'+$9', pct:'+9%', flag:false },
+    { sku:'COWR', name:'Olympic Weight Tree', from:'$119.99', to:'$129', d:'+$9', pct:'+8%', flag:false },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Internal Angle" title="Where the RRP moved vs today’s Celsius" sub="Seven replacement lines carry a price lift in the refresh. Seven others (home gyms, FID/Pro benches, standard bench, universal rack) hold at their current pricing." />
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="grid gap-2 px-3 pb-2" style={{gridTemplateColumns:'2.4fr 2fr 1fr 1fr 1fr'}}>
+          {['SKU / Product','Current Celsius','New RRP','Change','vs Now'].map((h,i)=>(
+            <p key={i} className={`text-[11px] font-heading font-bold tracking-[.15em] uppercase ${th.muted} ${i>1?'text-right':''}`}>{h}</p>
+          ))}
+        </div>
+        <div className="flex-1 flex flex-col gap-1.5 min-h-0 overflow-hidden stagger">
+          {rows.map((r,i)=>(
+            <div key={i} className={`grid gap-2 items-center rounded-lg border ${r.flag?th.redBorder:th.cardBorder} ${r.flag?th.redBg:th.cardBg} px-3 py-2.5`} style={{gridTemplateColumns:'2.4fr 2fr 1fr 1fr 1fr'}}>
+              <div>
+                <span className="text-[13px] font-heading font-bold text-brand-accent tracking-wide">{r.sku}</span>
+                <span className={`text-[14px] font-heading font-semibold ${th.text} ml-2`}>{r.name}</span>
+              </div>
+              <p className={`text-[14px] font-body ${th.sub} tabular-nums`}>{r.from}</p>
+              <p className={`text-[16px] font-heading font-bold ${th.text} text-right tabular-nums`}>{r.to}</p>
+              <p className={`text-[15px] font-heading font-bold text-right tabular-nums ${r.flag?th.red:th.text}`}>{r.d}</p>
+              <p className={`text-[15px] font-heading font-bold text-right tabular-nums ${r.flag?th.red:th.amber}`}>{r.pct}</p>
+            </div>
+          ))}
+        </div>
+        <div className="mt-3"><Callout icon={Warn}>The three racks carry both the biggest lifts (+25–+33%) and the over-market verdicts. A lift is defensible on genuinely upgraded steel and finish, but it needs a story the shelf can see.</Callout></div>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 12. RECOMMENDATIONS ===================== */
+const RecsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const blocks = [
+    { tone:'green', icon:Check, h:'Lead with the value lines', b:'C2 ($2,599), CDP ($1,999) and CLP ($1,499) are sharply pitched against the market — these are the lines to headline. Most accessories sit on or below market too.' },
+    { tone:'red', icon:Warn, h:'Revisit the four over-market SKUs', b:'Half Rack ($799), Full Rack ($999), Barbell+Plate Tree ($399) and Dumbbell Rack ($499) sit clearly above their closest live comparators. Either trim, or arm the pitch with a build / warranty / brand justification.' },
+    { tone:'amber', icon:Gauge, h:'Hold the six ceiling lines with intent', b:'C1, CHGP, Squat Stand, Power Tower, Flat Bench and Standard Bench are at the top of their bands. Fine if spec and brand carry it — but there’s little headroom, and street prices sit below several.' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Recommendations" title="Where to look before you lock" sub="A benchmark, not a mandate — the market says most of the range is right, and points to a short list to reconsider." />
+      <div className="flex-1 flex flex-col gap-3.5 min-h-0 justify-center stagger">
+        {blocks.map((bl,i)=>(
+          <div key={i} className={`rounded-lg border ${th[bl.tone+'Border']} ${th[bl.tone+'Bg']} p-4 flex items-start gap-4`}>
+            <div className={`w-10 h-10 rounded-lg ${th[bl.tone+'Bg']} border ${th[bl.tone+'Border']} flex items-center justify-center shrink-0`}><bl.icon size={20} className={th[bl.tone]} /></div>
+            <div>
+              <p className={`text-[18px] font-heading font-semibold ${th.text} mb-0.5`}>{bl.h}</p>
+              <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{bl.b}</p>
+            </div>
+          </div>
+        ))}
+        <div className={`${th.bg3} rounded-lg p-3.5 flex items-start gap-3`}>
+          <Pkg size={18} className="text-brand-accent shrink-0 mt-0.5" />
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Before quoting:</span> several comparators were captured mid-sale, so gaps narrow against regular RRPs; and Rebel’s own current Celsius prices should be confirmed in-browser. Full sourced pricing sits behind every line in this deck.</p>
+        </div>
+      </div>
+    </Slide>
+  );
+};
+
+/* ===================== 13. CLOSE ===================== */
+const CloseSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6 px-24 text-center">
+      <p className="text-[13px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent">Celsius Range · Market Price Benchmark</p>
+      <h2 className="font-display text-7xl uppercase text-white leading-[0.95] max-w-4xl">Priced to win on the<br/>lines that matter</h2>
+      <p className="text-[17px] font-body text-white/60 max-w-2xl">Prepared by The AFS Group for the Rebel private-label team · Live pricing captured 8 September 2026</p>
+    </div>
+  </Slide>
+);
+
+/* ===================== ENGINE ===================== */
+const SLIDES = [TitleSlide, MethodSlide, GlanceSlide, ScorecardSlide, CatA, CatB, CatC, CatD, CatE, CatF, LiftSlide, RecsSlide, CloseSlide];
+
+function App() {
+  const [idx, setIdx]   = useState(0);
+  const [key, setKey]   = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    setIdx(prev => { const next = prev + dir; if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; } return prev; });
+  }, []);
+  useEffect(() => { const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1)); window.addEventListener('resize', calc); return () => window.removeEventListener('resize', calc); }, []);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+  useEffect(() => { document.body.style.background = th.bodyBg; }, [th.bodyBg]);
+
+  const Cur = SLIDES[idx];
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
+          <div key={key} className="w-full h-full slide-enter"><Cur n={idx + 1} t={SLIDES.length} /></div>
+        </div>
+        <div className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)" className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>{dark ? <Sun size={18} /> : <Moon size={18} />}</button>
+          <button onClick={() => go(-1)} disabled={idx === 0} title="Previous" className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevL size={18} /></button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1} title="Next" className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}><ChevR size={18} /></button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

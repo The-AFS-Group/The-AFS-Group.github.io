@@ -115,17 +115,19 @@ const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/TheAFSGroup.png?
 const Logo = () => { const th = useTheme(); return <img src={LOGO} alt="" className={`h-7 w-auto ${th.logoFilter}`} />; };
 
 /* ===================== PRIMITIVES ===================== */
-const Slide = ({ children, num, total, noPad }) => {
+const Slide = ({ children, num, total, noPad, hideFooter }) => {
   const th = useTheme();
   return (
     <div className={`w-full h-full ${th.bg} flex flex-col ${noPad ? '' : 'px-16 pt-11 pb-[76px]'} relative overflow-hidden`}>
       {children}
-      <div className="absolute bottom-5 left-16 right-16 flex items-center justify-between">
-        <Logo />
-        <span className={`text-[11px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
-          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
-        </span>
-      </div>
+      {!hideFooter && (
+        <div className="absolute bottom-5 left-16 right-16 flex items-center justify-between">
+          <Logo />
+          <span className={`text-[11px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+            {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+          </span>
+        </div>
+      )}
     </div>
   );
 };
@@ -168,7 +170,7 @@ const Badge = ({ v }) => {
 
 /* ===================== 1. COVER ===================== */
 const TitleSlide = ({ n, t }) => (
-  <Slide num={n} total={t} noPad>
+  <Slide num={n} total={t} noPad hideFooter>
     <div className="w-full h-full bg-brand-black flex flex-col justify-center px-24 relative">
       <p className="text-[14px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent mb-6">AFS Group · Rebel Private Label</p>
       <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Celsius Range<br/><span className="text-brand-accent">Market Price Benchmark</span></h1>
@@ -515,7 +517,7 @@ const RecsSlide = ({ n, t }) => {
 
 /* ===================== 13. CLOSE ===================== */
 const CloseSlide = ({ n, t }) => (
-  <Slide num={n} total={t} noPad>
+  <Slide num={n} total={t} noPad hideFooter>
     <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6 px-24 text-center">
       <p className="text-[13px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent">Celsius Range · Market Price Benchmark</p>
       <h2 className="font-display text-7xl uppercase text-white leading-[0.95] max-w-4xl">Priced to win on the<br/>lines that matter</h2>

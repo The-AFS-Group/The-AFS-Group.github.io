@@ -189,6 +189,21 @@ const RECS_BLOCKS = [
   { tone:'amber', icon:Gauge, h:'Hold the six ceiling lines with intent', b:'C1, CHGP, Squat Stand, Power Tower, Flat Bench and Standard Bench are at the top of their bands. Fine if spec and brand carry it — but there’s little headroom, and street prices sit below several.' },
 ];
 
+const QUALITY = {
+  cheap: [
+    'Lighter-gauge steel and lower rated load capacities',
+    'Minimal or no multi-stage safety stops / spotter arms',
+    'Thin single-density padding and basic hardware',
+    'Flat-pack builds, short or no warranty, little local support',
+  ],
+  pillars: [
+    { k:'Safety', icon:Check, b:'Multi-stage safety stops, a fully enclosed cage on the Full Rack, and higher rated capacities — the specs a customer leans on the moment a lift fails.' },
+    { k:'Quality', icon:Layers, b:'Stronger, heavier steel and powder-coat finish (upgraded vs the prior generation), dual-density upholstery, and commercial builds rated for daily loading.' },
+    { k:'Aesthetics', icon:Target, b:'Refreshed design and finish that merchandises better on the shop floor and photographs better online — a real conversion driver at this price point.' },
+  ],
+  caveat: 'Lead the premium argument on the racks, benches and heavy storage, where safety and finish are seen and felt. On plain plate trees the quality gap is small — trim those rather than defend them.',
+};
+
 /* ===================== 1. COVER ===================== */
 const TitleSlide = ({ n, t }) => (
   <Slide num={n} total={t} noPad hideFooter>
@@ -513,9 +528,44 @@ const RecsSlide = ({ n, t }) => {
         ))}
         <div className={`${th.bg3} rounded-lg p-3.5 flex items-start gap-3`}>
           <Pkg size={18} className="text-brand-accent shrink-0 mt-0.5" />
-          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Before quoting:</span> several comparators were captured mid-sale, so gaps narrow against regular RRPs; and Rebel’s own current Celsius prices should be confirmed in-browser. Every comparator in this deck links to its live Australian retailer listing.</p>
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Before quoting:</span> several comparators were captured mid-sale, so gaps narrow against regular RRPs; and Rebel’s own current Celsius prices should be confirmed in-browser. Every comparator in this deck links to its live listing. <a href="celsius-range-market-benchmark-sources.html" target="_blank" rel="noopener noreferrer" className="text-brand-accent underline">View the full sourced pricing table →</a></p>
         </div>
       </div>
+    </Slide>
+  );
+};
+
+/* ===================== 12b. QUALITY / PREMIUM CONTEXT ===================== */
+const QualitySlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Reading the Premium" title="Priced fairly, not priced high" sub="On the lines that sit above the value field, the gap buys back what a rack or bench is actually judged on. The cheap comparators win on sticker price by cutting exactly those things." />
+      <div className="flex-1 grid grid-cols-5 gap-5 min-h-0">
+        <div className={`col-span-2 rounded-lg border ${th.amberBorder} ${th.amberBg} p-5 flex flex-col`}>
+          <p className={`text-[13px] font-heading font-bold tracking-[.2em] uppercase ${th.amber} mb-3`}>Where the value field saves money</p>
+          <div className="flex flex-col gap-2.5">
+            {QUALITY.cheap.map((c,i)=>(
+              <div key={i} className="flex items-start gap-2.5">
+                <span className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${th.amber.replace('text-','bg-')}`}></span>
+                <p className={`text-[14px] font-body ${th.text} leading-snug`}>{c}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="col-span-3 flex flex-col gap-3 stagger">
+          {QUALITY.pillars.map((p,i)=>(
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex items-start gap-4`}>
+              <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center shrink-0"><p.icon size={22} className="text-brand-accent" /></div>
+              <div>
+                <p className={`text-[17px] font-heading font-semibold ${th.text}`}>{p.k}</p>
+                <p className={`text-[14px] font-body ${th.sub} leading-snug mt-0.5`}>{p.b}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-4"><Callout icon={Warn}>{QUALITY.caveat}</Callout></div>
     </Slide>
   );
 };
@@ -532,7 +582,7 @@ const CloseSlide = ({ n, t }) => (
 );
 
 /* ===================== ENGINE ===================== */
-const SLIDES = [TitleSlide, MethodSlide, GlanceSlide, ScorecardSlide, CatA, CatB, CatC, CatD, CatE, CatF, LiftSlide, RecsSlide, CloseSlide];
+const SLIDES = [TitleSlide, MethodSlide, GlanceSlide, ScorecardSlide, CatA, CatB, CatC, CatD, CatE, CatF, LiftSlide, QualitySlide, RecsSlide, CloseSlide];
 
 /* ---- DESKTOP: scaled 1600x900 stage ---- */
 function DesktopDeck({ dark, setDark }) {
@@ -706,6 +756,31 @@ function MobileDeck({ dark, setDark }) {
           </div>
         </section>
 
+        {/* quality / premium context */}
+        <section>
+          <Head pre="Reading the Premium" title="Priced fairly, not priced high" sub="On the lines above the value field, the gap buys back what a rack or bench is judged on. The cheap comparators win on sticker by cutting exactly those things." />
+          <div className={`rounded-xl border ${th.amberBorder} ${th.amberBg} p-4 mb-3`}>
+            <p className={`text-[12px] font-heading font-bold tracking-[.2em] uppercase ${th.amber} mb-2`}>Where the value field saves money</p>
+            <div className="flex flex-col gap-1.5">
+              {QUALITY.cheap.map((c,i)=>(
+                <div key={i} className="flex items-start gap-2">
+                  <span className={`mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 ${th.amber.replace('text-','bg-')}`}></span>
+                  <p className={`text-[13px] font-body ${th.text} leading-snug`}>{c}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col gap-2.5">
+            {QUALITY.pillars.map((p,i)=>(
+              <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-xl p-4 flex items-start gap-3`}>
+                <p.icon size={20} className="text-brand-accent shrink-0 mt-0.5" />
+                <div><p className={`text-[15px] font-heading font-semibold ${th.text}`}>{p.k}</p><p className={`text-[13px] font-body ${th.sub} leading-snug mt-0.5`}>{p.b}</p></div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3"><Callout icon={Warn}>{QUALITY.caveat}</Callout></div>
+        </section>
+
         {/* recs */}
         <section>
           <Head pre="Recommendations" title="Where to look before you lock" />
@@ -717,7 +792,7 @@ function MobileDeck({ dark, setDark }) {
               </div>
             ))}
           </div>
-          <p className={`text-[12px] font-body ${th.muted} leading-snug mt-3`}>Before quoting: several comparators were mid-sale, so gaps narrow against regular RRPs, and Rebel’s own current Celsius prices should be confirmed in-browser. Every comparator links to its live Australian retailer listing.</p>
+          <p className={`text-[12px] font-body ${th.muted} leading-snug mt-3`}>Before quoting: several comparators were mid-sale, so gaps narrow against regular RRPs, and Rebel’s own current Celsius prices should be confirmed in-browser. Every comparator links to its live listing. <a href="celsius-range-market-benchmark-sources.html" target="_blank" rel="noopener noreferrer" className="text-brand-accent underline">View the full sourced pricing table →</a></p>
         </section>
       </div>
 

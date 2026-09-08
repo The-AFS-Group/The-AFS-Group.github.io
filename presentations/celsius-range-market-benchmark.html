@@ -118,7 +118,7 @@ const Logo = () => { const th = useTheme(); return <img src={LOGO} alt="" classN
 const Slide = ({ children, num, total, noPad }) => {
   const th = useTheme();
   return (
-    <div className={`w-full h-full ${th.bg} flex flex-col ${noPad ? '' : 'px-16 py-11'} relative overflow-hidden`}>
+    <div className={`w-full h-full ${th.bg} flex flex-col ${noPad ? '' : 'px-16 pt-11 pb-[76px]'} relative overflow-hidden`}>
       {children}
       <div className="absolute bottom-5 left-16 right-16 flex items-center justify-between">
         <Logo />
@@ -295,53 +295,104 @@ const ScorecardSlide = ({ n, t }) => {
 };
 
 /* ===================== 5–10. CATEGORY TABLES ===================== */
+const L = (t,u) => ({ t, u });
 const CAT = {
   A: { pre:'Benchmark · 1 of 6', title:'All-in-ones & functional trainers', sub:'The hero, high-ticket lines — where the pricing story matters most.',
     take:'The two flagships win on price: C2 undercuts every comparable full all-in-one, and CDP sits below the dual-stack functional-trainer peer set.',
     rows:[
-      { sku:'C1', name:'All-In-One', rrp:'$1,799', comp:'Cortex PR-5 $1,349 (Lifespan, sale) · FU G3 $2,699', range:'$1,350–$1,800', v:'ceiling' },
-      { sku:'C2', name:'All-In-One', rrp:'$2,599', comp:'FU G3 $2,699 · Cortex SM-26 $2,999 · FU G12 $4,999', range:'$2,699–$5,999', v:'competitive' },
-      { sku:'CDP', name:'Functional Trainer', rrp:'$1,999', comp:'FU Functional Trainer $2,199 · Bells of Steel $2,999', range:'$2,199–$2,999', v:'competitive' },
-      { sku:'CRKA', name:'Rack Cable Attachment', rrp:'$299', comp:'FU PT lat / low-row bolt-on $279', range:'~$279–$300', v:'competitive' },
+      { sku:'C1', name:'All-In-One', rrp:'$1,799', range:'$1,350–$1,800', v:'ceiling', comp:[
+        L('Cortex PR-5 $1,349 (Lifespan, sale)','https://www.lifespanfitness.com.au/products/pr-5-folding-functional-trainer-and-power-rack'),
+        L('Force USA G3 $2,699 (Gym & Fitness)','https://www.gymandfitness.com.au/products/force-usa-g3-all-in-one-trainer-v2') ]},
+      { sku:'C2', name:'All-In-One', rrp:'$2,599', range:'$2,699–$5,999', v:'competitive', comp:[
+        L('Force USA G3 $2,699','https://www.gymandfitness.com.au/products/force-usa-g3-all-in-one-trainer-v2'),
+        L('Cortex SM-26 $2,999 (Lifespan)','https://www.lifespanfitness.com.au/collections/functional-trainers'),
+        L('Force USA G12 $4,999','https://www.gymandfitness.com.au/products/force-usa-g12-all-in-one-trainer') ]},
+      { sku:'CDP', name:'Functional Trainer', rrp:'$1,999', range:'$2,199–$2,999', v:'competitive', comp:[
+        L('Force USA Functional Trainer $2,199','https://www.gymandfitness.com.au/products/force-usa-functional-trainer'),
+        L('Bells of Steel $2,999','https://bellsofsteel.au/products/functional-trainer-weight-stack') ]},
+      { sku:'CRKA', name:'Rack Cable Attachment', rrp:'$299', range:'~$279–$300', v:'competitive', comp:[
+        L('Force USA PT lat / low-row bolt-on $279','https://www.gymandfitness.com.au/products/force-usa-pt-power-rack-lat-pull-down-attachment') ]},
     ]},
   B: { pre:'Benchmark · 2 of 6', title:'Multi-station home gyms', sub:'Pin-loaded single-stack gyms — a crowded value-to-mid market.',
     take:'CHG and the leg-press add-on are on the money. CHGP is fair against RRPs but reads a touch high against current street prices.',
     rows:[
-      { sku:'CHG', name:'Home Gym', rrp:'$799', comp:'Marcy 68kg $749 · Bodyworx 91kg $799–899', range:'$750–$899', v:'competitive' },
-      { sku:'CHGP', name:'Home Gym Pro', rrp:'$1,699', comp:'Cortex GS7 $1,399 · Cross X300 $1,099 · BodyIron $2,099', range:'$1,099–$2,499', v:'ceiling' },
-      { sku:'CHGLP', name:'Home Gym Leg Press', rrp:'$499', comp:'Powerline PLPX add-on $490', range:'~$490', v:'competitive' },
+      { sku:'CHG', name:'Home Gym', rrp:'$799', range:'$750–$899', v:'competitive', comp:[
+        L('Marcy 68kg $749 (Costco AU)','https://www.costco.com.au/Sports-Fitness/Exercise-Fitness/Gym-Equipment/Marcy-Home-Gym-With-68kg-Weight-Stack/p/1942257'),
+        L('Bodyworx 91kg $799 (World Fitness)','https://worldfitness.com.au/products/bodyworx-multi-station-home-gym-200lbs'),
+        L('Bodyworx LBX300G $899 (Fitness Warehouse)','https://fitnesswarehouse.com.au/products/bodyworx-home-gym-lbx300g') ]},
+      { sku:'CHGP', name:'Home Gym Pro', rrp:'$1,699', range:'$1,099–$2,499', v:'ceiling', comp:[
+        L('Cortex GS7 $1,399 (Lifespan)','https://www.lifespanfitness.com.au/products/cortex-gs7-multi-station-multi-function-home-gym-with-power-tower-squat-press'),
+        L('Cross X300 $1,099 (Southern Cross)','https://southernxfitness.com.au/products/cross-x300-home-gym'),
+        L('BodyIron BHG8000 $2,099 (World Fitness)','https://worldfitness.com.au/products/body-iron-multi-station-home-gym-with-leg-press-bhg8000-adjustable-cable-station') ]},
+      { sku:'CHGLP', name:'Home Gym Leg Press', rrp:'$499', range:'~$490', v:'competitive', comp:[
+        L('Powerline PLPX add-on $490 (Best Fitness)','https://bestfitness.com.au/products/powerline-plpx-leg-press-attachment-for-p1x-p2x-home-gym') ]},
     ]},
   C: { pre:'Benchmark · 3 of 6', title:'Racks & squat stands', sub:'The lines that took the biggest RRP lifts in the refresh.',
     take:'The two enclosed racks are the clearest flags: the Half Rack sits ~$200–$300 over the value/specialist cluster, and the Full Rack is priced like a cage-plus-lat bundle against standalone cages.',
     rows:[
-      { sku:'CSR', name:'Squat Stand', rrp:'$399', comp:'Vulcan Elite $399 · Gym Direct value $145–350', range:'$145–$549', v:'ceiling' },
-      { sku:'CHR', name:'Half Rack', rrp:'$799', comp:'Commando $499 · ATX HRX-620 $595 · FU Half Rack $549', range:'$499–$595', v:'review' },
-      { sku:'CFR', name:'Full Rack', rrp:'$999', comp:'Best Fitness $399 · FU PT $629 · Vulcan $649', range:'$399–$649', v:'review' },
+      { sku:'CSR', name:'Squat Stand', rrp:'$399', range:'$145–$549', v:'ceiling', comp:[
+        L('Vulcan Elite $399','https://vulcanfitness.com.au/collections/racks'),
+        L('Gym Direct value $145–$350','https://gymdirect.com.au/collections/squat-racks') ]},
+      { sku:'CHR', name:'Half Rack', rrp:'$799', range:'$499–$595', v:'review', comp:[
+        L('Commando $499 (Aussie Fitness)','https://www.aussiefitness.com.au/p/commando-half-rack/C-516HR'),
+        L('ATX HRX-620 $595 (Sam’s)','https://samsfitness.com.au/equipment/half-racks-squat-racks-and-stands/'),
+        L('Force USA Half Rack $549','https://www.gymandfitness.com.au/products/force-usa-half-power-rack') ]},
+      { sku:'CFR', name:'Full Rack', rrp:'$999', range:'$399–$649', v:'review', comp:[
+        L('Best Fitness $399','https://bestfitness.com.au/products/best-fitness-power-rack'),
+        L('Force USA PT $629','https://www.gymandfitness.com.au/products/force-usa-pt-power-rack'),
+        L('Vulcan $649','https://vulcanfitness.com.au/collections/racks') ]},
     ]},
   D: { pre:'Benchmark · 4 of 6', title:'Leg press & power tower', sub:'One well-pitched machine, one at the top of its band.',
     take:'The Leg Press is line-ball with its Force USA twin and has room to move up. The Power Tower sits above Rebel’s own current Celsius station.',
     rows:[
-      { sku:'CLP', name:'Leg Press', rrp:'$1,499', comp:'FU Compact Leg Press $1,469 (same spec) · BoS $2,199', range:'$1,280–$2,200', v:'competitive' },
-      { sku:'CPT', name:'Power Tower', rrp:'$349', comp:'Celsius own ~$299 · Bunnings $249 · Cortex $429', range:'$160–$430', v:'ceiling' },
+      { sku:'CLP', name:'Leg Press', rrp:'$1,499', range:'$1,280–$2,200', v:'competitive', comp:[
+        L('Force USA Compact Leg Press $1,469 (same spec)','https://www.gymandfitness.com.au/products/force-usa-compact-leg-press-hack-squat'),
+        L('Bells of Steel $2,199','https://bellsofsteel.au/products/leg-press-hack-squat-set') ]},
+      { sku:'CPT', name:'Power Tower', rrp:'$349', range:'$160–$430', v:'ceiling', comp:[
+        L('Powertrain $249 (Bunnings)','https://www.bunnings.com.au/powertrain-multi-station-home-gym-chin-up-pull-up-tower_p0184275'),
+        L('Cortex PT-105 $429 (Lifespan)','https://www.lifespanfitness.com.au/products/cortex-pt-105-commercial-power-tower') ]},
     ]},
   E: { pre:'Benchmark · 5 of 6', title:'Benches & attachments', sub:'Mostly on market, with two entry benches a touch high.',
     take:'FID bench, Pro FID, preacher curl and lat pulldown are all well-pitched. The Flat Bench and the Standard bench-with-uprights sit above the value band.',
     rows:[
-      { sku:'CFB', name:'Flat Bench', rrp:'$169.99', comp:'Everfit $142.99 · Muscle Motion $99', range:'$99–$143', v:'ceiling' },
-      { sku:'CFID', name:'FID Bench', rrp:'$249.99', comp:'Cortex BN-9 $279 · 247 FID $188', range:'$188–$279', v:'competitive' },
-      { sku:'CPF', name:'Pro FID Bench', rrp:'$499', comp:'Armortech $399 · FU $629 · Trojan $730', range:'$399–$730', v:'competitive' },
-      { sku:'CSB', name:'Standard Bench (w/ uprights)', rrp:'$349.99', comp:'Everfit station $167 · commercial $765+', range:'$167–$765', v:'ceiling' },
-      { sku:'CPC', name:'Preacher Curl', rrp:'$119', comp:'Kinta $195 · Body Solid $199', range:'$195–$199', v:'competitive' },
-      { sku:'CRL', name:'Bench Lat Pulldown', rrp:'$159', comp:'GymKing $229 · Dshop $70', range:'$70–$229', v:'competitive' },
+      { sku:'CFB', name:'Flat Bench', rrp:'$169.99', range:'$99–$143', v:'ceiling', comp:[
+        L('Everfit $142.99','https://everfit.com.au/products/everfit-adjustable-weight-bench'),
+        L('Muscle Motion $99 (Gym Direct)','https://gymdirect.com.au/collections/flat-benches') ]},
+      { sku:'CFID', name:'FID Bench', rrp:'$249.99', range:'$188–$279', v:'competitive', comp:[
+        L('Cortex BN-9 $279 (Lifespan)','https://www.lifespanfitness.com.au/products/bn-9-fid-adjustable-exercise-bench'),
+        L('247 FID $188','https://247gymequipment.com.au/products/adjustable-fid-weight-bench') ]},
+      { sku:'CPF', name:'Pro FID Bench', rrp:'$499', range:'$399–$730', v:'competitive', comp:[
+        L('Armortech FID-379 $399 (Flex)','https://flexequipment.com.au/products/armortech-fid-379-adjustable-weight-bench-with-preacher-curl-and-leg-extension'),
+        L('Force USA $629','https://www.gymandfitness.com.au/products/force-usa-fid-bench-with-arm-and-leg-developer'),
+        L('Trojan $730','https://www.trojanfitness.com.au/products/exercise-bench-fid-heavy-duty-leg-curl-developer-copy') ]},
+      { sku:'CSB', name:'Standard Bench (w/ uprights)', rrp:'$349.99', range:'$167–$765', v:'ceiling', comp:[
+        L('Everfit station $167','https://everfit.com.au/products/everfit-multi-station-weight-bench-press-weights-equipment-fitness-home-gym-red'),
+        L('Commercial press $765 (Fitness Hero)','https://www.fitness-hero.com.au/collections/bench-press') ]},
+      { sku:'CPC', name:'Preacher Curl', rrp:'$119', range:'$195–$199', v:'competitive', comp:[
+        L('Kinta $195','https://kintafitness.com.au/product/preacher-curl-bench-attachment/'),
+        L('Body Solid $199 (Fitness Masters)','https://fitnessmasters.com.au/product/body-solid-preacher-curl-bench-attachment/') ]},
+      { sku:'CRL', name:'Bench Lat Pulldown', rrp:'$159', range:'$70–$229', v:'competitive', comp:[
+        L('GymKing $229 (Aussie Fitness)','https://www.aussiefitness.com.au/p/gymking-ub-pro-lat-attachment/GK-UBPRO-LAT'),
+        L('Dshop $70','https://dshop.com.au/products/lat-pulldown-bar-for-fitplus-weight-bench-pull-down-only') ]},
     ]},
   F: { pre:'Benchmark · 6 of 6', title:'Storage', sub:'The plate trees are on market; the barbell tree and dumbbell rack are not.',
     take:'The two plate trees hold market pricing. COWS sits ~$100 over a near-identical Force USA unit, and CDR sits above comparable 3-tier dumbbell racks.',
     rows:[
-      { sku:'CUR', name:'Universal Rack', rrp:'$299', comp:'Celsius own $299.99 · Everfit $133 · commercial $790+', range:'$130–$790', v:'competitive' },
-      { sku:'CSWR', name:'Standard Weight Tree', rrp:'$109', comp:'BIG W $109.99 · Bunnings tree $79.95', range:'$80–$110', v:'competitive' },
-      { sku:'COWR', name:'Olympic Weight Tree', rrp:'$129', comp:'Bunnings Bodyworx $135 · Celsius own $119.99', range:'$120–$135', v:'competitive' },
-      { sku:'COWS', name:'Barbell + Plate Tree', rrp:'$399', comp:'FU near-identical $279 · Nike Strength $299', range:'$279–$300', v:'review' },
-      { sku:'CDR', name:'Dumbbell Rack (3-tier)', rrp:'$499', comp:'Muscle Motion $325 · SMAI $459 · Titanium $423', range:'$325–$460', v:'review' },
+      { sku:'CUR', name:'Universal Rack', rrp:'$299', range:'$130–$790', v:'competitive', comp:[
+        L('Everfit $133','https://everfit.com.au/products/everfit-dumbbells-rack-dumbbell-kettlebell-stand-home-gym-storage-200kg-capacity'),
+        L('Commercial $790 (247)','https://247gymequipment.com.au/products/multi-purpose-gym-storage-rack') ]},
+      { sku:'CSWR', name:'Standard Weight Tree', rrp:'$109', range:'$80–$110', v:'competitive', comp:[
+        L('BIG W $109.99','https://www.bigw.com.au/p/9900121015'),
+        L('Bunnings tree $79.95','https://www.bunnings.com.au/weight-plates-storage-rack-weight-tree_p0429832') ]},
+      { sku:'COWR', name:'Olympic Weight Tree', rrp:'$129', range:'$120–$135', v:'competitive', comp:[
+        L('Bodyworx Olympic $135 (Bunnings)','https://www.bunnings.com.au/bodyworx-olympic-weight-plate-tree-rack-w-bar-holder-home-gym-storage-73x113cm_p0966512') ]},
+      { sku:'COWS', name:'Barbell + Plate Tree', rrp:'$399', range:'$279–$300', v:'review', comp:[
+        L('Force USA near-identical $279','https://www.gymandfitness.com.au/products/forceusa-bumper-plate-and-barbell-storage-tree'),
+        L('Nike Strength $299','https://www.gymandfitness.com.au/collections/weight-plate-storage') ]},
+      { sku:'CDR', name:'Dumbbell Rack (3-tier)', rrp:'$499', range:'$325–$460', v:'review', comp:[
+        L('Muscle Motion $325 (Gym Direct)','https://gymdirect.com.au/products/3-tier-dumbbell-rack-150cm'),
+        L('SMAI $459','https://smai.com.au/products/3-tier-dumbbell-rack'),
+        L('Titanium USA $423','https://commercialfitnessequipment.com.au/collections/dumbbell-racks-1') ]},
     ]},
 };
 
@@ -364,7 +415,16 @@ const CategorySlide = ({ n, t, data }) => {
                 <span className={`text-[14px] font-heading font-semibold ${th.text} ml-2`}>{r.name}</span>
               </div>
               <p className={`text-[17px] font-heading font-bold ${th.text} text-right tabular-nums`}>{r.rrp}</p>
-              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{r.comp}</p>
+              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>
+                {r.comp.map((c,ci)=>(
+                  <React.Fragment key={ci}>
+                    {ci>0 && <span className={th.muted}> · </span>}
+                    {c.u
+                      ? <a href={c.u} target="_blank" rel="noopener noreferrer" className="text-brand-accent hover:underline">{c.t}</a>
+                      : <span>{c.t}</span>}
+                  </React.Fragment>
+                ))}
+              </p>
               <p className={`text-[13px] font-heading font-semibold ${th.text} tabular-nums`}>{r.range}</p>
               <div><Badge v={r.v} /></div>
             </div>
@@ -446,7 +506,7 @@ const RecsSlide = ({ n, t }) => {
         ))}
         <div className={`${th.bg3} rounded-lg p-3.5 flex items-start gap-3`}>
           <Pkg size={18} className="text-brand-accent shrink-0 mt-0.5" />
-          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Before quoting:</span> several comparators were captured mid-sale, so gaps narrow against regular RRPs; and Rebel’s own current Celsius prices should be confirmed in-browser. Full sourced pricing sits behind every line in this deck.</p>
+          <p className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={th.text}>Before quoting:</span> several comparators were captured mid-sale, so gaps narrow against regular RRPs; and Rebel’s own current Celsius prices should be confirmed in-browser. Every comparator in this deck links to its live Australian retailer listing.</p>
         </div>
       </div>
     </Slide>

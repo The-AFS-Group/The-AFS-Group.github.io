@@ -1,4 +1,4 @@
-import { closestWarehouse, productCbm, quote, toMatrixState, type Destination, type QuoteResult } from '../lib/freight';
+import { closestWarehouse, installKinds, productCbm, quote, round2, toMatrixState, type Destination, type QuoteResult } from '../lib/freight';
 import { buildDestination, lookupPostcode, scheduleZone, zoneSpread, type PostcodeMatch } from '../lib/zones';
 import { quoteDfe, fuelLevyOn, type DfeResult } from '../lib/dfe';
 import type { DfeRateCard, MatrixState, PostcodesFile, Product, ProductsFile, RateCard, ZoneScheduleFile } from '../lib/types';
@@ -101,12 +101,34 @@ const S = {
   heat: new Set<string>(),
   ppl: new Set<number>(),
   disco: false,
-  install: false,
   q: '',
   sort: 'cat' as 'cat' | 'freight' | 'cbm' | 'name',
   open: new Set<string>(),
   qty: new Map<string, number>(),
+  /** sku → selected add-on ids */
+  addOns: new Map<string, Set<string>>(),
+  /** "sku|addOnId" → amount typed in for add-ons with no rate */
+  addOnAmt: new Map<string, number>(),
 };
+
+/** Per-unit ex GST amount for an add-on on this product, or null when it needs a typed amount. */
+function addOnRate(a: NonNullable<RateCard['addOns']>[number], r: Row): number | null {
+  if (a.perUnit) {
+    const kinds = installKinds(r.p);
+    return kinds.length ? kinds.reduce((t, k) => t + a.perUnit![k], 0) : null;
+  }
+  return a.amount ?? S.addOnAmt.get(`${r.p.sku}|${a.id}`) ?? null;
+}
+
+function addOnLines(r: Row, qty: number) {
+  const sel = S.addOns.get(r.p.sku) ?? new Set<string>();
+  return (card.addOns ?? [])
+    .filter((a) => sel.has(a.id))
+    .map((a) => {
+      const rate = addOnRate(a, r);
+      return { a, rate, amount: rate === null ? null : round2(rate * qty) };
+    });
+}
 
 let match: PostcodeMatch | null = null;
 let dest: Destination | null = null;
@@ -145,7 +167,8 @@ const today = new Date().toISOString().slice(0, 10);
 
 function priceRow(r: Row, qty = 1): { w: QuoteResult; d: DfeResult | null } {
   const lines = [{ id: r.p.sku, product: r.p, qty }];
-  const w = quote(lines, dest, { origin: origin(), service: 'delivery', install: S.install }, card);
+  // Freight only. Install and other add-ons are chosen per product in the breakdown.
+  const w = quote(lines, dest, { origin: origin(), service: 'delivery', install: false }, card);
   const d = carrier() === 'dfe' ? quoteDfe(lines, dest, D.dfe, card.rules, [], today) : null;
   return { w, d };
 }
@@ -214,7 +237,6 @@ function renderBars() {
     el.classList.toggle('on', on);
   });
   $('disco').classList.toggle('on', S.disco);
-  $('install').classList.toggle('on', S.install);
 }
 
 function filtered(): Row[] {
@@ -279,7 +301,36 @@ function detailHtml(r: Row): string {
     notes = w.warnings.map((x) => `<div class="dnote warn">${esc(x)}</div>`).join('');
   }
   const copy = c === 'winnings' && w.ok ? `<button class="copy" data-copy="${esc(r.p.sku)}">Copy quote</button>` : '';
-  return `<div class="detail">${head}<div class="dgrid"><div>${items}</div><div><table class="lines"><tbody>${lines}</tbody></table>${copy}</div></div>${notes}</div>`;
+  return `<div class="detail">${head}<div class="dgrid"><div>${items}</div><div><table class="lines"><tbody>${lines}</tbody></table>${addOnsHtml(r, qty, c === 'winnings' && w.ok ? w : null)}${copy}</div></div>${notes}</div>`;
+}
+
+function addOnsHtml(r: Row, qty: number, w: QuoteResult | null): string {
+  const list = card.addOns ?? [];
+  if (!list.length) return '';
+  const sel = S.addOns.get(r.p.sku) ?? new Set<string>();
+  const buttons = list
+    .map((a) => {
+      const rate = addOnRate(a, r);
+      const na = !!a.perUnit && rate === null;
+      const price = rate !== null ? ` · ${aud(rate)}${qty > 1 ? ' ea' : ''}` : a.perUnit ? '' : ' · enter amount';
+      return `<button class="addon${sel.has(a.id) ? ' on' : ''}" data-addon="${esc(a.id)}" data-sku="${esc(r.p.sku)}" aria-pressed="${sel.has(a.id)}"${na ? ' disabled title="Install is priced for saunas and ice baths only"' : ''}>${sel.has(a.id) ? '✓ ' : '+ '}${esc(a.label)}${price}</button>`;
+    })
+    .join('');
+  const chosen = addOnLines(r, qty);
+  const rows = chosen
+    .map(({ a, rate, amount }) =>
+      rate === null || (!a.perUnit && a.amount == null)
+        ? `<tr><td>${esc(a.label)}<div class="s">${qty} × amount ex GST</div></td><td><input class="amt" type="number" min="0" step="1" inputmode="decimal" aria-label="${esc(a.label)} amount per unit, ex GST" data-amt="${esc(r.p.sku)}|${esc(a.id)}" value="${rate ?? ''}" placeholder="$ ex GST">${amount !== null ? `<div class="s">${aud(amount)}</div>` : ''}</td></tr>`
+        : `<tr><td>${esc(a.label)}<div class="s">${qty} × ${aud(rate)}${a.note ? ` · ${esc(a.note)}` : ''}</div></td><td>${aud(amount!)}</td></tr>`,
+    )
+    .join('');
+  const ex = round2(chosen.reduce((t, x) => t + (x.amount ?? 0), 0));
+  const gst = round2((ex * card.gstPct) / 100);
+  const totals = chosen.length
+    ? `<tr class="t"><td>Add-ons ex GST<div class="s">No fuel levy</div></td><td>${aud(ex)}</td></tr><tr><td>GST · ${pctf(card.gstPct)}</td><td>${aud(gst)}</td></tr><tr class="g"><td>Add-ons inc GST</td><td>${aud(ex + gst)}</td></tr>` +
+      (w ? `<tr class="g"><td>Freight + add-ons inc GST</td><td>${aud(round2(w.incGst + ex + gst))}</td></tr>` : '')
+    : '';
+  return `<div class="addons"><div class="lab">Add-on services · not included in freight</div><div class="addonbtns">${buttons}</div>${chosen.length ? `<table class="lines"><tbody>${rows}${totals}</tbody></table>` : ''}</div>`;
 }
 
 function renderTable() {
@@ -392,13 +443,19 @@ document.addEventListener('click', (e) => {
     return renderAll();
   }
   if (t.closest('#disco')) return (S.disco = !S.disco), renderAll();
-  if (t.closest('#install')) return (S.install = !S.install), renderAll();
+  const ad = t.closest<HTMLElement>('[data-addon]');
+  if (ad) {
+    const sku = ad.dataset.sku!, id = ad.dataset.addon!;
+    const set = S.addOns.get(sku) ?? new Set<string>();
+    set.has(id) ? set.delete(id) : set.add(id);
+    S.addOns.set(sku, set);
+    return renderTable();
+  }
   if (t.closest('#reset')) {
     S.cat.clear();
     S.heat.clear();
     S.ppl.clear();
     S.disco = false;
-    S.install = false;
     S.q = '';
     $<HTMLInputElement>('search').value = '';
     return renderAll();
@@ -416,6 +473,12 @@ document.addEventListener('click', (e) => {
 });
 document.addEventListener('change', (e) => {
   const t = e.target as HTMLInputElement;
+  if (t.dataset.amt) {
+    const v = parseFloat(t.value);
+    Number.isFinite(v) && v >= 0 ? S.addOnAmt.set(t.dataset.amt, v) : S.addOnAmt.delete(t.dataset.amt);
+    renderTable();
+    return;
+  }
   if (t.dataset.qty) {
     S.qty.set(t.dataset.qty, Math.max(1, Math.min(99, parseInt(t.value, 10) || 1)));
     renderTable();
@@ -440,8 +503,9 @@ async function copyQuote(sku: string) {
     `Freight quote · ${card.carrier}`,
     `${qty} × ${r.name} (${sku})`,
     `Deliver to ${dest.postcode} ${dest.locality} ${dest.state}, zone ${dest.zone}${dest.zoneSource === 'estimate' ? ' (estimated)' : ''}, from ${origin()}`,
-    `Last mile ${aud(w.lastMile)}${w.zone?.amount ? ` · zone surcharge ${aud(w.zone.amount)}` : ''}${w.middleMile ? ` · middle mile ${aud(w.middleMile.amount)}` : ''} · fuel levy ${aud(w.fuelLevy.amount)}${w.install.amount ? ` · install ${aud(w.install.amount)}` : ''}`,
-    `Total ${aud(w.exGst)} ex GST · ${aud(w.incGst)} inc GST`,
+    `Last mile ${aud(w.lastMile)}${w.zone?.amount ? ` · zone surcharge ${aud(w.zone.amount)}` : ''}${w.middleMile ? ` · middle mile ${aud(w.middleMile.amount)}` : ''} · fuel levy ${aud(w.fuelLevy.amount)}`,
+    `Freight ${aud(w.exGst)} ex GST · ${aud(w.incGst)} inc GST`,
+    ...addOnLines(r, qty).map(({ a, amount }) => `${a.label}: ${amount === null ? 'amount to confirm' : `${aud(amount)} ex GST`}`),
   ].join('\n');
   let ok = true;
   try {

@@ -216,5 +216,28 @@
       "state": "WA",
       "name": "Kewdale"
     }
+  ],
+  "addOns": [
+    {
+      "id": "install",
+      "label": "Install",
+      "note": "Winnings rate card: sauna $250, ice bath $125 per unit",
+      "perUnit": {
+        "sauna": 250,
+        "iceBath": 125
+      }
+    },
+    {
+      "id": "silicone",
+      "label": "Silicone",
+      "note": "Rate not supplied yet: enter the amount",
+      "amount": null
+    },
+    {
+      "id": "oiling",
+      "label": "Oiling",
+      "note": "Rate not supplied yet: enter the amount",
+      "amount": null
+    }
   ]
 }

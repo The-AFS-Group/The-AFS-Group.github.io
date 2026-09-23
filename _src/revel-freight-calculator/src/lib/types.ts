@@ -93,6 +93,8 @@ export interface RateCard {
     /** 'auto' ships from the closest warehouse, as the website says it does. */
     defaultOrigin: MatrixState | 'auto';
   };
+  /** Optional services added on top of freight, per unit, never included automatically. No fuel levy. */
+  addOns?: { id: string; label: string; note?: string; amount?: number | null; perUnit?: { sauna: number; iceBath: number } }[];
   /** Warehouses stock ships from (revelsaunas.com.au delivery page). */
   warehouses?: { state: MatrixState; name: string }[];
 }

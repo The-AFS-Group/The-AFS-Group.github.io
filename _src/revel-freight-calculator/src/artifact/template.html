@@ -1,0 +1,98 @@
+<title>Revel Freight Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>/*CSS*/</style>
+<header>
+  <div class="brand">
+    <div class="logo"><img src="/*LOGO*/" alt="Revel"></div>
+    <div class="divider"></div>
+    <div>
+      <h1>Freight Calculator · Sales Dashboard</h1>
+      <div class="sub" id="asof"></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="dest">
+    <div class="fieldl">
+      <label class="lab" for="pc">Delivery postcode</label>
+      <input id="pc" inputmode="numeric" autocomplete="postal-code" maxlength="4" placeholder="2250" autofocus>
+    </div>
+    <div class="fieldl">
+      <label class="lab" for="suburb">Suburb</label>
+      <select id="suburb" hidden></select>
+    </div>
+    <div class="place" id="place" aria-live="polite"></div>
+  </div>
+
+  <div class="whbar">
+    <span class="lab">Dispatch from</span>
+    <span class="wh" tabindex="0" data-w="auto">Closest warehouse</span>
+    <span class="wh" tabindex="0" data-w="QLD">Brisbane</span>
+    <span class="wh" tabindex="0" data-w="NSW">Sydney</span>
+    <span class="wh" tabindex="0" data-w="VIC">Melbourne</span>
+    <span class="wh" tabindex="0" data-w="WA">Perth</span>
+    <span class="gap"></span>
+    <span class="lab">Carrier</span>
+    <span class="wh" tabindex="0" data-c="auto">Auto</span>
+    <span class="wh" tabindex="0" data-c="winnings">Winnings</span>
+    <span class="wh" tabindex="0" data-c="dfe">DFE</span>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="controls">
+    <div class="frow">
+      <div class="fgroup"><span class="lab">Category</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="S">Saunas</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="I">Ice Baths</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="C">Contrast Packages</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="H">Heaters</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="R">Chillers</span>
+        <span class="chip" tabindex="0" data-f="cat" data-v="A">Accessories</span>
+      </div>
+      <div class="fgroup"><span class="lab">Heat</span>
+        <span class="chip" tabindex="0" data-f="heat" data-v="I">Infrared</span>
+        <span class="chip" tabindex="0" data-f="heat" data-v="T">Traditional</span>
+        <span class="chip" tabindex="0" data-f="heat" data-v="H">Hybrid</span>
+      </div>
+    </div>
+    <div class="frow">
+      <div class="fgroup"><span class="lab">Persons</span>
+        <span class="chip" tabindex="0" data-f="ppl" data-v="1">1P</span>
+        <span class="chip" tabindex="0" data-f="ppl" data-v="2">2P</span>
+        <span class="chip" tabindex="0" data-f="ppl" data-v="3">3P</span>
+        <span class="chip" tabindex="0" data-f="ppl" data-v="4">4P</span>
+        <span class="chip" tabindex="0" data-f="ppl" data-v="8">8P</span>
+      </div>
+      <div class="fgroup">
+        <span class="chip dim" tabindex="0" id="install">＋ Include install</span>
+        <span class="chip" tabindex="0" id="disco">Show discontinued</span>
+      </div>
+      <div class="fgroup" style="margin-left:auto">
+        <input type="text" id="search" placeholder="Search name or SKU…" aria-label="Search products">
+        <span class="chip" tabindex="0" id="reset">Reset</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="count" id="count"></div>
+  <div class="tablewrap">
+    <table class="main">
+      <thead><tr>
+        <th data-sort="cat">Product · SKU</th>
+        <th data-sort="cbm">Cartons · CBM · size</th>
+        <th data-sort="freight" class="r" id="fhead">Freight</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+  <div class="footer" id="foot"></div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+<script id="data" type="application/json">/*DATA*/</script>
+<script>/*JS*/</script>

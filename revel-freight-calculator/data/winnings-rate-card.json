@@ -1,0 +1,202 @@
+{
+  "carrier": "Winning Services",
+  "source": "Revel Wellness rate card 1.1 (3PL Service Charges, ex GST) + Fuel Levy Announcement August 2026",
+  "updated": "2026-09-23",
+  "gstPct": 10,
+  "cubicFactor": 333.333,
+  "sizeClasses": [
+    {
+      "id": "small",
+      "label": "Small",
+      "maxKg": 43.32,
+      "deliveryMin": 25,
+      "deliveryAdditional": 6,
+      "collectionMin": 10,
+      "collectionAdditional": 10
+    },
+    {
+      "id": "medium",
+      "label": "Medium",
+      "maxKg": 116.66,
+      "deliveryMin": 60,
+      "deliveryAdditional": 15,
+      "collectionMin": 11,
+      "collectionAdditional": 11
+    },
+    {
+      "id": "large",
+      "label": "Large",
+      "maxKg": 666.66,
+      "deliveryMin": 100,
+      "deliveryAdditional": 25,
+      "collectionMin": 20,
+      "collectionAdditional": 20
+    },
+    {
+      "id": "oversized",
+      "label": "Oversized",
+      "maxKg": null,
+      "deliveryMin": 200,
+      "deliveryAdditional": 50,
+      "collectionMin": 21,
+      "collectionAdditional": 21
+    }
+  ],
+  "zones": [
+    {
+      "zone": 1,
+      "surchargePct": 0,
+      "label": "Broader metropolitan area"
+    },
+    {
+      "zone": 2,
+      "surchargePct": 25,
+      "label": "Near regional / country runs"
+    },
+    {
+      "zone": 3,
+      "surchargePct": 50,
+      "label": "Mid regional / country runs"
+    },
+    {
+      "zone": 4,
+      "surchargePct": 100,
+      "label": "Far regional / country runs"
+    },
+    {
+      "zone": 5,
+      "surchargePct": 200,
+      "label": "Remote regional runs"
+    }
+  ],
+  "middleMile": {
+    "NSW": {
+      "VIC": 85,
+      "QLD": 125,
+      "WA": 690,
+      "SA": 320,
+      "NT": 690,
+      "TAS": 690
+    },
+    "VIC": {
+      "NSW": 85,
+      "QLD": 210,
+      "WA": 690,
+      "SA": 125,
+      "NT": 690,
+      "TAS": 690
+    },
+    "QLD": {
+      "NSW": 125,
+      "VIC": 210,
+      "WA": 690,
+      "SA": 420,
+      "NT": 690,
+      "TAS": 690
+    },
+    "WA": {
+      "NSW": 690,
+      "VIC": 690,
+      "QLD": 690,
+      "SA": 300,
+      "NT": 690,
+      "TAS": 690
+    },
+    "SA": {
+      "NSW": 320,
+      "VIC": 125,
+      "QLD": 420,
+      "WA": 420,
+      "NT": 470,
+      "TAS": 470
+    },
+    "NT": {
+      "NSW": 690,
+      "VIC": 690,
+      "QLD": 690,
+      "WA": 450,
+      "SA": 350,
+      "TAS": 480
+    },
+    "TAS": {
+      "NSW": 690,
+      "VIC": 690,
+      "QLD": 480,
+      "WA": 480,
+      "SA": 470,
+      "NT": 470
+    }
+  },
+  "fuelLevy": {
+    "pct": 4,
+    "period": "August 2026",
+    "status": "Indicative, final figure confirmed at month end",
+    "basePrice": 1.9,
+    "averagePrice": 2.44,
+    "fuelSharePct": 14
+  },
+  "install": {
+    "sauna": 250,
+    "iceBath": 125
+  },
+  "futileDeliveryPct": 75,
+  "storagePerM3PerDay": 1.05,
+  "rules": {
+    "chargeBasis": "carton",
+    "sizeBasis": "volumetric",
+    "cbmSource": "master",
+    "defaultOrigin": "NSW"
+  },
+  "otherCharges": [
+    {
+      "item": "Reweigh charge",
+      "price": "$20.00",
+      "notes": "Per item, when weight or dimensions entered on the system are wrong"
+    },
+    {
+      "item": "Futile delivery",
+      "price": "75% of delivery charge",
+      "notes": "No charge if the fault is Winning's"
+    },
+    {
+      "item": "Storage",
+      "price": "$1.05 per m\u00b3",
+      "notes": "Per day"
+    },
+    {
+      "item": "Container destuff 20'",
+      "price": "$350.00",
+      "notes": "Per container, palletised or loose"
+    },
+    {
+      "item": "Container destuff 40'",
+      "price": "$650.00",
+      "notes": "Per container, palletised or loose"
+    },
+    {
+      "item": "Handling: receiving, picking, dispatch",
+      "price": "$0.00",
+      "notes": "Complimentary with storage"
+    },
+    {
+      "item": "Ad hoc labour with MHE",
+      "price": "$80.00",
+      "notes": "Per hour"
+    },
+    {
+      "item": "Ad hoc labour, one team member",
+      "price": "$45.00",
+      "notes": "Per hour"
+    },
+    {
+      "item": "Removal of old item",
+      "price": "TBQ",
+      "notes": "Per item"
+    },
+    {
+      "item": "Assembly / installation beyond the install charges",
+      "price": "TBQ",
+      "notes": ""
+    }
+  ]
+}

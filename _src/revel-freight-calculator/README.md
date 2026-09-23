@@ -45,9 +45,20 @@ Settings on the **Rates & rules** tab:
   suburb's zone comes from its ABS Remoteness Area (Major Cities 1, Inner
   Regional 2, Outer Regional 3, Remote 4, Very Remote 5), with Greater Hobart
   and Greater Darwin set to 1. Any quote can override the zone.
-- **Default dispatch state is NSW.** Change it in Rates & rules.
+- **Dispatch is the closest warehouse**, as the website says: NSW Kemps Creek, VIC, QLD Brisbane, WA Kewdale. SA and TAS ship from VIC, NT from QLD, ACT from NSW. Any quote can pick a warehouse instead.
 - **Each carton is an item.** The rate card's "initial item / additional
   items" rule could also mean one item per product; the setting switches it.
+
+## Direct Freight Express
+
+DFE is used where Winning Services doesn't deliver. **Carrier: Auto** picks DFE
+when the postcode isn't on the Winnings coverage schedule (so it stays on
+Winnings until that schedule is loaded); it can also be forced per quote.
+Every carton is a DFE item. Per item: weight surcharge, oversize (L+W+H ≥ 2.2 m),
+long length; optional tailgate, booking fee, Saturday. The fuel levy is the
+schedule row in force on the quote date (24.50% from 2 Sep 2026, 33.10% from
+7 Oct 2026). **DFE base freight rates have not been supplied yet**, so DFE quotes
+show surcharges and fuel levy only and are labelled as incomplete.
 
 ## Data files (`public/data/`)
 
@@ -55,7 +66,9 @@ Settings on the **Rates & rules** tab:
 |---|---|---|
 | `products.json` | SKU, description, brand, category, lifecycle, RRP, cartons. No cost, wholesale or supplier data. | `npm run import:master-data -- <workbook.xlsx>` |
 | `winnings-rate-card.json` | All rates, fuel levy, install, rules. | Edit by hand, or edit on the Rates tab and download. |
+| `dfe-rate-card.json` | Direct Freight Express: fuel levy schedule by effective date, per-item surcharges, options, all DFE charges. Base freight rates still to come. | Edit the fuel levy on the Rates tab and download, or edit by hand |
 | `winnings-zones.json` | Official postcode → zone schedule. Empty = estimated zones. | `npm run import:zones -- <schedule.xlsx or .csv>` |
+| `website.json` | revelsaunas.com.au catalogue per SKU, used only to check products (title, price, image, link, weight). Never used for pricing. | `npm run import:website` |
 | `postcodes.json` | Postcode → suburbs, state, estimated zone. | `npm run build:postcodes` (downloads the source CSV) |
 
 The site is public. Never commit the raw master data workbook.

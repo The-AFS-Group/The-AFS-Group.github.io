@@ -3,11 +3,11 @@ import { parseMasterData, pickSheetName } from '../lib/masterData';
 import { parseZoneSchedule } from '../lib/zones';
 import { downloadJson, readSpreadsheet, type AppData } from '../lib/store';
 import type { ProductsFile, ZoneScheduleFile } from '../lib/types';
-import { dateLabel, titleCase } from '../lib/format';
+import { aud, dateLabel, titleCase } from '../lib/format';
 
 interface Props {
   data: AppData;
-  setLocal: <K extends 'products' | 'rateCard' | 'zones'>(kind: K, value: AppData[K]['published'] | null) => boolean;
+  setLocal: <K extends 'products' | 'rateCard' | 'zones' | 'dfe'>(kind: K, value: AppData[K]['published'] | null) => boolean;
   onToast: (msg: string) => void;
 }
 
@@ -129,6 +129,33 @@ export default function DataTab({ data, setLocal, onToast }: Props) {
         return true;
       });
   }, [products, issueFilter]);
+
+  const site = useMemo(() => {
+    const w = data.website;
+    if (!w) return null;
+    const bySku = new Map(products.products.map((p) => [p.sku.toUpperCase(), p]));
+    const rows = Object.entries(w.products);
+    const missing = rows
+      .filter(([sku]) => !bySku.has(sku))
+      .map(([sku, v]) => {
+        const near = products.products.find((p) => {
+          const m = p.sku.toUpperCase();
+          return m !== sku && (sku.startsWith(m) || m.startsWith(sku)) && Math.abs(m.length - sku.length) <= 2;
+        });
+        return { sku, v, near: near?.sku };
+      });
+    const noCartons = rows.filter(([sku]) => bySku.get(sku) && bySku.get(sku)!.status !== 'ok').map(([sku, v]) => ({ sku, v }));
+    const zeroWeight = rows.filter(([, v]) => v.grams === 0).map(([sku, v]) => ({ sku, v }));
+    const weightGap = rows
+      .map(([sku, v]) => {
+        const p = bySku.get(sku);
+        const kg = p ? p.cartons.reduce((t, c) => t + c.weightKg, 0) : 0;
+        return { sku, v, kg, siteKg: v.grams / 1000 };
+      })
+      .filter((x) => x.kg > 0 && x.siteKg > 0 && Math.abs(x.kg - x.siteKg) / Math.max(x.kg, x.siteKg) > 0.25);
+    return { fetchedAt: w.fetchedAt, total: rows.length, missing, noCartons, zeroWeight, weightGap };
+  }, [data.website, products]);
+  const [siteFilter, setSiteFilter] = useState<'missing' | 'noCartons' | 'zeroWeight' | 'weightGap'>('missing');
 
   const counts = {
     cbm: products.products.filter((p) => p.issues.some((i) => i.startsWith('Carton'))).length,
@@ -305,6 +332,79 @@ export default function DataTab({ data, setLocal, onToast }: Props) {
           </p>
         </div>
       </section>
+
+
+      {site && (
+        <section className="card">
+          <div className="card-head">
+            <h2>Website check · revelsaunas.com.au</h2>
+            <span className="small muted">
+              {site.total} SKUs on the site, read {dateLabel(site.fetchedAt)}
+            </span>
+          </div>
+          <div className="filters" style={{ borderBottom: '1px solid var(--line)' }}>
+            <div className="chips">
+              {(
+                [
+                  ['missing', `Not in master data (${site.missing.length})`],
+                  ['noCartons', `No carton data (${site.noCartons.length})`],
+                  ['zeroWeight', `0 kg on the website (${site.zeroWeight.length})`],
+                  ['weightGap', `Weight differs from master data (${site.weightGap.length})`],
+                ] as const
+              ).map(([id, label]) => (
+                <button key={id} className="chip" aria-pressed={siteFilter === id} onClick={() => setSiteFilter(id)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <p className="small muted" style={{ margin: 0, padding: '10px 18px' }}>
+            {siteFilter === 'missing' && 'Sold on the website but not in master data, so the calculator cannot price them. Add them to the workbook and re-import.'}
+            {siteFilter === 'noCartons' && 'Sold on the website, in master data, but with no carton dimensions.'}
+            {siteFilter === 'zeroWeight' && 'No shipping weight is entered on the website for these products.'}
+            {siteFilter === 'weightGap' && 'Website shipping weight vs total carton weight in master data differ by more than 25%. One of them is wrong.'}
+          </p>
+          <div className="table-wrap" style={{ maxHeight: 460 }}>
+            <table className="grid">
+              <thead>
+                <tr>
+                  <th>Website product</th>
+                  <th className="r">Price</th>
+                  <th>{siteFilter === 'weightGap' ? 'Weight: website / master data' : siteFilter === 'missing' ? 'Note' : 'Website weight'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {(site[siteFilter] as { sku: string; v: { title: string; variant: string; url: string; price: number; grams: number }; near?: string; kg?: number; siteKg?: number }[]).map((x) => (
+                  <tr key={x.sku}>
+                    <td>
+                      <div className="pname">
+                        <a className="weblink" style={{ marginLeft: 0 }} href={x.v.url} target="_blank" rel="noopener">
+                          {x.v.title} ↗
+                        </a>
+                      </div>
+                      <div className="psku">
+                        {x.sku}
+                        {x.v.variant ? ` · ${x.v.variant}` : ''}
+                      </div>
+                    </td>
+                    <td className="r num">{aud(x.v.price)}</td>
+                    <td className="small">
+                      {siteFilter === 'weightGap'
+                        ? `${x.siteKg} kg / ${x.kg?.toFixed(1)} kg`
+                        : siteFilter === 'missing'
+                          ? x.near
+                            ? `Probable SKU mismatch with master data ${x.near}`
+                            : 'Not in master data'
+                          : `${x.v.grams / 1000} kg`}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {!(site[siteFilter] as unknown[]).length && <div className="empty">Nothing to fix here.</div>}
+          </div>
+        </section>
+      )}
 
       <section className="card">
         <div className="card-head">

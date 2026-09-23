@@ -13,14 +13,20 @@ interface Props {
   onLocality: (v: string) => void;
   manualZone: number | null;
   onManualZone: (z: number | null) => void;
+  originChoice: MatrixState | 'auto';
+  /** The warehouse actually used (resolved from 'auto'). */
   origin: MatrixState;
-  onOrigin: (o: MatrixState) => void;
+  onOrigin: (o: MatrixState | 'auto') => void;
   service: Service;
   onService: (s: Service) => void;
   install: boolean;
   onInstall: (v: boolean) => void;
   card: RateCard;
   schedule: ZoneScheduleFile;
+  carrierChoice: 'auto' | 'winnings' | 'dfe';
+  onCarrier: (c: 'auto' | 'winnings' | 'dfe') => void;
+  carrier: 'winnings' | 'dfe';
+  carrierReason: string;
 }
 
 export default function DestinationBar(p: Props) {
@@ -30,6 +36,11 @@ export default function DestinationBar(p: Props) {
   const spread = match ? zoneSpread(match, p.schedule) : [];
   const interstate = dest && toMatrixState(dest.state) !== p.origin;
   const delivery = p.service === 'delivery';
+  const whs = card.warehouses ?? [];
+  const whName = (st: MatrixState) => {
+    const w = whs.find((x) => x.state === st);
+    return w ? `${st} · ${w.name}` : st;
+  };
 
   return (
     <section className="card dest" aria-label="Delivery details">
@@ -109,7 +120,9 @@ export default function DestinationBar(p: Props) {
                 )}
               </span>
             ) : (
-              <span className="small muted">Customer collects from the {p.origin} warehouse. No zone, middle-mile or fuel charges.</span>
+              <span className="small muted">
+                Collected from the {whName(p.origin)} warehouse. No zone, middle-mile or fuel charges. Note: the website tells customers pickup isn't offered.
+              </span>
             )}
           </>
         )}
@@ -119,12 +132,32 @@ export default function DestinationBar(p: Props) {
       <div className="opts">
         <label className="field">
           <span className="label">Dispatch from</span>
-          <select className="select" value={p.origin} onChange={(e) => p.onOrigin(e.target.value as MatrixState)}>
-            {MATRIX_STATES.map((s) => (
-              <option key={s} value={s}>
-                {s} warehouse
-              </option>
-            ))}
+          <select className="select" value={p.originChoice} onChange={(e) => p.onOrigin(e.target.value as MatrixState | 'auto')}>
+            <option value="auto">
+              Closest warehouse{p.originChoice === 'auto' ? ` (${whName(p.origin)})` : ''}
+            </option>
+            <optgroup label="Revel warehouses">
+              {whs.map((w) => (
+                <option key={w.state} value={w.state}>
+                  {w.state} · {w.name}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Other states (no warehouse)">
+              {MATRIX_STATES.filter((s) => !whs.some((w) => w.state === s)).map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </optgroup>
+          </select>
+        </label>
+        <label className="field">
+          <span className="label">Carrier</span>
+          <select className="select" value={p.carrierChoice} onChange={(e) => p.onCarrier(e.target.value as 'auto' | 'winnings' | 'dfe')} disabled={!delivery} title={p.carrierReason}>
+            <option value="auto">Auto ({p.carrier === 'dfe' ? 'DFE' : 'Winnings'})</option>
+            <option value="winnings">Winning Services</option>
+            <option value="dfe">Direct Freight Express</option>
           </select>
         </label>
         <div className="field">
@@ -133,7 +166,11 @@ export default function DestinationBar(p: Props) {
             <button aria-pressed={p.service === 'delivery'} onClick={() => p.onService('delivery')}>
               Home delivery
             </button>
-            <button aria-pressed={p.service === 'collection'} onClick={() => p.onService('collection')}>
+            <button
+              aria-pressed={p.service === 'collection'}
+              onClick={() => p.onService('collection')}
+              title="Priced on the Winnings rate card, but the website says Revel doesn't offer warehouse pickup to customers"
+            >
               Warehouse collection
             </button>
           </div>

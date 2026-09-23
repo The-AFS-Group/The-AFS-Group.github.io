@@ -90,8 +90,11 @@ export interface RateCard {
     sizeBasis: 'volumetric' | 'greater';
     /** 'master' uses each carton's CBM column (dimensions only when it is blank); 'dimensions' uses W×D×H. */
     cbmSource: 'master' | 'dimensions';
-    defaultOrigin: MatrixState;
+    /** 'auto' ships from the closest warehouse, as the website says it does. */
+    defaultOrigin: MatrixState | 'auto';
   };
+  /** Warehouses stock ships from (revelsaunas.com.au delivery page). */
+  warehouses?: { state: MatrixState; name: string }[];
 }
 
 /**
@@ -110,4 +113,48 @@ export interface ZoneScheduleFile {
   updated: string | null;
   /** postcode → zone, optionally keyed "postcode|SUBURB" for suburb-specific entries. */
   zones: Record<string, number>;
+}
+
+export interface WebsiteProduct {
+  title: string;
+  variant: string;
+  type: string;
+  price: number;
+  compareAt: number | null;
+  url: string;
+  image: string | null;
+  available: boolean;
+  /** Weight the store uses for its shipping rates. */
+  grams: number;
+}
+
+export interface WebsiteFile {
+  source: string;
+  fetchedAt: string;
+  /** Keyed by upper-case SKU. */
+  products: Record<string, WebsiteProduct>;
+}
+
+export interface DfeRateCard {
+  carrier: string;
+  source: string;
+  updated: string;
+  usedWhen: string;
+  gstPct: number;
+  /** Newest first. The levy in force on a date is the latest row effective on or before it. */
+  fuelLevy: { effective: string; pct: number }[];
+  /** kg per m³ for chargeable weight. */
+  cubicFactor: number;
+  cubicFactorNote?: string;
+  /** Base freight (basic charge / per kg by zone). null until DFE's rate card is supplied. */
+  base: unknown | null;
+  itemSurcharges: {
+    weight: { aboveKg: number; blockKg: number; perBlock: number; maxPerItem: number; notAboveChargeableKg: number; fuel: boolean };
+    oversize: { sumDimsM: number; amount: number; fuel: boolean };
+    longLength: { fromM: number; amount: number }[];
+    longLengthFuel: boolean;
+  };
+  options: { id: string; label: string; amount: number; per: string; fuel: boolean }[];
+  futile: { firstItem: number; perItemAfter: number; fuel: boolean };
+  reference: { group: string; item: string; details: string; fuel: boolean }[];
 }

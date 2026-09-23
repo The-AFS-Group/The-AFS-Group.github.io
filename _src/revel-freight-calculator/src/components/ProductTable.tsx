@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { productCbm, quote, type Destination, type QuoteOptions, type QuoteResult } from '../lib/freight';
-import type { Product, RateCard, SizeClassId } from '../lib/types';
+import type { Product, RateCard, SizeClassId, WebsiteFile } from '../lib/types';
 import { aud, cbm as fmtCbm, titleCase } from '../lib/format';
 import { loadPrefs, savePrefs } from '../lib/store';
 
@@ -11,6 +11,9 @@ interface Props {
   card: RateCard;
   inQuote: Set<string>;
   onAdd: (p: Product) => void;
+  website: WebsiteFile | null;
+  carrier: 'winnings' | 'dfe';
+  dfeReady: boolean;
 }
 
 type SortKey = 'name' | 'category' | 'cbm' | 'freight';
@@ -36,7 +39,9 @@ export function SizeBadges({ result, card }: { result: QuoteResult | null; card:
   );
 }
 
-export default function ProductTable({ products, dest, opts, card, inQuote, onAdd }: Props) {
+export default function ProductTable({ products, dest, opts, card, inQuote, onAdd, website, carrier, dfeReady }: Props) {
+  const web = (p: Product) => website?.products[p.sku.toUpperCase()];
+  const [onSite, setOnSite] = useState<'' | 'yes' | 'no'>('');
   const [q, setQ] = useState('');
   const [brand, setBrand] = useState('');
   const [category, setCategory] = useState('');
@@ -74,6 +79,7 @@ export default function ProductTable({ products, dest, opts, card, inQuote, onAd
       (!brand || p.brand === brand) &&
       (!category || p.category === category) &&
       (!lifecycles.length || lifecycles.includes(p.lifecycle)) &&
+      (!onSite || (onSite === 'yes') === !!web(p)) &&
       (!needle || `${p.sku} ${p.name} ${p.category} ${p.subCategory}`.toLowerCase().includes(needle)),
   );
   const hiddenUnpriced = base.filter((p) => p.status !== 'ok').length;
@@ -147,6 +153,16 @@ export default function ProductTable({ products, dest, opts, card, inQuote, onAd
             ))}
           </select>
         </label>
+        {website && (
+          <label className="field">
+            <span className="label">Website</span>
+            <select className="select" value={onSite} onChange={(e) => setOnSite(e.target.value as '' | 'yes' | 'no')}>
+              <option value="">All products</option>
+              <option value="yes">On revelsaunas.com.au</option>
+              <option value="no">Not on the website</option>
+            </select>
+          </label>
+        )}
         <div className="field">
           <span className="label">Lifecycle</span>
           <div className="chips">
@@ -188,6 +204,7 @@ export default function ProductTable({ products, dest, opts, card, inQuote, onAd
           <tbody>
             {rows.slice(0, limit).map((p) => {
               const r = priced.get(p.sku) ?? null;
+              const w = web(p);
               const added = inQuote.has(p.sku);
               const ok = p.status === 'ok';
               return (
@@ -204,10 +221,20 @@ export default function ProductTable({ products, dest, opts, card, inQuote, onAd
                   }}
                 >
                   <td>
-                    <div className="pname">{p.name}</div>
-                    <div className="psku">
-                      {p.sku}
-                      {p.lifecycle !== 'Current' && <span className="tag" style={{ marginLeft: 6 }}>{p.lifecycle}</span>}
+                    <div className="pcell">
+                      {website && (w?.image ? <img className="thumb" src={w.image} alt="" loading="lazy" /> : <span className="thumb" aria-hidden />)}
+                      <div style={{ minWidth: 0 }}>
+                        <div className="pname">{p.name}</div>
+                        <div className="psku">
+                          {p.sku}
+                          {p.lifecycle !== 'Current' && <span className="tag" style={{ marginLeft: 6 }}>{p.lifecycle}</span>}
+                          {w && (
+                            <a className="weblink" href={w.url} target="_blank" rel="noopener" onClick={(e) => e.stopPropagation()} title="Open on revelsaunas.com.au">
+                              {aud(w.price)} on site ↗
+                            </a>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </td>
                   <td className="hide-sm muted">{titleCase(p.category)}</td>
@@ -219,6 +246,8 @@ export default function ProductTable({ products, dest, opts, card, inQuote, onAd
                   <td className="r nowrap">
                     {!ok ? (
                       <span className="faint">–</span>
+                    ) : carrier === 'dfe' && !dfeReady ? (
+                      <span className="faint small" title="Send DFE's base freight rates to price DFE deliveries">DFE base rates needed</span>
                     ) : !canPrice ? (
                       <span className="faint small">Enter postcode</span>
                     ) : r?.ok ? (

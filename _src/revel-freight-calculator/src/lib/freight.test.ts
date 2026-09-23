@@ -177,3 +177,36 @@ test('zone schedule parser: single postcodes, ranges, suburb rows and "Zone 2" t
   assert.equal(buildDestination(m, 'Gosford', { source: null, updated: null, zones: {} }, null).zoneSource, 'estimate');
   assert.equal(buildDestination(m, 'Gosford', schedule, 5).zone, 5);
 });
+
+test('closest warehouse: own state, else cheapest middle mile, ACT from NSW', async () => {
+  const { closestWarehouse } = await import('./freight.ts');
+  const c = card();
+  assert.deepEqual(
+    (['NSW', 'VIC', 'QLD', 'WA', 'ACT', 'SA', 'TAS', 'NT'] as const).map((s) => closestWarehouse(s, c)),
+    ['NSW', 'VIC', 'QLD', 'WA', 'NSW', 'VIC', 'VIC', 'QLD'],
+  );
+});
+
+test('DFE: fuel levy by date and per-item surcharges', async () => {
+  const { quoteDfe, fuelLevyOn } = await import('./dfe.ts');
+  const dfe = JSON.parse(readFileSync(new URL('../../public/data/dfe-rate-card.json', import.meta.url), 'utf8'));
+  assert.equal(fuelLevyOn(dfe, '2026-09-23').current.pct, 24.5);
+  assert.equal(fuelLevyOn(dfe, '2026-09-23').next?.pct, 33.1);
+  assert.equal(fuelLevyOn(dfe, '2026-10-07').current.pct, 33.1);
+  assert.equal(fuelLevyOn(dfe, '2026-08-20').current.pct, 22.7);
+
+  const box = (w: number, d: number, h: number, kg: number): Carton => ({ code: 'B', widthCm: w, depthCm: d, heightCm: h, weightKg: kg, cbm: 0 });
+  // 220 × 150 × 20 cm, 114 kg: cubic 0.66 m³ × 250 = 165 kg chargeable → 5 blocks capped at $35;
+  // L+W+H 3.9 m → oversize $8; longest 2.2 m → long length $18.
+  const panel = product([box(220, 150, 20, 114)], 'SAUNA');
+  const r = quoteDfe([line(panel)], dest('NSW'), dfe, baseCard.rules, [], '2026-09-23');
+  assert.deepEqual([r.items[0].weight, r.items[0].oversize, r.items[0].longLength], [35, 8, 18]);
+  assert.equal(r.fuelLevy.amount, 14.95); // 24.5% of $61
+  assert.equal(r.complete, false);
+  // Above 340 kg chargeable: no weight surcharge. Small light box: nothing.
+  const heavy = quoteDfe([line(product([box(150, 100, 100, 50)]))], dest('NSW'), dfe, baseCard.rules, [], '2026-09-23');
+  assert.equal(heavy.items[0].weight, 0);
+  const small = quoteDfe([line(product([box(30, 30, 30, 5)]))], dest('NSW'), dfe, baseCard.rules, ['tailgate'], '2026-09-23');
+  assert.deepEqual([small.items[0].weight, small.items[0].oversize, small.items[0].longLength], [0, 0, 0]);
+  assert.equal(small.exGst, 56.03); // tailgate $45 + 24.5% levy
+});

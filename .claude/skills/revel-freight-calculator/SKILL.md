@@ -49,11 +49,18 @@ npm run import:zones -- "/path/to/schedule.xlsx"
 Needs Postcode + Zone columns (optional Suburb; ranges like 2000-2234 work).
 Once loaded, those postcodes stop using the ABS-remoteness estimate.
 
-**Another carrier (DFE etc.)**: not supported yet. The engine in
-`src/lib/freight.ts` is Winnings-specific. Add a second rate card file and a
-second calculator function rather than bending the Winnings one, and show the
-carriers side by side in the quote panel. Confirm the structure with the user
-first.
+**DFE** (`dfe-rate-card.json`, engine `src/lib/dfe.ts`): used outside
+Winnings coverage. New monthly fuel levy → add a `fuelLevy` row
+(`effective` ISO date, `pct`); keep older rows. When DFE's base rate card
+arrives, give it a `base` structure matching what DFE supplies (usually
+postcode → zone plus basic charge, per-kg and minimum per zone), price it in
+`quoteDfe` (fuel levy applies to base freight), set `complete` from it, and
+confirm the cubic conversion (currently an assumed 250 kg/m³). Load the
+destination surcharge suburb list if supplied.
+
+**Website catalogue refresh** (new products or prices on revelsaunas.com.au):
+`npm run import:website`. Used only to check products, never for pricing: all charges come from the uploaded rate cards. The Data tab then lists website SKUs missing from
+master data, 0 kg website weights and weight mismatches.
 
 **Postcode list refresh** (rare): `npm run build:postcodes`.
 

@@ -1,6 +1,7 @@
 import { useState, type Dispatch, type SetStateAction } from 'react';
 import type { Destination, QuoteLine, QuoteOptions, QuoteResult } from '../lib/freight';
-import type { Product, RateCard } from '../lib/types';
+import type { DfeRateCard, Product, RateCard, WebsiteFile } from '../lib/types';
+import type { DfeResult } from '../lib/dfe';
 import { aud, cbm as fmtCbm, kg as fmtKg, pct } from '../lib/format';
 
 interface Props {
@@ -10,6 +11,12 @@ interface Props {
   dest: Destination | null;
   opts: QuoteOptions;
   card: RateCard;
+  website: WebsiteFile | null;
+  carrier: 'winnings' | 'dfe';
+  dfe: DfeRateCard;
+  dfeResult: DfeResult | null;
+  dfeOptions: string[];
+  onDfeOptions: (ids: string[]) => void;
   onToast: (msg: string) => void;
 }
 
@@ -98,7 +105,11 @@ function CustomItemForm({ onAdd, onCancel }: { onAdd: (p: Product) => void; onCa
   );
 }
 
-export default function QuotePanel({ lines, setLines, result, dest, opts, card, onToast }: Props) {
+export default function QuotePanel({ lines, setLines, result, dest, opts, card, website, carrier, dfe, dfeResult, dfeOptions, onDfeOptions, onToast }: Props) {
+  const isW = carrier === 'winnings';
+  const webOf = (sku: string) => website?.products[sku.toUpperCase()];
+  const webLines = lines.filter((l) => webOf(l.product.sku));
+  const webValue = webLines.reduce((s, l) => s + webOf(l.product.sku)!.price * l.qty, 0);
   const [custom, setCustom] = useState(false);
   const r = result;
   const delivery = opts.service === 'delivery';
@@ -131,7 +142,9 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
         )}
       </div>
 
-      {r?.ok ? (
+      {!isW ? (
+        lines.length > 0 && <DfeHead dfe={dfe} res={dfeResult} />
+      ) : r?.ok ? (
         <div className="total">
           <div className="big num">
             {aud(r.incGst)}
@@ -167,7 +180,14 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
                 <div className="pname" style={{ fontSize: 13 }}>
                   {l.product.name}
                 </div>
-                <div className="psku">{l.product.sku.startsWith('CUSTOM-') ? 'Custom item' : l.product.sku}</div>
+                <div className="psku">
+                  {l.product.sku.startsWith('CUSTOM-') ? 'Custom item' : l.product.sku}
+                  {webOf(l.product.sku) && (
+                    <a className="weblink" href={webOf(l.product.sku)!.url} target="_blank" rel="noopener">
+                      {aud(webOf(l.product.sku)!.price)} ↗
+                    </a>
+                  )}
+                </div>
               </div>
               <span className="stepper">
                 <button aria-label="Decrease quantity" onClick={() => setQty(l.id, l.qty - 1)}>
@@ -202,7 +222,8 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
         </div>
       )}
 
-      {r?.ok && (
+      {!isW && dfeResult && lines.length > 0 && <DfeBreakdown dfe={dfe} res={dfeResult} options={dfeOptions} onOptions={onDfeOptions} />}
+      {isW && r?.ok && (
         <>
           <table className="breakdown">
             <tbody>
@@ -304,6 +325,15 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
               </tbody>
             </table>
           </details>
+          {webValue > 0 && (
+            <div className="small" style={{ padding: '0 18px 10px' }}>
+              <span className="muted">Website value {webLines.length < lines.length ? `(${webLines.length} of ${lines.length} lines) ` : ''}</span>
+              <b className="num">{aud(webValue)}</b>
+              <span className="muted"> inc GST · freight cost is </span>
+              <b className="num">{((r.incGst / webValue) * 100).toFixed(1)}%</b>
+              <span className="muted"> of it</span>
+            </div>
+          )}
           {delivery && (
             <div className="small faint" style={{ padding: '0 18px 12px' }}>
               Futile delivery: {pct(card.futileDeliveryPct)} of the delivery charge ({aud(((r.lastMile + (r.zone?.amount ?? 0)) * card.futileDeliveryPct) / 100)} ex GST) unless Winnings is at fault.
@@ -312,7 +342,7 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
         </>
       )}
 
-      {r && (r.warnings.length > 0 || r.excluded.length > 0) && (
+      {isW && r && (r.warnings.length > 0 || r.excluded.length > 0) && (
         <div style={{ padding: '0 18px 14px', display: 'grid', gap: 8 }}>
           {r.warnings.length > 0 && (
             <div className="note warn">
@@ -333,7 +363,7 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
         </div>
       )}
 
-      {r?.ok && (
+      {isW && r?.ok && (
         <div className="quote-foot">
           <button className="btn primary" onClick={copy}>
             Copy quote
@@ -345,5 +375,117 @@ export default function QuotePanel({ lines, setLines, result, dest, opts, card, 
         </div>
       )}
     </aside>
+  );
+}
+
+function DfeHead({ dfe, res }: { dfe: DfeRateCard; res: DfeResult | null }) {
+  return (
+    <div className="total">
+      <div className="label" style={{ marginBottom: 4 }}>
+        {dfe.carrier}
+      </div>
+      {res?.complete ? (
+        <div className="big num">
+          {aud(res.incGst)}
+          <small>inc GST</small>
+        </div>
+      ) : (
+        <div className="note warn" style={{ display: 'block' }}>
+          <b>Not a full price yet.</b> DFE's base freight rates (basic charge and per-kg by zone) haven't been supplied, so only DFE's surcharges and fuel levy are shown below.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DfeBreakdown({ dfe, res, options, onOptions }: { dfe: DfeRateCard; res: DfeResult; options: string[]; onOptions: (ids: string[]) => void }) {
+  const toggle = (id: string) => onOptions(options.includes(id) ? options.filter((x) => x !== id) : [...options, id]);
+  return (
+    <>
+      <div style={{ padding: '10px 18px', borderBottom: '1px solid var(--line)', display: 'grid', gap: 6 }}>
+        <span className="label">DFE options</span>
+        {dfe.options.map((o) => (
+          <label key={o.id} className="check small">
+            <input type="checkbox" checked={options.includes(o.id)} onChange={() => toggle(o.id)} />
+            {o.label} <span className="faint">{aud(o.amount)} per {o.per}</span>
+          </label>
+        ))}
+      </div>
+      <table className="breakdown">
+        <tbody>
+          <tr>
+            <td>
+              Base freight
+              <div className="faint small">{res.complete ? '' : 'DFE rate card needed'}</div>
+            </td>
+            <td>{res.complete ? '' : '–'}</td>
+          </tr>
+          {res.surcharges.map((s) => (
+            <tr key={s.label}>
+              <td>
+                {s.label}
+                {!s.fuel && <div className="faint small">no fuel levy</div>}
+              </td>
+              <td>{aud(s.amount)}</td>
+            </tr>
+          ))}
+          {!res.surcharges.length && (
+            <tr className="sub">
+              <td colSpan={2}>No DFE item surcharges apply to these cartons.</td>
+            </tr>
+          )}
+          <tr>
+            <td>
+              Fuel levy · {pct(res.fuelLevy.pct)}
+              <div className="faint small">
+                from {res.fuelLevy.effective} on {aud(res.fuelLevy.base)}
+                {res.fuelLevy.next ? ` · ${pct(res.fuelLevy.next.pct)} from ${res.fuelLevy.next.effective}` : ''}
+              </div>
+            </td>
+            <td>{aud(res.fuelLevy.amount)}</td>
+          </tr>
+          <tr className="sum">
+            <td>{res.complete ? 'Total ex GST' : 'Surcharges ex GST'}</td>
+            <td>{aud(res.exGst)}</td>
+          </tr>
+          <tr>
+            <td>GST · {pct(dfe.gstPct)}</td>
+            <td>{aud(res.gst)}</td>
+          </tr>
+          <tr className="grand">
+            <td>{res.complete ? 'Total inc GST' : 'Surcharges inc GST'}</td>
+            <td>{aud(res.incGst)}</td>
+          </tr>
+        </tbody>
+      </table>
+      <details className="more">
+        <summary>{res.items.length} DFE items (every carton)</summary>
+        <table className="items">
+          <tbody>
+            {res.items.map((i, idx) => (
+              <tr key={idx}>
+                <td className="lbl">
+                  {i.label}
+                  <div className="faint">
+                    {fmtKg(i.chargeableKg)} chargeable · longest {i.longestM.toFixed(2)} m · L+W+H {i.sumDimsM.toFixed(2)} m
+                  </div>
+                </td>
+                <td>{aud(i.weight + i.oversize + i.longLength)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </details>
+      <div style={{ padding: '0 18px 14px' }}>
+        <div className="note warn">
+          <ul>
+            {res.warnings.map((w) => (
+              <li key={w}>{w}</li>
+            ))}
+            {res.excluded.length > 0 && <li>Not priced (no carton data): {res.excluded.join(', ')}</li>}
+          </ul>
+        </div>
+      </div>
+    </>
   );
 }

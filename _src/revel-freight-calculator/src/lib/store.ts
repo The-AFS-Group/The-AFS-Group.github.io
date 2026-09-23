@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import type { PostcodesFile, ProductsFile, RateCard, ZoneScheduleFile } from './types';
+import type { DfeRateCard, PostcodesFile, ProductsFile, RateCard, WebsiteFile, ZoneScheduleFile } from './types';
 
 /**
  * Published data lives in public/data/*.json and is the same for everyone.
@@ -8,7 +8,7 @@ import type { PostcodesFile, ProductsFile, RateCard, ZoneScheduleFile } from './
  */
 
 const BASE = import.meta.env.BASE_URL;
-const KEYS = { products: 'rfc.products.v1', rateCard: 'rfc.rateCard.v1', zones: 'rfc.zones.v1', prefs: 'rfc.prefs.v1' } as const;
+const KEYS = { products: 'rfc.products.v1', rateCard: 'rfc.rateCard.v1', zones: 'rfc.zones.v1', dfe: 'rfc.dfe.v1', prefs: 'rfc.prefs.v1' } as const;
 
 export function readLocal<T>(key: string): T | null {
   try {
@@ -45,10 +45,13 @@ export interface AppData {
   products: Dataset<ProductsFile>;
   rateCard: Dataset<RateCard>;
   zones: Dataset<ZoneScheduleFile>;
+  dfe: Dataset<DfeRateCard>;
   postcodes: PostcodesFile;
+  /** revelsaunas.com.au catalogue snapshot; null if the file is missing. */
+  website: WebsiteFile | null;
 }
 
-type Kind = 'products' | 'rateCard' | 'zones';
+type Kind = 'products' | 'rateCard' | 'zones' | 'dfe';
 
 export function useAppData() {
   const [data, setData] = useState<AppData | null>(null);
@@ -60,8 +63,10 @@ export function useAppData() {
       getJson<RateCard>('winnings-rate-card.json'),
       getJson<ZoneScheduleFile>('winnings-zones.json'),
       getJson<PostcodesFile>('postcodes.json'),
+      getJson<WebsiteFile>('website.json').catch(() => null),
+      getJson<DfeRateCard>('dfe-rate-card.json'),
     ])
-      .then(([products, rateCard, zones, postcodes]) => {
+      .then(([products, rateCard, zones, postcodes, website, dfe]) => {
         const ds = <T,>(published: T, key: string): Dataset<T> => {
           const local = readLocal<T>(key);
           return { published, local, active: local ?? published };
@@ -74,7 +79,9 @@ export function useAppData() {
             ? { published: rateCard, local: localCard, active: { ...rateCard, ...localCard, rules: { ...rateCard.rules, ...localCard.rules } } }
             : { published: rateCard, local: null, active: rateCard },
           zones: ds(zones, KEYS.zones),
+          dfe: ds(dfe, KEYS.dfe),
           postcodes,
+          website,
         });
       })
       .catch((e) => setError(String(e?.message || e)));

@@ -1,6 +1,6 @@
 {
   "carrier": "Winning Services",
-  "source": "Revel Wellness rate card 1.1 (3PL Service Charges, ex GST) + Fuel Levy Announcement August 2026",
+  "source": "Revel Wellness rate card 1.1 (3PL Service Charges, ex GST) + Fuel Levy Announcement August 2026; warehouses from revelsaunas.com.au/pages/shipping-delivery",
   "updated": "2026-09-23",
   "gstPct": 10,
   "cubicFactor": 333.333,
@@ -145,7 +145,7 @@
     "chargeBasis": "carton",
     "sizeBasis": "volumetric",
     "cbmSource": "master",
-    "defaultOrigin": "NSW"
+    "defaultOrigin": "auto"
   },
   "otherCharges": [
     {
@@ -197,6 +197,24 @@
       "item": "Assembly / installation beyond the install charges",
       "price": "TBQ",
       "notes": ""
+    }
+  ],
+  "warehouses": [
+    {
+      "state": "NSW",
+      "name": "Kemps Creek"
+    },
+    {
+      "state": "VIC",
+      "name": "Victoria"
+    },
+    {
+      "state": "QLD",
+      "name": "Brisbane"
+    },
+    {
+      "state": "WA",
+      "name": "Kewdale"
     }
   ]
 }

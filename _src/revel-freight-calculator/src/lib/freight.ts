@@ -116,6 +116,33 @@ export function chargeKg(cbm: number, deadKg: number, card: RateCard) {
 
 export const toMatrixState = (s: State): MatrixState => (s === 'ACT' ? 'NSW' : s);
 
+/** Tie-break for states with no warehouse where several warehouses cost the same. */
+const NEAREST: Partial<Record<MatrixState, MatrixState>> = { SA: 'VIC', TAS: 'VIC', NT: 'QLD' };
+
+/**
+ * The website says stock ships from the closest warehouse: the destination
+ * state's own warehouse when there is one, otherwise the warehouse with the
+ * cheapest middle mile.
+ */
+export function closestWarehouse(dest: State | null, card: RateCard): MatrixState {
+  const whs = card.warehouses?.map((w) => w.state) ?? [];
+  const fallback = card.rules.defaultOrigin === 'auto' ? 'NSW' : card.rules.defaultOrigin;
+  if (!whs.length) return fallback;
+  if (!dest) return whs[0];
+  const to = toMatrixState(dest);
+  if (whs.includes(to)) return to;
+  let best = whs[0];
+  let bestRate = Infinity;
+  for (const w of whs) {
+    const r = card.middleMile[w]?.[to] ?? Infinity;
+    if (r < bestRate || (r === bestRate && NEAREST[to] === w)) {
+      best = w;
+      bestRate = r;
+    }
+  }
+  return best;
+}
+
 export function installKinds(p: Product): ('sauna' | 'iceBath')[] {
   const c = p.category;
   if (c === 'SAUNA') return ['sauna'];

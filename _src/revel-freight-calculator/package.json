@@ -10,7 +10,8 @@
     "test": "tsx --test src/lib/*.test.ts",
     "import:master-data": "tsx scripts/import-master-data.ts",
     "import:zones": "tsx scripts/import-zones.ts",
-    "build:postcodes": "tsx scripts/build-postcodes.ts"
+    "build:postcodes": "tsx scripts/build-postcodes.ts",
+    "import:website": "tsx scripts/import-website.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

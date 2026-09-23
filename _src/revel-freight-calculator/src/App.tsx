@@ -4,8 +4,9 @@ import ProductTable from './components/ProductTable';
 import QuotePanel from './components/QuotePanel';
 import RatesTab from './components/RatesTab';
 import DataTab from './components/DataTab';
-import { quote, type QuoteLine, type QuoteOptions, type Service } from './lib/freight';
+import { closestWarehouse, quote, type QuoteLine, type QuoteOptions, type Service } from './lib/freight';
 import { buildDestination, lookupPostcode, scheduleZone } from './lib/zones';
+import { quoteDfe } from './lib/dfe';
 import { loadPrefs, savePrefs, useAppData } from './lib/store';
 import { MATRIX_STATES, type MatrixState, type Product } from './lib/types';
 import { aud, pct } from './lib/format';
@@ -18,9 +19,11 @@ export default function App() {
   const [postcode, setPostcode] = useState('');
   const [locality, setLocality] = useState('');
   const [manualZone, setManualZone] = useState<number | null>(null);
-  const [origin, setOrigin] = useState<MatrixState | null>(null);
+  const [origin, setOrigin] = useState<MatrixState | 'auto' | null>(null);
   const [service, setService] = useState<Service>('delivery');
   const [install, setInstall] = useState(false);
+  const [carrierChoice, setCarrierChoice] = useState<'auto' | 'winnings' | 'dfe'>('auto');
+  const [dfeOptions, setDfeOptions] = useState<string[]>([]);
   const [lines, setLines] = useState<QuoteLine[]>([]);
   const [toast, setToast] = useState<string | null>(null);
   const [logoFailed, setLogoFailed] = useState(false);
@@ -31,8 +34,8 @@ export default function App() {
 
   useEffect(() => {
     if (!card || origin) return;
-    const saved = loadPrefs().origin as MatrixState | undefined;
-    setOrigin(saved && (MATRIX_STATES as readonly string[]).includes(saved) ? saved : card.rules.defaultOrigin);
+    const saved = loadPrefs().origin as MatrixState | 'auto' | undefined;
+    setOrigin(saved && (saved === 'auto' || (MATRIX_STATES as readonly string[]).includes(saved)) ? saved : card.rules.defaultOrigin);
   }, [card, origin]);
 
   useEffect(() => {
@@ -77,7 +80,26 @@ export default function App() {
     [match, data, locality, defaultLocality, manualZone],
   );
 
-  const opts: QuoteOptions = { origin: origin ?? 'NSW', service, install };
+  const effectiveOrigin: MatrixState = !card ? 'NSW' : origin === 'auto' || !origin ? closestWarehouse(dest?.state ?? null, card) : origin;
+  const opts: QuoteOptions = { origin: effectiveOrigin, service, install };
+
+  // DFE is used where Winnings doesn't deliver. Coverage is only known once the Winnings schedule is loaded.
+  const scheduleLoaded = !!data && Object.keys(data.zones.active.zones).length > 0;
+  const inWinnings = !dest || !scheduleLoaded || scheduleZone(data!.zones.active, dest.postcode, dest.locality) !== null;
+  const carrier: 'winnings' | 'dfe' = service === 'collection' ? 'winnings' : carrierChoice === 'auto' ? (inWinnings ? 'winnings' : 'dfe') : carrierChoice;
+  const carrierReason =
+    carrierChoice !== 'auto'
+      ? 'set manually'
+      : !scheduleLoaded
+        ? 'Winnings coverage schedule not loaded, so every postcode is treated as Winnings'
+        : inWinnings
+          ? 'postcode is on the Winnings coverage schedule'
+          : 'postcode is outside Winnings coverage';
+  const today = new Date().toISOString().slice(0, 10);
+  const dfeResult = useMemo(
+    () => (data && carrier === 'dfe' ? quoteDfe(lines, dest, data.dfe.active, data.rateCard.active.rules, dfeOptions, today) : null),
+    [data, carrier, lines, dest, dfeOptions, today],
+  );
   const result = useMemo(() => (card ? quote(lines, dest, opts, card) : null), [lines, dest, card, opts.origin, opts.service, opts.install]);
 
   if (error) return <div className="loading">Could not load the calculator data: {error}</div>;
@@ -93,12 +115,12 @@ export default function App() {
     setManualZone(null);
   };
 
-  const changeOrigin = (o: MatrixState) => {
+  const changeOrigin = (o: MatrixState | 'auto') => {
     setOrigin(o);
     savePrefs({ ...loadPrefs(), origin: o });
   };
 
-  const anyLocal = !!(data.products.local || data.rateCard.local || data.zones.local);
+  const anyLocal = !!(data.products.local || data.rateCard.local || data.zones.local || data.dfe.local);
   const fuel = card.fuelLevy;
 
   return (
@@ -156,7 +178,8 @@ export default function App() {
               }}
               manualZone={manualZone}
               onManualZone={setManualZone}
-              origin={origin}
+              originChoice={origin}
+              origin={effectiveOrigin}
               onOrigin={changeOrigin}
               service={service}
               onService={setService}
@@ -164,10 +187,14 @@ export default function App() {
               onInstall={setInstall}
               card={card}
               schedule={data.zones.active}
+              carrierChoice={carrierChoice}
+              onCarrier={setCarrierChoice}
+              carrier={carrier}
+              carrierReason={carrierReason}
             />
             <div className="calc">
               {/* The list shows freight only; install is added in the quote panel. */}
-              <ProductTable products={products} dest={dest} opts={{ ...opts, install: false }} card={card} inQuote={new Set(lines.map((l) => l.product.sku))} onAdd={addProduct} />
+              <ProductTable products={products} dest={dest} opts={{ ...opts, install: false }} card={card} inQuote={new Set(lines.map((l) => l.product.sku))} onAdd={addProduct} website={data.website} carrier={carrier} dfeReady={!!data.dfe.active.base} />
               <QuotePanel
                 lines={lines}
                 setLines={setLines}
@@ -175,12 +202,18 @@ export default function App() {
                 dest={dest}
                 opts={opts}
                 card={card}
+                website={data.website}
+                carrier={carrier}
+                dfe={data.dfe.active}
+                dfeResult={dfeResult}
+                dfeOptions={dfeOptions}
+                onDfeOptions={setDfeOptions}
                 onToast={setToast}
               />
             </div>
           </>
         )}
-        {tab === 'rates' && <RatesTab rateCard={data.rateCard} onSave={(c) => setLocal('rateCard', c)} onToast={setToast} />}
+        {tab === 'rates' && <RatesTab rateCard={data.rateCard} onSave={(c) => setLocal('rateCard', c)} dfe={data.dfe} onSaveDfe={(c) => setLocal('dfe', c)} onToast={setToast} />}
         {tab === 'data' && <DataTab data={data} setLocal={setLocal} onToast={setToast} />}
       </main>
       {tab === 'calc' && lines.length > 0 && !quoteVisible && (
@@ -189,7 +222,7 @@ export default function App() {
             Quote · {lines.reduce((s, l) => s + l.qty, 0)} unit{lines.reduce((s, l) => s + l.qty, 0) === 1 ? '' : 's'}
             {!result?.ok && <span style={{ opacity: 0.75 }}> · {result?.error ?? 'enter a postcode'}</span>}
           </span>
-          {result?.ok && <b>{aud(result.incGst)}</b>}
+          {carrier === 'winnings' && result?.ok && <b>{aud(result.incGst)}</b>}
         </button>
       )}
       {toast && (

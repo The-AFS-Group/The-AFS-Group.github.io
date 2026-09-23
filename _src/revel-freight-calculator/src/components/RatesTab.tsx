@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 import { fuelLevyFromPrices, round2 } from '../lib/freight';
 import { downloadJson, type Dataset } from '../lib/store';
-import { MATRIX_STATES, type RateCard } from '../lib/types';
-import { aud, dateLabel } from '../lib/format';
+import { MATRIX_STATES, type DfeRateCard, type RateCard } from '../lib/types';
+import { fuelLevyOn } from '../lib/dfe';
+import { aud, dateLabel, pct } from '../lib/format';
 
 interface Props {
   rateCard: Dataset<RateCard>;
   onSave: (card: RateCard | null) => boolean;
+  dfe: Dataset<DfeRateCard>;
+  onSaveDfe: (card: DfeRateCard | null) => boolean;
   onToast: (msg: string) => void;
 }
 
@@ -33,7 +36,7 @@ function Num({ value, onChange, step = 1, width = 84, suffix, ariaLabel }: { val
   );
 }
 
-export default function RatesTab({ rateCard, onSave, onToast }: Props) {
+export default function RatesTab({ rateCard, onSave, dfe, onSaveDfe, onToast }: Props) {
   const active = rateCard.active;
   const [draft, setDraft] = useState<RateCard>(() => structuredClone(active));
   useEffect(() => setDraft(structuredClone(active)), [active]);
@@ -215,6 +218,7 @@ export default function RatesTab({ rateCard, onSave, onToast }: Props) {
               <label className="field">
                 <span className="label">Default dispatch</span>
                 <select className="select" style={{ height: 32 }} value={draft.rules.defaultOrigin} onChange={(e) => upd((d) => void (d.rules.defaultOrigin = e.target.value as RateCard['rules']['defaultOrigin']))}>
+                  <option value="auto">Closest warehouse</option>
                   {MATRIX_STATES.map((s) => (
                     <option key={s}>{s}</option>
                   ))}
@@ -397,12 +401,169 @@ export default function RatesTab({ rateCard, onSave, onToast }: Props) {
             </tbody>
           </table>
           <p className="small muted" style={{ marginBottom: 0 }}>
-            Example: 1.5 m³ from {draft.rules.defaultOrigin} to QLD ={' '}
-            {draft.rules.defaultOrigin === 'QLD' ? 'no middle mile' : aud(1.5 * (draft.middleMile[draft.rules.defaultOrigin]?.QLD ?? 0))}. Storage is{' '}
+            Example: 1.5 m³ from NSW to QLD = {aud(1.5 * (draft.middleMile.NSW?.QLD ?? 0))}. With &ldquo;closest warehouse&rdquo;, stock for a state with its own warehouse (
+            {(draft.warehouses ?? []).map((w) => `${w.state} ${w.name}`).join(', ')}) has no middle mile; SA ships from VIC, TAS from VIC, NT from QLD. Storage is{' '}
             {aud(draft.storagePerM3PerDay)} per m³ per day (not part of a freight quote).
           </p>
         </div>
       </section>
+      <DfeRates dfe={dfe} onSave={onSaveDfe} onToast={onToast} />
     </div>
+  );
+}
+
+function DfeRates({ dfe, onSave, onToast }: { dfe: Dataset<DfeRateCard>; onSave: (c: DfeRateCard | null) => boolean; onToast: (m: string) => void }) {
+  const active = dfe.active;
+  const [rows, setRows] = useState(() => active.fuelLevy.map((r) => ({ ...r })));
+  useEffect(() => setRows(active.fuelLevy.map((r) => ({ ...r }))), [active]);
+  const dirty = JSON.stringify(rows) !== JSON.stringify(active.fuelLevy);
+  const today = new Date().toISOString().slice(0, 10);
+  const { current, next } = fuelLevyOn(active, today);
+  const s = active.itemSurcharges;
+  const save = () => {
+    const clean = rows.filter((r) => /^\d{4}-\d{2}-\d{2}$/.test(r.effective) && Number.isFinite(r.pct)).sort((a, b) => b.effective.localeCompare(a.effective));
+    const ok = onSave({ ...active, fuelLevy: clean, updated: today });
+    onToast(ok ? 'DFE fuel levy saved in this browser' : 'Could not save: browser storage is blocked');
+  };
+  return (
+    <section className="card">
+      <div className="card-head">
+        <h2>Direct Freight Express</h2>
+        <span className="small muted">{active.usedWhen}. {active.source}.</span>
+        <span className="aside toolbar">
+          <button className="btn sm" onClick={() => downloadJson('dfe-rate-card.json', active)}>
+            Download DFE JSON
+          </button>
+          {dfe.local && (
+            <button className="btn sm" onClick={() => (onSave(null), onToast('Back to the published DFE rates'))}>
+              Reset to published
+            </button>
+          )}
+        </span>
+      </div>
+      <div className="card-body stack" style={{ gap: 16 }}>
+        {!active.base && (
+          <div className="note warn">
+            <span>
+              <b>DFE base freight rates not loaded.</b> Send DFE's rate card (basic charge, per-kg rate and minimum by zone or lane, plus the postcode → zone list and the destination surcharge
+              suburb list) to price DFE deliveries in full. Until then the calculator shows DFE surcharges and fuel levy only.
+            </span>
+          </div>
+        )}
+        <div className="two">
+          <div>
+            <div className="label" style={{ marginBottom: 6 }}>
+              Fuel levy · current {pct(current.pct)}
+              {next ? `, ${pct(next.pct)} from ${dateLabel(next.effective)}` : ''}
+            </div>
+            <table className="grid">
+              <thead>
+                <tr>
+                  <th>Effective date</th>
+                  <th className="r">Levy</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r, i) => (
+                  <tr key={i}>
+                    <td>
+                      <input
+                        className="input"
+                        type="date"
+                        style={{ height: 32 }}
+                        aria-label="Effective date"
+                        value={r.effective}
+                        onChange={(e) => setRows(rows.map((x, j) => (j === i ? { ...x, effective: e.target.value } : x)))}
+                      />
+                    </td>
+                    <td className="r">
+                      <Num ariaLabel="DFE fuel levy percent" value={r.pct} width={70} suffix="%" onChange={(v) => setRows(rows.map((x, j) => (j === i ? { ...x, pct: v } : x)))} />
+                    </td>
+                    <td className="r">
+                      <button className="btn icon sm ghost" aria-label="Remove row" onClick={() => setRows(rows.filter((_, j) => j !== i))}>
+                        ✕
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div className="toolbar" style={{ marginTop: 8 }}>
+              <button className="btn sm" onClick={() => setRows([{ effective: today, pct: current.pct }, ...rows])}>
+                + Add month
+              </button>
+              {dirty && (
+                <span className="aside">
+                  <button className="btn sm ghost" onClick={() => setRows(active.fuelLevy.map((r) => ({ ...r })))}>
+                    Discard
+                  </button>
+                  <button className="btn sm primary" onClick={save}>
+                    Save in this browser
+                  </button>
+                </span>
+              )}
+            </div>
+          </div>
+          <div>
+            <div className="label" style={{ marginBottom: 6 }}>
+              Applied per carton
+            </div>
+            <table className="grid">
+              <tbody>
+                <tr>
+                  <td>Weight surcharge</td>
+                  <td className="small">
+                    {aud(s.weight.perBlock)} per {s.weight.blockKg} kg or part above {s.weight.aboveKg} kg, max {aud(s.weight.maxPerItem)}; none above {s.weight.notAboveChargeableKg} kg chargeable
+                  </td>
+                </tr>
+                <tr>
+                  <td>Oversize</td>
+                  <td className="small">
+                    L + W + H ≥ {s.oversize.sumDimsM} m: {aud(s.oversize.amount)}
+                  </td>
+                </tr>
+                <tr>
+                  <td>Long length</td>
+                  <td className="small">{s.longLength.map((t) => `${t.fromM} m+ ${aud(t.amount)}`).join(' · ')}</td>
+                </tr>
+                <tr>
+                  <td>Chargeable weight</td>
+                  <td className="small">
+                    Greater of dead weight and CBM × {active.cubicFactor} kg/m³{active.cubicFactorNote ? ` (${active.cubicFactorNote})` : ''}
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <details className="more" style={{ border: '1px solid var(--line)', borderRadius: 'var(--radius-sm)' }}>
+          <summary>All DFE charges ({active.reference.length})</summary>
+          <div className="table-wrap">
+            <table className="grid">
+              <thead>
+                <tr>
+                  <th>Charge</th>
+                  <th>Details</th>
+                  <th>Fuel levy</th>
+                </tr>
+              </thead>
+              <tbody>
+                {active.reference.map((r) => (
+                  <tr key={r.group + r.item}>
+                    <td>
+                      {r.item}
+                      <div className="faint small">{r.group}</div>
+                    </td>
+                    <td className="small">{r.details}</td>
+                    <td className="small">{r.fuel ? 'Yes' : 'No'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </details>
+      </div>
+    </section>
   );
 }

@@ -308,12 +308,13 @@ function addOnsHtml(r: Row, qty: number, w: QuoteResult | null): string {
   const list = card.addOns ?? [];
   if (!list.length) return '';
   const sel = S.addOns.get(r.p.sku) ?? new Set<string>();
-  const buttons = list
+  const ticks = list
     .map((a) => {
       const rate = addOnRate(a, r);
       const na = !!a.perUnit && rate === null;
-      const price = rate !== null ? ` · ${aud(rate)}${qty > 1 ? ' ea' : ''}` : a.perUnit ? '' : ' · enter amount';
-      return `<button class="addon${sel.has(a.id) ? ' on' : ''}" data-addon="${esc(a.id)}" data-sku="${esc(r.p.sku)}" aria-pressed="${sel.has(a.id)}"${na ? ' disabled title="Install is priced for saunas and ice baths only"' : ''}>${sel.has(a.id) ? '✓ ' : '+ '}${esc(a.label)}${price}</button>`;
+      const id = `ao-${r.p.sku}-${a.id}`;
+      const price = rate !== null ? `${aud(rate)}${qty > 1 ? ' each' : ''}` : a.perUnit ? 'saunas & ice baths only' : 'enter amount';
+      return `<label class="tick${na ? ' na' : ''}" for="${esc(id)}"><input type="checkbox" id="${esc(id)}" data-addon="${esc(a.id)}" data-sku="${esc(r.p.sku)}"${sel.has(a.id) ? ' checked' : ''}${na ? ' disabled' : ''}><span>${esc(a.label)}</span><span class="tp">${price}</span></label>`;
     })
     .join('');
   const chosen = addOnLines(r, qty);
@@ -330,7 +331,7 @@ function addOnsHtml(r: Row, qty: number, w: QuoteResult | null): string {
     ? `<tr class="t"><td>Add-ons ex GST<div class="s">No fuel levy</div></td><td>${aud(ex)}</td></tr><tr><td>GST · ${pctf(card.gstPct)}</td><td>${aud(gst)}</td></tr><tr class="g"><td>Add-ons inc GST</td><td>${aud(ex + gst)}</td></tr>` +
       (w ? `<tr class="g"><td>Freight + add-ons inc GST</td><td>${aud(round2(w.incGst + ex + gst))}</td></tr>` : '')
     : '';
-  return `<div class="addons"><div class="lab">Add-on services · not included in freight</div><div class="addonbtns">${buttons}</div>${chosen.length ? `<table class="lines"><tbody>${rows}${totals}</tbody></table>` : ''}</div>`;
+  return `<div class="addons"><div class="lab">Add-on services · not included in freight</div><div class="ticks">${ticks}</div>${chosen.length ? `<table class="lines"><tbody>${rows}${totals}</tbody></table>` : ''}</div>`;
 }
 
 function renderTable() {
@@ -443,7 +444,7 @@ document.addEventListener('click', (e) => {
     return renderAll();
   }
   if (t.closest('#disco')) return (S.disco = !S.disco), renderAll();
-  const ad = t.closest<HTMLElement>('[data-addon]');
+  const ad = t.closest<HTMLElement>('input[data-addon]');
   if (ad) {
     const sku = ad.dataset.sku!, id = ad.dataset.addon!;
     const set = S.addOns.get(sku) ?? new Set<string>();

@@ -234,6 +234,12 @@
       "amount": null
     },
     {
+      "id": "rubbish",
+      "label": "Rubbish removal",
+      "note": "Winnings rate card: removal of old item TBQ. Enter the amount",
+      "amount": null
+    },
+    {
       "id": "oiling",
       "label": "Oiling",
       "note": "Rate not supplied yet: enter the amount",

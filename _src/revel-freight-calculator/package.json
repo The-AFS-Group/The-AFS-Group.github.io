@@ -12,7 +12,8 @@
     "import:zones": "tsx scripts/import-zones.ts",
     "build:postcodes": "tsx scripts/build-postcodes.ts",
     "import:website": "tsx scripts/import-website.ts",
-    "build:artifact": "tsx scripts/build-artifact.ts"
+    "build:artifact": "tsx scripts/build-artifact.ts",
+    "import:installation": "tsx scripts/import-installation.ts"
   },
   "dependencies": {
     "react": "^19.3.0",

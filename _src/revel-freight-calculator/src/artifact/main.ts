@@ -1,4 +1,4 @@
-import { closestWarehouse, installKinds, productCbm, quote, round2, toMatrixState, type Destination, type QuoteResult } from '../lib/freight';
+import { closestWarehouse, productCbm, quote, round2, toMatrixState, type Destination, type QuoteResult } from '../lib/freight';
 import { buildDestination, lookupPostcode, scheduleZone, zoneSpread, type PostcodeMatch } from '../lib/zones';
 import { quoteDfe, fuelLevyOn, type DfeResult } from '../lib/dfe';
 import type { DfeRateCard, MatrixState, PostcodesFile, Product, ProductsFile, RateCard, ZoneScheduleFile } from '../lib/types';
@@ -10,6 +10,8 @@ import type { DfeRateCard, MatrixState, PostcodesFile, Product, ProductsFile, Ra
  * data; the website catalogue is only used to name and link products.
  */
 
+interface InstallRate { model: string; persons: number | null; install: number | null; rubbish: number | null; oilSilicone: number | null }
+interface Installation { source: string; importedAt: string; saunas: InstallRate[]; iceBath: Omit<InstallRate, 'model' | 'persons'> | null }
 interface WebLite { t: string; v: string; u: string; p: number }
 interface Embedded {
   builtAt: string;
@@ -18,6 +20,7 @@ interface Embedded {
   dfe: DfeRateCard;
   zones: ZoneScheduleFile;
   postcodes: PostcodesFile;
+  installation: Installation;
   website: { fetchedAt: string; products: Record<string, WebLite> } | null;
 }
 
@@ -111,23 +114,57 @@ const S = {
   addOnAmt: new Map<string, number>(),
 };
 
-/** Per-unit ex GST amount for an add-on on this product, or null when it needs a typed amount. */
-function addOnRate(a: NonNullable<RateCard['addOns']>[number], r: Row): number | null {
-  if (a.perUnit) {
-    const kinds = installKinds(r.p);
-    return kinds.length ? kinds.reduce((t, k) => t + a.perUnit![k], 0) : null;
+type AddOnId = 'install' | 'rubbish' | 'oilSilicone';
+const ADDONS: { id: AddOnId; label: string }[] = [
+  { id: 'install', label: 'Install' },
+  { id: 'rubbish', label: 'Rubbish removal' },
+  { id: 'oilSilicone', label: 'Oil & silicone' },
+];
+
+// Sauna model from the product name, else from the SKU family.
+const SKU_MODEL: [RegExp, string][] = [
+  [/^R-FS-PREM/, 'Nova'], [/^R-FS-CABIN/, 'Eclipse'], [/^R-FS-/, 'Aura'], [/^R-FI-/, 'Kora'], [/^R-BFS-/, 'Luna'],
+  [/^R-TR-VAL/, 'Kuusi'], [/^R-TR-PREM/, 'Loom'], [/^R-TR-VIRTA/, 'Virta'], [/^R-TR-CAB/, 'Solaris'], [/^R-TR-/, 'Tampere'],
+  [/^R-BT-CEDAR-2P/, 'Aurora'], [/^R-BT-CEDAR-/, 'Edenview'], [/^R-BT-/, 'Eden'], [/^R-CS-4P/, 'Nordicwave'],
+];
+const MODELS = [...new Set(D.installation.saunas.map((x) => x.model))].sort((a, b) => b.length - a.length);
+
+/** Installer-list rows that price this product: its sauna row and/or the ice bath row. */
+function installParts(r: Row): { label: string; rate: Omit<InstallRate, 'model' | 'persons'> }[] {
+  const parts: { label: string; rate: Omit<InstallRate, 'model' | 'persons'> }[] = [];
+  if (r.cat === 'S' || r.cat === 'C') {
+    const n = r.name.toUpperCase();
+    const outdoorNordic = /^R-CS-CAB/.test(r.p.sku) || /OUTDOOR NORDICWAVE/i.test(r.name);
+    const model = outdoorNordic ? undefined : MODELS.find((m) => new RegExp(`\\b${m.toUpperCase()}\\b`).test(n)) ?? SKU_MODEL.find(([re]) => re.test(r.p.sku))?.[1];
+    if (model) {
+      const range = r.name.match(/(\d+)\s*-\s*(\d+)\s*Person/i);
+      const ppl = range ? Number(range[2]) : r.ppl;
+      const rows = D.installation.saunas.filter((x) => x.model === model);
+      const row = rows.find((x) => x.persons === ppl) ?? (rows.length === 1 && !ppl ? rows[0] : undefined);
+      if (row) parts.push({ label: `${row.model}${row.persons ? ` ${row.persons}P` : ''}`, rate: row });
+    }
   }
-  return a.amount ?? S.addOnAmt.get(`${r.p.sku}|${a.id}`) ?? null;
+  if ((r.cat === 'I' || r.cat === 'C') && D.installation.iceBath) parts.push({ label: 'Ice bath', rate: D.installation.iceBath });
+  return parts;
+}
+
+/** Customer charge per unit from the installer list, or null when the product isn't on it for this service. */
+function addOnRate(id: AddOnId, r: Row): { rate: number | null; basis: string; na: boolean } {
+  const all = installParts(r);
+  const parts = all.filter((p) => p.rate[id] !== null);
+  if (parts.length) return { rate: round2(parts.reduce((t, p) => t + (p.rate[id] ?? 0), 0)), basis: parts.map((p) => `${p.label} ${aud(p.rate[id]!)}`).join(' + '), na: false };
+  // On the list, but the list marks this service N/A for the model.
+  if (all.length) return { rate: null, basis: '', na: true };
+  const typed = S.addOnAmt.get(`${r.p.sku}|${id}`);
+  return { rate: typed ?? null, basis: '', na: false };
 }
 
 function addOnLines(r: Row, qty: number) {
   const sel = S.addOns.get(r.p.sku) ?? new Set<string>();
-  return (card.addOns ?? [])
-    .filter((a) => sel.has(a.id))
-    .map((a) => {
-      const rate = addOnRate(a, r);
-      return { a, rate, amount: rate === null ? null : round2(rate * qty) };
-    });
+  return ADDONS.filter((a) => sel.has(a.id) && !addOnRate(a.id, r).na).map((a) => {
+    const { rate, basis } = addOnRate(a.id, r);
+    return { a, rate, basis, listed: !!basis, amount: rate === null ? null : round2(rate * qty) };
+  });
 }
 
 let match: PostcodeMatch | null = null;
@@ -305,31 +342,26 @@ function detailHtml(r: Row): string {
 }
 
 function addOnsHtml(r: Row, qty: number, w: QuoteResult | null): string {
-  const list = card.addOns ?? [];
-  if (!list.length) return '';
   const sel = S.addOns.get(r.p.sku) ?? new Set<string>();
-  const ticks = list
-    .map((a) => {
-      const rate = addOnRate(a, r);
-      const na = !!a.perUnit && rate === null;
-      const id = `ao-${r.p.sku}-${a.id}`;
-      const price = rate !== null ? `${aud(rate)}${qty > 1 ? ' each' : ''}` : a.perUnit ? 'saunas & ice baths only' : 'enter amount';
-      return `<label class="tick${na ? ' na' : ''}" for="${esc(id)}"><input type="checkbox" id="${esc(id)}" data-addon="${esc(a.id)}" data-sku="${esc(r.p.sku)}"${sel.has(a.id) ? ' checked' : ''}${na ? ' disabled' : ''}><span>${esc(a.label)}</span><span class="tp">${price}</span></label>`;
-    })
-    .join('');
+  const ticks = ADDONS.map((a) => {
+    const { rate, basis, na } = addOnRate(a.id, r);
+    const id = `ao-${r.p.sku}-${a.id}`;
+    const price = na ? 'N/A for this model' : basis ? `${aud(rate!)}${qty > 1 ? ' each' : ''}` : 'not on list · enter amount';
+    const cls = na ? ' na' : basis ? '' : ' manual';
+    return `<label class="tick${cls}" for="${esc(id)}"><input type="checkbox" id="${esc(id)}" data-addon="${esc(a.id)}" data-sku="${esc(r.p.sku)}"${sel.has(a.id) && !na ? ' checked' : ''}${na ? ' disabled' : ''}><span>${esc(a.label)}</span><span class="tp">${price}</span></label>`;
+  }).join('');
   const chosen = addOnLines(r, qty);
   const rows = chosen
-    .map(({ a, rate, amount }) =>
-      rate === null || (!a.perUnit && a.amount == null)
-        ? `<tr><td>${esc(a.label)}<div class="s">${qty} × amount ex GST</div></td><td><input class="amt" type="number" min="0" step="1" inputmode="decimal" aria-label="${esc(a.label)} amount per unit, ex GST" data-amt="${esc(r.p.sku)}|${esc(a.id)}" value="${rate ?? ''}" placeholder="$ ex GST">${amount !== null ? `<div class="s">${aud(amount)}</div>` : ''}</td></tr>`
-        : `<tr><td>${esc(a.label)}<div class="s">${qty} × ${aud(rate)}${a.note ? ` · ${esc(a.note)}` : ''}</div></td><td>${aud(amount!)}</td></tr>`,
+    .map(({ a, rate, basis, listed, amount }) =>
+      listed
+        ? `<tr><td>${esc(a.label)}<div class="s">${qty} × ${aud(rate!)} · ${esc(basis)}</div></td><td>${aud(amount!)}</td></tr>`
+        : `<tr><td>${esc(a.label)}<div class="s">Not on the installer list: enter the customer charge per unit</div></td><td><input class="amt" type="number" min="0" step="1" inputmode="decimal" aria-label="${esc(a.label)} customer charge per unit" data-amt="${esc(r.p.sku)}|${esc(a.id)}" value="${rate ?? ''}" placeholder="$">${amount !== null ? `<div class="s">${aud(amount)}</div>` : ''}</td></tr>`,
     )
     .join('');
-  const ex = round2(chosen.reduce((t, x) => t + (x.amount ?? 0), 0));
-  const gst = round2((ex * card.gstPct) / 100);
+  const sum = round2(chosen.reduce((t, x) => t + (x.amount ?? 0), 0));
   const totals = chosen.length
-    ? `<tr class="t"><td>Add-ons ex GST<div class="s">No fuel levy</div></td><td>${aud(ex)}</td></tr><tr><td>GST · ${pctf(card.gstPct)}</td><td>${aud(gst)}</td></tr><tr class="g"><td>Add-ons inc GST</td><td>${aud(ex + gst)}</td></tr>` +
-      (w ? `<tr class="g"><td>Freight + add-ons inc GST</td><td>${aud(round2(w.incGst + ex + gst))}</td></tr>` : '')
+    ? `<tr class="t"><td>Add-ons, charge to customer<div class="s">As per the approved installer list · no fuel levy</div></td><td>${aud(sum)}</td></tr>` +
+      (w ? `<tr class="g"><td>Freight inc GST + add-ons</td><td>${aud(round2(w.incGst + sum))}</td></tr>` : '')
     : '';
   return `<div class="addons"><div class="lab">Add-on services · not included in freight</div><div class="ticks">${ticks}</div>${chosen.length ? `<table class="lines"><tbody>${rows}${totals}</tbody></table>` : ''}</div>`;
 }
@@ -403,6 +435,7 @@ function renderFooter() {
       .join(', ')}. The largest carton pays its minimum, the rest the additional rate. The zone surcharge is added to that last-mile charge; interstate adds the <b>middle mile</b> (total CBM × $/m³, origin → destination); then the <b>fuel levy</b> and GST.</p>` +
     `<p><b>Dispatch</b> is the closest Revel warehouse (${(card.warehouses ?? []).map((w) => `${w.state} ${w.name}`).join(', ')}); SA and TAS ship from VIC, NT from QLD, ACT from NSW. Pick a warehouse above to price from somewhere else.</p>` +
     `<p><b>Zones</b> are ${scheduleLoaded ? `from the Winnings coverage schedule (${esc(D.zones.source ?? '')})` : 'estimated from ABS remoteness (Major Cities 1 … Very Remote 5) until the Winnings coverage schedule is supplied'}. <b>DFE</b> is used for postcodes outside Winnings coverage${scheduleLoaded ? '' : ' (once that schedule is loaded; choose DFE above to preview)'}; its base freight rates are still to come, so DFE shows surcharges and fuel levy only.</p>` +
+    `<p><b>Add-ons</b> (install, rubbish removal, oil &amp; silicone) are never included in freight. Tick them per product; prices are the “Total Charge to customer” from ${esc(D.installation.source)}.</p>` +
     `<p>Sources: ${esc(card.source)}; ${esc(D.dfe.source)}; master data ${esc(D.products.source)}. Product names and links from revelsaunas.com.au are for checking only; no website prices or shipping are used in the freight. Rates ex GST unless shown inc GST.</p>`;
 }
 
@@ -506,7 +539,7 @@ async function copyQuote(sku: string) {
     `Deliver to ${dest.postcode} ${dest.locality} ${dest.state}, zone ${dest.zone}${dest.zoneSource === 'estimate' ? ' (estimated)' : ''}, from ${origin()}`,
     `Last mile ${aud(w.lastMile)}${w.zone?.amount ? ` · zone surcharge ${aud(w.zone.amount)}` : ''}${w.middleMile ? ` · middle mile ${aud(w.middleMile.amount)}` : ''} · fuel levy ${aud(w.fuelLevy.amount)}`,
     `Freight ${aud(w.exGst)} ex GST · ${aud(w.incGst)} inc GST`,
-    ...addOnLines(r, qty).map(({ a, amount }) => `${a.label}: ${amount === null ? 'amount to confirm' : `${aud(amount)} ex GST`}`),
+    ...addOnLines(r, qty).map(({ a, amount }) => `${a.label}: ${amount === null ? 'amount to confirm' : aud(amount)}`),
   ].join('\n');
   let ok = true;
   try {

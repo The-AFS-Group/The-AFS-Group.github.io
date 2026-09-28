@@ -24,6 +24,7 @@ const embedded = {
   dfe: data('dfe-rate-card.json'),
   zones: data('winnings-zones.json'),
   postcodes: data('postcodes.json'),
+  installation: data('revel-installation.json'),
   website: {
     fetchedAt: website.fetchedAt,
     products: Object.fromEntries(Object.entries(website.products as Record<string, any>).map(([k, v]) => [k, { t: v.title, v: v.variant, u: v.url, p: v.price }])),

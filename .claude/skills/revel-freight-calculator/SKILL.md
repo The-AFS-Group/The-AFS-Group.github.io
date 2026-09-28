@@ -79,6 +79,9 @@ Small Items profile's `profileItems` SKUs). Record each state's tiers
 npm test
 npm run build
 rm -rf ../../revel-freight-calculator && mkdir -p ../../revel-freight-calculator && cp -R dist/. ../../revel-freight-calculator/
+# → revel-freight-calculator/index.html (sales dashboard, single file) + admin/ (admin app)
+# Also republish the private artifact: npm run build:artifact, then publish
+# dist-artifact/revel-freight.html to https://claude.ai/artifact/7yHiUYaJ3UML394UTJYLAK
 ```
 
 Spot-check a known quote before committing. With the published data, a

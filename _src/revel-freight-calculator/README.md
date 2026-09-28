@@ -3,7 +3,16 @@
 Prices Winning Services 3PL freight for any Revel product to any Australian
 postcode, from the product's carton CBM in master data.
 
-Live: `https://the-afs-group.github.io/revel-freight-calculator/`
+Once merged to `main`:
+
+- `https://the-afs-group.github.io/revel-freight-calculator/` is the **sales
+  dashboard** (freight calculator, add-ons, website vs actual freight). It is
+  one self-contained HTML file with all data embedded, so the same file can be
+  hosted anywhere.
+- `https://the-afs-group.github.io/revel-freight-calculator/admin/` is the
+  admin app (rates editor, data uploads, master data and website checks).
+
+`npm run build` builds both (`dist/index.html` and `dist/admin/`).
 
 ## Using it
 

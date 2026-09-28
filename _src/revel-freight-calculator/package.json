@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build --base=/revel-freight-calculator/",
-    "preview": "vite preview --base=/revel-freight-calculator/",
+    "build": "tsc --noEmit && vite build --base=/revel-freight-calculator/admin/ --outDir dist/admin --emptyOutDir && tsx scripts/build-artifact.ts dist/index.html",
+    "preview": "vite preview --base=/revel-freight-calculator/admin/ --outDir dist/admin",
     "test": "tsx --test src/lib/*.test.ts",
     "import:master-data": "tsx scripts/import-master-data.ts",
     "import:zones": "tsx scripts/import-zones.ts",

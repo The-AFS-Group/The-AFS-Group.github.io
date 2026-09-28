@@ -2,7 +2,8 @@
  * Builds the standalone single-file dashboard (published privately as a
  * claude.ai Artifact, not on the public site):
  *
- *   npm run build:artifact   → dist-artifact/revel-freight.html
+ *   npm run build:artifact            → dist-artifact/revel-freight.html
+ *   tsx scripts/build-artifact.ts <out>  (npm run build writes dist/index.html)
  *
  * Embeds master data, rate cards, zones, postcodes and website product names
  * so the page needs nothing but Google Fonts.
@@ -38,7 +39,7 @@ const html = readFileSync(join(root, 'src/artifact/template.html'), 'utf8')
   .replace('/*DATA*/', () => JSON.stringify(embedded).replace(/</g, '\\u003c'))
   .replace('/*JS*/', () => js.outputFiles[0].text.replace(/<\/script/gi, '<\\/script'));
 
-mkdirSync(join(root, 'dist-artifact'), { recursive: true });
-const out = join(root, 'dist-artifact', 'revel-freight.html');
+const out = process.argv[2] ? join(root, process.argv[2]) : join(root, 'dist-artifact', 'revel-freight.html');
+mkdirSync(dirname(out), { recursive: true });
 writeFileSync(out, html);
 console.log(`Wrote ${out} (${Math.round(html.length / 1024)} KB)`);

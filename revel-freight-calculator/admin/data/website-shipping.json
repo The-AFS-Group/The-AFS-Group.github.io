@@ -1,0 +1,205 @@
+{
+  "source": "revelsaunas.com.au Shopify shipping profiles (Admin API), read 28 Sep 2026",
+  "fetchedAt": "2026-09-28",
+  "gstIncluded": true,
+  "note": "Checkout shipping depends on state and cart value only, not postcode.",
+  "profiles": {
+    "small": {
+      "name": "Small Items",
+      "states": {
+        "NSW": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "ACT": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "VIC": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "QLD": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "SA": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "NT": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "TAS": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ],
+        "WA": [
+          {
+            "name": "Shipping",
+            "min": 0,
+            "max": null,
+            "rate": 14.99
+          }
+        ]
+      }
+    },
+    "general": {
+      "name": "General profile",
+      "states": {
+        "NSW": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 108.9
+          },
+          {
+            "name": "Room of choice delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 383.9
+          }
+        ],
+        "ACT": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 108.9
+          },
+          {
+            "name": "Room of choice delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 383.9
+          }
+        ],
+        "VIC": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 108.9
+          },
+          {
+            "name": "Room of choice delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 438.9
+          }
+        ],
+        "QLD": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 108.9
+          },
+          {
+            "name": "Room of choice delivery",
+            "min": 1899,
+            "max": null,
+            "rate": 328.9
+          }
+        ],
+        "SA": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 141.9
+          },
+          {
+            "name": "Delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 658.9
+          }
+        ],
+        "NT": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 141.9
+          },
+          {
+            "name": "Delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 658.9
+          }
+        ],
+        "TAS": [
+          {
+            "name": "Shipping & Handling",
+            "min": 99,
+            "max": 1799,
+            "rate": 141.9
+          },
+          {
+            "name": "Delivery",
+            "min": 1800,
+            "max": null,
+            "rate": 658.9
+          }
+        ],
+        "WA": "carrier:Smartfreight"
+      }
+    }
+  },
+  "smallItemSkus": [
+    "R-HR1",
+    "R-RF1",
+    "R-MASSAGEPRO",
+    "R-HAT-GREEN",
+    "R-HYDROGEN",
+    "R-SAUBACKHEM",
+    "R-SAUBACKCED",
+    "R-TOWEL",
+    "R-BOTTLE",
+    "R-XEN-WIFI-170-VEG",
+    "R-XENIO-WIFI-CX170",
+    "R-CHILL-FILT-CART",
+    "R-HAT-WHITE",
+    "R-XEN-DIG-170-VEGA",
+    "R-XEN-DIG-170-WALL",
+    "R-CHILL-AIO-FILT",
+    "R-CHILL-HOSE-INSUL",
+    "R-AIO-PH-HOLD",
+    "R-H-SPEAKER-RED",
+    "R-H-SPEAKER-BLACK",
+    "R-SHINGLE",
+    "R-REDLIGHTMASK"
+  ]
+}

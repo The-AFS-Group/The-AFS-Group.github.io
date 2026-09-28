@@ -1,0 +1,72 @@
+{
+  "carrier": "Direct Freight Express",
+  "source": "DFE account charges (fuel levy, pallet, pickup & delivery, other charges), supplied 23 Sep 2026",
+  "updated": "2026-09-23",
+  "usedWhen": "Delivery location is outside Winning Services coverage",
+  "gstPct": 10,
+  "fuelLevy": [
+    { "effective": "2026-10-07", "pct": 33.1 },
+    { "effective": "2026-09-02", "pct": 24.5 },
+    { "effective": "2026-08-05", "pct": 22.7 }
+  ],
+  "cubicFactor": 250,
+  "cubicFactorNote": "Assumed 250 kg/m³ (common road-freight conversion) until confirmed by DFE. Only used for the weight surcharge's chargeable kg.",
+  "base": null,
+  "itemSurcharges": {
+    "weight": { "aboveKg": 30, "blockKg": 30, "perBlock": 7, "maxPerItem": 35, "notAboveChargeableKg": 340, "fuel": true },
+    "oversize": { "sumDimsM": 2.2, "amount": 8, "fuel": true },
+    "longLength": [
+      { "fromM": 1.5, "amount": 8 },
+      { "fromM": 2, "amount": 18 },
+      { "fromM": 3, "amount": 35 },
+      { "fromM": 4, "amount": 90 },
+      { "fromM": 5, "amount": 240 },
+      { "fromM": 6, "amount": 460 }
+    ],
+    "longLengthFuel": true
+  },
+  "options": [
+    { "id": "tailgate", "label": "Tailgate delivery", "amount": 45, "per": "delivery", "fuel": true },
+    { "id": "booking", "label": "Booking fee (date / timeslot or limited receiving hours)", "amount": 15, "per": "consignment", "fuel": false },
+    { "id": "saturday", "label": "Saturday delivery", "amount": 350, "per": "delivery", "fuel": true }
+  ],
+  "futile": { "firstItem": 14, "perItemAfter": 6, "fuel": true },
+  "reference": [
+    { "group": "Pallet", "item": "CHEP/Loscam pallet transactions", "details": "Transfer docket only. No wood for wood accepted", "fuel": false },
+    { "group": "Pallet", "item": "Palletising", "details": "$35.00 per pallet", "fuel": true },
+    { "group": "Pallet", "item": "Return Loscam/CHEP/plain pallets/skids", "details": "$7.00 per pallet/skid delivery fee", "fuel": true },
+    { "group": "Pallet", "item": "Transfer of Loscam/CHEP pallets to Direct Freight account", "details": "Effective date of transfer 21 days from pickup date", "fuel": false },
+    { "group": "Pickup & delivery", "item": "3rd party PU / RTS / redirection", "details": "$12.00 per consignment", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Airport delivery surcharge", "details": "$25.00 per consignment", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Cancel connote not despatched", "details": "$3.00 per consignment", "fuel": false },
+    { "group": "Pickup & delivery", "item": "Duplicate connote, manual processing", "details": "$20.00 per consignment", "fuel": false },
+    { "group": "Pickup & delivery", "item": "EDI connote data received early/late or incorrect", "details": "$12.00 per consignment", "fuel": false },
+    { "group": "Pickup & delivery", "item": "Exhibition centre surcharge", "details": "$200.00 per consignment note (per delivery / pickup)", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Futile delivery / redeliver", "details": "$14.00 first item then $6 per item (up to 25 chargeable kg per item); $65.00 first pallet then $57 per pallet (up to 500 chargeable kg per pallet)", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Futile pickup", "details": "$25.00 per occasion", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Hand unload", "details": "$35.00 per pallet/skid/crate", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Mon–Fri delivery booking", "details": "$45.00 per consignment to defer the delivery date beyond the scheduled delivery", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Partial freight despatch", "details": "$25.00 per consignment where freight receipted over multiple days", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Same day other / 3rd party pickup", "details": "Additional $35.00 per consignment", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Saturday pickup / delivery", "details": "$350.00 per delivery", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Sunday pickup / delivery", "details": "P.O.A", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Tailgate pickup / delivery", "details": "$45.00 surcharge per delivery", "fuel": true },
+    { "group": "Pickup & delivery", "item": "Unlabelled freight", "details": "$15.00 surcharge", "fuel": true },
+    { "group": "Other", "item": "Account service fee", "details": "$8.95 per invoice", "fuel": false },
+    { "group": "Other", "item": "Connote booking fee", "details": "$15.00 per consignment where a date and timeslot must be booked or receivers have limited hours", "fuel": false },
+    { "group": "Other", "item": "Dangerous goods", "details": "$85.00 per consignment", "fuel": true },
+    { "group": "Other", "item": "Demurrage", "details": "$125.00 per hour", "fuel": false },
+    { "group": "Other", "item": "Destination surcharge", "details": "Select suburbs (remoteness, congestion, logistics). Suburb list and amounts not yet supplied", "fuel": true },
+    { "group": "Other", "item": "Labour hire", "details": "P.O.A", "fuel": true },
+    { "group": "Other", "item": "Long length surcharge", "details": "1.5–1.99 m $8; 2–2.99 m $18; 3–3.99 m $35; 4–4.99 m $90; 5–5.99 m $240; 6 m+ $460 per item", "fuel": true },
+    { "group": "Other", "item": "Manual connote entry", "details": "$12.00 per consignment", "fuel": false },
+    { "group": "Other", "item": "Mining surcharge", "details": "$5 per 100 chargeable kg or part thereof", "fuel": false },
+    { "group": "Other", "item": "Oversize surcharge 2.2 m+", "details": "Length + width + height ≥ 2.2 m: $8.00 per item", "fuel": true },
+    { "group": "Other", "item": "Proof of delivery", "details": "POD older than 12 months $60.00 per copy", "fuel": false },
+    { "group": "Other", "item": "Single consignment dispatch", "details": "$12.00 per consignment per account for each pickup site", "fuel": false },
+    { "group": "Other", "item": "Storage", "details": "$10.00 per pallet per week", "fuel": false },
+    { "group": "Other", "item": "Taxi truck hire", "details": "P.O.A (minimum 4 hours)", "fuel": true },
+    { "group": "Other", "item": "Thermal labels / printer", "details": "4x6\" $50 (1200) / $92 (3200); 4x8\" $185 (3900) / $65 (1200); printer $350", "fuel": false },
+    { "group": "Other", "item": "Weight surcharge", "details": "$7.00 per 30 kg or part above 30 kg per item, max $35. Not applied when item chargeable kg > 340", "fuel": true }
+  ]
+}

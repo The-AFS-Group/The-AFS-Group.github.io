@@ -6,6 +6,7 @@ node_modules/
 # Vite build output. The published copy lives in the top-level dashboard
 # folders; the intermediate dist/ is regenerated on every build.
 _src/*/dist/
+_src/*/dist-artifact/
 
 # Local tooling
 .wrangler/

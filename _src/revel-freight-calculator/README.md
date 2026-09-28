@@ -1,0 +1,97 @@
+# Revel Freight Calculator
+
+Prices Winning Services 3PL freight for any Revel product to any Australian
+postcode, from the product's carton CBM in master data.
+
+Once merged to `main`:
+
+- `https://the-afs-group.github.io/revel-freight-calculator/` is the **sales
+  dashboard** (freight calculator, add-ons, website vs actual freight). It is
+  one self-contained HTML file with all data embedded, so the same file can be
+  hosted anywhere.
+- `https://the-afs-group.github.io/revel-freight-calculator/admin/` is the
+  admin app (rates editor, data uploads, master data and website checks).
+
+`npm run build` builds both (`dist/index.html` and `dist/admin/`).
+
+## Using it
+
+1. Type the delivery postcode. The suburb, state and zone are looked up.
+2. Every product in the list shows its freight for one unit. Filter by
+   search, category, brand and lifecycle; sort by freight or CBM.
+3. Click products (or **+**) to build a multi-item quote with quantities. The
+   quote panel shows the full breakdown and **Copy quote** puts it on the
+   clipboard.
+4. Change **Dispatch from** when stock ships from another state, switch to
+   **Warehouse collection**, or tick **Add install**.
+
+## How a charge is built
+
+| Step | Rule |
+|---|---|
+| Size class | Carton CBM × 333.333 kg/m³ = volumetric kg. Small ≤ 43.32, Medium ≤ 116.66, Large ≤ 666.66, else Oversized (0.13 / 0.35 / 2.0 m³). |
+| Last mile | Largest item at its class minimum ($25 / $60 / $100 / $200), every other item at its class's additional rate ($6 / $15 / $25 / $50). |
+| Zone | Last mile × zone surcharge (0 / 25 / 50 / 100 / 200 %). |
+| Middle mile | Interstate only: total CBM × $/m³ from the origin → destination matrix. ACT is priced as NSW. |
+| Fuel levy | % of last mile + zone + middle mile (4 %, August 2026). |
+| Install | Optional, per unit: sauna $250, ice bath $125. No fuel levy. |
+| GST | 10 % on the lot. |
+
+Warehouse collection uses the collection rates only (no zone, middle mile,
+fuel levy or install).
+
+Settings on the **Rates & rules** tab:
+
+- **What counts as an item**: each carton (default) or each product unit sized
+  on its total CBM.
+- **Size class by**: volumetric weight (the rate card's wording, default) or
+  the greater of dead and volumetric weight.
+- **Carton CBM from**: the master data CBM column (default) or W × D × H.
+
+## Assumptions to confirm
+
+- **Zones are estimated** until the Winnings coverage schedule is loaded. Each
+  suburb's zone comes from its ABS Remoteness Area (Major Cities 1, Inner
+  Regional 2, Outer Regional 3, Remote 4, Very Remote 5), with Greater Hobart
+  and Greater Darwin set to 1. Any quote can override the zone.
+- **Dispatch is the closest warehouse**, as the website says: NSW Kemps Creek, VIC, QLD Brisbane, WA Kewdale. SA and TAS ship from VIC, NT from QLD, ACT from NSW. Any quote can pick a warehouse instead.
+- **Each carton is an item.** The rate card's "initial item / additional
+  items" rule could also mean one item per product; the setting switches it.
+
+## Direct Freight Express
+
+DFE is used where Winning Services doesn't deliver. **Carrier: Auto** picks DFE
+when the postcode isn't on the Winnings coverage schedule (so it stays on
+Winnings until that schedule is loaded); it can also be forced per quote.
+Every carton is a DFE item. Per item: weight surcharge, oversize (L+W+H ≥ 2.2 m),
+long length; optional tailgate, booking fee, Saturday. The fuel levy is the
+schedule row in force on the quote date (24.50% from 2 Sep 2026, 33.10% from
+7 Oct 2026). **DFE base freight rates have not been supplied yet**, so DFE quotes
+show surcharges and fuel levy only and are labelled as incomplete.
+
+## Data files (`public/data/`)
+
+| File | What | Update with |
+|---|---|---|
+| `products.json` | SKU, description, brand, category, lifecycle, RRP, cartons. No cost, wholesale or supplier data. | `npm run import:master-data -- <workbook.xlsx>` |
+| `winnings-rate-card.json` | All rates, fuel levy, install, rules. | Edit by hand, or edit on the Rates tab and download. |
+| `dfe-rate-card.json` | Direct Freight Express: fuel levy schedule by effective date, per-item surcharges, options, all DFE charges. Base freight rates still to come. | Edit the fuel levy on the Rates tab and download, or edit by hand |
+| `winnings-zones.json` | Official postcode → zone schedule. Empty = estimated zones. | `npm run import:zones -- <schedule.xlsx or .csv>` |
+| `website.json` | revelsaunas.com.au catalogue per SKU, used only to check products (title, price, image, link, weight). Never used for pricing. | `npm run import:website` |
+| `postcodes.json` | Postcode → suburbs, state, estimated zone. | `npm run build:postcodes` (downloads the source CSV) |
+
+The site is public. Never commit the raw master data workbook.
+
+Uploads and rate edits made on the site are saved in that browser only
+(localStorage), so someone can quote a new product straight away. To publish
+for everyone, update the JSON here and merge to `main`; the
+`Build dashboards` workflow rebuilds the site.
+
+## Development
+
+```sh
+npm install
+npm test          # freight engine, parsers
+npm run dev       # http://localhost:3000
+npm run build     # type-check + build to dist/
+```

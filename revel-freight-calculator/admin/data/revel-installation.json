@@ -1,0 +1,172 @@
+{
+  "source": "8aebf0ba-Approved_Installer_List.xlsx · tab \"REVEL SAUNAS INSTALLATION\" · Total Charge to customer",
+  "importedAt": "2026-09-28T05:24:24.125Z",
+  "saunas": [
+    {
+      "model": "Kora",
+      "persons": 2,
+      "install": 418.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Kora",
+      "persons": 3,
+      "install": 538.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Aura",
+      "persons": 2,
+      "install": 478.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Aura",
+      "persons": 3,
+      "install": 598.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Nova",
+      "persons": 2,
+      "install": 478.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Nova",
+      "persons": 3,
+      "install": 598.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Kuusi",
+      "persons": 2,
+      "install": 418.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Kuusi",
+      "persons": 4,
+      "install": 538.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Tampere",
+      "persons": 2,
+      "install": 418.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Tampere",
+      "persons": 4,
+      "install": 538.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Loom",
+      "persons": 2,
+      "install": 418.8,
+      "rubbish": 90,
+      "oilSilicone": null
+    },
+    {
+      "model": "Loom",
+      "persons": 4,
+      "install": 658.8,
+      "rubbish": 130,
+      "oilSilicone": null
+    },
+    {
+      "model": "Nordicwave",
+      "persons": 4,
+      "install": 658.8,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Aurora",
+      "persons": 2,
+      "install": 960,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Eden",
+      "persons": 4,
+      "install": 1000,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Eden",
+      "persons": 8,
+      "install": 1300,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Edenview",
+      "persons": 4,
+      "install": 1100,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Edenview",
+      "persons": 8,
+      "install": 1300,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Virta",
+      "persons": 2,
+      "install": 1000,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Virta",
+      "persons": 4,
+      "install": 1300,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Solaris",
+      "persons": 4,
+      "install": 960,
+      "rubbish": 110,
+      "oilSilicone": 150
+    },
+    {
+      "model": "Eclipse",
+      "persons": 2,
+      "install": 960,
+      "rubbish": 110,
+      "oilSilicone": null
+    },
+    {
+      "model": "Luna",
+      "persons": 3,
+      "install": 1070,
+      "rubbish": 110,
+      "oilSilicone": 150
+    }
+  ],
+  "iceBath": {
+    "install": 180,
+    "rubbish": 60,
+    "oilSilicone": null
+  }
+}

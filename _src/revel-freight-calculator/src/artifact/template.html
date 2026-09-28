@@ -16,6 +16,10 @@
 </header>
 
 <div class="wrap">
+  <div class="viewtabs" role="tablist" aria-label="View">
+    <button class="vt" role="tab" data-view="calc" aria-selected="true">Freight calculator</button>
+    <button class="vt" role="tab" data-view="web" aria-selected="false">Website vs actual freight</button>
+  </div>
   <div class="dest">
     <div class="fieldl">
       <label class="lab" for="pc">Delivery postcode</label>
@@ -26,6 +30,10 @@
       <select id="suburb" hidden></select>
     </div>
     <div class="place" id="place" aria-live="polite"></div>
+    <div class="quick" aria-label="Capital city postcodes">
+      <span class="lab">Quick</span>
+      <button class="qp" data-pc="2000">Sydney</button><button class="qp" data-pc="3000">Melbourne</button><button class="qp" data-pc="4000">Brisbane</button><button class="qp" data-pc="5000">Adelaide</button><button class="qp" data-pc="6000">Perth</button><button class="qp" data-pc="7000">Hobart</button><button class="qp" data-pc="0800">Darwin</button><button class="qp" data-pc="2600">Canberra</button>
+    </div>
   </div>
 
   <div class="whbar">
@@ -81,7 +89,7 @@
   <div class="count" id="count"></div>
   <div class="tablewrap">
     <table class="main">
-      <thead><tr>
+      <thead id="thead"><tr>
         <th data-sort="cat">Product · SKU</th>
         <th data-sort="cbm">Cartons · CBM · size</th>
         <th data-sort="freight" class="r" id="fhead">Freight</th>

@@ -1,14 +1,15 @@
 /**
  * revelsaunas.com.au catalogue → public/data/website.json
  *
- *   npm run import:website
+ *   npm run import:website                    (fetches live)
+ *   npm run import:website -- products.json   (a copy saved with curl, if the store throttles Node)
  *
  * Reads the public Shopify catalogue (/products.json) and keeps, per variant
  * SKU: product title, variant name, price, compare-at price, product URL,
  * image, availability and the weight the store uses for shipping rates.
  * Joined to master data by SKU (case-insensitive) in the calculator.
  */
-import { writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -18,7 +19,8 @@ interface ShopifyVariant { sku: string | null; title: string; price: string; com
 interface ShopifyProduct { title: string; handle: string; product_type: string; variants: ShopifyVariant[]; images: { src: string }[] }
 
 const products: ShopifyProduct[] = [];
-for (let page = 1; page < 20; page++) {
+if (process.argv[2]) products.push(...(JSON.parse(readFileSync(process.argv[2], 'utf8')) as { products: ShopifyProduct[] }).products);
+else for (let page = 1; page < 20; page++) {
   const res = await fetch(`${STORE}/products.json?limit=250&page=${page}`);
   if (!res.ok) throw new Error(`products.json page ${page}: ${res.status}`);
   const batch = ((await res.json()) as { products: ShopifyProduct[] }).products;

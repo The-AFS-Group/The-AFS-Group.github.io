@@ -12,6 +12,14 @@ import type { DfeRateCard, MatrixState, PostcodesFile, Product, ProductsFile, Ra
 
 interface InstallRate { model: string; persons: number | null; install: number | null; rubbish: number | null; oilSilicone: number | null }
 interface Installation { source: string; importedAt: string; saunas: InstallRate[]; iceBath: Omit<InstallRate, 'model' | 'persons'> | null }
+interface ShipTier { name: string; min: number; max: number | null; rate: number }
+interface WebsiteShipping {
+  source: string;
+  fetchedAt: string;
+  gstIncluded: boolean;
+  profiles: Record<'small' | 'general', { name: string; states: Record<string, ShipTier[] | string> }>;
+  smallItemSkus: string[];
+}
 interface WebLite { t: string; v: string; u: string; p: number }
 interface Embedded {
   builtAt: string;
@@ -21,6 +29,7 @@ interface Embedded {
   zones: ZoneScheduleFile;
   postcodes: PostcodesFile;
   installation: Installation;
+  websiteShipping: WebsiteShipping;
   website: { fetchedAt: string; products: Record<string, WebLite> } | null;
 }
 
@@ -105,7 +114,8 @@ const S = {
   ppl: new Set<number>(),
   disco: false,
   q: '',
-  sort: 'cat' as 'cat' | 'freight' | 'cbm' | 'name',
+  sort: 'cat' as 'cat' | 'freight' | 'cbm' | 'name' | 'var',
+  view: 'calc' as 'calc' | 'web',
   open: new Set<string>(),
   qty: new Map<string, number>(),
   /** sku → selected add-on ids */
@@ -366,7 +376,113 @@ function addOnsHtml(r: Row, qty: number, w: QuoteResult | null): string {
   return `<div class="addons"><div class="lab">Add-on services · not included in freight</div><div class="ticks">${ticks}</div>${chosen.length ? `<table class="lines"><tbody>${rows}${totals}</tbody></table>` : ''}</div>`;
 }
 
+/* ---------- website checkout vs actual freight ---------- */
+
+const SMALL = new Set(D.websiteShipping.smallItemSkus.map((x) => x.toUpperCase()));
+
+type SiteCharge =
+  | { kind: 'rate'; amount: number; method: string; profile: string }
+  | { kind: 'carrier'; method: string; profile: string }
+  | { kind: 'none'; profile: string; value: number }
+  | { kind: 'off' };
+
+/** What revelsaunas.com.au checkout charges for one unit of this product to this state (cart value = web price). */
+function siteCharge(r: Row): SiteCharge {
+  if (!r.web || !dest) return { kind: 'off' };
+  const key = SMALL.has(r.p.sku.toUpperCase()) ? 'small' : 'general';
+  const prof = D.websiteShipping.profiles[key];
+  const rules = prof.states[dest.state];
+  if (typeof rules === 'string') return { kind: 'carrier', method: rules.replace(/^carrier:/, ''), profile: prof.name };
+  const value = r.web.p;
+  const tier = (rules ?? []).find((t) => value >= t.min && (t.max === null || value <= t.max));
+  return tier ? { kind: 'rate', amount: tier.rate, method: tier.name, profile: prof.name } : { kind: 'none', profile: prof.name, value };
+}
+
+function varianceBox(site: SiteCharge, freight: QuoteResult, isDfe: boolean): { html: string; v: number | null } {
+  if (site.kind === 'off') return { html: `<div class="var na"><div class="vn">—</div><div class="vl">Not on the website</div></div>`, v: null };
+  if (isDfe) return { html: `<div class="var na"><div class="vn">—</div><div class="vl">DFE base rates needed</div></div>`, v: null };
+  if (!freight.ok) return { html: `<div class="var na"><div class="vn">—</div><div class="vl">${esc(freight.error ?? '')}</div></div>`, v: null };
+  if (site.kind === 'carrier') return { html: `<div class="var warn"><div class="vn">?</div><div class="vl">${esc(site.method)} live quote at checkout</div></div>`, v: null };
+  if (site.kind === 'none') return { html: `<div class="var neg"><div class="vn">No rate</div><div class="vl">Checkout has no rate for a ${aud(site.value)} cart in ${dest!.state}</div></div>`, v: null };
+  const v = round2(site.amount - freight.incGst);
+  const cover = freight.incGst ? Math.round((site.amount / freight.incGst) * 100) : 0;
+  const cls = v >= 0 ? 'pos' : 'neg';
+  return {
+    html: `<div class="var ${cls}"><div class="vn num">${v >= 0 ? '+' : '−'}${aud(Math.abs(v))}</div><div class="vl">${v >= 0 ? 'recovered' : 'short'} · site covers ${cover}%</div></div>`,
+    v,
+  };
+}
+
+function renderWeb() {
+  const c = carrier();
+  const rows = filtered().filter((r) => r.web);
+  const calc = new Map(
+    rows.map((r) => {
+      const { w } = priceRow(r);
+      const site = siteCharge(r);
+      return [r.p.sku, { w, site, box: varianceBox(site, w, c === 'dfe') }];
+    }),
+  );
+  const vOf = (r: Row) => calc.get(r.p.sku)!.box.v;
+  rows.sort((a, b) => {
+    if (S.sort === 'name') return a.name.localeCompare(b.name);
+    if (S.sort === 'cat') return CAT_ORDER.indexOf(a.cat) - CAT_ORDER.indexOf(b.cat) || a.name.localeCompare(b.name);
+    const va = vOf(a), vb = vOf(b);
+    return (va ?? Infinity) - (vb ?? Infinity) || a.name.localeCompare(b.name);
+  });
+
+  $('thead').innerHTML =
+    `<tr><th data-sort="cat">Product · SKU</th><th>Website checkout${dest ? ` · ${dest.state}` : ''}</th><th class="r">Actual freight${dest ? ` to ${esc(dest.postcode)}` : ''}</th><th class="r" data-sort="var">Variance ↑</th></tr>`;
+  let last: Cat | null = null;
+  const html = rows
+    .map((r) => {
+      const { w, site, box } = calc.get(r.p.sku)!;
+      let sect = '';
+      if (S.sort === 'cat' && r.cat !== last) {
+        last = r.cat;
+        sect = `<tr><td class="secthead" colspan="4">${CATN[r.cat]}</td></tr>`;
+      }
+      const siteCell =
+        site.kind === 'rate'
+          ? `<div class="price num">${aud(site.amount)}</div><div class="ex">${esc(site.method)} · ${esc(site.profile)}</div>`
+          : site.kind === 'carrier'
+            ? `<div class="price dfe">Live quote</div><div class="ex">${esc(site.method)} · ${esc(site.profile)}</div>`
+            : site.kind === 'none'
+              ? `<div class="price dfe">No rate</div><div class="ex">${esc(site.profile)} has no tier for ${aud(site.value)}</div>`
+              : `<span class="none">${dest ? '' : 'Enter postcode'}</span>`;
+      const ours =
+        c === 'dfe'
+          ? `<div class="price dfe">DFE base rates needed</div>`
+          : w.ok
+            ? `<div class="price num">${aud(w.incGst)}</div><div class="ex">${esc(card.carrier)}${w.zone ? ` · zone ${w.zone.zone}` : ''}${w.middleMile ? ` · incl. ${aud(w.middleMile.amount)} interstate` : ''}</div>`
+            : `<span class="none">${dest ? esc(w.error ?? '') : 'Enter postcode'}</span>`;
+      return (
+        sect +
+        `<tr class="p"><td><div class="pname">${esc(r.name)}</div><div class="sku">${esc(r.p.sku)}</div><div class="tags"><a class="tag web" href="${esc(r.web!.u)}" target="_blank" rel="noopener">${aud(r.web!.p)} on website ↗</a></div></td>` +
+        `<td>${siteCell}</td><td class="r">${ours}</td><td class="r">${box.html}</td></tr>`
+      );
+    })
+    .join('');
+  $('rows').innerHTML = html || `<tr><td colspan="4" class="none" style="padding:30px;text-align:center">No website products match these filters.</td></tr>`;
+  const notOnSite = filtered().length - rows.length;
+  $('count').textContent = `${rows.length} product${rows.length === 1 ? '' : 's'} on the website${notOnSite ? ` · ${notOnSite} in this filter aren't sold online` : ''} · 1 unit each · website charges are GST inclusive`;
+
+  const vals = rows.map(vOf).filter((v): v is number => v !== null);
+  const short = vals.filter((v) => v < 0);
+  const noRate = rows.filter((r) => calc.get(r.p.sku)!.site.kind === 'none').length;
+  const carrierQ = rows.filter((r) => calc.get(r.p.sku)!.site.kind === 'carrier').length;
+  $('kpis').innerHTML = [
+    kpi(dest ? `${dest.postcode} ${dest.state}` : '—', dest ? `${dest.locality}` : 'Delivery postcode', 'b'),
+    kpi(vals.length ? `${short.length} / ${vals.length}` : '—', 'Products where the website charge falls short', short.length ? 'r' : 'g'),
+    kpi(short.length ? `−${aud(Math.abs(short.reduce((t, v) => t + v, 0)))}` : '—', 'Total shortfall · 1 of each short item', short.length ? 'r' : ''),
+    kpi(vals.length ? `${Math.min(...vals) < 0 ? '−' : '+'}${aud(Math.abs(Math.min(...vals)))}` : '—', Math.min(...(vals.length ? vals : [0])) < 0 ? 'Largest single gap' : 'Smallest margin (all recovered)', vals.length && Math.min(...vals) < 0 ? 'r' : ''),
+    kpi(noRate || carrierQ ? `${noRate + carrierQ}` : '0', noRate ? 'No checkout rate for this cart value' : carrierQ ? 'Priced by a live carrier quote (not comparable)' : 'Products without a comparable rate', noRate ? 'r' : carrierQ ? 'a' : ''),
+  ].join('');
+}
+
 function renderTable() {
+  if (S.view === 'web') return renderWeb();
+  $('thead').innerHTML = `<tr><th data-sort="cat">Product · SKU</th><th data-sort="cbm">Cartons · CBM · size</th><th data-sort="freight" class="r" id="fhead">Freight</th></tr>`;
   const rows = filtered();
   const c = carrier();
   const priced = new Map(rows.map((r) => [r.p.sku, priceRow(r)]));
@@ -428,6 +544,13 @@ function renderTable() {
 const kpi = (n: string, l: string, cls: string) => `<div class="kpi ${cls}"><div class="n num">${esc(n)}</div><div class="l">${esc(l)}</div></div>`;
 
 function renderFooter() {
+  if (S.view === 'web') {
+    $('foot').innerHTML =
+      `<p><b>Website checkout</b> is what revelsaunas.com.au charges the customer for shipping, from the store's Shopify shipping profiles (${esc(D.websiteShipping.source)}). It depends only on the delivery <b>state</b> and the <b>cart value</b> (here, one unit at its web price), not the postcode, zone or product size. Small Items pay a flat ${aud((D.websiteShipping.profiles.small.states.NSW as ShipTier[])[0].rate)}. WA on the General profile is quoted live by Smartfreight, so it can't be compared here.</p>` +
+      `<p><b>Actual freight</b> is this dashboard's Winnings cost to the postcode entered, from the closest warehouse unless you pick one, inc GST. <b>Variance</b> = website charge − actual freight: green is recovered, red is freight Revel absorbs. Add-ons (install, rubbish, oil &amp; silicone) are not included on either side.</p>` +
+      `<p><b>Gaps in the checkout setup:</b> General-profile carts under $99 have no rate outside WA, and in QLD there is no rate between $1,799.01 and $1,898.99 (the upper tier starts at $1,899, other states at $1,800).</p>`;
+    return;
+  }
   const sc = [...card.sizeClasses].sort((a, b) => (a.maxKg ?? Infinity) - (b.maxKg ?? Infinity));
   $('foot').innerHTML =
     `<p><b>How freight is worked out.</b> Every carton in master data is an item. Its CBM × ${card.cubicFactor} kg/m³ gives volumetric weight and a size: ${sc
@@ -464,6 +587,21 @@ $<HTMLInputElement>('search').addEventListener('input', (e) => {
 });
 document.addEventListener('click', (e) => {
   const t = e.target as HTMLElement;
+  const vt = t.closest<HTMLElement>('.vt[data-view]');
+  if (vt) {
+    S.view = vt.dataset.view as typeof S.view;
+    S.sort = S.view === 'web' ? 'var' : 'cat';
+    document.querySelectorAll<HTMLElement>('.vt').forEach((b) => b.setAttribute('aria-selected', String(b === vt)));
+    renderFooter();
+    return renderAll();
+  }
+  const qp = t.closest<HTMLElement>('.qp[data-pc]');
+  if (qp) {
+    S.pc = qp.dataset.pc!;
+    S.locality = '';
+    $<HTMLInputElement>('pc').value = S.pc;
+    return renderAll();
+  }
   const wh = t.closest<HTMLElement>('.wh[data-w]');
   if (wh) return (S.origin = wh.dataset.w as MatrixState | 'auto'), renderAll();
   const cr = t.closest<HTMLElement>('.wh[data-c]');

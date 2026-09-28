@@ -62,6 +62,15 @@ destination surcharge suburb list if supplied.
 `npm run import:website`. Used only to check products, never for pricing: all charges come from the uploaded rate cards. The Data tab then lists website SKUs missing from
 master data, 0 kg website weights and weight mismatches.
 
+**Website checkout shipping** (`website-shipping.json`, used only by the
+"Website vs actual freight" tab): read the store's Shopify shipping profiles
+with the Shopify connector (`deliveryProfiles`, then each profile's
+`locationGroupZones` → `methodDefinitions` with `methodConditions`, and the
+Small Items profile's `profileItems` SKUs). Record each state's tiers
+(name, min / max cart value, rate) and carrier-calculated states as
+`"carrier:<name>"`. If Node's fetch gets 503 from the storefront, save
+`/products.json` with curl and pass it to `npm run import:website -- <file>`.
+
 **Postcode list refresh** (rare): `npm run build:postcodes`.
 
 ## Verify, then publish

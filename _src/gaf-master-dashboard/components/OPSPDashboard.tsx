@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
     Compass, Heart, Mountain, Star, MapPin, Target, Flag, Rocket, Loader2,
     ShieldCheck, AlertTriangle, Lightbulb, TrendingUp, Users, Settings, CheckCircle2,
-    PhoneIncoming, Info, PencilRuler,
+    PhoneIncoming, Info, PencilRuler, ChevronRight, Calendar, FileX,
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis,
@@ -134,6 +134,55 @@ const useDesignStats = () => {
 // proxy, which is indistinguishable from a proxy outage from the browser's side.
 const DOC_PUB_URL =
     "https://docs.google.com/document/d/e/2PACX-1vRKUADNpV9pz1kwD44mxS2sdmTKqhQ8E64f9d8AnODzC1ekkZeL6OU9ND6OrofrYeQFuJfiOJMlSgzg/pub";
+
+// One doc per quarter, Q1 FY27 through Q4 FY30 (GAF OPSP — <label>, same Drive folder
+// as the old combined doc). Each is fully self-contained (Foundation, Targets, SWOT,
+// Quarterly, Theme, Supporting) rather than sharing one doc that gets overwritten every
+// quarter, so old quarters stay readable and the tab can page between them like Sales
+// Health pages between months. `pubUrl` is null until that quarter's doc has actually
+// been published (File > Share > Publish to web) — add the link here once it has.
+interface QuarterConfig { label: string; period: string; pubUrl: string | null; }
+const QUARTERS: QuarterConfig[] = (() => {
+    const list: QuarterConfig[] = [];
+    // [periodStart, periodEnd] per quarter within a fiscal year starting 1 July.
+    const spans = [
+        ['01/07', '30/09'], ['01/10', '31/12'], ['01/01', '31/03'], ['01/04', '30/06'],
+    ];
+    for (const fy of [27, 28, 29, 30]) {
+        spans.forEach(([start, end], i) => {
+            const startYear = i < 2 ? 2000 + fy - 1 : 2000 + fy;
+            const endYear = startYear;
+            list.push({
+                label: `Q${i + 1} FY${fy}`,
+                period: `${start}/${startYear} - ${end}/${endYear}`,
+                pubUrl: null,
+            });
+        });
+    }
+    // Q1 FY27: the original combined doc's published copy, still showing this quarter's
+    // data (Critical Numbers, Theme) until that doc is retired in favour of its own.
+    list[0].pubUrl = DOC_PUB_URL;
+    // Q2-Q4 FY27: published 4 Oct 2026, Foundation/Targets/SWOT self-contained,
+    // Quarterly/Theme still "Not set" since those quarters haven't happened yet.
+    list[1].pubUrl =
+        "https://docs.google.com/document/d/e/2PACX-1vSq9eW6erS3nfAboV8QICXsYrbcYDL8pmFCgEDM2qStSF7h-P3RXzWaAlCR9zH8qGM_zww082DgmUO0/pub";
+    list[2].pubUrl =
+        "https://docs.google.com/document/d/e/2PACX-1vSA6wNek2VAD5eH5_39ze14Z7TUlBQNMUgrvvJ2rwzTQa9Y-iYUXGRDgPDizljcT5v08NM1xNrnshv5/pub";
+    list[3].pubUrl =
+        "https://docs.google.com/document/d/e/2PACX-1vSz_37w7mG3M9wLQIJzssVKrS0TX3_S8NXry3DoLppfFEbnYaFtcTdi7cOGEOj3QDWLz8Lh88c9HDm1/pub";
+    // Q4 FY30: published 4 Oct 2026.
+    list[15].pubUrl =
+        "https://docs.google.com/document/d/e/2PACX-1vSRGKPn-hGejZQpQRrEsNxBAg3CbIciLH6FPE_FTWZ_tGl1GcaJwWxG4NWJ65R5_h9wlXWZ6RinSRcs/pub";
+    return list;
+})();
+
+// yyyy from a "dd/mm/yyyy - dd/mm/yyyy" period: just enough to sort/compare quarters
+// against "today" without pulling in a date library for 16 fixed spans.
+const quarterStartDate = (q: QuarterConfig): Date => {
+    const [startStr] = q.period.split(' - ');
+    const [d, m, y] = startStr.split('/').map(Number);
+    return new Date(y, m - 1, d);
+};
 
 // The only two numbers on this tab that are NOT in the doc. The AOV baseline has no
 // field in the Scaling Up template, so the target is derived from it and whatever the
@@ -507,21 +556,52 @@ const KeyValueList: React.FC<{ rows: KeyValue[] }> = ({ rows }) => (
 
 /* ------------------------------------------------------------------ component */
 
+// Default to the latest quarter that's both published and already started, so the tab
+// never opens on a future quarter nobody has filled in yet (same idea as Sales Health
+// defaulting to the current month, not a later one with no data).
+const defaultQuarterIndex = (): number => {
+    const now = new Date();
+    for (let i = QUARTERS.length - 1; i >= 0; i--) {
+        if (QUARTERS[i].pubUrl && quarterStartDate(QUARTERS[i]) <= now) return i;
+    }
+    return 0;
+};
+
 export default function OPSPDashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState<OpspData | null>(null);
     const [isLive, setIsLive] = useState(true);
+    const [notPublished, setNotPublished] = useState(false);
     const [bhagData, setBhagData] = useState<BHAGData | null>(null);
+    const [quarterIndex, setQuarterIndex] = useState(defaultQuarterIndex);
 
+    const quarter = QUARTERS[quarterIndex];
+    const changeQuarter = (offset: number) =>
+        setQuarterIndex((i) => Math.max(0, Math.min(QUARTERS.length - 1, i + offset)));
+
+    // Fire-and-forget: the AOV and inbound-call charts read their own CSV feeds, must
+    // never block or fail the OPSP text render, and don't change when the quarter does.
     useEffect(() => {
         let cancelled = false;
-
-        // The AOV and inbound-call charts read their own CSV feeds. Fire and forget:
-        // they must never block or fail the OPSP text render, and both memos below
-        // already handle a null result.
         fetchBHAGData()
             .then((res) => { if (!cancelled) setBhagData(res); })
             .catch((e) => console.warn("BHAG fetch failed", e));
+        return () => { cancelled = true; };
+    }, []);
+
+    useEffect(() => {
+        let cancelled = false;
+        setIsLoading(true);
+        setIsLive(true);
+        setNotPublished(false);
+
+        if (!quarter.pubUrl) {
+            // Doc for this quarter hasn't been created/published yet — nothing to fetch.
+            setData(null);
+            setNotPublished(true);
+            setIsLoading(false);
+            return;
+        }
 
         // Google serves the doc cross-origin, so it has to be proxied. allorigins is
         // flaky (rate-limits, hangs), which would otherwise leave the tab stuck on the
@@ -548,7 +628,7 @@ export default function OPSPDashboard() {
         };
 
         (async () => {
-            const url = `${DOC_PUB_URL}?_t=${Date.now()}`;
+            const url = `${quarter.pubUrl}?_t=${Date.now()}`;
             let html: string | null = null;
             for (const p of proxies(url)) {
                 try {
@@ -561,7 +641,7 @@ export default function OPSPDashboard() {
             if (cancelled) return;
             if (!html) {
                 console.warn("All OPSP proxies failed; rendering fallback snapshot.");
-                setData(FALLBACK);
+                setData(quarterIndex === 0 ? FALLBACK : null);
                 setIsLive(false);
                 return;
             }
@@ -569,13 +649,13 @@ export default function OPSPDashboard() {
                 setData(parseDoc(html));
             } catch (e) {
                 console.warn("OPSP parse failed; rendering fallback snapshot.", e);
-                setData(FALLBACK);
+                setData(quarterIndex === 0 ? FALLBACK : null);
                 setIsLive(false);
             }
         })().finally(() => { if (!cancelled) setIsLoading(false); });
 
         return () => { cancelled = true; };
-    }, []);
+    }, [quarterIndex]);
 
     const weeklyCallsData = useMemo(() => {
         if (!bhagData?.inboundCallData) return [];
@@ -680,11 +760,72 @@ export default function OPSPDashboard() {
         return out;
     }, [designStats]);
 
-    if (isLoading || !data) {
+    const quarterNav = (
+        <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600 bg-gray-100 rounded-lg px-1.5 py-1 shrink-0">
+            <Calendar className="w-3.5 h-3.5 text-gray-400 ml-0.5" />
+            <button
+                onClick={() => changeQuarter(-1)}
+                disabled={quarterIndex === 0}
+                className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Previous quarter"
+            >
+                <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+            </button>
+            <span className="min-w-[72px] text-center font-bold text-gray-800">{quarter.label}</span>
+            <button
+                onClick={() => changeQuarter(1)}
+                disabled={quarterIndex === QUARTERS.length - 1}
+                className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                aria-label="Next quarter"
+            >
+                <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+        </div>
+    );
+
+    if (isLoading) {
         return (
             <div className="flex flex-col items-center justify-center h-screen gap-4">
                 <Loader2 className="w-10 h-10 text-orange-500 animate-spin" />
                 <p className="text-gray-500 font-medium">Fetching Live OPSP Data...</p>
+            </div>
+        );
+    }
+
+    if (notPublished || !data) {
+        return (
+            <div className="min-h-screen bg-[#f8f8fa] font-sans">
+                <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 border-b border-white/20 shadow-lg">
+                    <div className="mx-auto max-w-7xl px-4 py-3 flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-3 min-w-0">
+                            <div className="p-2 bg-orange-100 rounded-xl text-orange-700 shrink-0">
+                                <Compass size={24} />
+                            </div>
+                            <h1 className="text-lg md:text-xl font-bold tracking-tight text-gray-900 truncate">
+                                One Page Strategic Plan
+                            </h1>
+                        </div>
+                        {quarterNav}
+                    </div>
+                </header>
+                <div className="flex flex-col items-center justify-center text-center gap-3 py-32 px-4">
+                    <FileX className="w-10 h-10 text-gray-300" />
+                    {notPublished ? (
+                        <>
+                            <p className="text-gray-700 font-bold">{quarter.label} hasn't been published yet</p>
+                            <p className="text-sm text-gray-400 max-w-sm">
+                                {quarter.period} — create and publish the "GAF OPSP — {quarter.label}" doc (File &gt; Share &gt; Publish to web) to see it here.
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <p className="text-gray-700 font-bold">Couldn't load {quarter.label} right now</p>
+                            <p className="text-sm text-gray-400 max-w-sm">
+                                The published doc exists but didn't load — this is usually a temporary proxy or network issue. Try again shortly.
+                            </p>
+                        </>
+                    )}
+                </div>
             </div>
         );
     }
@@ -710,13 +851,14 @@ export default function OPSPDashboard() {
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
+                        {quarterNav}
                         {!isLive && (
                             <span className="hidden md:inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 bg-amber-100 border border-amber-200 px-3 py-1.5 rounded-lg">
                                 <AlertTriangle size={12} /> Showing cached snapshot
                             </span>
                         )}
                         <a
-                            href={DOC_PUB_URL}
+                            href={quarter.pubUrl ?? DOC_PUB_URL}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-xs font-semibold bg-gray-900 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors shadow-sm hidden sm:block"

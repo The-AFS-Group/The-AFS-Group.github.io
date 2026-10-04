@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Flag, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { SourceNote } from './SourceNote';
 
 const ASANA_PROJECT_GID = "1213307020658494";
 // Asana PAT is held server-side in the asana-api-proxy Worker; the client never sees it.
@@ -162,7 +163,8 @@ export default function StrategicPrioritiesDashboard() {
                         </div>
                         <div>
                             <h1 className="text-lg md:text-xl font-bold tracking-tight text-gray-900">Strategic Priorities</h1>
-                            <p className="text-xs text-gray-500 font-medium">Real-time sync from Asana</p>
+                            <p className="text-xs text-gray-500 font-medium">Live from Asana</p>
+                            <SourceNote text="Source: Asana (GAF project) · refreshed when this page loaded, no auto-refresh" />
                         </div>
                     </div>
                 </div>

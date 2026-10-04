@@ -28,6 +28,7 @@ import Tag from './Tag';
 import Empty from './Empty';
 import ThemeSection from './ThemeSection';
 import FilterStats from './FilterStats';
+import { SourceNote } from './SourceNote';
 import { WordCloud } from './WordCloud';
 
 interface ActiveFilter {
@@ -158,6 +159,19 @@ export default function CallInsightsDashboard() {
         return true;
     });
   }, [data, dateRange, customStart, customEnd]);
+
+  // Latest call timestamp across the whole feed, for the "as of" source caption —
+  // independent of the date-range filter, so it reflects the sheet, not the view.
+  const latestCallDate = useMemo(() => {
+    if (!data) return null;
+    let latest: Date | null = null;
+    for (const row of data) {
+      if (!row.call_datetime_iso) continue;
+      const dt = new Date(row.call_datetime_iso);
+      if (!latest || dt > latest) latest = dt;
+    }
+    return latest;
+  }, [data]);
 
   // Main filtered data (Date + Analyze Flag + Active Filters)
   const filtered = useMemo(() => {
@@ -426,6 +440,9 @@ export default function CallInsightsDashboard() {
         <div className="mx-auto max-w-7xl px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="w-full sm:w-auto">
             <h1 className="text-base md:text-lg font-extrabold tracking-tight text-gray-900" style={{ fontFamily: "'Montserrat', sans-serif" }}>Call Insights</h1>
+            <SourceNote
+                text={`Source: call-transcript sheet${latestCallDate ? ` · latest call ${latestCallDate.toLocaleString('en-AU', { day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}` : ' · refreshed when this page loaded'}`}
+            />
           </div>
           <div className="flex items-center gap-2 w-full sm:w-auto">
             {activeFilters.length > 0 && (
@@ -495,6 +512,7 @@ export default function CallInsightsDashboard() {
                 <div>
                     <h3 className="text-sm md:text-lg font-extrabold text-gray-900 uppercase tracking-tight" style={{ fontFamily: "'Montserrat', sans-serif" }}>Weekly Briefing</h3>
                     <p className="text-[10px] md:text-xs text-gray-500 font-semibold uppercase tracking-widest mt-0.5">Automated Intelligence Summary</p>
+                    <SourceNote text="Call count: live from the sheet · the four cards below are manually set, not generated from this week's calls" className="mt-1 normal-case tracking-normal" />
                 </div>
                 <div className="flex items-center gap-3">
                   <div className="text-center bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
@@ -520,7 +538,7 @@ export default function CallInsightsDashboard() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-5">
           <StatCard title="Analyzed" icon={<PhoneIncoming size={18} />} value={fmt(filtered.length)} />
           <StatCard title="Filtered" icon={<XCircle size={18} />} value={`${pctFilteredOut}%`} sub={`${fmt(filteredOutCount)} calls filtered out`} />
-          <StatCard title="Insights" icon={<Sparkles size={18} />} value="Live" />
+          <StatCard title="Insights" icon={<Sparkles size={18} />} value="Live" sub="Label only — not a computed metric" />
         </div>
 
         {/* SECTION 2: CALL BREAKDOWN */}

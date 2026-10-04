@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import { GAF_COLORS } from '../constants';
 import { GoogleGenAI } from "@google/genai";
+import { SourceNote } from './SourceNote';
 
 // Initialize AI - Removed top-level init to prevent crash
 // const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
@@ -585,6 +586,7 @@ export default function ProductInsightsDashboard() {
                         <span className="hidden md:inline">Weekly Strategy Meeting View</span>
                         <span className="md:hidden">Strategy View</span>
                     </div>
+                    <SourceNote text="Source: Products Rolling 30 sheet · refreshed when this page loaded (auto-refreshes every 15 min)" />
                 </div>
                 <div className="flex items-center gap-2">
                     <div className="relative">
@@ -600,7 +602,7 @@ export default function ProductInsightsDashboard() {
                             <div className="absolute top-full right-0 mt-2 w-64 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-xl z-40">
                                 Product performance figures on this tab come straight from the source spreadsheet.
                                 <a
-                                    href="https://docs.google.com/spreadsheets/d/1qZVgfeX5jnkM4AIJ57Y76X7NlbNNqKRMmePSQFrDFS0/edit"
+                                    href="https://docs.google.com/spreadsheets/d/1vTl42G3Hklnv03D9xWAClSSIsOhPNAJ5PEXUvvDR5WJuBb7iHJlo9Re1ky3iXEOehbBm73FOJo0rQTq/edit"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-1 text-blue-300 hover:underline mt-2 font-semibold"

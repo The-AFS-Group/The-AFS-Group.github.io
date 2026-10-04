@@ -11,6 +11,7 @@ import {
 import { GAF_COLORS } from '../constants';
 import { fetchBHAGData } from '../services/dataService';
 import { BHAGData } from '../types';
+import { SourceNote } from './SourceNote';
 
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
@@ -44,6 +45,7 @@ const HGBTracker: React.FC = () => {
                 <span className="text-lg font-bold text-gray-400">/ {t.target.toLocaleString()}</span>
             </div>
             <div className="text-[11px] text-gray-400 font-semibold mt-1">{t.window}</div>
+            <SourceNote text={`Source: NetSuite, via the hgb-tracker GitHub Action · as of ${t.asOf}`} tone="light" className="mt-1" />
             <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden mt-3 relative">
                 <div className="h-full bg-orange-500 rounded-full transition-all" style={{ width: `${toTarget}%` }} />
                 <div className="absolute top-[-2px] bottom-[-2px] w-0.5 bg-white" style={{ left: `${elapsed}%` }} title="expected pace" />
@@ -802,6 +804,9 @@ export default function OPSPDashboard() {
                             <p className="text-xs text-gray-500 font-medium truncate">
                                 {d.quarterLabel.replace(/^Quarterly\s*/i, '').replace(/[()]/g, '')} • {d.period}
                             </p>
+                            <SourceNote
+                                text={`Source: GAF OPSP — ${quarter.label} doc · refreshed when this page loaded${isLive ? '' : ' (showing cached snapshot, see below)'}`}
+                            />
                         </div>
                     </div>
                     <div className="flex items-center gap-3 shrink-0">
@@ -986,6 +991,7 @@ export default function OPSPDashboard() {
                                         Baseline ${AOV_BASELINE} <span className="mx-1">•</span>
                                         Target <span className="font-bold text-green-600">${aovTarget.toFixed(0)}</span>
                                     </p>
+                                    <SourceNote text="Source: BHAG AOV feed (published Google Sheet) · refreshed when this page loaded" className="ml-9 mt-0.5" />
                                 </div>
                                 <div className="text-right shrink-0">
                                     <div className="text-2xl font-bold text-gray-900">
@@ -1026,6 +1032,7 @@ export default function OPSPDashboard() {
                                         <h3 className="font-bold text-gray-900">Weekly Inbound Sales Calls</h3>
                                     </div>
                                     <p className="text-xs text-gray-500 ml-9">Maintain {TARGET_CALLS}+ calls per week</p>
+                                    <SourceNote text="Source: BHAG inbound-calls feed (published Google Sheet) · refreshed when this page loaded" className="ml-9 mt-0.5" />
                                 </div>
                                 <div className="text-right shrink-0">
                                     <div className="text-2xl font-bold text-gray-900">
@@ -1104,6 +1111,10 @@ export default function OPSPDashboard() {
                                 <p className="text-[10px] text-gray-400 font-semibold mt-3">
                                     Includes the 20-22 Jul internal test round. Counted in Adelaide time.
                                 </p>
+                                <SourceNote
+                                    text={`Source: AI Gym Designer API${designStats.asOf ? ` · as of ${new Date(designStats.asOf).toLocaleString('en-AU', { timeZone: 'Australia/Adelaide', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}` : ''}`}
+                                    className="mt-1"
+                                />
                             </div>
                         )}
                     </div>

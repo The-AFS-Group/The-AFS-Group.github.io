@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, PhoneOutgoing, TrendingUp, TrendingDown, Video, Heart, MessageCircle, Repeat, Package, Trophy, PieChart as PieChartIcon, Activity, ChevronDown, ChevronRight, Target, Info, ExternalLink } from "lucide-react";
-import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, fetchWholesaleMonthly, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
+import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, fetchWholesaleMonths, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
 import { BrandConfig, BrandData, BrandBudget, BrandInstagram, ProductInsightsData, LeadData } from "../types";
 import { GAF_COLORS, CHART_COLORS } from "../constants";
 import { SourceNote } from "./SourceNote";
@@ -110,37 +110,79 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
 };
 
 // Wholesale channel GP, aggregated across all wholesale customers (the NetSuite feed
-// behind it has no per-customer breakdown — see fetchWholesaleMonthly). Actuals come
+// behind it has no per-customer breakdown — see fetchWholesaleMonths). Actuals come
 // live from the raw NetSuite transaction feed (always correct, whatever month); Target
 // comes from a one-time capture of the FY27 budget, since there's no live, department-
-// scoped way to pull budget figures from NetSuite for this. Self-fetching, like the
-// other single-number cards on this tab, since it's not part of the daily GAF D2C time
-// series above it.
+// scoped way to pull budget figures from NetSuite for this. Shows one FY27 month at a
+// time, navigable with the same Prev/Next pattern as OPSP's quarter picker, since
+// leaving the month implicit is what made the old single-month version confusing.
+// Self-fetching, like the other single-number cards on this tab, since it's not part
+// of the daily GAF D2C time series above it.
 const WholesaleGPCard: React.FC = () => {
-  const [data, setData] = useState<Awaited<ReturnType<typeof fetchWholesaleMonthly>>>(null);
+  const [months, setMonths] = useState<Awaited<ReturnType<typeof fetchWholesaleMonths>>>(null);
+  const [monthIndex, setMonthIndex] = useState(0);
+
   useEffect(() => {
-    fetchWholesaleMonthly().then(setData);
+    fetchWholesaleMonths().then((result) => {
+      if (!result || result.length === 0) return;
+      setMonths(result);
+
+      // Default to the current calendar month if the budget table covers it;
+      // otherwise fall back to the latest month that actually has invoiced data.
+      const currentLabel = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      let defaultIndex = result.findIndex((m) => m.month === currentLabel);
+      if (defaultIndex === -1) {
+        defaultIndex = result.map((m) => m.hasActuals).lastIndexOf(true);
+      }
+      setMonthIndex(defaultIndex === -1 ? result.length - 1 : defaultIndex);
+    });
   }, []);
 
-  if (!data) return null;
+  if (!months) return null;
+  const data = months[monthIndex];
   const marginActual = data.revenueActual !== 0 ? (data.gpActual / data.revenueActual) * 100 : 0;
   const fmt = (n: number) =>
     `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6 relative overflow-hidden">
-      <div className="flex items-center gap-3 mb-6">
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
         <div className="p-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 shadow-lg">
           <Package className="w-6 h-6 text-white" />
         </div>
         <div>
           <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
           <SourceNote
-            text={`Source: NetSuite · live actuals for ${data.month} · target from the FY27 budget`}
+            text={`Source: NetSuite · actuals for ${data.month} · target from the FY27 budget`}
             className="mt-0.5"
           />
         </div>
+        <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600 bg-gray-100 rounded-lg px-1.5 py-1 shrink-0 ml-auto">
+          <Calendar className="w-3.5 h-3.5 text-gray-400 ml-0.5" />
+          <button
+            onClick={() => setMonthIndex((i) => Math.max(0, i - 1))}
+            disabled={monthIndex === 0}
+            className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Previous month"
+          >
+            <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+          </button>
+          <span className="min-w-[68px] text-center font-bold text-gray-800">{data.month}</span>
+          <button
+            onClick={() => setMonthIndex((i) => Math.min(months.length - 1, i + 1))}
+            disabled={monthIndex === months.length - 1}
+            className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            aria-label="Next month"
+          >
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
+      {!data.hasActuals && (
+        <p className="text-xs text-amber-600 font-medium mb-3 -mt-2">
+          No invoices recorded yet for {data.month}
+        </p>
+      )}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
           <p className="text-sm font-medium text-gray-600 mb-1">GP Invoiced</p>
@@ -883,6 +925,10 @@ export default function SalesDashboard() {
             )}
         </div>
 
+        {/* Other channels: aggregate, not day-by-day like GAF D2C above, so they're
+            self-fetching cards rather than part of the charts grid. */}
+        <WholesaleGPCard />
+
         {/* Charts Grid */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-8">
           {isFetchingSales && brandData.length === 0 ? (
@@ -1081,10 +1127,6 @@ export default function SalesDashboard() {
             ))
           )}
         </div>
-
-        {/* Other channels: aggregate, not day-by-day like GAF D2C above, so they're
-            self-fetching cards rather than part of the charts grid. */}
-        <WholesaleGPCard />
 
         {/* --- Top Grossing Products (Horizontal Bar Chart) --- */}
         {isCurrentMonth && (

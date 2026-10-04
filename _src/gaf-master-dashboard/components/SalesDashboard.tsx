@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, PhoneOutgoing, TrendingUp, TrendingDown, Video, Heart, MessageCircle, Repeat, Package, Trophy, PieChart as PieChartIcon, Activity, ChevronDown, ChevronRight, Target, Info, ExternalLink } from "lucide-react";
-import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, fetchWholesaleBVA, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
+import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, fetchWholesaleMonthly, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
 import { BrandConfig, BrandData, BrandBudget, BrandInstagram, ProductInsightsData, LeadData } from "../types";
 import { GAF_COLORS, CHART_COLORS } from "../constants";
 import { SourceNote } from "./SourceNote";
@@ -110,19 +110,20 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
 };
 
 // Wholesale channel GP, aggregated across all wholesale customers (the NetSuite feed
-// behind it has no per-customer breakdown — see fetchWholesaleBVA). Self-fetching, like
-// the other single-number cards on this tab, since it's not part of the daily GAF D2C
-// time series above it.
+// behind it has no per-customer breakdown — see fetchWholesaleMonthly). Actuals come
+// live from the raw NetSuite transaction feed (always correct, whatever month); Target
+// comes from a one-time capture of the FY27 budget, since there's no live, department-
+// scoped way to pull budget figures from NetSuite for this. Self-fetching, like the
+// other single-number cards on this tab, since it's not part of the daily GAF D2C time
+// series above it.
 const WholesaleGPCard: React.FC = () => {
-  const [bva, setBva] = useState<Awaited<ReturnType<typeof fetchWholesaleBVA>>>(null);
+  const [data, setData] = useState<Awaited<ReturnType<typeof fetchWholesaleMonthly>>>(null);
   useEffect(() => {
-    fetchWholesaleBVA().then(setBva);
+    fetchWholesaleMonthly().then(setData);
   }, []);
 
-  if (!bva) return null;
-  const gpActual = bva.revenueActual - bva.cogsActual;
-  const gpBudget = bva.revenueBudget - bva.cogsBudget;
-  const marginActual = bva.revenueActual !== 0 ? (gpActual / bva.revenueActual) * 100 : 0;
+  if (!data) return null;
+  const marginActual = data.revenueActual !== 0 ? (data.gpActual / data.revenueActual) * 100 : 0;
   const fmt = (n: number) =>
     `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
 
@@ -135,7 +136,7 @@ const WholesaleGPCard: React.FC = () => {
         <div>
           <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
           <SourceNote
-            text={`Source: NetSuite, via the Wholesale BvA Dashboard sheet · ${bva.month} · as of ${bva.asOf}`}
+            text={`Source: NetSuite · live actuals for ${data.month} · target from the FY27 budget`}
             className="mt-0.5"
           />
         </div>
@@ -143,11 +144,11 @@ const WholesaleGPCard: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
           <p className="text-sm font-medium text-gray-600 mb-1">GP Invoiced</p>
-          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(gpActual)}</p>
+          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(data.gpActual)}</p>
         </div>
         <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
           <p className="text-sm font-medium text-gray-600 mb-1">Target</p>
-          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(gpBudget)}</p>
+          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(data.gpBudget)}</p>
         </div>
         <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
           <p className="text-sm font-medium text-gray-600 mb-1">Gross Margin</p>

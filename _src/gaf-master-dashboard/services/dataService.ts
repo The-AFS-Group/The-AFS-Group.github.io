@@ -33,10 +33,16 @@ const URLS = {
     gc: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxikJQSlITmNCmiUewAGxefehrRFcJ2s-syIiKQoZsTyhH58hcVNrVfr1GRxtc0IRMVCU7Cbm_D9sB/pub?gid=1951515327&single=true&output=csv"
   },
   WHOLESALE: {
-    // "Wholesale BvA Dashboard" tab of the GAF NetSuite Budget-vs-Actual workbook.
-    // The workbook was published to the web as a whole, but this URL's gid scopes
-    // the CSV export to just this one tab.
-    bva: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthi8lBLdL3UAlIoFhcMMkaKctY5iy-_O4Im0wHA91zS9l4yEBp9pQHPh0wP8qdhs-pBsERh8rQBWA/pub?gid=1760206022&single=true&output=csv"
+    // "GAF Wholesale Actuals" tab: raw NetSuite GL transactions, auto-synced (see that
+    // workbook's Settings tab, customsearch6549). Unlike the "Wholesale BvA Dashboard"
+    // tab, this one isn't driven by a manual "Select Month" dropdown — every month's
+    // rows are always present, so it's the reliable source for Actuals.
+    actuals: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthi8lBLdL3UAlIoFhcMMkaKctY5iy-_O4Im0wHA91zS9l4yEBp9pQHPh0wP8qdhs-pBsERh8rQBWA/pub?gid=1261715133&single=true&output=csv",
+    // "Wholesale Monthly Budget FY27" tab: the FY27 annual budget by month, captured
+    // once from NetSuite's own "AFS - Budget vs. Actual" report (Wholesale AU division)
+    // since budgets don't change once set and this sheet has no API path that respects
+    // NetSuite's department scoping. Re-export and update this tab if budgets are revised.
+    budget: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthi8lBLdL3UAlIoFhcMMkaKctY5iy-_O4Im0wHA91zS9l4yEBp9pQHPh0wP8qdhs-pBsERh8rQBWA/pub?gid=555000001&single=true&output=csv"
   }
 };
 
@@ -1094,59 +1100,74 @@ export const fetchGCDeadStockTotal = async (): Promise<number | null> => {
   }
 };
 
-export interface WholesaleBVA {
+export interface WholesaleMonthly {
   month: string;
-  asOf: string;
   revenueActual: number;
   cogsActual: number;
-  revenueBudget: number;
-  cogsBudget: number;
+  gpActual: number;
+  gpBudget: number;
 }
 
-// "Wholesale BvA Dashboard" is a Budget-vs-Actual P&L by GL account for whatever month
-// its own "Select Month" dropdown is set to (this fetch has no way to change that). GP
-// isn't a row of its own, so it's derived as Revenue (4xxx accounts) minus COGS (5xxx
-// accounts); 6xxx opex rows end the section. Rows are matched by their leading GL code
-// rather than position, since accounts can be added or reordered.
-const parseWholesaleBVA = (csvText: string): WholesaleBVA | null => {
+// "GAF Wholesale Actuals" is a raw NetSuite transaction log, one row per GL line, with a
+// literal Period per row (e.g. "Jul 2026") — not tied to any dropdown, so every month's
+// figures are always present. GP isn't a column, so it's derived per month as Revenue
+// (4xxx accounts) minus COGS (5xxx accounts). Returns the latest month with any data.
+const parseWholesaleActuals = (csvText: string): { month: string; revenueActual: number; cogsActual: number } | null => {
   const rows = parseCSVRaw(csvText);
-  const headerIdx = rows.findIndex((r) => (r[0] || "").trim().toLowerCase() === "account code");
-  if (headerIdx === -1) return null;
+  const monthly = new Map<string, { revenue: number; cogs: number }>();
 
-  const month = (rows[0]?.[1] || "").trim();
-  const asOf = (rows[0]?.[4] || "").trim();
-
-  let revenueActual = 0, cogsActual = 0, revenueBudget = 0, cogsBudget = 0;
-  for (let i = headerIdx + 1; i < rows.length; i++) {
+  for (let i = 1; i < rows.length; i++) {
     const row = rows[i];
-    if (!row || row.every((c) => !c || !c.trim())) break;
-    const codeMatch = (row[0] || "").trim().match(/^(\d)\d{3}/);
-    if (!codeMatch) continue;
-    const budget = parseFloat(cleanNumber(row[2])) || 0;
-    const actual = parseFloat(cleanNumber(row[3])) || 0;
-    if (codeMatch[1] === "4") {
-      revenueBudget += budget;
-      revenueActual += actual;
-    } else if (codeMatch[1] === "5") {
-      cogsBudget += budget;
-      cogsActual += actual;
-    } else if (codeMatch[1] === "6") {
-      break;
-    }
+    if (!row || row.length < 4) continue;
+    const period = (row[0] || "").trim();
+    const codeMatch = (row[1] || "").trim().match(/^(\d)\d{3}/);
+    if (!period || !codeMatch) continue;
+    const amount = parseFloat(cleanNumber(row[3])) || 0;
+
+    const entry = monthly.get(period) || { revenue: 0, cogs: 0 };
+    if (codeMatch[1] === "4") entry.revenue += amount;
+    else if (codeMatch[1] === "5") entry.cogs += amount;
+    monthly.set(period, entry);
   }
 
-  if (revenueActual === 0 && cogsActual === 0) return null;
-  return { month, asOf, revenueActual, cogsActual, revenueBudget, cogsBudget };
+  if (monthly.size === 0) return null;
+  const latest = [...monthly.keys()].sort((a, b) => Date.parse(`1 ${a}`) - Date.parse(`1 ${b}`)).pop()!;
+  const totals = monthly.get(latest)!;
+  return { month: latest, revenueActual: totals.revenue, cogsActual: totals.cogs };
 };
 
-export const fetchWholesaleBVA = async (): Promise<WholesaleBVA | null> => {
+// "Wholesale Monthly Budget FY27": a one-time capture of the FY27 annual budget by month
+// (see that tab's note for its source and date). Looked up by month label, e.g. "Oct 2026".
+const parseWholesaleBudgetForMonth = (csvText: string, month: string): number | null => {
+  const rows = parseCSVRaw(csvText);
+  const row = rows.find((r) => (r[0] || "").trim() === month);
+  if (!row) return null;
+  const gp = parseFloat(cleanNumber(row[3]));
+  return isNaN(gp) ? null : gp;
+};
+
+export const fetchWholesaleMonthly = async (): Promise<WholesaleMonthly | null> => {
   try {
-    const res = await fetch(`${URLS.WHOLESALE.bva}&_t=${Date.now()}`);
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const text = await res.text();
-    return parseWholesaleBVA(text);
+    const [actualsRes, budgetRes] = await Promise.all([
+      fetch(`${URLS.WHOLESALE.actuals}&_t=${Date.now()}`),
+      fetch(`${URLS.WHOLESALE.budget}&_t=${Date.now()}`),
+    ]);
+    if (!actualsRes.ok || !budgetRes.ok) throw new Error("HTTP error fetching Wholesale data");
+    const [actualsText, budgetText] = await Promise.all([actualsRes.text(), budgetRes.text()]);
+
+    const actuals = parseWholesaleActuals(actualsText);
+    if (!actuals) return null;
+    const gpBudget = parseWholesaleBudgetForMonth(budgetText, actuals.month) ?? 0;
+
+    return {
+      month: actuals.month,
+      revenueActual: actuals.revenueActual,
+      cogsActual: actuals.cogsActual,
+      gpActual: actuals.revenueActual - actuals.cogsActual,
+      gpBudget,
+    };
   } catch (error) {
-    console.error("Error fetching Wholesale BVA data", error);
+    console.error("Error fetching Wholesale monthly data", error);
     return null;
   }
 };

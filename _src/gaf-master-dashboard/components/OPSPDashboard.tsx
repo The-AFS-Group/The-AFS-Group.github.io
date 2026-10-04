@@ -9,7 +9,7 @@ import {
     CartesianGrid, Tooltip, ReferenceLine, Label,
 } from 'recharts';
 import { GAF_COLORS } from '../constants';
-import { fetchBHAGData } from '../services/dataService';
+import { fetchBHAGData, fetchGCDeadStockTotal } from '../services/dataService';
 import { BHAGData } from '../types';
 import { SourceNote } from './SourceNote';
 
@@ -192,6 +192,54 @@ const quarterStartDate = (q: QuarterConfig): Date => {
 // baseline row to the doc, read it here and delete the constant.
 const AOV_BASELINE = 1454;
 const TARGET_CALLS = 40;
+
+// Measurable Target / Critical #: "Reduce GC Dead Stock: $692k ➔ <$400k" (locked when
+// the OPSP target was set). Not a row in the doc, so it's a separate card. Live-fetches
+// the "Grand Total" cell from the GAF_DEADSTOCK sheet (published to web as CSV), same as
+// the AOV/inbound-call feeds above — no committed snapshot, always reflects the sheet.
+// It was Q1 FY27's one-off Theme target, not a recurring Foundation number, so it's only
+// rendered when quarterIndex === 0 (see the render call below).
+const GC_DEAD_STOCK_TARGET = 400000;
+const GC_DEAD_STOCK_BASELINE = 692000;
+
+const GCDeadStockCard: React.FC = () => {
+    const [current, setCurrent] = useState<number | null>(null);
+    useEffect(() => {
+        fetchGCDeadStockTotal().then((v) => v != null && setCurrent(v));
+    }, []);
+    if (current == null) return null;
+    const fmtK = (n: number) => `$${Math.round(n / 1000)}k`;
+    const tone: 'super' | 'yellow' | 'red' =
+        current < GC_DEAD_STOCK_TARGET ? 'super' : current < GC_DEAD_STOCK_BASELINE ? 'yellow' : 'red';
+    const label = tone === 'super' ? 'Target Hit' : tone === 'yellow' ? 'Improving' : 'Red';
+    const asOf = new Date().toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' });
+    return (
+        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+            <div className="flex justify-between items-start gap-3 mb-4">
+                <div>
+                    <div className="font-bold text-lg leading-tight">Reduce GC Dead Stock</div>
+                    <div className="text-xs text-gray-400 mt-1">AFS-Gold Coast only</div>
+                </div>
+                <div className={`px-2 py-1 text-xs font-bold rounded border shrink-0 ${TONE[tone]}`}>{label}</div>
+            </div>
+            <div className="border-t border-white/10 pt-4">
+                <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">Current</div>
+                <div className="text-3xl font-black mb-4">{fmtK(current)}</div>
+                <div className="grid grid-cols-2 gap-1.5 text-center">
+                    <div className="bg-white/5 rounded-lg py-2">
+                        <div className="text-[9px] uppercase text-gray-500 font-bold">Start</div>
+                        <div className="text-xs font-bold text-gray-200">{fmtK(GC_DEAD_STOCK_BASELINE)}</div>
+                    </div>
+                    <div className="bg-white/5 rounded-lg py-2">
+                        <div className="text-[9px] uppercase text-gray-500 font-bold">Target</div>
+                        <div className="text-xs font-bold text-gray-200">&lt;{fmtK(GC_DEAD_STOCK_TARGET)}</div>
+                    </div>
+                </div>
+                <div className="text-[10px] text-gray-500 font-semibold mt-3">As of {asOf}</div>
+            </div>
+        </div>
+    );
+};
 
 interface Thrust { title: string; desc: string; }
 interface Initiative { text: string; started: string; status: string; }
@@ -887,12 +935,14 @@ export default function OPSPDashboard() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         {/* A fixed 2-col grid leaves a dead half-width hole when there's only
-                            one card total, so only split above one. `criticalNumbers` is the
-                            doc's own rows for this quarter, with the live designs-created
-                            count merged in — GC Dead Stock isn't one of them: it was Q1 FY27's
-                            Theme target (see the Theme panel), not a recurring Critical Number,
-                            so it doesn't belong here on every quarter. */}
-                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${criticalNumbers.length > 1 ? 'md:grid-cols-2' : ''}`}>
+                            one card total, so only split above one. GC Dead Stock isn't a doc
+                            row (see GCDeadStockCard above) and was only ever Q1 FY27's one-off
+                            Theme target, so it's shown only on quarterIndex 0 and counts toward
+                            the total here. `criticalNumbers` is the doc's rows with the live
+                            designs-created count merged in, so it may run one longer than the
+                            doc itself. */}
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${criticalNumbers.length + (quarterIndex === 0 ? 1 : 0) > 1 ? 'md:grid-cols-2' : ''}`}>
+                            {quarterIndex === 0 && <GCDeadStockCard />}
                             {criticalNumbers.map((cn, i) => {
                                 const band = bandFor(cn);
                                 return (

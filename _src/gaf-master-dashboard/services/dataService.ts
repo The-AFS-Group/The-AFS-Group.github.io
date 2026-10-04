@@ -1100,19 +1100,23 @@ export const fetchGCDeadStockTotal = async (): Promise<number | null> => {
   }
 };
 
-export interface WholesaleMonthly {
+export interface WholesaleMonth {
   month: string;
   revenueActual: number;
   cogsActual: number;
   gpActual: number;
   gpBudget: number;
+  // False when the raw actuals feed has no rows at all for this month yet (e.g. the
+  // NetSuite sync hasn't caught up, or it's a future month) — lets the UI say so
+  // instead of silently showing $0 as if nothing had been invoiced.
+  hasActuals: boolean;
 }
 
 // "GAF Wholesale Actuals" is a raw NetSuite transaction log, one row per GL line, with a
 // literal Period per row (e.g. "Jul 2026") — not tied to any dropdown, so every month's
-// figures are always present. GP isn't a column, so it's derived per month as Revenue
-// (4xxx accounts) minus COGS (5xxx accounts). Returns the latest month with any data.
-const parseWholesaleActuals = (csvText: string): { month: string; revenueActual: number; cogsActual: number } | null => {
+// figures are always present (as of whenever the sync last ran). GP isn't a column, so
+// it's derived per month as Revenue (4xxx accounts) minus COGS (5xxx accounts).
+const parseWholesaleActualsByMonth = (csvText: string): Map<string, { revenue: number; cogs: number }> => {
   const rows = parseCSVRaw(csvText);
   const monthly = new Map<string, { revenue: number; cogs: number }>();
 
@@ -1130,23 +1134,25 @@ const parseWholesaleActuals = (csvText: string): { month: string; revenueActual:
     monthly.set(period, entry);
   }
 
-  if (monthly.size === 0) return null;
-  const latest = [...monthly.keys()].sort((a, b) => Date.parse(`1 ${a}`) - Date.parse(`1 ${b}`)).pop()!;
-  const totals = monthly.get(latest)!;
-  return { month: latest, revenueActual: totals.revenue, cogsActual: totals.cogs };
+  return monthly;
 };
 
-// "Wholesale Monthly Budget FY27": a one-time capture of the FY27 annual budget by month
-// (see that tab's note for its source and date). Looked up by month label, e.g. "Oct 2026".
-const parseWholesaleBudgetForMonth = (csvText: string, month: string): number | null => {
+// "Wholesale Monthly Budget FY27": a one-time capture of the FY27 annual budget, one row
+// per fiscal-year month in order (Jul..Jun) — see that tab's note for source and date.
+// This defines the full list of months the Wholesale card can show and navigate between.
+const parseWholesaleBudgetByMonth = (csvText: string): { month: string; gpBudget: number }[] => {
   const rows = parseCSVRaw(csvText);
-  const row = rows.find((r) => (r[0] || "").trim() === month);
-  if (!row) return null;
-  const gp = parseFloat(cleanNumber(row[3]));
-  return isNaN(gp) ? null : gp;
+  const months: { month: string; gpBudget: number }[] = [];
+  for (let i = 1; i < rows.length; i++) {
+    const month = (rows[i]?.[0] || "").trim();
+    if (!month) continue;
+    const gp = parseFloat(cleanNumber(rows[i][3]));
+    months.push({ month, gpBudget: isNaN(gp) ? 0 : gp });
+  }
+  return months;
 };
 
-export const fetchWholesaleMonthly = async (): Promise<WholesaleMonthly | null> => {
+export const fetchWholesaleMonths = async (): Promise<WholesaleMonth[] | null> => {
   try {
     const [actualsRes, budgetRes] = await Promise.all([
       fetch(`${URLS.WHOLESALE.actuals}&_t=${Date.now()}`),
@@ -1155,17 +1161,23 @@ export const fetchWholesaleMonthly = async (): Promise<WholesaleMonthly | null> 
     if (!actualsRes.ok || !budgetRes.ok) throw new Error("HTTP error fetching Wholesale data");
     const [actualsText, budgetText] = await Promise.all([actualsRes.text(), budgetRes.text()]);
 
-    const actuals = parseWholesaleActuals(actualsText);
-    if (!actuals) return null;
-    const gpBudget = parseWholesaleBudgetForMonth(budgetText, actuals.month) ?? 0;
+    const actualsByMonth = parseWholesaleActualsByMonth(actualsText);
+    const budgetMonths = parseWholesaleBudgetByMonth(budgetText);
+    if (budgetMonths.length === 0) return null;
 
-    return {
-      month: actuals.month,
-      revenueActual: actuals.revenueActual,
-      cogsActual: actuals.cogsActual,
-      gpActual: actuals.revenueActual - actuals.cogsActual,
-      gpBudget,
-    };
+    return budgetMonths.map(({ month, gpBudget }) => {
+      const actuals = actualsByMonth.get(month);
+      const revenueActual = actuals?.revenue ?? 0;
+      const cogsActual = actuals?.cogs ?? 0;
+      return {
+        month,
+        revenueActual,
+        cogsActual,
+        gpActual: revenueActual - cogsActual,
+        gpBudget,
+        hasActuals: actuals != null,
+      };
+    });
   } catch (error) {
     console.error("Error fetching Wholesale monthly data", error);
     return null;

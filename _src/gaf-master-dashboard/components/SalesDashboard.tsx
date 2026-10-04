@@ -5,6 +5,7 @@ import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, 
 import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
 import { BrandConfig, BrandData, BrandBudget, BrandInstagram, ProductInsightsData, LeadData } from "../types";
 import { GAF_COLORS, CHART_COLORS } from "../constants";
+import { SourceNote } from "./SourceNote";
 
 const brandConfig: BrandConfig = {
   GAF: {
@@ -866,7 +867,7 @@ export default function SalesDashboard() {
               { title: "Marketing Spend", icon: DollarSign, dataKey: "adSpend", changeKey: "adSpend", type: "bar" },
               { title: "Inbound Sales Calls", icon: PhoneIncoming, dataKey: "inboundSalesCalls", changeKey: "inboundSalesCalls", type: "bar", filterInfo: true },
               { title: "Outbound Sales Calls", icon: PhoneOutgoing, dataKey: "outboundSalesCalls", changeKey: "outboundSalesCalls", type: "bar", filterInfo: true },
-              { title: "New Marketing Contacts", icon: TrendingUp, dataKey: "dailyLeadDelta", changeKey: "dailyLeadDelta", type: "bar" },
+              { title: "New Marketing Contacts", icon: TrendingUp, dataKey: "dailyLeadDelta", changeKey: "dailyLeadDelta", type: "bar", sourceNote: "Source: Marketing Contacts sheet · refreshed when this page loaded" },
             ].map((chart, i) => (
             <div key={i} className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6 h-96 relative overflow-hidden">
               {isFetchingSales && brandData.length > 0 && (
@@ -878,7 +879,10 @@ export default function SalesDashboard() {
                 <div className={`p-2 rounded-lg bg-gradient-to-br ${brand.colors.gradient} shadow-sm`}>
                   <chart.icon className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900">{chart.title}</h3>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">{chart.title}</h3>
+                  {(chart as any).sourceNote && <SourceNote text={(chart as any).sourceNote} />}
+                </div>
                 {(chart as any).filterInfo && (
                   <div className="relative">
                     <button
@@ -1047,6 +1051,7 @@ export default function SalesDashboard() {
                         <p className="text-xs text-gray-500">
                           {topProductsPeriod === '30d' ? 'Highest gross profit contributors over the last 30 days' : 'Highest gross profit contributors for the latest completed day'}
                         </p>
+                        <SourceNote text="Source: Products Rolling 30 sheet · refreshed when this page loaded" className="mt-0.5" />
                     </div>
                 </div>
                 <div className="flex bg-gray-100 p-1 rounded-lg self-start">
@@ -1135,6 +1140,7 @@ export default function SalesDashboard() {
                     <div>
                         <h3 className="text-lg font-bold text-gray-900">Cardio Category Share</h3>
                         <p className="text-xs text-gray-500">Gross Profit Contribution (Rolling 30 Days)</p>
+                        <SourceNote text="Source: Products 7-Day Trends sheet · refreshed when this page loaded" className="mt-0.5" />
                     </div>
                 </div>
 
@@ -1277,6 +1283,7 @@ export default function SalesDashboard() {
                     <div>
                         <h3 className="text-lg font-bold text-gray-900">7-Day Top Movers</h3>
                         <p className="text-xs text-gray-500">Products with largest GP variance vs previous week</p>
+                        <SourceNote text="Source: Products 7-Day Trends sheet · refreshed when this page loaded" className="mt-0.5" />
                     </div>
                 </div>
                 <div className="flex-1 space-y-3 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
@@ -1332,6 +1339,7 @@ export default function SalesDashboard() {
               <div>
                   <h3 className="text-2xl font-bold text-gray-900">Top 5 Instagram Reels</h3>
                   <p className="text-sm text-gray-500 font-medium">Last 30 Days</p>
+                  <SourceNote text="Source: GAF Instagram sheet · refreshed when this page loaded" className="mt-0.5" />
               </div>
             </div>
 

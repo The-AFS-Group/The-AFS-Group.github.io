@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { Calendar, BarChart3, ShoppingCart, DollarSign, Loader2, PhoneIncoming, PhoneOutgoing, TrendingUp, TrendingDown, Video, Heart, MessageCircle, Repeat, Package, Trophy, PieChart as PieChartIcon, Activity, ChevronDown, ChevronRight, Target, Info, ExternalLink } from "lucide-react";
-import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
+import { fetchDashboardData, fetchProductInsightsData, fetchSalesData, fetchInstagramData, fetchLeadData, fetchETSData, fetchWholesaleBVA, getCachedSalesData, getCachedInstagramData, getCachedProductInsightsData } from "../services/dataService";
 import { BrandConfig, BrandData, BrandBudget, BrandInstagram, ProductInsightsData, LeadData } from "../types";
 import { GAF_COLORS, CHART_COLORS } from "../constants";
 import { SourceNote } from "./SourceNote";
@@ -106,6 +106,55 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
         </div>
       </foreignObject>
     </g>
+  );
+};
+
+// Wholesale channel GP, aggregated across all wholesale customers (the NetSuite feed
+// behind it has no per-customer breakdown — see fetchWholesaleBVA). Self-fetching, like
+// the other single-number cards on this tab, since it's not part of the daily GAF D2C
+// time series above it.
+const WholesaleGPCard: React.FC = () => {
+  const [bva, setBva] = useState<Awaited<ReturnType<typeof fetchWholesaleBVA>>>(null);
+  useEffect(() => {
+    fetchWholesaleBVA().then(setBva);
+  }, []);
+
+  if (!bva) return null;
+  const gpActual = bva.revenueActual - bva.cogsActual;
+  const gpBudget = bva.revenueBudget - bva.cogsBudget;
+  const marginActual = bva.revenueActual !== 0 ? (gpActual / bva.revenueActual) * 100 : 0;
+  const fmt = (n: number) =>
+    `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+  return (
+    <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6 relative overflow-hidden">
+      <div className="flex items-center gap-3 mb-6">
+        <div className="p-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 shadow-lg">
+          <Package className="w-6 h-6 text-white" />
+        </div>
+        <div>
+          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
+          <SourceNote
+            text={`Source: NetSuite, via the Wholesale BvA Dashboard sheet · ${bva.month} · as of ${bva.asOf}`}
+            className="mt-0.5"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+          <p className="text-sm font-medium text-gray-600 mb-1">GP Invoiced</p>
+          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(gpActual)}</p>
+        </div>
+        <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+          <p className="text-sm font-medium text-gray-600 mb-1">Target</p>
+          <p className="text-2xl font-bold text-gray-900 break-words">{fmt(gpBudget)}</p>
+        </div>
+        <div className="p-4 rounded-xl bg-gray-50 border border-gray-100">
+          <p className="text-sm font-medium text-gray-600 mb-1">Gross Margin</p>
+          <p className="text-2xl font-bold text-gray-900 break-words">{marginActual.toFixed(1)}%</p>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -1031,6 +1080,10 @@ export default function SalesDashboard() {
             ))
           )}
         </div>
+
+        {/* Other channels: aggregate, not day-by-day like GAF D2C above, so they're
+            self-fetching cards rather than part of the charts grid. */}
+        <WholesaleGPCard />
 
         {/* --- Top Grossing Products (Horizontal Bar Chart) --- */}
         {isCurrentMonth && (

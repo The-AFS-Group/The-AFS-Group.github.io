@@ -31,6 +31,12 @@ const URLS = {
     // vendor with subtotal rows; the row/column position of the final total shifts
     // month to month as lines are added, so it's found by label, not position.
     gc: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRxikJQSlITmNCmiUewAGxefehrRFcJ2s-syIiKQoZsTyhH58hcVNrVfr1GRxtc0IRMVCU7Cbm_D9sB/pub?gid=1951515327&single=true&output=csv"
+  },
+  WHOLESALE: {
+    // "Wholesale BvA Dashboard" tab of the GAF NetSuite Budget-vs-Actual workbook.
+    // The workbook was published to the web as a whole, but this URL's gid scopes
+    // the CSV export to just this one tab.
+    bva: "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthi8lBLdL3UAlIoFhcMMkaKctY5iy-_O4Im0wHA91zS9l4yEBp9pQHPh0wP8qdhs-pBsERh8rQBWA/pub?gid=1760206022&single=true&output=csv"
   }
 };
 
@@ -1084,6 +1090,63 @@ export const fetchGCDeadStockTotal = async (): Promise<number | null> => {
     return parseGCDeadStockTotal(text);
   } catch (error) {
     console.error("Error fetching GC Dead Stock total", error);
+    return null;
+  }
+};
+
+export interface WholesaleBVA {
+  month: string;
+  asOf: string;
+  revenueActual: number;
+  cogsActual: number;
+  revenueBudget: number;
+  cogsBudget: number;
+}
+
+// "Wholesale BvA Dashboard" is a Budget-vs-Actual P&L by GL account for whatever month
+// its own "Select Month" dropdown is set to (this fetch has no way to change that). GP
+// isn't a row of its own, so it's derived as Revenue (4xxx accounts) minus COGS (5xxx
+// accounts); 6xxx opex rows end the section. Rows are matched by their leading GL code
+// rather than position, since accounts can be added or reordered.
+const parseWholesaleBVA = (csvText: string): WholesaleBVA | null => {
+  const rows = parseCSVRaw(csvText);
+  const headerIdx = rows.findIndex((r) => (r[0] || "").trim().toLowerCase() === "account code");
+  if (headerIdx === -1) return null;
+
+  const month = (rows[0]?.[1] || "").trim();
+  const asOf = (rows[0]?.[4] || "").trim();
+
+  let revenueActual = 0, cogsActual = 0, revenueBudget = 0, cogsBudget = 0;
+  for (let i = headerIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    if (!row || row.every((c) => !c || !c.trim())) break;
+    const codeMatch = (row[0] || "").trim().match(/^(\d)\d{3}/);
+    if (!codeMatch) continue;
+    const budget = parseFloat(cleanNumber(row[2])) || 0;
+    const actual = parseFloat(cleanNumber(row[3])) || 0;
+    if (codeMatch[1] === "4") {
+      revenueBudget += budget;
+      revenueActual += actual;
+    } else if (codeMatch[1] === "5") {
+      cogsBudget += budget;
+      cogsActual += actual;
+    } else if (codeMatch[1] === "6") {
+      break;
+    }
+  }
+
+  if (revenueActual === 0 && cogsActual === 0) return null;
+  return { month, asOf, revenueActual, cogsActual, revenueBudget, cogsBudget };
+};
+
+export const fetchWholesaleBVA = async (): Promise<WholesaleBVA | null> => {
+  try {
+    const res = await fetch(`${URLS.WHOLESALE.bva}&_t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+    return parseWholesaleBVA(text);
+  } catch (error) {
+    console.error("Error fetching Wholesale BVA data", error);
     return null;
   }
 };

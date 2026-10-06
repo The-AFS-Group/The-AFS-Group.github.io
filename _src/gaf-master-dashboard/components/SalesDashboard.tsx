@@ -109,18 +109,53 @@ const CustomYAxisTick = ({ x, y, payload }: any) => {
   );
 };
 
+interface WholesalePeriod {
+  label: string;
+  revenueActual: number;
+  cogsActual: number;
+  gpActual: number;
+  gpBudget: number;
+  hasActuals: boolean;
+}
+
 // Wholesale channel GP, aggregated across all wholesale customers (the NetSuite feed
 // behind it has no per-customer breakdown — see fetchWholesaleMonths). Actuals come
 // live from the raw NetSuite transaction feed (always correct, whatever month); Target
 // comes from a one-time capture of the FY27 budget, since there's no live, department-
-// scoped way to pull budget figures from NetSuite for this. Shows one FY27 month at a
-// time, navigable with the same Prev/Next pattern as OPSP's quarter picker, since
-// leaving the month implicit is what made the old single-month version confusing.
-// Self-fetching, like the other single-number cards on this tab, since it's not part
-// of the daily GAF D2C time series above it.
+// scoped way to pull budget figures from NetSuite for this. Toggles between month and
+// quarter, same as the GAF Sales Progress card above it, with Prev/Next navigation in
+// whichever granularity is selected — since leaving the period implicit is what made
+// the old single-month version confusing. Self-fetching, like the other single-number
+// cards on this tab, since it's not part of the daily GAF D2C time series above it.
 const WholesaleGPCard: React.FC = () => {
   const [months, setMonths] = useState<Awaited<ReturnType<typeof fetchWholesaleMonths>>>(null);
+  const [view, setView] = useState<"month" | "quarter">("month");
   const [monthIndex, setMonthIndex] = useState(0);
+  const [quarterIndex, setQuarterIndex] = useState(0);
+
+  // Four FY quarters (Jul-Sep, Oct-Dec, Jan-Mar, Apr-Jun) built from the same 12
+  // months, labelled the way OPSP's quarter picker is ("Q1 FY27") so they match.
+  const quarters = useMemo<WholesalePeriod[] | null>(() => {
+    if (!months || months.length === 0) return null;
+    const fyYear = parseInt(months[0].month.split(" ")[1], 10) + 1;
+    const out: WholesalePeriod[] = [];
+    for (let q = 0; q * 3 < months.length; q++) {
+      const chunk = months.slice(q * 3, q * 3 + 3);
+      if (chunk.length === 0) continue;
+      const revenueActual = chunk.reduce((s, m) => s + m.revenueActual, 0);
+      const cogsActual = chunk.reduce((s, m) => s + m.cogsActual, 0);
+      const gpBudget = chunk.reduce((s, m) => s + m.gpBudget, 0);
+      out.push({
+        label: `Q${q + 1} FY${String(fyYear).slice(-2)}`,
+        revenueActual,
+        cogsActual,
+        gpActual: revenueActual - cogsActual,
+        gpBudget,
+        hasActuals: chunk.some((m) => m.hasActuals),
+      });
+    }
+    return out;
+  }, [months]);
 
   useEffect(() => {
     fetchWholesaleMonths().then((result) => {
@@ -130,19 +165,41 @@ const WholesaleGPCard: React.FC = () => {
       // Default to the current calendar month if the budget table covers it;
       // otherwise fall back to the latest month that actually has invoiced data.
       const currentLabel = new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" });
-      let defaultIndex = result.findIndex((m) => m.month === currentLabel);
-      if (defaultIndex === -1) {
-        defaultIndex = result.map((m) => m.hasActuals).lastIndexOf(true);
+      let defaultMonthIndex = result.findIndex((m) => m.month === currentLabel);
+      if (defaultMonthIndex === -1) {
+        defaultMonthIndex = result.map((m) => m.hasActuals).lastIndexOf(true);
       }
-      setMonthIndex(defaultIndex === -1 ? result.length - 1 : defaultIndex);
+      defaultMonthIndex = defaultMonthIndex === -1 ? result.length - 1 : defaultMonthIndex;
+      setMonthIndex(defaultMonthIndex);
+      // Default quarter: whichever quarter contains that same default month.
+      setQuarterIndex(Math.floor(defaultMonthIndex / 3));
     });
   }, []);
 
-  if (!months) return null;
-  const data = months[monthIndex];
+  if (!months || !quarters) return null;
+  const data: WholesalePeriod =
+    view === "month"
+      ? {
+          label: months[monthIndex].month,
+          revenueActual: months[monthIndex].revenueActual,
+          cogsActual: months[monthIndex].cogsActual,
+          gpActual: months[monthIndex].gpActual,
+          gpBudget: months[monthIndex].gpBudget,
+          hasActuals: months[monthIndex].hasActuals,
+        }
+      : quarters[quarterIndex];
   const marginActual = data.revenueActual !== 0 ? (data.gpActual / data.revenueActual) * 100 : 0;
   const fmt = (n: number) =>
     `$${n.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+
+  const atStart = view === "month" ? monthIndex === 0 : quarterIndex === 0;
+  const atEnd = view === "month" ? monthIndex === months.length - 1 : quarterIndex === quarters.length - 1;
+  const stepBack = () =>
+    view === "month" ? setMonthIndex((i) => Math.max(0, i - 1)) : setQuarterIndex((i) => Math.max(0, i - 1));
+  const stepForward = () =>
+    view === "month"
+      ? setMonthIndex((i) => Math.min(months.length - 1, i + 1))
+      : setQuarterIndex((i) => Math.min(quarters.length - 1, i + 1));
 
   return (
     <div className="bg-white/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200/50 p-6 relative overflow-hidden">
@@ -153,34 +210,54 @@ const WholesaleGPCard: React.FC = () => {
         <div>
           <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
           <SourceNote
-            text={`Source: NetSuite · actuals for ${data.month} · target from the FY27 budget`}
+            text={`Source: NetSuite · actuals for ${data.label} · target from the FY27 budget`}
             className="mt-0.5"
           />
         </div>
-        <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600 bg-gray-100 rounded-lg px-1.5 py-1 shrink-0 ml-auto">
-          <Calendar className="w-3.5 h-3.5 text-gray-400 ml-0.5" />
-          <button
-            onClick={() => setMonthIndex((i) => Math.max(0, i - 1))}
-            disabled={monthIndex === 0}
-            className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            aria-label="Previous month"
-          >
-            <ChevronRight className="w-3.5 h-3.5 rotate-180" />
-          </button>
-          <span className="min-w-[68px] text-center font-bold text-gray-800">{data.month}</span>
-          <button
-            onClick={() => setMonthIndex((i) => Math.min(months.length - 1, i + 1))}
-            disabled={monthIndex === months.length - 1}
-            className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-            aria-label="Next month"
-          >
-            <ChevronRight className="w-3.5 h-3.5" />
-          </button>
+        <div className="flex items-center gap-2 ml-auto flex-wrap">
+          <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+            <button
+              onClick={() => setView("month")}
+              className={`px-3 py-1 rounded-md font-medium text-xs transition-all ${
+                view === "month" ? "bg-white shadow-sm text-gray-900" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Month
+            </button>
+            <button
+              onClick={() => setView("quarter")}
+              className={`px-3 py-1 rounded-md font-medium text-xs transition-all ${
+                view === "quarter" ? "bg-white shadow-sm text-gray-900" : "text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Quarter
+            </button>
+          </div>
+          <div className="flex items-center gap-1 text-xs md:text-sm text-gray-600 bg-gray-100 rounded-lg px-1.5 py-1 shrink-0">
+            <Calendar className="w-3.5 h-3.5 text-gray-400 ml-0.5" />
+            <button
+              onClick={stepBack}
+              disabled={atStart}
+              className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label={view === "month" ? "Previous month" : "Previous quarter"}
+            >
+              <ChevronRight className="w-3.5 h-3.5 rotate-180" />
+            </button>
+            <span className="min-w-[72px] text-center font-bold text-gray-800">{data.label}</span>
+            <button
+              onClick={stepForward}
+              disabled={atEnd}
+              className="p-0.5 hover:bg-white rounded disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              aria-label={view === "month" ? "Next month" : "Next quarter"}
+            >
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
       {!data.hasActuals && (
         <p className="text-xs text-amber-600 font-medium mb-3 -mt-2">
-          No invoices recorded yet for {data.month}
+          No invoices recorded yet for {data.label}
         </p>
       )}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

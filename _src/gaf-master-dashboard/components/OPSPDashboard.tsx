@@ -627,14 +627,14 @@ const PERSISTENT_CNS: { match: RegExp; fallback: CriticalNumber }[] = [
     {
         match: IDC_GP_CN,
         fallback: {
-            name: 'Increase GAF IDC GP% to >42%', owner: 'Adam Carter',
+            name: 'Increase GAF IDC GP% to >42%', owner: 'Nick Aspinall',
             superGreen: '>42%', green: '42%', yellow: '40%', red: '<40%', current: '',
         },
     },
     {
         match: GYM_DESIGN_CN,
         fallback: {
-            name: 'Increase Gym Designs Created', owner: 'Adam Carter',
+            name: 'Increase Gym Designs Created', owner: 'Shanice Thomas',
             superGreen: '250', green: '200', yellow: '150', red: '120', current: '',
         },
     },

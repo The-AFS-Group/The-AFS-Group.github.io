@@ -5,7 +5,7 @@ import {
     PhoneIncoming, Info, PencilRuler, ChevronRight, Calendar, FileX, Package, Percent,
 } from 'lucide-react';
 import {
-    ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis,
+    ResponsiveContainer, BarChart as RechartsBarChart, ComposedChart, Bar, Line, XAxis, YAxis,
     CartesianGrid, Tooltip, ReferenceLine, Label,
 } from 'recharts';
 import { GAF_COLORS } from '../constants';
@@ -643,6 +643,125 @@ const PERSISTENT_CNS: { match: RegExp; fallback: CriticalNumber }[] = [
 const fmtPct = (n: number) => `${n.toFixed(1)}%`;
 const fmtShortDate = (d: Date) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
 
+/* ---------------------------------------------------------------- pacing
+ * The bands in the docs are END-of-quarter targets, so comparing a part-finished
+ * quarter against them shows Red for weeks even when we're on track. Each card's main
+ * badge therefore shows PACE (where the number should be by today), with the plain
+ * quarter-end status kept as a small grey tag so nothing is hidden. How pace works
+ * depends on the kind of number:
+ *   - running total (Gym Designs): bands scaled by the share of the quarter gone;
+ *   - climb to a goal (Fill Rate): gap to a straight "glide path" from start to goal;
+ *   - average (IDC GP%): no pace (a low-margin day is low on any date), so the colour
+ *     is held as "Early read" until there's enough data, and the card shows what the
+ *     rest of the quarter must average.
+ * Nothing extra is typed into the docs: it's all derived from their bands and dates.
+ */
+type Tone = 'super' | 'green' | 'yellow' | 'red' | 'none';
+const DAY_MS = 86400000;
+const MIN_GP_DAYS = 10;
+
+// Calendar dates as local midnights; pacing ticks over at midnight Adelaide time.
+const adelaideToday = (): Date => {
+    const [y, m, d] = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'Australia/Adelaide', year: 'numeric', month: '2-digit', day: '2-digit',
+    }).format(new Date()).split('-').map(Number);
+    return new Date(y, m - 1, d);
+};
+const dateKey = (d: Date) =>
+    `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+const daysBetween = (a: Date, b: Date) => Math.round((b.getTime() - a.getTime()) / DAY_MS);
+const addDays = (d: Date, n: number) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n);
+const clamp01 = (n: number) => Math.max(0, Math.min(1, n));
+
+// Mon-Fri days in [from, to], i.e. dispatch days before public holidays.
+const weekdaysBetween = (from: Date, to: Date): number => {
+    let n = 0;
+    for (let d = from; d <= to; d = addDays(d, 1)) if (d.getDay() % 6 !== 0) n++;
+    return n;
+};
+const addWeekdays = (from: Date, n: number): Date => {
+    let d = from;
+    while (n > 0) { d = addDays(d, 1); if (d.getDay() % 6 !== 0) n--; }
+    return d;
+};
+
+interface QuarterClock {
+    start: Date; end: Date; today: Date;
+    totalDays: number; elapsedDays: number; remainingDays: number;
+    fraction: number; status: 'future' | 'current' | 'past';
+}
+const quarterClock = (q: QuarterConfig): QuarterClock => {
+    const start = quarterStartDate(q);
+    const e = quarterEndDate(q);
+    const end = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+    const today = adelaideToday();
+    const totalDays = daysBetween(start, end) + 1;
+    const elapsedDays = Math.max(0, Math.min(totalDays, daysBetween(start, today) + 1));
+    return {
+        start, end, today, totalDays, elapsedDays,
+        remainingDays: totalDays - elapsedDays,
+        fraction: elapsedDays / totalDays,
+        status: today < start ? 'future' : today > end ? 'past' : 'current',
+    };
+};
+
+// "Inventory Fill Rate: 81.7% ➔ 95.5%" from the Theme's Measurable Target line.
+const parseStartGoal = (s: string): { start: number; goal: number } | null => {
+    const m = s.match(/(\d+(?:\.\d+)?)\s*%?\s*(?:➔|→|->|to)\s*[≥>]?\s*(\d+(?:\.\d+)?)\s*%/i);
+    return m ? { start: parseFloat(m[1]), goal: parseFloat(m[2]) } : null;
+};
+
+// Fill Rate pace: points above/below the glide path. Fixed tolerances rather than
+// scaled bands, because scaled bands all collapse onto the start value early in the
+// quarter and a 0.1-pt wobble would flip the colour.
+const glideTone = (gap: number): { label: string; tone: Tone } =>
+    gap >= 1 ? { label: 'Ahead of the glide path', tone: 'super' }
+        : gap >= -0.5 ? { label: 'On the glide path', tone: 'green' }
+            : gap >= -2 ? { label: 'Just behind the glide path', tone: 'yellow' }
+                : { label: 'Behind the glide path', tone: 'red' };
+
+interface CNView {
+    badge?: { label: string; tone: Tone };   // replaces the end-of-quarter band badge
+    endTag?: string;                          // small grey quarter-end status
+    currentLabel?: string;
+    currentSuffix?: string;
+    pair?: { label: string; value: string }[];
+    bar?: { fill: number; tick: number | null; tone: Tone; left: string; right: string; tickLabel?: string };
+    lines?: { label: string; value: string; trend?: 'up' | 'down' }[];
+    hideBands?: boolean;
+}
+
+const BAR_FILL: Record<Tone, string> = {
+    super: 'bg-emerald-300', green: 'bg-emerald-400', yellow: 'bg-amber-300', red: 'bg-red-400', none: 'bg-gray-400',
+};
+
+// Fill = progress to the goal; the white tick = where a straight line to the goal
+// says we should be today. Fill past the tick means ahead of pace.
+const PaceBar: React.FC<NonNullable<CNView['bar']>> = ({ fill, tick, tone, left, right, tickLabel }) => (
+    <div className={tick != null && tickLabel ? 'mb-7' : 'mb-4'}>
+        <div className="relative h-3 w-full bg-white/10 rounded-full">
+            <div
+                className={`h-full rounded-full ${BAR_FILL[tone]}`}
+                style={{ width: `${clamp01(fill) * 100}%`, minWidth: fill > 0 ? 4 : 0 }}
+            />
+            {tick != null && (
+                <div className="absolute -top-1 -bottom-1 w-0.5 bg-white rounded" style={{ left: `${clamp01(tick) * 100}%` }} title={tickLabel} />
+            )}
+        </div>
+        <div className="relative flex justify-between gap-2 text-[10px] text-gray-400 font-semibold mt-1.5">
+            <span>{left}</span>
+            <span>{right}</span>
+            {tick != null && tickLabel && (
+                // Sits under the tick, nudged inward near either end so it never overlaps the end labels.
+                <span
+                    className="absolute top-full mt-0.5 text-gray-300 whitespace-nowrap"
+                    style={{ left: `${clamp01(tick) * 100}%`, transform: `translateX(-${Math.round(clamp01(tick) * 100)}%)` }}
+                >{tickLabel}</span>
+            )}
+        </div>
+    </div>
+);
+
 /* ------------------------------------------------------------------ component */
 
 // Default to the latest quarter that's both published and already started, so the tab
@@ -802,10 +921,28 @@ export default function OPSPDashboard() {
 
     const { stats: designStats, stale: designStatsStale } = useDesignStats();
 
+    const clock = useMemo(() => quarterClock(quarter), [quarter]);
+
+    // Fill Rate's glide path: a straight line from the start value (the Theme's
+    // "81.7% ➔ 95.5%", else the first report week in the quarter) on the first report
+    // week of the quarter, to the goal on the quarter's last day.
+    const fillGlide = useMemo(() => {
+        const inQtr = (fillRate?.weeks || []).filter((w) => w.weekEnding >= clock.start && w.weekEnding <= clock.end);
+        const themeLine = (data?.theme || []).map((t) => t.value).find((v) => FILL_RATE_CN.test(v) && parseStartGoal(v));
+        const sg = themeLine ? parseStartGoal(themeLine) : null;
+        const start = sg?.start ?? inQtr[0]?.total;
+        const goal = sg?.goal ?? fillRate?.target ?? undefined;
+        if (start == null || goal == null) return null;
+        const anchor = inQtr[0]?.weekEnding ?? clock.start;
+        const span = Math.max(1, daysBetween(anchor, clock.end));
+        const at = (d: Date) => start + (goal - start) * clamp01(daysBetween(anchor, d) / span);
+        return { start, goal, anchor, at, latest: inQtr[inQtr.length - 1] || null };
+    }, [fillRate, data, clock]);
+
     // Persistent rows (Foundation doc, else built-in) first, then this quarter's own doc
     // rows, then the app's live Current values merged over the top. The docs own name,
-    // owner and bands; the app owns Current wherever a live feed exists.
-    type CNRow = CriticalNumber & { note?: string; source?: string };
+    // owner and bands; the app owns Current and pace wherever a live feed exists.
+    type CNRow = CriticalNumber & { note?: string; source?: string; view?: CNView };
     const criticalNumbers = useMemo<CNRow[]>(() => {
         const persistent: CNRow[] = PERSISTENT_CNS.map(({ match, fallback }) => {
             const fromDoc = (foundationCNs || []).find((c) => match.test(c.name));
@@ -815,28 +952,105 @@ export default function OPSPDashboard() {
             .filter((c) => !PERSISTENT_CNS.some(({ match }) => match.test(c.name)))
             .map((c) => ({ ...c }));
         const rows = [...persistent, ...quarterRows];
+        const live = clock.status === 'current';
 
+        // ---- Gym Designs: running total for THIS quarter, paced against scaled bands.
         const designs = rows.find((c) => GYM_DESIGN_CN.test(c.name));
         if (designs && designStats) {
-            designs.current = designStats.total.toLocaleString();
-            designs.source = 'Live from the designer app' + (designStatsStale
+            const from = dateKey(clock.start), to = dateKey(clock.end);
+            const qtd = designStats.daily.filter((x) => x.date >= from && x.date <= to).reduce((n, x) => n + x.count, 0);
+            designs.current = qtd.toLocaleString();
+            designs.source = 'Live from the designer app • this quarter only' + (designStatsStale
                 ? ' • app unreachable, showing last known figure'
                 : ` • as at ${new Date(designStats.asOf).toLocaleString('en-AU', { timeZone: 'Australia/Adelaide', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}`);
-        }
-
-        const idc = rows.find((c) => IDC_GP_CN.test(c.name));
-        if (idc) {
-            idc.current = idcGp?.average != null ? fmtPct(idcGp.average) : '';
-            if (idcGp?.average != null && idcGp.lastDate) {
-                idc.source = `Live • ${quarter.label} avg of ${idcGp.days} days' fulfilled GM% to ${fmtShortDate(idcGp.lastDate)}`;
-            } else if (idcGp) {
-                idc.source = `No fulfilled sales recorded for ${quarter.label} yet`;
+            const g = num(designs.green);
+            if (clock.status !== 'future' && !isNaN(g)) {
+                const f = clock.fraction;
+                const scale = (v: string) => { const n = num(v); return isNaN(n) ? '' : String(n * f); };
+                const pace = bandFor({
+                    ...designs, superGreen: scale(designs.superGreen), green: scale(designs.green),
+                    yellow: scale(designs.yellow), red: scale(designs.red),
+                });
+                const expected = g * f;
+                const runFrom = dateKey(addDays(clock.today, -20)), runTo = dateKey(clock.today);
+                const last3wks = designStats.daily.filter((x) => x.date >= runFrom && x.date <= runTo).reduce((n, x) => n + x.count, 0) / 3;
+                const lines: NonNullable<CNView['lines']> = [];
+                if (live && clock.remainingDays > 0) {
+                    const need = Math.max(0, g - qtd) / (clock.remainingDays / 7);
+                    lines.push({ label: 'Need from here', value: need > 0 ? `${need.toFixed(1)} / wk` : 'Green reached' });
+                    lines.push({ label: 'Running at (last 3 wks)', value: `${last3wks.toFixed(0)} / wk`, trend: last3wks >= need ? 'up' : 'down' });
+                }
+                designs.view = {
+                    badge: { label: `${live ? (pace.tone === 'yellow' || pace.tone === 'red' ? 'Behind pace' : 'On pace') : 'Final'} · ${pace.label}`, tone: pace.tone },
+                    endTag: live ? `Qtr-end: ${qtd.toLocaleString()} / ${g.toLocaleString()}` : undefined,
+                    currentLabel: 'This quarter',
+                    currentSuffix: `/ ${g.toLocaleString()} Green`,
+                    bar: {
+                        fill: qtd / g, tick: live ? f : null, tone: pace.tone,
+                        left: '0', right: g.toLocaleString(),
+                        tickLabel: live ? `today ${Math.round(expected)}` : undefined,
+                    },
+                    lines,
+                    hideBands: true,
+                };
             }
         }
 
-        // Fill Rate is a quarterly number, so it only shows where a quarter doc lists it.
-        // Its Current AND bands come from the report (bands = row 1 above SUPERGREEN/
-        // GREEN/ORANGE/RED); the values typed in the doc are only a fallback.
+        // ---- IDC GP%: $-weighted average; no pace, colour held until enough days.
+        const idc = rows.find((c) => IDC_GP_CN.test(c.name));
+        if (idc) {
+            const avg = idcGp?.average ?? null;
+            idc.current = avg != null ? fmtPct(avg) : '';
+            if (idcGp?.lastDate) {
+                idc.source = `$-weighted fulfilled GM% • ${idcGp.days} dispatch day${idcGp.days === 1 ? '' : 's'} to ${fmtShortDate(idcGp.lastDate)}`;
+            } else if (idcGp) {
+                idc.source = `No fulfilled sales recorded for ${quarter.label} yet`;
+            }
+            const T = num(idc.green);
+            if (idcGp && live && !isNaN(T)) {
+                const qtdBand = bandFor(idc);
+                const early = idcGp.days < MIN_GP_DAYS;
+                const from = idcGp.lastDate ? addDays(idcGp.lastDate, 1) : clock.start;
+                const remaining = weekdaysBetween(from, clock.end);
+                let needed: number | null = null;
+                if (remaining > 0) {
+                    if (idcGp.revenue > 0 && idcGp.days > 0) {
+                        // Assume the rest of the quarter turns over at the same $/day as so far.
+                        const restRev = (idcGp.revenue / idcGp.days) * remaining;
+                        needed = ((T / 100) * (idcGp.revenue + restRev) - idcGp.gp) / restRev * 100;
+                    } else {
+                        needed = avg != null ? (T * (idcGp.days + remaining) - avg * idcGp.days) / remaining : T;
+                    }
+                }
+                const lines: NonNullable<CNView['lines']> = [];
+                if (idcGp.recent10 != null) {
+                    const dir = idcGp.prev10 == null ? undefined : idcGp.recent10 >= idcGp.prev10 ? 'up' : 'down';
+                    lines.push({
+                        label: 'Last 10 dispatch days',
+                        value: `${fmtPct(idcGp.recent10)}${dir ? (dir === 'up' ? ' ▲' : ' ▼') : ''}`,
+                        trend: dir,
+                    });
+                }
+                idc.view = {
+                    badge: early ? { label: `Early read · ${idcGp.days} of ${MIN_GP_DAYS} days`, tone: 'none' } : undefined,
+                    endTag: early && avg != null ? `Qtr-to-date: ${qtdBand.label}` : undefined,
+                    pair: [
+                        { label: 'Quarter so far', value: avg != null ? fmtPct(avg) : '—' },
+                        { label: 'Needed from here', value: needed != null ? fmtPct(needed) : '—' },
+                    ],
+                    lines,
+                };
+                if (early) {
+                    const showsFrom = addWeekdays(idcGp.lastDate ?? addDays(clock.start, -1), MIN_GP_DAYS - idcGp.days);
+                    idc.source = (idc.source ? `${idc.source} • ` : '') + `colour shows from about ${fmtShortDate(showsFrom)}`;
+                }
+            }
+        }
+
+        // ---- Fill Rate: a quarterly number, so it only shows where a quarter doc lists
+        // it. Current AND bands come from the report (bands = row 1 above SUPERGREEN/
+        // GREEN/ORANGE/RED); the values typed in the doc are only a fallback. Pace is
+        // the gap to the glide path.
         const fr = rows.find((c) => FILL_RATE_CN.test(c.name));
         const latest = fillRate?.weeks[fillRate.weeks.length - 1];
         if (fr && fillRate && latest) {
@@ -849,22 +1063,64 @@ export default function OPSPDashboard() {
             const prev = fillRate.weeks[fillRate.weeks.length - 2];
             const wow = prev ? latest.total - prev.total : null;
             fr.source = `Live • Wk ${latest.week} (w/e ${fmtShortDate(latest.weekEnding)})`
-                + (wow != null ? ` • ${wow >= 0 ? '▲' : '▼'}${Math.abs(wow).toFixed(1)} pts WoW` : '')
-                + (fillRate.target != null ? ` • target ${fillRate.target}%` : '');
+                + (wow != null ? ` • ${wow >= 0 ? '▲' : '▼'}${Math.abs(wow).toFixed(1)} pts WoW` : '');
         } else if (fr) {
             fr.source = 'Fill Rate report not reachable, showing the value typed in the OPSP doc';
+        }
+        const wk = fillGlide?.latest;
+        if (fr && fillGlide && wk && clock.status !== 'future') {
+            const expected = fillGlide.at(wk.weekEnding);
+            const pace = glideTone(wk.total - expected);
+            const weeksLeft = daysBetween(wk.weekEnding, clock.end) / 7;
+            const need = fillGlide.goal - wk.total;
+            const span = Math.max(1, daysBetween(fillGlide.anchor, clock.end));
+            fr.view = {
+                badge: pace,
+                endTag: `Qtr-end: ${bandFor(fr).label}`,
+                pair: [
+                    { label: `Wk ${wk.week} actual`, value: fmtPct(wk.total) },
+                    { label: 'Path expects', value: fmtPct(expected) },
+                ],
+                bar: {
+                    fill: (wk.total - fillGlide.start) / (fillGlide.goal - fillGlide.start),
+                    tick: live ? clamp01(daysBetween(fillGlide.anchor, clock.today) / span) : null,
+                    tone: pace.tone,
+                    left: `${fillGlide.start}% start`, right: `${fillGlide.goal}% goal`,
+                },
+                lines: [{
+                    label: 'Needed each week',
+                    value: need <= 0 ? 'Goal reached' : weeksLeft > 0 ? `+${(need / weeksLeft).toFixed(2)} pts` : `${need.toFixed(1)} pts short`,
+                }],
+                hideBands: true,
+            };
+        } else if (fr && clock.status !== 'future') {
+            fr.view = {
+                badge: { label: 'Pace unknown', tone: 'none' },
+                endTag: `Qtr-end: ${bandFor(fr).label}`,
+            };
+            fr.source += ' • publish the Fill Rate Report (TOTAL FILL RATE tab) to turn on pacing';
         }
 
         for (const r of rows) if (!num(r.green) && !r.note) r.note = 'Bands not set in the OPSP doc.';
         return rows;
-    }, [data, foundationCNs, designStats, designStatsStale, idcGp, fillRate, quarter.label]);
+    }, [data, foundationCNs, designStats, designStatsStale, idcGp, fillRate, fillGlide, quarter.label, clock]);
 
     const showFillRate = criticalNumbers.some((c) => FILL_RATE_CN.test(c.name));
-    const fillRateChart = useMemo(() => (fillRate?.weeks || []).map((w) => ({
-        label: `Wk ${w.week}`,
-        sub: fmtShortDate(w.weekEnding),
-        total: w.total,
-    })), [fillRate]);
+    // FY-to-date weeks, padded with empty weeks to the selected quarter's end so the
+    // glide path line shows the whole way to the goal.
+    const fillRateChart = useMemo(() => {
+        const weeks = fillRate?.weeks || [];
+        const out: { label: string; sub: string; total: number | null; glide: number | null }[] = [];
+        const glideAt = (d: Date) => (fillGlide && d >= fillGlide.anchor && d <= clock.end ? +fillGlide.at(d).toFixed(2) : null);
+        for (const w of weeks) out.push({ label: `Wk ${w.week}`, sub: fmtShortDate(w.weekEnding), total: w.total, glide: glideAt(w.weekEnding) });
+        const last = weeks[weeks.length - 1];
+        if (last && fillGlide) {
+            for (let n = last.week + 1, d = addDays(last.weekEnding, 7); d <= clock.end; n++, d = addDays(d, 7)) {
+                out.push({ label: `Wk ${n}`, sub: fmtShortDate(d), total: null, glide: glideAt(d) });
+            }
+        }
+        return out;
+    }, [fillRate, fillGlide, clock]);
     const fillRateLatest = fillRate?.weeks[fillRate.weeks.length - 1] || null;
 
     // Last 30 calendar days, zero-filled, so a quiet stretch reads as a gap rather
@@ -1068,7 +1324,8 @@ export default function OPSPDashboard() {
                         <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${criticalNumbers.length + (quarterIndex === 0 ? 1 : 0) > 1 ? 'md:grid-cols-2' : ''}`}>
                             {quarterIndex === 0 && <GCDeadStockCard />}
                             {criticalNumbers.map((cn, i) => {
-                                const band = bandFor(cn);
+                                const v = cn.view;
+                                const band = v?.badge || bandFor(cn);
                                 return (
                                     <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
                                         <div className="flex justify-between items-start gap-3 mb-4">
@@ -1076,23 +1333,57 @@ export default function OPSPDashboard() {
                                                 <div className="font-bold text-lg leading-tight">{cn.name}</div>
                                                 {cn.owner && <div className="text-xs text-gray-400 mt-1">{cn.owner}</div>}
                                             </div>
-                                            <div className={`px-2 py-1 text-xs font-bold rounded border shrink-0 ${TONE[band.tone]}`}>
-                                                {band.label}
+                                            <div className="flex flex-col items-end gap-1 shrink-0">
+                                                <div className={`px-2 py-1 text-xs font-bold rounded border ${TONE[band.tone]}`}>
+                                                    {band.label}
+                                                </div>
+                                                {v?.endTag && (
+                                                    <div className="px-2 py-0.5 text-[10px] font-semibold rounded border border-white/15 text-gray-400">
+                                                        {v.endTag}
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
                                         <div className="border-t border-white/10 pt-4">
-                                            <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">Current</div>
-                                            <div className="text-3xl font-black mb-4">
-                                                {cn.current || <span className="text-base font-medium text-gray-500">Not recorded</span>}
-                                            </div>
-                                            <div className="grid grid-cols-4 gap-1.5 text-center">
-                                                {([['Super', cn.superGreen], ['Green', cn.green], ['Yellow', cn.yellow], ['Red', cn.red]] as const).map(([lbl, val]) => (
-                                                    <div key={lbl} className="bg-white/5 rounded-lg py-2">
-                                                        <div className="text-[9px] uppercase text-gray-500 font-bold">{lbl}</div>
-                                                        <div className="text-xs font-bold text-gray-200">{val || '—'}</div>
+                                            {v?.pair ? (
+                                                <div className="grid grid-cols-2 gap-3 mb-4">
+                                                    {v.pair.map((p) => (
+                                                        <div key={p.label}>
+                                                            <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">{p.label}</div>
+                                                            <div className="text-3xl font-black">{p.value}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="text-[10px] uppercase text-gray-400 font-bold mb-1">{v?.currentLabel || 'Current'}</div>
+                                                    <div className="text-3xl font-black mb-4">
+                                                        {cn.current || <span className="text-base font-medium text-gray-500">Not recorded</span>}
+                                                        {cn.current && v?.currentSuffix && <span className="text-sm font-bold text-gray-400 ml-2">{v.currentSuffix}</span>}
                                                     </div>
-                                                ))}
-                                            </div>
+                                                </>
+                                            )}
+                                            {v?.bar && <PaceBar {...v.bar} />}
+                                            {!v?.hideBands && (
+                                                <div className="grid grid-cols-4 gap-1.5 text-center">
+                                                    {([['Super', cn.superGreen], ['Green', cn.green], ['Yellow', cn.yellow], ['Red', cn.red]] as const).map(([lbl, val]) => (
+                                                        <div key={lbl} className="bg-white/5 rounded-lg py-2">
+                                                            <div className="text-[9px] uppercase text-gray-500 font-bold">{lbl}</div>
+                                                            <div className="text-xs font-bold text-gray-200">{val || '—'}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                            {v?.lines && v.lines.length > 0 && (
+                                                <div className="space-y-1 mt-3">
+                                                    {v.lines.map((l) => (
+                                                        <div key={l.label} className="flex justify-between gap-3 text-xs">
+                                                            <span className="text-gray-400 font-medium">{l.label}</span>
+                                                            <span className={`font-bold ${l.trend === 'up' ? 'text-emerald-400' : l.trend === 'down' ? 'text-red-300' : 'text-gray-100'}`}>{l.value}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                             {cn.note && (
                                                 <div className="flex items-start gap-1.5 mt-3 text-[11px] text-amber-300/90 font-medium">
                                                     <AlertTriangle size={12} className="shrink-0 mt-0.5" />
@@ -1253,6 +1544,7 @@ export default function OPSPDashboard() {
                                         </div>
                                         <p className="text-xs text-gray-500 ml-9">
                                             Weekly, FY to date
+                                            {fillGlide && (<> <span className="mx-1">•</span> dashed line = glide path {fillGlide.start}% ➔ {fillGlide.goal}%</>)}
                                             {fillRate.target != null && (<> <span className="mx-1">•</span> Target <span className="font-bold text-green-600">{fillRate.target}%</span></>)}
                                         </p>
                                         <SourceNote text="Source: Fill Rate Report - FY27 (Netstock, updated weekly) · refreshed when this page loaded" className="ml-9 mt-0.5" />
@@ -1271,12 +1563,12 @@ export default function OPSPDashboard() {
                                 </div>
                                 <div className="flex-1 min-h-[240px]">
                                     <ResponsiveContainer width="100%" height="100%">
-                                        <RechartsBarChart data={fillRateChart} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                                        <ComposedChart data={fillRateChart} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                                             <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
                                             <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} dy={10} />
                                             <YAxis tickFormatter={(v) => `${v}%`} domain={[60, 100]} allowDataOverflow tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
                                             <Tooltip
-                                                formatter={(val: number) => [fmtPct(val), 'Fill rate']}
+                                                formatter={(val: number, name: string) => [fmtPct(val), name === 'glide' ? 'Glide path' : 'Fill rate']}
                                                 labelFormatter={(lbl: string, p: any[]) => (p?.[0]?.payload?.sub ? `${lbl} · w/e ${p[0].payload.sub}` : lbl)}
                                                 contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
                                             />
@@ -1286,7 +1578,9 @@ export default function OPSPDashboard() {
                                                 </ReferenceLine>
                                             )}
                                             <Bar dataKey="total" fill={GAF_COLORS.orange} radius={[4, 4, 0, 0]} barSize={20} />
-                                        </RechartsBarChart>
+                                            {/* Glide path: straight line from the quarter's start value to its goal. */}
+                                            <Line dataKey="glide" type="linear" stroke="#374151" strokeWidth={2} strokeDasharray="5 4" dot={false} connectNulls isAnimationActive={false} />
+                                        </ComposedChart>
                                     </ResponsiveContainer>
                                 </div>
                                 {/* Latest week split two ways: product category, and the SKU

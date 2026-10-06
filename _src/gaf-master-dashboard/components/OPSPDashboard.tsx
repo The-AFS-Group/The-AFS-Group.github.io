@@ -1018,6 +1018,13 @@ export default function OPSPDashboard() {
                     lines.push({ label: 'Need from here', value: need > 0 ? `${need.toFixed(1)} / wk` : 'Green reached' });
                     lines.push({ label: 'Running at (last 3 wks)', value: `${last3wks.toFixed(0)} / wk`, trend: last3wks >= need ? 'up' : 'down' });
                 }
+                // Running total since the designer app launched, alongside the quarter's count.
+                lines.push({
+                    label: 'All-time total' + (designStats.firstDesign
+                        ? ` (since ${new Date(designStats.firstDesign).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })})`
+                        : ''),
+                    value: designStats.total.toLocaleString(),
+                });
                 designs.view = {
                     badge: { label: `${live ? (pace.tone === 'yellow' || pace.tone === 'red' ? 'Behind pace' : 'On pace') : 'Final'} · ${pace.label}`, tone: pace.tone },
                     endTag: live ? `Qtr-end: ${qtd.toLocaleString()} / ${g.toLocaleString()}` : undefined,

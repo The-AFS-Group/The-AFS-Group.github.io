@@ -132,6 +132,7 @@ const WholesaleGPCard: React.FC = () => {
   const [view, setView] = useState<"month" | "quarter">("month");
   const [monthIndex, setMonthIndex] = useState(0);
   const [quarterIndex, setQuarterIndex] = useState(0);
+  const [showSource, setShowSource] = useState(false);
 
   // Four FY quarters (Jul-Sep, Oct-Dec, Jan-Mar, Apr-Jun) built from the same 12
   // months, labelled the way OPSP's quarter picker is ("Q1 FY27") so they match.
@@ -207,12 +208,39 @@ const WholesaleGPCard: React.FC = () => {
         <div className="p-3 rounded-xl bg-gradient-to-br from-slate-600 to-slate-800 shadow-lg">
           <Package className="w-6 h-6 text-white" />
         </div>
-        <div>
-          <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
-          <SourceNote
-            text={`Source: NetSuite · actuals for ${data.label} · target from the FY27 budget`}
-            className="mt-0.5"
-          />
+        <h3 className="text-xl md:text-2xl font-bold text-gray-900">Wholesale</h3>
+        <div className="relative">
+          <button
+            onClick={() => setShowSource((v) => !v)}
+            className="flex items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-900 border border-gray-200 hover:border-gray-300 rounded-full px-2.5 py-1 transition-colors"
+            title="Where does this data come from?"
+          >
+            <Info className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Source</span>
+          </button>
+          {showSource && (
+            <div className="absolute top-full left-0 mt-2 w-72 p-3 bg-gray-900 text-white text-xs leading-relaxed rounded-lg shadow-xl z-20">
+              GP Invoiced comes live from the GAF Wholesale Actuals NetSuite sync. Target
+              is a one-time capture of the FY27 budget, re-exported from NetSuite when it
+              changes.
+              <a
+                href="https://docs.google.com/spreadsheets/d/19vavqzSrf_ChdKoriScry_tAfIf-mAW2M8AZIYRR0uk/edit?gid=1261715133#gid=1261715133"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-blue-300 hover:underline mt-2 font-semibold"
+              >
+                <ExternalLink className="w-3 h-3" /> View Actuals source
+              </a>
+              <a
+                href="https://docs.google.com/spreadsheets/d/19vavqzSrf_ChdKoriScry_tAfIf-mAW2M8AZIYRR0uk/edit?gid=555000001#gid=555000001"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-1 text-blue-300 hover:underline mt-1 font-semibold"
+              >
+                <ExternalLink className="w-3 h-3" /> View Target source
+              </a>
+            </div>
+          )}
         </div>
         <div className="flex items-center gap-2 ml-auto flex-wrap">
           <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">

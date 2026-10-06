@@ -1290,17 +1290,39 @@ export const fetchFillRate = async (): Promise<FillRateData | null> => {
   }
 };
 
+export interface IdcGpDay { date: Date; margin: number; gp: number | null }
+
 export interface IdcGpQuarter {
-  average: number | null;         // simple mean of the daily column-F values in range
-  days: number;                   // days with a fulfilled margin entered
+  // $-weighted fulfilled GM% for the quarter: total fulfilled GP / total fulfilled revenue
+  // (revenue backed out of each day's GP and GM%). A $40k day outweighs a $2k day, as it
+  // does in the P&L. Falls back to the simple daily mean if the GP column is missing.
+  average: number | null;
+  days: number;                   // dispatch days with a fulfilled margin entered
   lastDate: Date | null;
-  daily: { date: Date; margin: number }[];
+  gp: number;                     // quarter-to-date fulfilled GP $
+  revenue: number;                // quarter-to-date fulfilled revenue $
+  daily: IdcGpDay[];
+  // Last 10 dispatch days up to the end of the quarter (may reach back into the previous
+  // quarter early on), and the 10 before that, both $-weighted, for the trend arrow.
+  recent10: number | null;
+  prev10: number | null;
 }
 
+// Total GP / total revenue across days; revenue = GP / GM%. Days without a GP figure
+// fall back to the simple mean so a missing column degrades rather than breaks.
+export const weightedMargin = (days: IdcGpDay[]): number | null => {
+  if (!days.length) return null;
+  const withGp = days.filter((d) => d.gp != null && d.margin > 0);
+  if (withGp.length !== days.length) return days.reduce((s, d) => s + d.margin, 0) / days.length;
+  const gp = withGp.reduce((s, d) => s + (d.gp as number), 0);
+  const rev = withGp.reduce((s, d) => s + (d.gp as number) / (d.margin / 100), 0);
+  return rev > 0 ? (gp / rev) * 100 : null;
+};
+
 // "Ongoing GP Dashboard Spreadsheet", GAF DATA tab (already published, same feed as
-// Sales Health). Column F "GROSS MARGIN (FULFILLED)" is found by header text so a
-// column insert doesn't silently switch metrics. Weekends/no-dispatch days are blank
-// and are skipped, not counted as 0%.
+// Sales Health). Columns E "GROSS PROFIT FULFILLED" and F "GROSS MARGIN (FULFILLED)" are
+// found by header text so a column insert doesn't silently switch metrics. Weekends/
+// no-dispatch days are blank and are skipped, not counted as 0%.
 export const fetchIdcGpQuarter = async (start: Date, end: Date): Promise<IdcGpQuarter | null> => {
   try {
     const res = await fetch(`${URLS.GAF.main}&_t=${Date.now()}`);
@@ -1309,19 +1331,35 @@ export const fetchIdcGpQuarter = async (start: Date, end: Date): Promise<IdcGpQu
     const header = rows[0] || [];
     let col = header.findIndex((c) => /gross margin\s*\(fulfilled\)/i.test(c || ""));
     if (col === -1) col = 5;
-    const daily: { date: Date; margin: number }[] = [];
+    const gpCol = header.findIndex((c) => /^\s*gross profit fulfilled\s*$/i.test(c || ""));
+    const all: IdcGpDay[] = [];
     for (let r = 1; r < rows.length; r++) {
       const m = (rows[r][0] || "").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
       if (!m) continue;
       const date = new Date(+m[3], +m[2] - 1, +m[1]);
-      if (date < start || date > end) continue;
+      if (date > end) continue;
       const raw = (rows[r][col] || "").trim();
       if (!raw) continue;
       const v = parseFloat(cleanNumber(raw));
-      if (!isNaN(v)) daily.push({ date, margin: v });
+      if (isNaN(v)) continue;
+      const gpRaw = gpCol === -1 ? "" : (rows[r][gpCol] || "").trim();
+      const gp = gpRaw ? parseFloat(cleanNumber(gpRaw)) : NaN;
+      all.push({ date, margin: v, gp: isNaN(gp) ? null : gp });
     }
-    const average = daily.length ? daily.reduce((s, d) => s + d.margin, 0) / daily.length : null;
-    return { average, days: daily.length, lastDate: daily.length ? daily[daily.length - 1].date : null, daily };
+    all.sort((a, b) => a.date.getTime() - b.date.getTime());
+    const daily = all.filter((d) => d.date >= start);
+    const gp = daily.reduce((s, d) => s + (d.gp ?? 0), 0);
+    const revenue = daily.reduce((s, d) => s + (d.gp != null && d.margin > 0 ? d.gp / (d.margin / 100) : 0), 0);
+    return {
+      average: weightedMargin(daily),
+      days: daily.length,
+      lastDate: daily.length ? daily[daily.length - 1].date : null,
+      gp,
+      revenue,
+      daily,
+      recent10: all.length >= 10 ? weightedMargin(all.slice(-10)) : null,
+      prev10: all.length >= 20 ? weightedMargin(all.slice(-20, -10)) : null,
+    };
   } catch (error) {
     console.error("Error fetching IDC GP% feed", error);
     return null;

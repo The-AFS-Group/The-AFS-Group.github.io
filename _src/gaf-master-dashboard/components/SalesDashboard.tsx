@@ -308,7 +308,7 @@ const WholesaleGPCard: React.FC = () => {
 
 export default function SalesDashboard() {
   const activeBrand = "GAF";
-  const [metricType, setMetricType] = useState<"created" | "fulfilled">("created");
+  const [metricType, setMetricType] = useState<"created" | "fulfilled">("fulfilled");
   const [progress, setProgress] = useState(0);
   
   // Initialize state without cached sales data to prevent stale data flash

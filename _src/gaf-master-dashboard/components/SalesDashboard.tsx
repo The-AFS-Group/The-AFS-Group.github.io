@@ -11,7 +11,7 @@ const brandConfig: BrandConfig = {
   GAF: {
     colors: { accent: "#F26422", gradient: "from-orange-500 to-red-500" },
     currencySymbol: "$",
-    targetMargin: 38,
+    targetMargin: 42,
   },
 };
 

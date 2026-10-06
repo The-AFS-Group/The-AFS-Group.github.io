@@ -1,0 +1,54 @@
+{
+  "Q1 FY27": {
+    "asAt": "2026-09-30",
+    "capturedAt": "2026-10-06T12:00:00+10:30",
+    "method": "manual",
+    "note": "Reconstructed from what the dashboard showed at the end of Q1: the Q1 doc's rows as typed, the GC Dead Stock card ($404,482), and the designer app's live count (104 at 30 Sep, all in Q1).",
+    "rows": [
+      {
+        "name": "Reduce GC Dead Stock",
+        "owner": "Adam Carter",
+        "superGreen": "<$400k",
+        "green": "<$550k",
+        "yellow": "<$692k",
+        "red": ">=$692k",
+        "current": "$404k",
+        "badge": { "label": "Green", "tone": "green" },
+        "source": "AFS-Gold Coast only • Deadstock Tracker - FY27 Grand Total $404,482 • start $692k"
+      },
+      {
+        "name": "Increase GAF AOV by 4%",
+        "owner": "Adam Carter",
+        "superGreen": "5%",
+        "green": "4%",
+        "yellow": "3.5%",
+        "red": "3%",
+        "current": "5%",
+        "badge": { "label": "Super Green", "tone": "super" },
+        "source": "Value entered in the Q1 FY27 OPSP doc"
+      },
+      {
+        "name": "Increase GAF IDC GP% to >40%",
+        "owner": "Adam Carter",
+        "superGreen": ">40%",
+        "green": "40%",
+        "yellow": "38%",
+        "red": "<38%",
+        "current": "42.6%",
+        "badge": { "label": "Super Green", "tone": "super" },
+        "source": "Value entered in the Q1 FY27 OPSP doc"
+      },
+      {
+        "name": "Increase Gym Designs Created",
+        "owner": "Adam Carter",
+        "superGreen": "20",
+        "green": "15",
+        "yellow": "10",
+        "red": "5",
+        "current": "104",
+        "badge": { "label": "Super Green", "tone": "super" },
+        "source": "Designer app count, 15 Jul to 30 Sep 2026"
+      }
+    ]
+  }
+}

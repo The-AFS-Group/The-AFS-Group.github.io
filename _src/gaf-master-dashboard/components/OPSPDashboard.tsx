@@ -15,6 +15,7 @@ import {
 } from '../services/dataService';
 import { BHAGData } from '../types';
 import { SourceNote } from './SourceNote';
+import OPSP_FINALS from '../data/opsp-finals.json';
 
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
@@ -767,7 +768,34 @@ const PaceBar: React.FC<NonNullable<CNView['bar']>> = ({ fill, tick, tone, left,
 // Default to the latest quarter that's both published and already started, so the tab
 // never opens on a future quarter nobody has filled in yet (same idea as Sales Health
 // defaulting to the current month, not a later one with no data).
+/* ------------------------------------------------- finished quarters (locked)
+ * Once a quarter ends its Critical Numbers are frozen as they finished, in
+ * data/opsp-finals.json, and that record is shown instead of recalculating. Live
+ * recalculation would otherwise keep moving a finished quarter: the docs' bands and
+ * owners get edited for later quarters, feeds get backfilled, and live-only figures
+ * (GC Dead Stock) have no history.
+ *
+ * Records are written by the "OPSP quarter finals" GitHub Action the morning after
+ * each quarter ends. It opens the live dashboard with ?view=opsp&quarter=<label>&capture=1,
+ * reads window.__OPSP_CAPTURE__ (below), commits the rows, then rebuilds. A record can
+ * also be added or corrected by hand; the dashboard only reads it.
+ */
+interface FinalRow extends CriticalNumber { badge: { label: string; tone: Tone }; source?: string }
+interface QuarterFinal { asAt: string; capturedAt: string; method: string; note?: string; rows: FinalRow[] }
+const FINALS = OPSP_FINALS as Record<string, QuarterFinal>;
+
+// URL options: ?quarter=Q2-FY27 (or "Q2 FY27") opens that quarter; &capture=1 is the
+// Action's capture mode, which ignores any locked record so it can work one out.
+const URL_PARAMS = typeof window === 'undefined' ? new URLSearchParams() : new URLSearchParams(window.location.search);
+const CAPTURE_MODE = URL_PARAMS.get('capture') === '1';
+const urlQuarterIndex = (): number => {
+    const want = (URL_PARAMS.get('quarter') || '').replace(/[-_+]/g, ' ').trim().toUpperCase();
+    return want ? QUARTERS.findIndex((q) => q.label.toUpperCase() === want) : -1;
+};
+
 const defaultQuarterIndex = (): number => {
+    const fromUrl = urlQuarterIndex();
+    if (fromUrl !== -1) return fromUrl;
     const now = new Date();
     for (let i = QUARTERS.length - 1; i >= 0; i--) {
         if (QUARTERS[i].pubUrl && quarterStartDate(QUARTERS[i]) <= now) return i;
@@ -786,6 +814,10 @@ export default function OPSPDashboard() {
     const [foundationCNs, setFoundationCNs] = useState<CriticalNumber[] | null>(null);
     const [fillRate, setFillRate] = useState<FillRateData | null>(null);
     const [idcGp, setIdcGp] = useState<IdcGpQuarter | null>(null);
+    // Capture mode waits for every feed to have answered (or failed) before reporting.
+    const [foundationTried, setFoundationTried] = useState(false);
+    const [fillRateTried, setFillRateTried] = useState(false);
+    const [idcTried, setIdcTried] = useState(false);
 
     const quarter = QUARTERS[quarterIndex];
     const changeQuarter = (offset: number) =>
@@ -807,6 +839,7 @@ export default function OPSPDashboard() {
     useEffect(() => {
         let cancelled = false;
         fetchPublishedDoc(FOUNDATION_PUB_URL).then((html) => {
+            if (!cancelled) setFoundationTried(true);
             if (cancelled || !html) return;
             try {
                 const rows = parseDoc(html).criticalNumbers;
@@ -815,7 +848,11 @@ export default function OPSPDashboard() {
                 console.warn("Foundation doc parse failed; using built-in persistent numbers.", e);
             }
         });
-        fetchFillRate().then((d) => { if (!cancelled && d) setFillRate(d); });
+        fetchFillRate().then((d) => {
+            if (cancelled) return;
+            if (d) setFillRate(d);
+            setFillRateTried(true);
+        });
         return () => { cancelled = true; };
     }, []);
 
@@ -823,9 +860,10 @@ export default function OPSPDashboard() {
     useEffect(() => {
         let cancelled = false;
         setIdcGp(null);
+        setIdcTried(false);
         const q = QUARTERS[quarterIndex];
         fetchIdcGpQuarter(quarterStartDate(q), quarterEndDate(q))
-            .then((d) => { if (!cancelled) setIdcGp(d); });
+            .then((d) => { if (!cancelled) { setIdcGp(d); setIdcTried(true); } });
         return () => { cancelled = true; };
     }, [quarterIndex]);
 
@@ -1105,6 +1143,40 @@ export default function OPSPDashboard() {
         return rows;
     }, [data, foundationCNs, designStats, designStatsStale, idcGp, fillRate, fillGlide, quarter.label, clock]);
 
+    // A finished quarter with a locked record shows exactly that record.
+    const final = CAPTURE_MODE ? undefined : FINALS[quarter.label];
+    const displayRows = useMemo<CNRow[]>(() => (final
+        ? final.rows.map((r) => ({ ...r, view: { badge: r.badge } }))
+        : criticalNumbers), [final, criticalNumbers]);
+
+    // Capture mode: publish the computed rows, scored against the full quarter-end
+    // bands, for the quarter-finals Action to read once every feed has answered.
+    useEffect(() => {
+        if (!CAPTURE_MODE) return;
+        const pending: string[] = [];
+        if (isLoading) pending.push('quarter doc');
+        if (!foundationTried) pending.push('foundation doc');
+        if (!fillRateTried) pending.push('fill rate report');
+        if (!idcTried) pending.push('IDC GP% feed');
+        if (!designStats || designStatsStale) pending.push('designer app');
+        (window as any).__OPSP_CAPTURE__ = {
+            quarter: quarter.label,
+            period: quarter.period,
+            status: clock.status,
+            notPublished,
+            docLive: isLive,
+            ready: pending.length === 0,
+            pending,
+            rows: criticalNumbers.map((c) => ({
+                name: c.name, owner: c.owner,
+                superGreen: c.superGreen, green: c.green, yellow: c.yellow, red: c.red,
+                current: c.current,
+                badge: bandFor(c),
+                source: c.source,
+            })),
+        };
+    }, [criticalNumbers, isLoading, isLive, notPublished, foundationTried, fillRateTried, idcTried, designStats, designStatsStale, quarter, clock]);
+
     const showFillRate = criticalNumbers.some((c) => FILL_RATE_CN.test(c.name));
     // FY-to-date weeks, padded with empty weeks to the selected quarter's end so the
     // glide path line shows the whole way to the goal.
@@ -1311,6 +1383,14 @@ export default function OPSPDashboard() {
                     <div className="flex items-center gap-2 mb-8">
                         <div className="p-2 bg-white/10 text-white rounded-lg"><Rocket size={20} /></div>
                         <h3 className="font-bold text-xl">Critical Numbers • {d.quarterLabel.replace(/^Quarterly\s*/i, '').replace(/[()]/g, '')}</h3>
+                        {final && (
+                            <span
+                                className="ml-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded border border-white/20 text-gray-300"
+                                title={final.note || `Locked ${final.capturedAt}`}
+                            >
+                                Final • as at {new Date(`${final.asAt}T00:00:00`).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })}
+                            </span>
+                        )}
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -1321,9 +1401,9 @@ export default function OPSPDashboard() {
                             the total here. `criticalNumbers` is the doc's rows with the live
                             designs-created count merged in, so it may run one longer than the
                             doc itself. */}
-                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${criticalNumbers.length + (quarterIndex === 0 ? 1 : 0) > 1 ? 'md:grid-cols-2' : ''}`}>
-                            {quarterIndex === 0 && <GCDeadStockCard />}
-                            {criticalNumbers.map((cn, i) => {
+                        <div className={`lg:col-span-2 grid gap-4 grid-cols-1 ${displayRows.length + (quarterIndex === 0 && !final ? 1 : 0) > 1 ? 'md:grid-cols-2' : ''}`}>
+                            {quarterIndex === 0 && !final && <GCDeadStockCard />}
+                            {displayRows.map((cn, i) => {
                                 const v = cn.view;
                                 const band = v?.badge || bandFor(cn);
                                 return (

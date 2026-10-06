@@ -1,0 +1,134 @@
+name: OPSP quarter finals
+
+# Locks each finished quarter's Critical Numbers on the GAF master dashboard (OPSP
+# tab) as they stood when the quarter ended, so a finished quarter stops moving when
+# later quarters' docs, bands or owners change. Pipeline: _pipelines/opsp-finals/capture.mjs
+# (opens the live dashboard in capture mode and copies what it shows), writing
+# _src/gaf-master-dashboard/data/opsp-finals.json; this job then rebuilds and publishes.
+#
+# Runs every morning but only does anything when a quarter has finished and has no
+# record yet, so in practice it captures the morning after 30 Sep / 31 Dec / 31 Mar /
+# 30 Jun, and a missed or failed run is retried the next day. A failed capture
+# fails the job, so GitHub emails about it.
+#   23:20 UTC = 8:50am ACST / 9:50am ACDT (TZ below keeps "today" on Adelaide time)
+#
+# Manual run: pick a quarter (e.g. "Q2 FY27") and tick "force" to re-capture one
+# that's already locked.
+
+on:
+  schedule:
+    - cron: "20 23 * * *"
+  workflow_dispatch:
+    inputs:
+      quarter:
+        description: "Quarter to capture, e.g. Q2 FY27 (blank = every finished quarter without a record)"
+        required: false
+        default: ""
+      force:
+        description: "Overwrite an existing record for that quarter"
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: opsp-finals
+  cancel-in-progress: false
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: Australia/Adelaide
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Anything to capture?
+        id: check
+        env:
+          QUARTER: ${{ inputs.quarter }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -euo pipefail
+          ARGS=()
+          if [ -n "${QUARTER:-}" ]; then ARGS+=(--quarter "$QUARTER"); fi
+          if [ "${FORCE:-false}" = "true" ]; then ARGS+=(--force); fi
+          node _pipelines/opsp-finals/capture.mjs --check "${ARGS[@]}"
+
+      - name: Install Playwright Chromium
+        if: steps.check.outputs.targets != ''
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/pw && cd /tmp/pw
+          npm init -y >/dev/null
+          npm i playwright@1.56.1 --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Capture from the live dashboard
+        id: capture
+        if: steps.check.outputs.targets != ''
+        continue-on-error: true
+        env:
+          QUARTER: ${{ inputs.quarter }}
+          FORCE: ${{ inputs.force }}
+        run: |
+          set -euo pipefail
+          # The script imports playwright; put the install where Node resolves it from.
+          ln -sfn /tmp/pw/node_modules _pipelines/opsp-finals/node_modules
+          ARGS=()
+          if [ -n "${QUARTER:-}" ]; then ARGS+=(--quarter "$QUARTER"); fi
+          if [ "${FORCE:-false}" = "true" ]; then ARGS+=(--force); fi
+          node _pipelines/opsp-finals/capture.mjs "${ARGS[@]}"
+
+      - name: Rebuild the dashboard with the new record
+        id: build
+        if: steps.check.outputs.targets != ''
+        run: |
+          set -euo pipefail
+          rm -f _pipelines/opsp-finals/node_modules
+          if git diff --quiet -- _src/gaf-master-dashboard/data/opsp-finals.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No new record."
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          ( cd _src/gaf-master-dashboard && npm ci --no-audit --no-fund && npm run build )
+          rm -rf gaf-master-dashboard
+          mkdir -p gaf-master-dashboard
+          cp -R _src/gaf-master-dashboard/dist/. gaf-master-dashboard/
+          for pat in 'AIza[0-9A-Za-z_-]{30}' 'EAA[A-Za-z0-9]{60}' 'shpat_[a-f0-9]{32}' \
+                     'pat-na[0-9]-[a-f0-9-]{30}' 'sk-ant-[A-Za-z0-9_-]{20}' 'ghp_[A-Za-z0-9]{30}'; do
+            if grep -rIlE "$pat" gaf-master-dashboard >/dev/null 2>&1; then
+              echo "FATAL: credential-shaped string in built output"; exit 1
+            fi
+          done
+
+      - name: Commit and publish
+        if: steps.build.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add _src/gaf-master-dashboard/data/opsp-finals.json gaf-master-dashboard
+          LOCKED=$(node -e "const f=require('./_src/gaf-master-dashboard/data/opsp-finals.json');console.log(Object.keys(f).join(', '))")
+          git commit -m "OPSP: lock finished quarter Critical Numbers (${LOCKED}) [skip ci]"
+          git push origin HEAD || { git pull --rebase origin main && git push origin HEAD; }
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /tmp/pages-build.json -w "pages build request: HTTP %{http_code}\n"
+
+      - name: Fail if a capture failed
+        if: steps.capture.outcome == 'failure'
+        run: |
+          echo "At least one quarter could not be captured; see the capture step. It will be retried tomorrow."
+          exit 1

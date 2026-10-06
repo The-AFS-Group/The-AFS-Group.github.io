@@ -2,14 +2,17 @@ import React, { useState, useEffect, useMemo } from 'react';
 import {
     Compass, Heart, Mountain, Star, MapPin, Target, Flag, Rocket, Loader2,
     ShieldCheck, AlertTriangle, Lightbulb, TrendingUp, Users, Settings, CheckCircle2,
-    PhoneIncoming, Info, PencilRuler, ChevronRight, Calendar, FileX,
+    PhoneIncoming, Info, PencilRuler, ChevronRight, Calendar, FileX, Package, Percent,
 } from 'lucide-react';
 import {
     ResponsiveContainer, BarChart as RechartsBarChart, Bar, XAxis, YAxis,
     CartesianGrid, Tooltip, ReferenceLine, Label,
 } from 'recharts';
 import { GAF_COLORS } from '../constants';
-import { fetchBHAGData, fetchGCDeadStockTotal } from '../services/dataService';
+import {
+    fetchBHAGData, fetchGCDeadStockTotal, fetchFillRate, fetchIdcGpQuarter,
+    FillRateData, IdcGpQuarter,
+} from '../services/dataService';
 import { BHAGData } from '../types';
 import { SourceNote } from './SourceNote';
 
@@ -184,6 +187,12 @@ const quarterStartDate = (q: QuarterConfig): Date => {
     const [startStr] = q.period.split(' - ');
     const [d, m, y] = startStr.split('/').map(Number);
     return new Date(y, m - 1, d);
+};
+
+const quarterEndDate = (q: QuarterConfig): Date => {
+    const [, endStr] = q.period.split(' - ');
+    const [d, m, y] = endStr.split('/').map(Number);
+    return new Date(y, m - 1, d, 23, 59, 59);
 };
 
 // The only two numbers on this tab that are NOT in the doc. The AOV baseline has no
@@ -558,6 +567,82 @@ const KeyValueList: React.FC<{ rows: KeyValue[] }> = ({ rows }) => (
     </div>
 );
 
+/* ------------------------------------------------------------ doc fetching */
+
+// Google serves published docs cross-origin, so they have to be proxied. allorigins is
+// flaky (rate-limits, hangs), which would otherwise leave the tab stuck on the loader,
+// so race a timeout and fall through to the next proxy before giving up.
+const DOC_PROXIES = (url: string) => [
+    `https://afs-docs-proxy.josh-03c.workers.dev/?url=${encodeURIComponent(url)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+];
+
+const viaProxy = async (proxyUrl: string): Promise<string | null> => {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    try {
+        const res = await fetch(proxyUrl, { signal: controller.signal });
+        if (!res.ok) throw new Error(`proxy HTTP ${res.status}`);
+        const ct = res.headers.get('content-type') || '';
+        // allorigins wraps the payload as JSON { contents }; corsproxy returns raw HTML.
+        if (ct.includes('application/json')) return (await res.json()).contents || null;
+        return await res.text();
+    } finally {
+        clearTimeout(timer);
+    }
+};
+
+const fetchPublishedDoc = async (pubUrl: string): Promise<string | null> => {
+    const url = `${pubUrl}${pubUrl.includes('?') ? '&' : '?'}_t=${Date.now()}`;
+    for (const p of DOC_PROXIES(url)) {
+        try {
+            const html = await viaProxy(p);
+            if (html) return html;
+        } catch (e) {
+            console.warn("OPSP proxy failed, trying next.", e);
+        }
+    }
+    return null;
+};
+
+/* ------------------------------------------------- persistent critical numbers
+ * "GAF OPSP — Foundation (Persistent Critical Numbers)" holds the rows that show on
+ * EVERY quarter (IDC GP% and Gym Designs Created). Before this, nothing ever read that
+ * doc, so IDC GP% silently disappeared once the per-quarter docs took over.
+ *
+ * Resolution order per persistent number:
+ *   1. the Foundation doc's row (name, owner, bands) when the doc loads;
+ *   2. otherwise the built-in default below, so the card can never vanish again;
+ *   3. Current is always supplied live by the app (designer API / GP sheet).
+ * A same-metric row typed into a quarter doc is ignored to avoid duplicate cards.
+ */
+const FOUNDATION_PUB_URL =
+    "https://docs.google.com/document/d/1YrSt1u18hm-kqCOj8tACaYSkVCn07pAtw6_IERzTmxE/pub";
+
+const IDC_GP_CN = /IDC\s*GP/i;
+const FILL_RATE_CN = /fill\s*rate/i;
+
+const PERSISTENT_CNS: { match: RegExp; fallback: CriticalNumber }[] = [
+    {
+        match: IDC_GP_CN,
+        fallback: {
+            name: 'Increase GAF IDC GP% to >42%', owner: 'Adam Carter',
+            superGreen: '>42%', green: '42%', yellow: '40%', red: '<40%', current: '',
+        },
+    },
+    {
+        match: GYM_DESIGN_CN,
+        fallback: {
+            name: 'Increase Gym Designs Created', owner: 'Adam Carter',
+            superGreen: '20', green: '15', yellow: '10', red: '5', current: '',
+        },
+    },
+];
+
+const fmtPct = (n: number) => `${n.toFixed(1)}%`;
+const fmtShortDate = (d: Date) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
+
 /* ------------------------------------------------------------------ component */
 
 // Default to the latest quarter that's both published and already started, so the tab
@@ -578,6 +663,10 @@ export default function OPSPDashboard() {
     const [notPublished, setNotPublished] = useState(false);
     const [bhagData, setBhagData] = useState<BHAGData | null>(null);
     const [quarterIndex, setQuarterIndex] = useState(defaultQuarterIndex);
+    // null = not loaded yet / unavailable → built-in defaults are used.
+    const [foundationCNs, setFoundationCNs] = useState<CriticalNumber[] | null>(null);
+    const [fillRate, setFillRate] = useState<FillRateData | null>(null);
+    const [idcGp, setIdcGp] = useState<IdcGpQuarter | null>(null);
 
     const quarter = QUARTERS[quarterIndex];
     const changeQuarter = (offset: number) =>
@@ -593,6 +682,34 @@ export default function OPSPDashboard() {
         return () => { cancelled = true; };
     }, []);
 
+    // Persistent Critical Numbers (Foundation doc) and the Fill Rate report don't change
+    // with the quarter selector, so they load once. Both degrade quietly: Foundation to
+    // the built-in defaults, Fill Rate to whatever Current is typed in the quarter doc.
+    useEffect(() => {
+        let cancelled = false;
+        fetchPublishedDoc(FOUNDATION_PUB_URL).then((html) => {
+            if (cancelled || !html) return;
+            try {
+                const rows = parseDoc(html).criticalNumbers;
+                if (rows.length) setFoundationCNs(rows);
+            } catch (e) {
+                console.warn("Foundation doc parse failed; using built-in persistent numbers.", e);
+            }
+        });
+        fetchFillRate().then((d) => { if (!cancelled && d) setFillRate(d); });
+        return () => { cancelled = true; };
+    }, []);
+
+    // IDC GP% is the SELECTED quarter's average, so it refetches when the quarter changes.
+    useEffect(() => {
+        let cancelled = false;
+        setIdcGp(null);
+        const q = QUARTERS[quarterIndex];
+        fetchIdcGpQuarter(quarterStartDate(q), quarterEndDate(q))
+            .then((d) => { if (!cancelled) setIdcGp(d); });
+        return () => { cancelled = true; };
+    }, [quarterIndex]);
+
     useEffect(() => {
         let cancelled = false;
         setIsLoading(true);
@@ -607,41 +724,8 @@ export default function OPSPDashboard() {
             return;
         }
 
-        // Google serves the doc cross-origin, so it has to be proxied. allorigins is
-        // flaky (rate-limits, hangs), which would otherwise leave the tab stuck on the
-        // loader, so race a timeout and fall through to a second proxy before degrading.
-        const proxies = (url: string) => [
-            `https://afs-docs-proxy.josh-03c.workers.dev/?url=${encodeURIComponent(url)}`,
-            `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
-            `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-        ];
-
-        const viaProxy = async (proxyUrl: string): Promise<string | null> => {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), 8000);
-            try {
-                const res = await fetch(proxyUrl, { signal: controller.signal });
-                if (!res.ok) throw new Error(`proxy HTTP ${res.status}`);
-                const ct = res.headers.get('content-type') || '';
-                // allorigins wraps the payload as JSON { contents }; corsproxy returns raw HTML.
-                if (ct.includes('application/json')) return (await res.json()).contents || null;
-                return await res.text();
-            } finally {
-                clearTimeout(timer);
-            }
-        };
-
         (async () => {
-            const url = `${quarter.pubUrl}?_t=${Date.now()}`;
-            let html: string | null = null;
-            for (const p of proxies(url)) {
-                try {
-                    html = await viaProxy(p);
-                    if (html) break;
-                } catch (e) {
-                    console.warn("OPSP proxy failed, trying next.", e);
-                }
-            }
+            const html = await fetchPublishedDoc(quarter.pubUrl!);
             if (cancelled) return;
             if (!html) {
                 console.warn("All OPSP proxies failed; rendering fallback snapshot.");
@@ -718,30 +802,70 @@ export default function OPSPDashboard() {
 
     const { stats: designStats, stale: designStatsStale } = useDesignStats();
 
-    // Merge the live designs-created count into the doc's critical numbers. The doc
-    // owns name/owner/bands; the app owns Current. If the row is not in the doc yet,
-    // render a clearly-marked placeholder rather than hiding the number, so the tile
-    // is live immediately and visibly nags until Adam sets the bands.
-    const criticalNumbers = useMemo<(CriticalNumber & { note?: string })[]>(() => {
-        const rows: (CriticalNumber & { note?: string })[] = (data?.criticalNumbers || []).map((c) => ({ ...c }));
-        if (!designStats) return rows;
+    // Persistent rows (Foundation doc, else built-in) first, then this quarter's own doc
+    // rows, then the app's live Current values merged over the top. The docs own name,
+    // owner and bands; the app owns Current wherever a live feed exists.
+    type CNRow = CriticalNumber & { note?: string; source?: string };
+    const criticalNumbers = useMemo<CNRow[]>(() => {
+        const persistent: CNRow[] = PERSISTENT_CNS.map(({ match, fallback }) => {
+            const fromDoc = (foundationCNs || []).find((c) => match.test(c.name));
+            return { ...(fromDoc || fallback) };
+        });
+        const quarterRows: CNRow[] = (data?.criticalNumbers || [])
+            .filter((c) => !PERSISTENT_CNS.some(({ match }) => match.test(c.name)))
+            .map((c) => ({ ...c }));
+        const rows = [...persistent, ...quarterRows];
 
-        const live = designStats.total.toLocaleString();
-        const hit = rows.find((c) => GYM_DESIGN_CN.test(c.name));
-        if (hit) {
-            hit.current = live;
-            if (!num(hit.green)) hit.note = 'Bands not set in the OPSP doc.';
-        } else {
-            rows.push({
-                name: 'Gym designs created',
-                owner: 'Adam Carter',
-                superGreen: '', green: '', yellow: '', red: '',
-                current: live,
-                note: 'Not yet in the OPSP doc. Add a row whose name contains "gym design", with bands, and this card takes its place.',
-            });
+        const designs = rows.find((c) => GYM_DESIGN_CN.test(c.name));
+        if (designs && designStats) {
+            designs.current = designStats.total.toLocaleString();
+            designs.source = 'Live from the designer app' + (designStatsStale
+                ? ' • app unreachable, showing last known figure'
+                : ` • as at ${new Date(designStats.asOf).toLocaleString('en-AU', { timeZone: 'Australia/Adelaide', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}`);
         }
+
+        const idc = rows.find((c) => IDC_GP_CN.test(c.name));
+        if (idc) {
+            idc.current = idcGp?.average != null ? fmtPct(idcGp.average) : '';
+            if (idcGp?.average != null && idcGp.lastDate) {
+                idc.source = `Live • ${quarter.label} avg of ${idcGp.days} days' fulfilled GM% to ${fmtShortDate(idcGp.lastDate)}`;
+            } else if (idcGp) {
+                idc.source = `No fulfilled sales recorded for ${quarter.label} yet`;
+            }
+        }
+
+        // Fill Rate is a quarterly number, so it only shows where a quarter doc lists it.
+        // Its Current AND bands come from the report (bands = row 1 above SUPERGREEN/
+        // GREEN/ORANGE/RED); the values typed in the doc are only a fallback.
+        const fr = rows.find((c) => FILL_RATE_CN.test(c.name));
+        const latest = fillRate?.weeks[fillRate.weeks.length - 1];
+        if (fr && fillRate && latest) {
+            const t = fillRate.bandThresholds;
+            if (t.superGreen != null) fr.superGreen = `${t.superGreen}%`;
+            if (t.green != null) fr.green = `${t.green}%`;
+            if (t.yellow != null) fr.yellow = `${t.yellow}%`;
+            if (t.red != null) fr.red = `${t.red}%`;
+            fr.current = fmtPct(latest.total);
+            const prev = fillRate.weeks[fillRate.weeks.length - 2];
+            const wow = prev ? latest.total - prev.total : null;
+            fr.source = `Live • Wk ${latest.week} (w/e ${fmtShortDate(latest.weekEnding)})`
+                + (wow != null ? ` • ${wow >= 0 ? '▲' : '▼'}${Math.abs(wow).toFixed(1)} pts WoW` : '')
+                + (fillRate.target != null ? ` • target ${fillRate.target}%` : '');
+        } else if (fr) {
+            fr.source = 'Fill Rate report not reachable, showing the value typed in the OPSP doc';
+        }
+
+        for (const r of rows) if (!num(r.green) && !r.note) r.note = 'Bands not set in the OPSP doc.';
         return rows;
-    }, [data, designStats]);
+    }, [data, foundationCNs, designStats, designStatsStale, idcGp, fillRate, quarter.label]);
+
+    const showFillRate = criticalNumbers.some((c) => FILL_RATE_CN.test(c.name));
+    const fillRateChart = useMemo(() => (fillRate?.weeks || []).map((w) => ({
+        label: `Wk ${w.week}`,
+        sub: fmtShortDate(w.weekEnding),
+        total: w.total,
+    })), [fillRate]);
+    const fillRateLatest = fillRate?.weeks[fillRate.weeks.length - 1] || null;
 
     // Last 30 calendar days, zero-filled, so a quiet stretch reads as a gap rather
     // than collapsing the axis into a handful of busy days.
@@ -975,13 +1099,8 @@ export default function OPSPDashboard() {
                                                     <span>{cn.note}</span>
                                                 </div>
                                             )}
-                                            {GYM_DESIGN_CN.test(cn.name) && designStats && (
-                                                <div className="text-[10px] text-gray-500 font-semibold mt-2">
-                                                    Live from the designer app
-                                                    {designStatsStale
-                                                        ? ' • app unreachable, showing last known figure'
-                                                        : ` • as at ${new Date(designStats.asOf).toLocaleString('en-AU', { timeZone: 'Australia/Adelaide', day: 'numeric', month: 'short', hour: 'numeric', minute: '2-digit' })}`}
-                                                </div>
+                                            {cn.source && (
+                                                <div className="text-[10px] text-gray-500 font-semibold mt-2">{cn.source}</div>
                                             )}
                                         </div>
                                     </div>
@@ -1014,7 +1133,7 @@ export default function OPSPDashboard() {
                     </div>
                 </div>
 
-                {/* TREND DETAIL — the two critical numbers that have a live daily feed
+                {/* TREND DETAIL — the critical numbers that have a live feed
                     behind them. The headline figures above come from the doc; these
                     charts come from the AOV and inbound-call CSVs. */}
                 <div>
@@ -1114,6 +1233,101 @@ export default function OPSPDashboard() {
                                 </ResponsiveContainer>
                             </div>
                         </div>
+
+                        {/* Inventory Fill Rate — Q2 FY27 Critical Number and Theme target
+                            ("Locked - Stocked - Loaded"). Weekly, from the Netstock-fed Fill
+                            Rate Report; the target line is the report's own "On Target" cell. */}
+                        {showFillRate && fillRate && fillRateLatest && (
+                            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
+                                <div className="flex justify-between items-start gap-4 mb-6">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <div className="p-1.5 bg-emerald-100 text-emerald-700 rounded-lg"><Package size={16} /></div>
+                                            <h3 className="font-bold text-gray-900">Inventory Fill Rate</h3>
+                                            <a
+                                                href="https://docs.google.com/spreadsheets/d/1OpKiBIhb7nAnGjHeKj_0Uiij1mb1kuTvgX8Jh6BeLDw/edit?gid=1409487408#gid=1409487408"
+                                                target="_blank" rel="noopener noreferrer"
+                                                className="text-gray-400 hover:text-blue-500 transition-colors ml-1"
+                                                title="View source spreadsheet"
+                                            ><Info size={16} /></a>
+                                        </div>
+                                        <p className="text-xs text-gray-500 ml-9">
+                                            Weekly, FY to date
+                                            {fillRate.target != null && (<> <span className="mx-1">•</span> Target <span className="font-bold text-green-600">{fillRate.target}%</span></>)}
+                                        </p>
+                                        <SourceNote text="Source: Fill Rate Report - FY27 (Netstock, updated weekly) · refreshed when this page loaded" className="ml-9 mt-0.5" />
+                                    </div>
+                                    <div className="text-right shrink-0">
+                                        <div className="text-2xl font-bold text-gray-900">{fmtPct(fillRateLatest.total)}</div>
+                                        <div className="text-xs text-gray-500 font-medium mb-1">Wk {fillRateLatest.week} · w/e {fmtShortDate(fillRateLatest.weekEnding)}</div>
+                                        {fillRate.target != null && (
+                                            <div className={`text-xs font-bold ${fillRateLatest.total >= fillRate.target ? 'text-green-600' : 'text-red-500'}`}>
+                                                {fillRateLatest.total >= fillRate.target
+                                                    ? 'On target'
+                                                    : `${(fillRate.target - fillRateLatest.total).toFixed(1)} pts below target`}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                                <div className="flex-1 min-h-[240px]">
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <RechartsBarChart data={fillRateChart} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                                            <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                                            <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} dy={10} />
+                                            <YAxis tickFormatter={(v) => `${v}%`} domain={[60, 100]} allowDataOverflow tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
+                                            <Tooltip
+                                                formatter={(val: number) => [fmtPct(val), 'Fill rate']}
+                                                labelFormatter={(lbl: string, p: any[]) => (p?.[0]?.payload?.sub ? `${lbl} · w/e ${p[0].payload.sub}` : lbl)}
+                                                contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}
+                                            />
+                                            {fillRate.target != null && (
+                                                <ReferenceLine y={fillRate.target} stroke={GAF_COLORS.green} strokeDasharray="3 3">
+                                                    <Label value={`Target ${fillRate.target}%`} position="insideTopRight" fill={GAF_COLORS.green} fontSize={10} />
+                                                </ReferenceLine>
+                                            )}
+                                            <Bar dataKey="total" fill={GAF_COLORS.orange} radius={[4, 4, 0, 0]} barSize={20} />
+                                        </RechartsBarChart>
+                                    </ResponsiveContainer>
+                                </div>
+                                {/* Latest week split two ways: product category, and the SKU
+                                    performance band (each band has its own fill target). */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5 pt-4 border-t border-gray-100">
+                                    <div>
+                                        <div className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-2">By category · Wk {fillRateLatest.week}</div>
+                                        <div className="space-y-1">
+                                            {fillRate.categoryNames.filter((n) => fillRateLatest.categories[n] != null).map((n) => (
+                                                <div key={n} className="flex justify-between text-xs">
+                                                    <span className="text-gray-600 font-medium capitalize">{n.toLowerCase()}</span>
+                                                    <span className={`font-bold ${fillRate.target != null && fillRateLatest.categories[n] < fillRate.target ? 'text-red-500' : 'text-gray-900'}`}>{fmtPct(fillRateLatest.categories[n])}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div className="text-[10px] uppercase tracking-wider font-bold text-gray-400 mb-2">By SKU band · vs band target</div>
+                                        <div className="space-y-1">
+                                            {fillRate.bandNames.filter((n) => fillRateLatest.bands[n] != null).map((n) => {
+                                                const key = n.replace(/\s+/g, '').toUpperCase();
+                                                const t = key === 'SUPERGREEN' ? fillRate.bandThresholds.superGreen
+                                                    : key === 'GREEN' ? fillRate.bandThresholds.green
+                                                    : key === 'RED' ? fillRate.bandThresholds.red
+                                                    : fillRate.bandThresholds.yellow;
+                                                const v = fillRateLatest.bands[n];
+                                                return (
+                                                    <div key={n} className="flex justify-between text-xs">
+                                                        <span className="text-gray-600 font-medium capitalize">{n.toLowerCase()}</span>
+                                                        <span>
+                                                            <span className={`font-bold ${t != null && v < t ? 'text-red-500' : 'text-green-600'}`}>{fmtPct(v)}</span>
+                                                            {t != null && <span className="text-gray-400 font-semibold"> / {t}%</span>}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
 
                         {/* Gym designs created — the third critical number with a live feed.
                             Unlike AOV and calls, this one comes straight from the app that

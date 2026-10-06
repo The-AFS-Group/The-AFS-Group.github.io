@@ -1183,3 +1183,147 @@ export const fetchWholesaleMonths = async (): Promise<WholesaleMonth[] | null> =
     return null;
   }
 };
+
+/* ------------------------------------------------------------------------------
+ * Q2 FY27 Critical Numbers: Inventory Fill Rate + GAF IDC GP%
+ * ---------------------------------------------------------------------------- */
+
+// "Fill Rate Report - FY27", TOTAL FILL RATE tab (gid 1409487408). Updated weekly from
+// the Netstock extract (see that workbook's INSTRUCTIONS tab). Read via File > Share >
+// Publish to web. If Google ever stops serving this /d/<id>/pub form, swap in the
+// /d/e/2PACX-.../pub?gid=1409487408&single=true&output=csv link the Publish dialog gives.
+const FILL_RATE_CSV =
+  "https://docs.google.com/spreadsheets/d/1OpKiBIhb7nAnGjHeKj_0Uiij1mb1kuTvgX8Jh6BeLDw/pub?gid=1409487408&single=true&output=csv";
+
+export interface FillRateWeek {
+  week: number;
+  weekEnding: Date;
+  total: number;
+  categories: Record<string, number>;
+  bands: Record<string, number>;
+}
+
+export interface FillRateData {
+  target: number | null;          // "On Target 95.5%" header cell
+  // Row 1 above SUPERGREEN / GREEN / ORANGE / RED (M1:P1): the Critical Number bands.
+  bandThresholds: { superGreen: number | null; green: number | null; yellow: number | null; red: number | null };
+  categoryNames: string[];
+  bandNames: string[];
+  weeks: FillRateWeek[];          // only weeks with a total entered, oldest first
+}
+
+const pctNum = (s: string | undefined): number | null => {
+  const m = (s || "").replace(/,/g, "").match(/-?\d+(\.\d+)?/);
+  return m ? parseFloat(m[0]) : null;
+};
+
+// Week N of an FY ends on the Nth Friday on/after 1 July (FY27 Wk 1 = Fri 3 Jul 2026,
+// Wk 14 = Fri 2 Oct 2026, matching the dates on the SKU FILL RATE tab).
+const fyWeekEnding = (fyStartYear: number, week: number): Date => {
+  const d = new Date(fyStartYear, 6, 1);
+  d.setDate(d.getDate() + ((5 - d.getDay() + 7) % 7) + (week - 1) * 7);
+  return d;
+};
+
+export const parseFillRate = (csvText: string): FillRateData | null => {
+  const rows = parseCSVRaw(csvText);
+  // Located by label, not fixed position, so inserted rows/columns don't break it.
+  const h = rows.findIndex((r) => r.some((c) => /fill rate achieved/i.test(c || "")));
+  if (h === -1) return null;
+  const header = rows[h];
+  const labelCol = header.findIndex((c) => /fill rate achieved/i.test(c || ""));
+  const targetCell = header.find((c) => /on target/i.test(c || ""));
+  const fyCol = header.findIndex((c, i) => i > labelCol && /^FY\d{2}$/i.test((c || "").trim()));
+  if (fyCol === -1) return null;
+  const fy = parseInt(header[fyCol].trim().slice(2), 10);
+  const fyStartYear = 2000 + fy - 1;
+
+  const BAND_RE = /^(SUPER\s*GREEN|GREEN|ORANGE|YELLOW|RED)$/i;
+  const catCols: number[] = [];
+  for (let i = fyCol + 1; i < header.length && (header[i] || "").trim() && !BAND_RE.test(header[i].trim()); i++) catCols.push(i);
+  const bandCols = header.map((c, i) => (BAND_RE.test((c || "").trim()) ? i : -1)).filter((i) => i !== -1);
+  const above = rows[h - 1] || [];
+  const thresholdFor = (re: RegExp) => {
+    const col = bandCols.find((i) => re.test(header[i].replace(/\s+/g, "")));
+    return col == null ? null : pctNum(above[col]);
+  };
+
+  const weeks: FillRateWeek[] = [];
+  for (let r = h + 1; r < rows.length; r++) {
+    const m = (rows[r][labelCol] || "").match(/^wk\s*(\d+)/i);
+    if (!m) continue;
+    const total = pctNum(rows[r][fyCol]);
+    if (total == null) continue;
+    const week = parseInt(m[1], 10);
+    const categories: Record<string, number> = {};
+    catCols.forEach((i) => { const v = pctNum(rows[r][i]); if (v != null) categories[header[i].trim()] = v; });
+    const bands: Record<string, number> = {};
+    bandCols.forEach((i) => { const v = pctNum(rows[r][i]); if (v != null) bands[header[i].trim()] = v; });
+    weeks.push({ week, weekEnding: fyWeekEnding(fyStartYear, week), total, categories, bands });
+  }
+
+  return {
+    target: pctNum(targetCell),
+    bandThresholds: {
+      superGreen: thresholdFor(/^SUPERGREEN$/i),
+      green: thresholdFor(/^GREEN$/i),
+      yellow: thresholdFor(/^(ORANGE|YELLOW)$/i),
+      red: thresholdFor(/^RED$/i),
+    },
+    categoryNames: catCols.map((i) => header[i].trim()),
+    bandNames: bandCols.map((i) => header[i].trim()),
+    weeks,
+  };
+};
+
+export const fetchFillRate = async (): Promise<FillRateData | null> => {
+  try {
+    const res = await fetch(`${FILL_RATE_CSV}&_t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const text = await res.text();
+    // An unpublished sheet answers with a Google sign-in HTML page, not CSV.
+    if (/^\s*<(!doctype|html)/i.test(text)) throw new Error("Fill Rate sheet is not published to the web");
+    return parseFillRate(text);
+  } catch (error) {
+    console.error("Error fetching Fill Rate report", error);
+    return null;
+  }
+};
+
+export interface IdcGpQuarter {
+  average: number | null;         // simple mean of the daily column-F values in range
+  days: number;                   // days with a fulfilled margin entered
+  lastDate: Date | null;
+  daily: { date: Date; margin: number }[];
+}
+
+// "Ongoing GP Dashboard Spreadsheet", GAF DATA tab (already published, same feed as
+// Sales Health). Column F "GROSS MARGIN (FULFILLED)" is found by header text so a
+// column insert doesn't silently switch metrics. Weekends/no-dispatch days are blank
+// and are skipped, not counted as 0%.
+export const fetchIdcGpQuarter = async (start: Date, end: Date): Promise<IdcGpQuarter | null> => {
+  try {
+    const res = await fetch(`${URLS.GAF.main}&_t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const rows = parseCSVRaw(await res.text());
+    const header = rows[0] || [];
+    let col = header.findIndex((c) => /gross margin\s*\(fulfilled\)/i.test(c || ""));
+    if (col === -1) col = 5;
+    const daily: { date: Date; margin: number }[] = [];
+    for (let r = 1; r < rows.length; r++) {
+      const m = (rows[r][0] || "").trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+      if (!m) continue;
+      const date = new Date(+m[3], +m[2] - 1, +m[1]);
+      if (date < start || date > end) continue;
+      const raw = (rows[r][col] || "").trim();
+      if (!raw) continue;
+      const v = parseFloat(cleanNumber(raw));
+      if (!isNaN(v)) daily.push({ date, margin: v });
+    }
+    const average = daily.length ? daily.reduce((s, d) => s + d.margin, 0) / daily.length : null;
+    return { average, days: daily.length, lastDate: daily.length ? daily[daily.length - 1].date : null, daily };
+  } catch (error) {
+    console.error("Error fetching IDC GP% feed", error);
+    return null;
+  }
+};

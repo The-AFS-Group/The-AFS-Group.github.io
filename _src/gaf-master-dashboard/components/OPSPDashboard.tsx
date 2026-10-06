@@ -1406,8 +1406,12 @@ export default function OPSPDashboard() {
                             {displayRows.map((cn, i) => {
                                 const v = cn.view;
                                 const band = v?.badge || bandFor(cn);
+                                // With an odd number of cards the last one would sit alone in
+                                // the left half of its row; stretch it across both columns.
+                                const total = displayRows.length + (quarterIndex === 0 && !final ? 1 : 0);
+                                const spanLast = total > 1 && total % 2 === 1 && i === displayRows.length - 1;
                                 return (
-                                    <div key={i} className="bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm">
+                                    <div key={i} className={`bg-white/5 rounded-2xl p-6 border border-white/10 backdrop-blur-sm ${spanLast ? 'md:col-span-2' : ''}`}>
                                         <div className="flex justify-between items-start gap-3 mb-4">
                                             <div>
                                                 <div className="font-bold text-lg leading-tight">{cn.name}</div>

@@ -635,7 +635,7 @@ const PERSISTENT_CNS: { match: RegExp; fallback: CriticalNumber }[] = [
         match: GYM_DESIGN_CN,
         fallback: {
             name: 'Increase Gym Designs Created', owner: 'Adam Carter',
-            superGreen: '20', green: '15', yellow: '10', red: '5', current: '',
+            superGreen: '250', green: '200', yellow: '150', red: '120', current: '',
         },
     },
 ];

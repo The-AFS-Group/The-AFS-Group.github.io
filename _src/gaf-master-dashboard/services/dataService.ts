@@ -1190,10 +1190,10 @@ export const fetchWholesaleMonths = async (): Promise<WholesaleMonth[] | null> =
 
 // "Fill Rate Report - FY27", TOTAL FILL RATE tab (gid 1409487408). Updated weekly from
 // the Netstock extract (see that workbook's INSTRUCTIONS tab). Read via File > Share >
-// Publish to web. If Google ever stops serving this /d/<id>/pub form, swap in the
-// /d/e/2PACX-.../pub?gid=1409487408&single=true&output=csv link the Publish dialog gives.
+// Publish to web. Must be the /d/e/2PACX-... published link: the /d/<id>/pub form
+// answers with a Google sign-in page for this workbook.
 const FILL_RATE_CSV =
-  "https://docs.google.com/spreadsheets/d/1OpKiBIhb7nAnGjHeKj_0Uiij1mb1kuTvgX8Jh6BeLDw/pub?gid=1409487408&single=true&output=csv";
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vTpB4aoxgG3Hk9MPvc6A0gAWz4XcS-VbD7fqUGDSI3c_WpLf2RuMxOvZOmEq0YRmirggHU-buTxA_An/pub?gid=1409487408&single=true&output=csv";
 
 export interface FillRateWeek {
   week: number;

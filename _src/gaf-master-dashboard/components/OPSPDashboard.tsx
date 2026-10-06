@@ -618,7 +618,7 @@ const fetchPublishedDoc = async (pubUrl: string): Promise<string | null> => {
  * A same-metric row typed into a quarter doc is ignored to avoid duplicate cards.
  */
 const FOUNDATION_PUB_URL =
-    "https://docs.google.com/document/d/1YrSt1u18hm-kqCOj8tACaYSkVCn07pAtw6_IERzTmxE/pub";
+    "https://docs.google.com/document/d/e/2PACX-1vSrd-JLWzP3ukDWWoRidhyIDCGERJ_5ehG_8geKOe9t0Wp60Hq2yU9_iJzZFrZjqP3SgRJNjkIfFG0X/pub";
 
 const IDC_GP_CN = /IDC\s*GP/i;
 const FILL_RATE_CN = /fill\s*rate/i;

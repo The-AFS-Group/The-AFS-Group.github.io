@@ -1,12 +1,14 @@
 {
-  "count": 1538,
+  "count": 1569,
   "target": 10000,
   "asOf": "8 Oct 2026",
   "window": "cumulative since 1 Jul 2025 (FY26 start)",
   "periodStart": "2025-07-01",
   "periodEnd": "2030-12-31",
-  "fy27ToDate": 257,
-  "fy26Baseline": 1286,
-  "note": "Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). FY26 baseline 1,286 builds (re-locked with Adam 12 Aug 2026 to the automated-instrument figure). Source: NetSuite saved search GAF BHAG Data via GURUS sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo.",
-  "fy26SamePoint": 279
+  "fy27ToDate": 263,
+  "fy26Baseline": 1311,
+  "note": "Three-path rule v5: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares (v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026). FY26 baseline 1,311 (re-locked for v5). Source: NetSuite saved search GAF BHAG Data via GURUS sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo.",
+  "fy26SamePoint": 280,
+  "fy26Computed": 1306,
+  "reviewSkus": 5
 }

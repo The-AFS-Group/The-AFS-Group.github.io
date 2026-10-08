@@ -31,7 +31,7 @@ v5 changes how an anchor is recognised, not the paths:
     last 120 days that look like anchors (blank subcategory or anchor keywords)
     but are not classified, so new products get caught rather than silently
     missed.
-Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 2030.
+Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 30 Jun 2030 (end of FY30). Every year is a financial year.
 FY26 baseline of record: re-locked with Adam Carter 8 Oct 2026 for v5. The
 NetSuite replica of v5 gave 1,311 (1,286 under v4 + 20 Functional Trainer
 Rack carts + 5 REP Ares 2.0 carts); the exact-mode run reports the feed's own
@@ -295,7 +295,7 @@ def main():
         "count": count, "target": TARGET,
         "asOf": today.strftime("%-d %b %Y"),
         "window": "cumulative since 1 Jul 2025 (FY26 start)",
-        "periodStart": "2025-07-01", "periodEnd": "2030-12-31",
+        "periodStart": "2025-07-01", "periodEnd": "2030-06-30",
         "fy27ToDate": fy27, "fy26Baseline": FY26_BASELINE,
         "note": ("Three-path rule v5.1: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares; leg press / hack squat machines are general anchors "
                  "(v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026; leg press added Oct 2026). "

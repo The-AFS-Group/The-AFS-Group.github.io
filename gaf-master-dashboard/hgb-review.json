@@ -2,36 +2,5 @@
   "asOf": "8 Oct 2026",
   "windowDays": 120,
   "note": "SKUs that look like anchors but are not classified. Add each to anchor_skus.json (path1 / anchor / exclude).",
-  "skus": [
-    {
-      "sku": "F-MLPHS-V2",
-      "description": "Force USA Original Leg Press Hack Squat",
-      "subcategory": "Single Stations - Lower Body",
-      "carts": 8
-    },
-    {
-      "sku": "F-S-LP",
-      "description": "Force USA Solitude Leg Press Machine",
-      "subcategory": "Pin Loaded - Single Function",
-      "carts": 2
-    },
-    {
-      "sku": "F-S-LP-B",
-      "description": "Force USA Solitude  Leg Press Machine\r\n",
-      "subcategory": "Pin Loaded Machines",
-      "carts": 1
-    },
-    {
-      "sku": "IT7001",
-      "description": "Impulse Ultimate Smith Machine",
-      "subcategory": "Pin Loaded - Single Function",
-      "carts": 1
-    },
-    {
-      "sku": "F-CLP-V3",
-      "description": "FORCE USA Compact Standing Leg Press & Hack Squat",
-      "subcategory": "Single Stations - Lower Body",
-      "carts": 1
-    }
-  ]
+  "skus": []
 }

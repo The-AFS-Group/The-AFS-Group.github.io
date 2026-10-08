@@ -2,7 +2,7 @@ name: HGB BHAG Tracker
 
 # Unattended daily refresh of the Home Gym Builder BHAG tracker on the GAF
 # master dashboard (OPSP tab). Reads the GURUS-fed sheet's published CSV (no
-# NetSuite or Google auth), applies the locked v4 rule, and commits
+# NetSuite or Google auth), applies the v5 rule (anchor_skus.json), and commits
 # hgb-tracker.json back to this repo with the workflow's own GITHUB_TOKEN —
 # no personal account, machine or external credential anywhere in the chain.
 # Pipeline code: _pipelines/hgb-tracker/update.py.
@@ -54,9 +54,10 @@ jobs:
           set -euo pipefail
           cp _pipelines/hgb-tracker/hgb-tracker.json gaf-master-dashboard/hgb-tracker.json
           cp _pipelines/hgb-tracker/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
+          cp _pipelines/hgb-tracker/hgb-review.json gaf-master-dashboard/hgb-review.json
           git config user.name "hgb-tracker-bot"
           git config user.email "hgb-tracker@users.noreply.github.com"
-          git add gaf-master-dashboard/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
+          git add gaf-master-dashboard/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json gaf-master-dashboard/hgb-review.json
           if git diff --cached --quiet; then
             echo "No change in tracker figure — nothing to publish."
             exit 0

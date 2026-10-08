@@ -25,10 +25,32 @@
   "anchor": [
     "F-PPR",
     "F-GLIDE-T",
-    "PR-2000-03"
+    "PR-2000-03",
+    "F-MLPHS-V2",
+    "F-MLPHS",
+    "F-MLPHS-PRO",
+    "F-CLP-V2",
+    "F-CLP-V3",
+    "F-CLP-V4",
+    "F-45LP-B",
+    "F-R-LP",
+    "F-R-LP-PL",
+    "F-S-LP",
+    "F-S-LP-B",
+    "I-LP30",
+    "LP30",
+    "IT7006",
+    "IT7020",
+    "IT9510",
+    "IF9310",
+    "SL7006",
+    "SL7020",
+    "ULT7020",
+    "VS-S70P"
   ],
   "_anchor_notes": {
-    "PR-2000-03": "REP Altitude power rack, Base Box 1 = 1 per rack (rack only; with the functional trainer attachment the cart also has PRA-FT-2000-S)"
+    "PR-2000-03": "REP Altitude power rack, Base Box 1 = 1 per rack (rack only; with the functional trainer attachment the cart also has PRA-FT-2000-S)",
+    "leg press": "Leg press / hack squat machines are general anchors (agreed with Adam, Oct 2026). Listed SKUs are the active complete machines; new ones are also caught by the LEG PRESS / HACK SQUAT description rule in update.py. G3 leg press plates/attachments (F-G3-V2-LEGPRESS, F-G3-LEGPRESS) are attachments, not anchors."
   },
   "exclude": [
     "PR-2000-01-BLU",
@@ -44,9 +66,14 @@
     "PR-2000-02-OLV",
     "PR-2000-02-RED",
     "PR-2000-02-SS",
-    "PR-2000-02-WHT"
+    "PR-2000-02-WHT",
+    "IT7001",
+    "F-G3-LEGPRESS",
+    "F-G3-V2-LEGPRESS"
   ],
   "_exclude_notes": {
-    "PR-2000-01-* / PR-2000-02-*": "REP Altitude uprights (component; the rack is counted once via PR-2000-03)"
+    "PR-2000-01-* / PR-2000-02-*": "REP Altitude uprights (component; the rack is counted once via PR-2000-03)",
+    "IT7001": "Impulse Ultimate Smith Machine: not an anchor (Adam, Oct 2026)",
+    "F-G3-LEGPRESS / F-G3-V2-LEGPRESS": "G3 leg press plate attachments: attachments, not anchors (the G3 itself is the anchor)"
   }
 }

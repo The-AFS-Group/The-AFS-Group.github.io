@@ -1,0 +1,52 @@
+{
+  "_readme": "Explicit anchor SKUs for the HGB tracker (update.py v5). path1 = counts like an All-In-One Trainer / functional trainer (one is enough for a qualifying cart). anchor = general anchor (needs a second anchor or an attach item). exclude = never an anchor. For multi-box products list ONE marker SKU per unit (e.g. Base Box 1), never every box. Unclassified anchor-like SKUs are listed in hgb-review.json after each run.",
+  "path1": [
+    "F-F100-V2",
+    "F-G6-B",
+    "F-X15-V2",
+    "F-G3-NOLEGPRESS",
+    "CENTR-WS.1",
+    "I-FT10-PRO",
+    "F-FTR",
+    "PRA-FT-2000-S",
+    "PRA-FT-DUAL-5002-S",
+    "PRA-FT-DUAL-4002-S",
+    "PRA-FT-LEFT-5000-BASE-1",
+    "PRA-FT-RIGHT-5000-BASE-1"
+  ],
+  "_path1_notes": {
+    "F-FTR": "Force USA Functional Trainer Rack, agreed as an anchor 8 Oct 2026",
+    "PRA-FT-2000-S": "REP Altitude functional trainer attachment, base crate = 1 per unit",
+    "PRA-FT-DUAL-5002-S": "REP Ares 2.0 (5000 series) functional trainer, base + stacks = 1 per unit",
+    "PRA-FT-DUAL-4002-S": "REP Ares 2.0 (4000 series) functional trainer, base + stacks = 1 per unit",
+    "PRA-FT-LEFT-5000-BASE-1": "REP side-mount functional trainer (left), box 1",
+    "PRA-FT-RIGHT-5000-BASE-1": "REP side-mount functional trainer (right), box 1"
+  },
+  "anchor": [
+    "F-PPR",
+    "F-GLIDE-T",
+    "PR-2000-03"
+  ],
+  "_anchor_notes": {
+    "PR-2000-03": "REP Altitude power rack, Base Box 1 = 1 per rack (rack only; with the functional trainer attachment the cart also has PRA-FT-2000-S)"
+  },
+  "exclude": [
+    "PR-2000-01-BLU",
+    "PR-2000-01-MAT",
+    "PR-2000-01-MBLK",
+    "PR-2000-01-OLV",
+    "PR-2000-01-RED",
+    "PR-2000-01-SS",
+    "PR-2000-01-WHT",
+    "PR-2000-02-BLU",
+    "PR-2000-02-MAT",
+    "PR-2000-02-MBLK",
+    "PR-2000-02-OLV",
+    "PR-2000-02-RED",
+    "PR-2000-02-SS",
+    "PR-2000-02-WHT"
+  ],
+  "_exclude_notes": {
+    "PR-2000-01-* / PR-2000-02-*": "REP Altitude uprights (component; the rack is counted once via PR-2000-03)"
+  }
+}

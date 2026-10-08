@@ -11,15 +11,32 @@ Deliberately has NO NetSuite, Google or personal-account dependency: the sheet
 is read via its published-CSV endpoint and the result is pushed to the pages
 repo with a repo-owned deploy key. Survives any individual's departure.
 
-Definition v4 (locked with Adam Carter 4 Aug 2026): a Home Gym Builder sale =
+Definition v5 (v4 three-path rule locked with Adam Carter 4 Aug 2026; v5 anchor
+classification agreed 8 Oct 2026): a Home Gym Builder sale =
 GAF AU / Online-AU cart with order total > $3,376 AND
-  Path 1: >=1 anchor in All-In-One Trainers or Home Gyms & Multi-Station, OR
+  Path 1: >=1 "path 1" anchor (All-In-One Trainers, Home Gyms & Multi-Station,
+          functional trainers incl. the Force USA Functional Trainer Rack and
+          REP Altitude / Ares / side-mount functional trainers), OR
   Path 2: >=1 anchor + >=1 other attach-eligible distinct SKU, OR
   Path 3: >=2 anchors.
+
+v5 changes how an anchor is recognised, not the paths:
+  * anchor_skus.json holds the explicit SKU lists (edit it, not this file, when
+    a new anchor SKU needs naming, e.g. one "marker" SKU per multi-box product).
+  * Any SKU whose description says All-In-One Trainer / Home Gym / Functional
+    Trainer counts as a path 1 anchor even with a blank or "attachment"
+    subcategory, unless the description marks it as a component (cables, guide
+    rods, shrouds, upgrades, box 2+, weight packages ...).
+  * Every run writes hgb-review.json: SKUs sold on qualifying-size carts in the
+    last 120 days that look like anchors (blank subcategory or anchor keywords)
+    but are not classified, so new products get caught rather than silently
+    missed.
 Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 2030.
-FY26 baseline of record: 1,286 (re-locked with Adam Carter 12 Aug 2026 to the
-automated-instrument figure so numerator and denominator share one instrument;
-supersedes the 1,257 original manual pull, +2.3% from cleaner line capture).
+FY26 baseline of record: re-locked with Adam Carter 8 Oct 2026 for v5. The
+NetSuite replica of v5 gave 1,311 (1,286 under v4 + 20 Functional Trainer
+Rack carts + 5 REP Ares 2.0 carts); the exact-mode run reports the feed's own
+figure as fy26Computed, and FY26_BASELINE is set to that figure once seen.
+History: 1,257 manual pull -> 1,286 automated v4 (12 Aug 2026) -> v5.
 
 Modes:
   exact  — feed date floor <= 2025-07-01: everything computed from the feed,
@@ -36,7 +53,7 @@ FEED_URL = os.environ.get("HGB_FEED_URL", "").strip()
 if not FEED_URL:
     sys.exit("FATAL: HGB_FEED_URL env var is not set — add it as a repo Actions secret")
 TARGET = 10000
-FY26_BASELINE = 1286
+FY26_BASELINE = 1311   # v5 replica estimate; set to fy26Computed after the first v5 run
 FY26_START = datetime.date(2025, 7, 1)
 FY27_START = datetime.date(2026, 7, 1)
 GATE = 3376.0
@@ -67,13 +84,24 @@ ATTACH_ONLY = {
     'Flooring', 'Rubber Flooring - Home Flooring', 'Rubber Flooring - Commercial Flooring',
     'Turf'}
 ATTACH = ANCHOR | ATTACH_ONLY
-# SKU overrides for anchor variants whose NetSuite subcategory is blank or off
-# (established on the 4 Aug 2026 baseline run).
-AIO_HG_SKU = {'F-F100-V2', 'F-G6-B', 'F-X15-V2', 'F-G3-NOLEGPRESS', 'CENTR-WS.1', 'I-FT10-PRO'}
-ANCHOR_SKU = {'F-PPR', 'F-GLIDE-T'}
-# Description fallback for anchor SKUs the subcategory map misses entirely.
-DESC_ANCHOR = re.compile(r'ALL[- ]IN[- ]ONE TRAINER|HOME GYM|FUNCTIONAL TRAINER', re.I)
-DESC_EXCLUDE = re.compile(r'ATTACHMENT|SPARE|UPGRADE|PART|MAT |ANCHOR|STRAP', re.I)
+# Explicit SKU lists live in anchor_skus.json so new products can be added
+# without touching code. path1 = counts like an All-In-One Trainer;
+# anchor = general anchor (paths 2/3); exclude = never an anchor.
+_SKUS = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "anchor_skus.json")))
+PATH1_SKU = set(_SKUS["path1"])
+ANCHOR_SKU = set(_SKUS["anchor"])
+NOT_ANCHOR_SKU = set(_SKUS.get("exclude", []))
+# Description rules catch new SKUs that arrive with a blank or "attachment"
+# subcategory (e.g. REP multi-box products created without a subcategory).
+DESC_PATH1 = re.compile(r'ALL[- ]IN[- ]ONE TRAINER|HOME GYM|FUNCTIONAL TRAINER', re.I)
+DESC_COMPONENT = re.compile(
+    r'CABLE|GUIDE ROD|SHROUD|HEADPLATE|STICKER|UPGRADE|SPARE|\bPARTS?\b|STRAP|\bMAT\b|'
+    r'WEIGHT (PACKAGE|STACK)|PEG ?BOARD|WALL[- ]?MOUNT|STORAGE|BOX ?[2-9]|CONNECTOR|'
+    r'J[- ]?HOOK|SPOTTER|HANDLE|BAR\b|ANCHOR', re.I)
+# Words that suggest an anchor product; used only to flag unclassified SKUs.
+DESC_LOOKS_ANCHOR = re.compile(
+    r'RACK|TRAINER|HOME GYM|TREADMILL|BIKE|ROWER|\bERG\b|LEG PRESS|HACK SQUAT|STEPR|'
+    r'CLIMBER|ELLIPTICAL|\bSKI\b|SMITH|MULTI ?GYM|CABLE MACHINE|UPRIGHT|SQUAT', re.I)
 
 
 def base_sku(s):
@@ -124,11 +152,17 @@ def resolve_columns(hdr):
     return cols
 
 
-def is_anchor(sku, sub, desc):
-    if sub in ANCHOR or sku in AIO_HG_SKU or sku in ANCHOR_SKU:
-        return True
-    return bool(DESC_ANCHOR.search(desc)) and not DESC_EXCLUDE.search(desc) \
-        and sub not in ATTACH_ONLY
+def anchor_class(sku, sub, desc):
+    """'path1', 'anchor' or None."""
+    if sku in NOT_ANCHOR_SKU:
+        return None
+    if sku in PATH1_SKU or sub in AIO_HG:
+        return 'path1'
+    if DESC_PATH1.search(desc) and not DESC_COMPONENT.search(desc) and sub not in ATTACH_ONLY:
+        return 'path1'
+    if sku in ANCHOR_SKU or sub in ANCHOR:
+        return 'anchor'
+    return None
 
 
 def qualifies(o):
@@ -136,18 +170,40 @@ def qualifies(o):
         return False
     anchors = aio = attach = 0
     for sku, (sub, desc) in o['skus'].items():
-        a = is_anchor(sku, sub, desc)
-        if a:
+        c = anchor_class(sku, sub, desc)
+        if c:
             anchors += 1
-            if sub in AIO_HG or sku in AIO_HG_SKU:
+            if c == 'path1':
                 aio += 1
-        if a or sub in ATTACH:
+        if c or sub in ATTACH:
             attach += 1
     if anchors >= 2:
         return True
     if anchors >= 1 and attach >= 2:
         return True
     return aio >= 1
+
+
+def review_list(orders, today, days=120):
+    """SKUs on qualifying-size carts in the last `days` that look like anchors
+    but are not classified, so a person can add them to anchor_skus.json."""
+    since = today - datetime.timedelta(days=days)
+    seen = {}
+    for o in orders.values():
+        if o['date'] < since or o['total'] <= GATE:
+            continue
+        for sku, (sub, desc) in o['skus'].items():
+            if anchor_class(sku, sub, desc) or sku in NOT_ANCHOR_SKU:
+                continue
+            if DESC_COMPONENT.search(desc):
+                continue
+            if sub and (sub in ATTACH_ONLY or 'ttachment' in sub):
+                continue
+            if DESC_LOOKS_ANCHOR.search(desc):
+                r = seen.setdefault(sku, {"sku": sku, "description": desc[:90],
+                                          "subcategory": sub or "(blank)", "carts": 0})
+                r["carts"] += 1
+    return sorted(seen.values(), key=lambda r: -r["carts"])
 
 
 def fetch_feed():
@@ -209,6 +265,17 @@ def main():
         fy26_same = None
         print(f"legacy mode: floor {floor} is after FY26 start; count = {FY26_BASELINE} + {fy27} = {count}")
 
+    review = review_list(orders, today)
+    with open("hgb-review.json", "w") as f:
+        json.dump({"asOf": today.strftime("%-d %b %Y"), "windowDays": 120,
+                   "note": "SKUs that look like anchors but are not classified. Add each to anchor_skus.json (path1 / anchor / exclude).",
+                   "skus": review}, f, indent=2)
+        f.write("\n")
+    if review:
+        print(f"REVIEW: {len(review)} unclassified anchor-like SKU(s) on qualifying-size carts:")
+        for r in review[:25]:
+            print(f"  {r['sku']:<32} {r['carts']:>3} carts  [{r['subcategory']}] {r['description']}")
+
     if not (1257 <= count <= TARGET):
         sys.exit(f"FATAL: cumulative count {count} out of plausible range")
 
@@ -218,13 +285,17 @@ def main():
         "window": "cumulative since 1 Jul 2025 (FY26 start)",
         "periodStart": "2025-07-01", "periodEnd": "2030-12-31",
         "fy27ToDate": fy27, "fy26Baseline": FY26_BASELINE,
-        "note": ("Three-path rule, Path 1 = AIO / Home Gym anchor only (locked with Adam 4 Aug 2026). "
-                 "FY26 baseline 1,286 builds (re-locked with Adam 12 Aug 2026 to the automated-instrument figure). "
+        "note": ("Three-path rule v5: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares "
+                 "(v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026). "
+                 f"FY26 baseline {FY26_BASELINE:,} (re-locked for v5). "
                  "Source: NetSuite saved search GAF BHAG Data via GURUS "
                  "sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo."),
     }
     if fy26_same is not None:
         payload["fy26SamePoint"] = fy26_same
+    if exact:
+        payload["fy26Computed"] = fy26_full
+    payload["reviewSkus"] = len(review)
 
     with open("hgb-tracker.json", "w") as f:
         json.dump(payload, f, indent=2)

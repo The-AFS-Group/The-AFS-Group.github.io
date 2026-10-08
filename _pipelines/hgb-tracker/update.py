@@ -31,12 +31,16 @@ v5 changes how an anchor is recognised, not the paths:
     last 120 days that look like anchors (blank subcategory or anchor keywords)
     but are not classified, so new products get caught rather than silently
     missed.
-Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 2030.
+Counted cumulatively from 1 Jul 2025 (FY26 start) toward 10,000 by 30 Jun 2030 (end of FY30). Every year is a financial year.
 FY26 baseline of record: re-locked with Adam Carter 8 Oct 2026 for v5. The
 NetSuite replica of v5 gave 1,311 (1,286 under v4 + 20 Functional Trainer
 Rack carts + 5 REP Ares 2.0 carts); the exact-mode run reports the feed's own
 figure as fy26Computed, and FY26_BASELINE is set to that figure once seen.
-History: 1,257 manual pull -> 1,286 automated v4 (12 Aug 2026) -> v5.
+v5 live run (8 Oct 2026) reported fy26Computed 1,306.
+v5.1 (Oct 2026): leg press / hack squat machines are general anchors (Adam:
+"Leg press, yes. Impulse, no."); NetSuite replica adds 13 FY26 carts, 0 FY27.
+The Impulse Ultimate Smith Machine (IT7001) is excluded.
+History: 1,257 manual pull -> 1,286 automated v4 (12 Aug 2026) -> 1,306 v5 -> v5.1.
 
 Modes:
   exact  — feed date floor <= 2025-07-01: everything computed from the feed,
@@ -53,7 +57,7 @@ FEED_URL = os.environ.get("HGB_FEED_URL", "").strip()
 if not FEED_URL:
     sys.exit("FATAL: HGB_FEED_URL env var is not set — add it as a repo Actions secret")
 TARGET = 10000
-FY26_BASELINE = 1311   # v5 replica estimate; set to fy26Computed after the first v5 run
+FY26_BASELINE = 1319   # v5.1 estimate (live v5 fy26Computed 1,306 + 13 leg press carts); set to fy26Computed after the first v5.1 run
 FY26_START = datetime.date(2025, 7, 1)
 FY27_START = datetime.date(2026, 7, 1)
 GATE = 3376.0
@@ -98,6 +102,11 @@ DESC_COMPONENT = re.compile(
     r'CABLE|GUIDE ROD|SHROUD|HEADPLATE|STICKER|UPGRADE|SPARE|\bPARTS?\b|STRAP|\bMAT\b|'
     r'WEIGHT (PACKAGE|STACK)|PEG ?BOARD|WALL[- ]?MOUNT|STORAGE|BOX ?[2-9]|CONNECTOR|'
     r'J[- ]?HOOK|SPOTTER|HANDLE|BAR\b|ANCHOR', re.I)
+# Leg press / hack squat machines are general anchors (v5.1). The rule catches
+# new machines automatically; attachments, plates and spare parts are not machines.
+DESC_ANCHOR = re.compile(r'LEG ?PRESS|HACK SQUAT', re.I)
+DESC_NOT_MACHINE = re.compile(
+    r'NOT LEG PRESS|ATTACHMENT|OPTION|LEG PRESS PLATE|FOOT PLATE|SAFETY|BELT|FRAME|FOAM|SUPPORT|BLOCK', re.I)
 # Words that suggest an anchor product; used only to flag unclassified SKUs.
 DESC_LOOKS_ANCHOR = re.compile(
     r'RACK|TRAINER|HOME GYM|TREADMILL|BIKE|ROWER|\bERG\b|LEG PRESS|HACK SQUAT|STEPR|'
@@ -161,6 +170,9 @@ def anchor_class(sku, sub, desc):
     if DESC_PATH1.search(desc) and not DESC_COMPONENT.search(desc) and sub not in ATTACH_ONLY:
         return 'path1'
     if sku in ANCHOR_SKU or sub in ANCHOR:
+        return 'anchor'
+    if (DESC_ANCHOR.search(desc) and not DESC_COMPONENT.search(desc)
+            and not DESC_NOT_MACHINE.search(desc) and sub not in ATTACH_ONLY):
         return 'anchor'
     return None
 
@@ -283,11 +295,11 @@ def main():
         "count": count, "target": TARGET,
         "asOf": today.strftime("%-d %b %Y"),
         "window": "cumulative since 1 Jul 2025 (FY26 start)",
-        "periodStart": "2025-07-01", "periodEnd": "2030-12-31",
+        "periodStart": "2025-07-01", "periodEnd": "2030-06-30",
         "fy27ToDate": fy27, "fy26Baseline": FY26_BASELINE,
-        "note": ("Three-path rule v5: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares "
-                 "(v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026). "
-                 f"FY26 baseline {FY26_BASELINE:,} (re-locked for v5). "
+        "note": ("Three-path rule v5.1: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares; leg press / hack squat machines are general anchors "
+                 "(v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026; leg press added Oct 2026). "
+                 f"FY26 baseline {FY26_BASELINE:,} (re-locked for v5.1). "
                  "Source: NetSuite saved search GAF BHAG Data via GURUS "
                  "sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo."),
     }

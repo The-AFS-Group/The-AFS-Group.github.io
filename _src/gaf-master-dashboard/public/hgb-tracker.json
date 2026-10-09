@@ -1,14 +1,14 @@
 {
   "count": 1580,
   "target": 10000,
-  "asOf": "9 Oct 2026",
+  "asOf": "10 Oct 2026",
   "window": "cumulative since 1 Jul 2025 (FY26 start)",
   "periodStart": "2025-07-01",
   "periodEnd": "2030-06-30",
   "fy27ToDate": 263,
   "fy26Baseline": 1319,
   "note": "Three-path rule v5.1: Path 1 = AIO / Home Gym / functional trainer anchors incl. Functional Trainer Rack and REP Altitude/Ares; leg press / hack squat machines are general anchors (v4 locked 4 Aug 2026; v5 anchor classification agreed with Adam 8 Oct 2026; leg press added Oct 2026). FY26 baseline 1,319 (re-locked for v5.1). Source: NetSuite saved search GAF BHAG Data via GURUS sheet feed, GAF AU + Online-AU. Updated unattended by the hgb-tracker GitHub Action in this repo.",
-  "fy26SamePoint": 284,
+  "fy26SamePoint": 287,
   "fy26Computed": 1317,
   "reviewSkus": 0
 }

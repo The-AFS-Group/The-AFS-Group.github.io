@@ -1,5 +1,5 @@
 {
-  "asOf": "10 Oct 2026",
+  "asOf": "11 Oct 2026",
   "windowDays": 120,
   "note": "SKUs that look like anchors but are not classified. Add each to anchor_skus.json (path1 / anchor / exclude).",
   "skus": []

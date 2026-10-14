@@ -20,7 +20,7 @@ import OPSP_FINALS from '../data/opsp-finals.json';
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
 // Shows two pacing numbers: % to target and % elapsed through the BHAG period.
-interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; fy27ToDate?: number; fy26Baseline?: number; fy26SamePoint?: number; note?: string; }
+interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; fy27ToDate?: number; fy26Baseline?: number; fy26SamePoint?: number; fy26Computed?: number; note?: string; }
 const HGBTracker: React.FC = () => {
     const [t, setT] = useState<HGBTrackerData | null>(null);
     useEffect(() => {
@@ -35,9 +35,33 @@ const HGBTracker: React.FC = () => {
     const start = new Date(t.periodStart || '2025-07-01').getTime();
     const end = new Date(t.periodEnd || '2030-12-31').getTime();
     const elapsed = Math.max(0, Math.min(100, ((Date.now() - start) / (end - start)) * 100));
-    const behind = toTarget < elapsed - 1;
-    const ahead = toTarget > elapsed + 1;
-    const paceLabel = behind ? 'behind pace' : ahead ? 'ahead of pace' : 'on pace';
+    // Pace is a glide path, not a straight line: reaching the target needs steady
+    // year-on-year growth (solved from the FY26 baseline), and FY27's expected
+    // to-date share follows FY26's own seasonality (its same-point share of the
+    // full year). Without the FY26 same-point figure the straight-line pace is
+    // kept, because a flat split would ignore FY26's slow first quarter.
+    let expected: number | null = null;      // cumulative builds expected by today
+    let pacePct: number | null = null;       // FY27 to date vs expected, %
+    if (t.fy27ToDate != null && t.fy26Baseline && t.fy26SamePoint != null) {
+        const need = t.target - t.fy26Baseline;
+        let lo = 1, hi = 3;
+        for (let i = 0; i < 60; i++) {
+            const g = (lo + hi) / 2;
+            const sum = [1, 2, 3, 4].reduce((a, k) => a + t.fy26Baseline! * Math.pow(g, k), 0);
+            if (sum < need) lo = g; else hi = g;
+        }
+        const fy27Target = t.fy26Baseline * lo;
+        const share = t.fy26SamePoint / (t.fy26Computed ?? t.fy26Baseline);
+        const expFY27 = fy27Target * share;
+        expected = t.fy26Baseline + expFY27;
+        pacePct = expFY27 ? ((t.fy27ToDate - expFY27) / expFY27) * 100 : null;
+    }
+    const markerPct = expected != null ? Math.max(0, Math.min(100, (expected / t.target) * 100)) : elapsed;
+    const behind = pacePct != null ? pacePct < -2 : toTarget < elapsed - 1;
+    const ahead = pacePct != null ? pacePct > 2 : toTarget > elapsed + 1;
+    const paceLabel = pacePct != null
+        ? (behind ? `${Math.abs(Math.round(pacePct))}% behind pace` : ahead ? `${Math.round(pacePct)}% ahead of pace` : 'on pace')
+        : (behind ? 'behind pace' : ahead ? 'ahead of pace' : 'on pace');
     const paceColor = behind ? 'text-red-300' : ahead ? 'text-green-300' : 'text-orange-200';
     return (
         <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
@@ -52,23 +76,17 @@ const HGBTracker: React.FC = () => {
             <SourceNote text={`Source: NetSuite, via the hgb-tracker GitHub Action · as of ${t.asOf}`} tone="light" className="mt-1" />
             <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden mt-3 relative">
                 <div className="h-full bg-orange-500 rounded-full transition-all" style={{ width: `${toTarget}%` }} />
-                <div className="absolute top-[-2px] bottom-[-2px] w-0.5 bg-white" style={{ left: `${elapsed}%` }} title="expected pace" />
+                <div className="absolute top-[-2px] bottom-[-2px] w-0.5 bg-white" style={{ left: `${markerPct}%` }} title="expected pace" />
             </div>
             <div className="flex items-center justify-between gap-2 mt-2.5 text-[11px] font-bold">
                 <span className="text-orange-300">{toTarget.toFixed(0)}% to target</span>
-                <span className="text-gray-400">{elapsed.toFixed(0)}% through period</span>
+                <span className="text-gray-400">{expected != null ? `~${Math.round(expected).toLocaleString()} expected by now` : `${elapsed.toFixed(0)}% through period`}</span>
                 <span className={paceColor}>{paceLabel}</span>
             </div>
             {t.fy27ToDate != null && t.fy26Baseline ? (() => {
-                // Exact FY26 same-point needs FY26 order history in the feed. When the feed
-                // is FY27-only it is absent, so fall back to FY26's average pace (baseline
-                // prorated by days into FY27) rather than dropping the pace metric.
-                const fy27Start = new Date('2026-07-01').getTime();
-                const daysIn = Math.max(1, Math.min(365, Math.ceil((Date.now() - fy27Start) / 86400000)));
-                const exactRef = t.fy26SamePoint != null;
-                const ref = exactRef ? t.fy26SamePoint! : Math.round((t.fy26Baseline! * daysIn) / 365);
+                const ref = t.fy26SamePoint ?? null;
                 const yoyPct = ref ? Math.round(((t.fy27ToDate! - ref) / ref) * 100) : null;
-                const up = t.fy27ToDate! >= ref;
+                const up = ref != null && t.fy27ToDate! >= ref;
                 const yoyW = Math.max(0, Math.min(100, (t.fy27ToDate! / t.fy26Baseline!) * 100));
                 return (
                     <div className="mt-3 pt-3 border-t border-white/10">
@@ -80,7 +98,7 @@ const HGBTracker: React.FC = () => {
                         <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mt-2">
                             <div className="h-full bg-orange-400 rounded-full transition-all" style={{ width: `${yoyW}%` }} />
                         </div>
-                        <div className="text-[10px] text-gray-500 font-semibold mt-1.5">{exactRef ? `vs ${ref} at the same point in FY26` : `vs ~${ref} at FY26's average pace`}</div>
+                        <div className="text-[10px] text-gray-500 font-semibold mt-1.5">{ref != null ? `vs ${ref} at the same point in FY26` : 'Same-point FY26 comparison pending FY26 history'}</div>
                     </div>
                 );
             })() : null}

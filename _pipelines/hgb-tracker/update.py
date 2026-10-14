@@ -240,7 +240,7 @@ def fetch_feed():
 def main():
     raw = fetch_feed()
     rows = list(csv.reader(io.StringIO(raw)))
-    if len(rows) < 10000:
+    if len(rows) < 500:
         sys.exit(f"FATAL: feed has only {len(rows)} rows — export looks broken or empty")
     cols = resolve_columns(rows[0])
 

@@ -60,8 +60,15 @@ const HGBTracker: React.FC = () => {
                 <span className={paceColor}>{paceLabel}</span>
             </div>
             {t.fy27ToDate != null && t.fy26Baseline ? (() => {
-                const yoyPct = t.fy26SamePoint ? Math.round(((t.fy27ToDate! - t.fy26SamePoint) / t.fy26SamePoint) * 100) : null;
-                const up = t.fy26SamePoint != null && t.fy27ToDate! >= t.fy26SamePoint;
+                // Exact FY26 same-point needs FY26 order history in the feed. When the feed
+                // is FY27-only it is absent, so fall back to FY26's average pace (baseline
+                // prorated by days into FY27) rather than dropping the pace metric.
+                const fy27Start = new Date('2026-07-01').getTime();
+                const daysIn = Math.max(1, Math.min(365, Math.ceil((Date.now() - fy27Start) / 86400000)));
+                const exactRef = t.fy26SamePoint != null;
+                const ref = exactRef ? t.fy26SamePoint! : Math.round((t.fy26Baseline! * daysIn) / 365);
+                const yoyPct = ref ? Math.round(((t.fy27ToDate! - ref) / ref) * 100) : null;
+                const up = t.fy27ToDate! >= ref;
                 const yoyW = Math.max(0, Math.min(100, (t.fy27ToDate! / t.fy26Baseline!) * 100));
                 return (
                     <div className="mt-3 pt-3 border-t border-white/10">
@@ -73,7 +80,7 @@ const HGBTracker: React.FC = () => {
                         <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden mt-2">
                             <div className="h-full bg-orange-400 rounded-full transition-all" style={{ width: `${yoyW}%` }} />
                         </div>
-                        {t.fy26SamePoint != null && <div className="text-[10px] text-gray-500 font-semibold mt-1.5">vs {t.fy26SamePoint} at the same point in FY26</div>}
+                        <div className="text-[10px] text-gray-500 font-semibold mt-1.5">{exactRef ? `vs ${ref} at the same point in FY26` : `vs ~${ref} at FY26's average pace`}</div>
                     </div>
                 );
             })() : null}

@@ -46,7 +46,8 @@ Modes:
   exact  — feed date floor <= 2025-07-01: everything computed from the feed,
            including fy26SamePoint (restores the dashboard YoY row).
   legacy — feed floor later (rolling window): count = frozen FY26 baseline
-           + FY27-to-date from the feed; fy26SamePoint omitted.
+           + FY27-to-date from the feed; fy26SamePoint read from fy26-curve.json
+           (written by the last exact-mode run), omitted if no curve exists.
 """
 import csv, io, json, os, re, sys, datetime, urllib.request
 
@@ -61,6 +62,7 @@ FY26_BASELINE = 1319   # v5.1 estimate (live v5 fy26Computed 1,306 + 13 leg pres
 FY26_START = datetime.date(2025, 7, 1)
 FY27_START = datetime.date(2026, 7, 1)
 GATE = 3376.0
+CURVE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "fy26-curve.json")
 
 AIO_HG = {'All-In-One Trainers - All-In-One Trainers', 'All-In-One Trainers',
           'Home Gyms & Multi-Station Units'}
@@ -268,6 +270,17 @@ def main():
         except ValueError:  # 29 Feb
             same_point_end = datetime.date(today.year - 1, today.month, 28)
         fy26_same = sum(1 for d in builds if FY26_START <= d <= same_point_end)
+        # Persist FY26's day-by-day cumulative so later FY27-only feeds can still
+        # report the exact same-point-last-year comparison.
+        curve, run = {}, 0
+        fy26_builds = [d for d in builds if FY26_START <= d < FY27_START]
+        for i in range((FY27_START - FY26_START).days):
+            day = FY26_START + datetime.timedelta(days=i)
+            run += sum(1 for d in fy26_builds if d == day)
+            curve[day.isoformat()] = run
+        with open(CURVE_PATH, "w") as f:
+            json.dump(curve, f, separators=(",", ":"))
+            f.write("\n")
         if not (1100 <= fy26_full <= 1500):
             sys.exit(f"FATAL: exact-mode FY26 count {fy26_full} is implausible vs baseline {FY26_BASELINE}")
         print(f"exact mode: floor {floor}, FY26 computed {fy26_full} (baseline {FY26_BASELINE}), "
@@ -275,6 +288,14 @@ def main():
     else:
         count = FY26_BASELINE + fy27
         fy26_same = None
+        try:
+            with open(CURVE_PATH) as f:
+                curve = json.load(f)
+            ref = datetime.date(today.year - 1, today.month, min(today.day, 28 if today.month == 2 else today.day))
+            if ref <= FY27_START - datetime.timedelta(days=1):
+                fy26_same = curve.get(ref.isoformat())
+        except (OSError, ValueError):
+            pass
         # FY27-only feed: FY26 full-year figure can't be recomputed, keep the last known one.
         try:
             with open("../../gaf-master-dashboard/hgb-tracker.json") as f:

@@ -275,6 +275,12 @@ def main():
     else:
         count = FY26_BASELINE + fy27
         fy26_same = None
+        # FY27-only feed: FY26 full-year figure can't be recomputed, keep the last known one.
+        try:
+            with open("../../gaf-master-dashboard/hgb-tracker.json") as f:
+                fy26_full = json.load(f).get("fy26Computed")
+        except (OSError, ValueError):
+            fy26_full = None
         print(f"legacy mode: floor {floor} is after FY26 start; count = {FY26_BASELINE} + {fy27} = {count}")
 
     review = review_list(orders, today)
@@ -305,7 +311,7 @@ def main():
     }
     if fy26_same is not None:
         payload["fy26SamePoint"] = fy26_same
-    if exact:
+    if fy26_full is not None:
         payload["fy26Computed"] = fy26_full
     payload["reviewSkus"] = len(review)
 

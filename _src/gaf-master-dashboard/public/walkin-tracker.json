@@ -5,7 +5,7 @@
   "periodEnd": "2026-12-31",
   "uplift": 0.2,
   "baseline": {
-    "label": "17 Jul – 16 Oct 2026 (92 days)",
+    "label": "17 Jul \u2013 16 Oct 2026 (92 days)",
     "visitors": 228,
     "known": 69,
     "unknown": 159,
@@ -13,16 +13,25 @@
     "verifiedOrders": 11
   },
   "actual": {
-    "visitors": 42,
-    "known": null,
-    "unknown": null,
-    "verifiedSales": null,
-    "verifiedOrders": null
+    "visitors": 46,
+    "known": 14,
+    "unknown": 32,
+    "verifiedSales": 8244,
+    "verifiedOrders": 3
   },
   "monthly": [
-    { "label": "Oct", "visitors": 42 },
-    { "label": "Nov", "visitors": null },
-    { "label": "Dec", "visitors": null }
+    {
+      "label": "Oct",
+      "visitors": 46
+    },
+    {
+      "label": "Nov",
+      "visitors": null
+    },
+    {
+      "label": "Dec",
+      "visitors": null
+    }
   ],
-  "note": "GAF showroom walk-ins from the HubSpot Walkins log. Duplicates and staff/test entries excluded. Verified sales = GAF deals created within 120 days of the visit and confirmed in NetSuite (not cancelled). Q2 target = last 3 months' actuals (a 92-day window, same length as Q2) +20% for intentionality. Oct is a part-month; known/unknown split and verified sales to date update with the next data pull."
+  "note": "GAF showroom walk-ins from the HubSpot Walkins log. Duplicates and staff/test entries excluded. Verified sales = GAF deals created on or after the visit date (within 120 days) and confirmed in NetSuite (not cancelled). Q2 target = last 3 months' actuals (a 92-day window, same length as Q2) +20% for intentionality. Q2 to date = 1\u201316 Oct (part-month). Not counted: Huxham SO0320679 ($5,514, deal created before his visit). Counted but a judgement call: Adams SO0321786 ($3,550, phone-call deal raised the same day as his visit). The 3 Q2 orders are all from known visitors; many open deals are still inside the 120-day window."
 }

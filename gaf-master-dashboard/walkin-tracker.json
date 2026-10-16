@@ -1,0 +1,16 @@
+{
+  "asOf": "2026-10-16",
+  "periodStart": "2026-07-17",
+  "periodEnd": "2027-07-16",
+  "baselineDays": 92,
+  "visitors": { "known": 69, "unknown": 159, "target": 905 },
+  "knownShare": { "target": 30 },
+  "verifiedSales": { "value": 43139, "orders": 11, "targetValue": 171000, "targetOrders": 44 },
+  "monthly": [
+    { "label": "Jul", "visitors": 25 },
+    { "label": "Aug", "visitors": 101 },
+    { "label": "Sep", "visitors": 60 },
+    { "label": "Oct", "visitors": 42 }
+  ],
+  "note": "GAF showroom walk-ins from the HubSpot Walkins log (since 17 Jul 2026). Duplicates and staff/test entries excluded. Verified sales = GAF deals created within 120 days of the visit and confirmed in NetSuite (not cancelled). Targets are the first 92 days annualised; re-baseline end of Nov 2026."
+}

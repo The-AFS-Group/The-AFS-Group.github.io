@@ -1,16 +1,28 @@
 {
   "asOf": "2026-10-16",
-  "periodStart": "2026-07-17",
-  "periodEnd": "2027-07-16",
-  "baselineDays": 92,
-  "visitors": { "known": 69, "unknown": 159, "target": 905 },
-  "knownShare": { "target": 30 },
-  "verifiedSales": { "value": 43139, "orders": 11, "targetValue": 171000, "targetOrders": 44 },
+  "quarter": "Q2 FY27",
+  "periodStart": "2026-10-01",
+  "periodEnd": "2026-12-31",
+  "uplift": 0.2,
+  "baseline": {
+    "label": "17 Jul – 16 Oct 2026 (92 days)",
+    "visitors": 228,
+    "known": 69,
+    "unknown": 159,
+    "verifiedSales": 43139,
+    "verifiedOrders": 11
+  },
+  "actual": {
+    "visitors": 42,
+    "known": null,
+    "unknown": null,
+    "verifiedSales": null,
+    "verifiedOrders": null
+  },
   "monthly": [
-    { "label": "Jul", "visitors": 25 },
-    { "label": "Aug", "visitors": 101 },
-    { "label": "Sep", "visitors": 60 },
-    { "label": "Oct", "visitors": 42 }
+    { "label": "Oct", "visitors": 42 },
+    { "label": "Nov", "visitors": null },
+    { "label": "Dec", "visitors": null }
   ],
-  "note": "GAF showroom walk-ins from the HubSpot Walkins log (since 17 Jul 2026). Duplicates and staff/test entries excluded. Verified sales = GAF deals created within 120 days of the visit and confirmed in NetSuite (not cancelled). Targets are the first 92 days annualised; re-baseline end of Nov 2026."
+  "note": "GAF showroom walk-ins from the HubSpot Walkins log. Duplicates and staff/test entries excluded. Verified sales = GAF deals created within 120 days of the visit and confirmed in NetSuite (not cancelled). Q2 target = last 3 months' actuals (a 92-day window, same length as Q2) +20% for intentionality. Oct is a part-month; known/unknown split and verified sales to date update with the next data pull."
 }

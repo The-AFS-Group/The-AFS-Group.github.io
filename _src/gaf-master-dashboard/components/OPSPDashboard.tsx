@@ -828,6 +828,96 @@ const defaultQuarterIndex = (): number => {
     return 0;
 };
 
+// Showroom walk-in tracker: known vs unknown visitors and NetSuite-verified walk-in
+// sales against annualised targets. Reads a committed JSON refreshed from the
+// HubSpot Walkins log + NetSuite check (see note in the JSON).
+interface WalkInData {
+    asOf: string; periodStart: string; periodEnd: string;
+    visitors: { known: number; unknown: number; target: number };
+    knownShare: { target: number };
+    verifiedSales: { value: number; orders: number; targetValue: number; targetOrders: number };
+    monthly: { label: string; visitors: number }[];
+    note: string;
+}
+const WalkInTile: React.FC = () => {
+    const [d, setD] = useState<WalkInData | null>(null);
+    useEffect(() => {
+        fetch(`${import.meta.env.BASE_URL}walkin-tracker.json?cb=${Date.now()}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((j) => j && setD(j))
+            .catch(() => {});
+    }, []);
+    if (!d) return null;
+    const total = d.visitors.known + d.visitors.unknown;
+    const knownPct = total ? (d.visitors.known / total) * 100 : 0;
+    const start = new Date(d.periodStart).getTime();
+    const end = new Date(d.periodEnd).getTime();
+    const asOf = new Date(d.asOf).getTime();
+    const elapsed = Math.max(0, Math.min(100, ((asOf - start) / (end - start)) * 100));
+    const pct = (v: number, t: number) => Math.max(0, Math.min(100, (v / t) * 100));
+    const vs = d.verifiedSales;
+    const Bar2: React.FC<{ label: string; value: string; target: string; p: number; color: string; paceMarker?: boolean }> = ({ label, value, target, p, color, paceMarker = true }) => (
+        <div>
+            <div className="flex justify-between text-xs mb-1">
+                <span className="text-gray-600 font-medium">{label}</span>
+                <span><span className="font-bold text-gray-900">{value}</span><span className="text-gray-400 font-semibold"> / {target}</span></span>
+            </div>
+            <div className="relative h-2.5 bg-gray-100 rounded-full">
+                <div className="h-full rounded-full" style={{ width: `${p}%`, backgroundColor: color }} />
+                {paceMarker && <div className="absolute -top-1 -bottom-1 w-0.5 bg-gray-700" style={{ left: `${elapsed}%` }} title={`Pace: ${elapsed.toFixed(0)}% of the year elapsed`} />}
+            </div>
+        </div>
+    );
+    return (
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
+            <div className="flex justify-between items-start gap-4 mb-5">
+                <div>
+                    <div className="flex items-center gap-2 mb-1">
+                        <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg"><Users size={16} /></div>
+                        <h3 className="font-bold text-gray-900">Showroom Walk-ins</h3>
+                    </div>
+                    <p className="text-xs text-gray-500 ml-9">
+                        Since {fmtShortDate(new Date(d.periodStart))} <span className="mx-1">•</span> Annual target <span className="font-bold text-green-600">{d.visitors.target} visitors · ${Math.round(vs.targetValue / 1000)}k verified sales</span>
+                    </p>
+                    <SourceNote text={`Source: HubSpot Walkins log + NetSuite check · as of ${fmtShortDate(new Date(d.asOf))} · duplicates & staff/test entries excluded`} className="ml-9 mt-0.5" />
+                </div>
+                <div className="text-right shrink-0">
+                    <div className="text-2xl font-bold text-gray-900">{total}</div>
+                    <div className="text-xs text-gray-500 font-medium mb-1">Visitors to date</div>
+                    <div className={`text-xs font-bold ${pct(total, d.visitors.target) >= elapsed ? 'text-green-600' : 'text-red-500'}`}>
+                        {pct(total, d.visitors.target) >= elapsed ? 'On pace' : 'Behind pace'}
+                    </div>
+                </div>
+            </div>
+            <div className="space-y-4">
+                <Bar2 label="Known visitors (left details)" value={`${d.visitors.known}`} target={`${Math.round(d.visitors.target * d.knownShare.target / 100)}`} p={pct(d.visitors.known, d.visitors.target * d.knownShare.target / 100)} color={GAF_COLORS.green} />
+                <Bar2 label="Unknown visitors" value={`${d.visitors.unknown}`} target={`${Math.round(d.visitors.target * (100 - d.knownShare.target) / 100)}`} p={pct(d.visitors.unknown, d.visitors.target * (100 - d.knownShare.target) / 100)} color={GAF_COLORS.blue} />
+                <Bar2 label="Verified walk-in sales" value={`$${vs.value.toLocaleString()}`} target={`$${vs.targetValue.toLocaleString()}`} p={pct(vs.value, vs.targetValue)} color={GAF_COLORS.orange} />
+                <Bar2 label="Verified orders" value={`${vs.orders}`} target={`${vs.targetOrders}`} p={pct(vs.orders, vs.targetOrders)} color={GAF_COLORS.orange} />
+            </div>
+            <div className="text-[11px] text-gray-500 mt-3">
+                Share who left details: <span className={`font-bold ${knownPct >= d.knownShare.target ? 'text-green-600' : 'text-red-500'}`}>{knownPct.toFixed(0)}%</span> vs {d.knownShare.target}% target
+                <span className="mx-1">•</span> dark marker = pace ({elapsed.toFixed(0)}% of year)
+            </div>
+            <div className="flex-1 min-h-[140px] mt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                    <RechartsBarChart data={d.monthly} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                        <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
+                        <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
+                        <Tooltip formatter={(v: number) => [v, 'Visitors']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
+                        <ReferenceLine y={Math.round(d.visitors.target / 12)} stroke={GAF_COLORS.green} strokeDasharray="3 3">
+                            <Label value={`Target ~${Math.round(d.visitors.target / 12)}/mo`} position="insideTopRight" fill={GAF_COLORS.green} fontSize={10} />
+                        </ReferenceLine>
+                        <Bar dataKey="visitors" fill={GAF_COLORS.blue} radius={[4, 4, 0, 0]} barSize={28} />
+                    </RechartsBarChart>
+                </ResponsiveContainer>
+            </div>
+            <p className="text-[10px] text-gray-400 mt-3">{d.note} Jul and Oct are part-months.</p>
+        </div>
+    );
+};
+
 export default function OPSPDashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState<OpspData | null>(null);
@@ -1738,6 +1828,8 @@ export default function OPSPDashboard() {
                                 </div>
                             </div>
                         )}
+
+                        <WalkInTile />
 
                         {/* Gym designs created — the third critical number with a live feed.
                             Unlike AOV and calls, this one comes straight from the app that

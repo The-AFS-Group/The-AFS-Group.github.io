@@ -52,9 +52,12 @@ jobs:
       - name: Commit if the figure changed
         run: |
           set -euo pipefail
-          cp _pipelines/hgb-tracker/hgb-tracker.json gaf-master-dashboard/hgb-tracker.json
-          cp _pipelines/hgb-tracker/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
-          cp _pipelines/hgb-tracker/hgb-review.json gaf-master-dashboard/hgb-review.json
+          # A FY26-only (curve seeding) run writes just fy26-curve.json.
+          if [ -f _pipelines/hgb-tracker/hgb-tracker.json ]; then
+            cp _pipelines/hgb-tracker/hgb-tracker.json gaf-master-dashboard/hgb-tracker.json
+            cp _pipelines/hgb-tracker/hgb-tracker.json _src/gaf-master-dashboard/public/hgb-tracker.json
+            cp _pipelines/hgb-tracker/hgb-review.json gaf-master-dashboard/hgb-review.json
+          fi
           git config user.name "hgb-tracker-bot"
           git config user.email "hgb-tracker@users.noreply.github.com"
           if [ -f _pipelines/hgb-tracker/fy26-curve.json ]; then git add _pipelines/hgb-tracker/fy26-curve.json; fi

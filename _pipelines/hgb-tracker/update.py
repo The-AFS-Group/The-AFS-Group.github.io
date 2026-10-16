@@ -43,6 +43,8 @@ The Impulse Ultimate Smith Machine (IT7001) is excluded.
 History: 1,257 manual pull -> 1,286 automated v4 (12 Aug 2026) -> 1,306 v5 -> v5.1.
 
 Modes:
+  curve-only — feed covers FY26 but nothing after 30 Jun 2026: writes
+           fy26-curve.json and leaves the tracker JSON untouched.
   exact  — feed date floor <= 2025-07-01: everything computed from the feed,
            including fy26SamePoint (restores the dashboard YoY row).
   legacy — feed floor later (rolling window): count = frozen FY26 baseline
@@ -285,6 +287,11 @@ def main():
             sys.exit(f"FATAL: exact-mode FY26 count {fy26_full} is implausible vs baseline {FY26_BASELINE}")
         print(f"exact mode: floor {floor}, FY26 computed {fy26_full} (baseline {FY26_BASELINE}), "
               f"cumulative {count}, FY27 {fy27}, same-point {fy26_same}")
+        if max(o['date'] for o in orders.values()) < FY27_START:
+            # FY26-only feed (one-off run to seed the curve): the cumulative would
+            # be FY26 alone, so keep the curve but leave the published tracker as is.
+            print(f"FY26-only feed: wrote {os.path.basename(CURVE_PATH)}; tracker JSON left unchanged")
+            return
     else:
         count = FY26_BASELINE + fy27
         fy26_same = None

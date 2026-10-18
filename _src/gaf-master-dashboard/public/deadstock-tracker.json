@@ -1,0 +1,100 @@
+{
+  "asOf": "2026-10-19",
+  "months": [
+    "2026-05",
+    "2026-06",
+    "2026-07",
+    "2026-08",
+    "2026-09",
+    "2026-10"
+  ],
+  "gc": [
+    690459,
+    547133,
+    534577,
+    453124,
+    404482,
+    395274
+  ],
+  "locations": [
+    {
+      "key": "quarantine",
+      "name": "GC Quarantine New 2015",
+      "goal": 0,
+      "values": [
+        255243,
+        161919,
+        183561,
+        161300,
+        163198,
+        162069
+      ]
+    },
+    {
+      "key": "showroomMissing",
+      "name": "Showroom Missing",
+      "goal": 0,
+      "values": [
+        199454,
+        149831,
+        62894,
+        63407,
+        62399,
+        66921
+      ]
+    },
+    {
+      "key": "exDemo",
+      "name": "GC Ex-Demo",
+      "goal": 0,
+      "values": [
+        51486,
+        38691,
+        43721,
+        63117,
+        55766,
+        57257
+      ]
+    },
+    {
+      "key": "arundel",
+      "name": "Arundel Showroom",
+      "goal": 0,
+      "values": [
+        0,
+        0,
+        8845,
+        6573,
+        10224,
+        16425
+      ]
+    },
+    {
+      "key": "spareParts",
+      "name": "GC Spare Parts",
+      "goal": null,
+      "values": [
+        185284,
+        124139,
+        102422,
+        103689,
+        104285,
+        112784
+      ]
+    }
+  ],
+  "daily": [
+    {
+      "date": "2026-10-19",
+      "gc": 395274,
+      "locations": {
+        "quarantine": 162069,
+        "showroomMissing": 66921,
+        "exDemo": 57257,
+        "arundel": 16425,
+        "spareParts": 112784
+      }
+    }
+  ],
+  "note": "Deadstock Tracker - FY27, LOCATION SUMMARY tab (NetSuite). Month columns are closing values; the newest column is today's value. Written daily by the deadstock-tracker GitHub Action."
+}

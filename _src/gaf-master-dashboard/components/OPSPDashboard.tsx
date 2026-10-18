@@ -16,6 +16,7 @@ import {
 import { BHAGData } from '../types';
 import { SourceNote } from './SourceNote';
 import OPSP_FINALS from '../data/opsp-finals.json';
+import { GafDeadStockTile, GcSubLocationDeadStockTile, useDeadStockData } from './DeadStockTiles';
 
 // Home Gym Builder BHAG tracker (compact, sits inside the BHAG hero).
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
@@ -667,6 +668,11 @@ const PERSISTENT_CNS: { match: RegExp; fallback: CriticalNumber }[] = [
 ];
 
 const fmtPct = (n: number) => `${n.toFixed(1)}%`;
+// "$25,239,066.87" -> 25239066.87 (the OPSP doc's money cells); null if unreadable.
+const parseMoney = (s?: string): number | null => {
+    const n = parseFloat((s || '').replace(/[^0-9.\-]/g, ''));
+    return isNaN(n) ? null : n;
+};
 const fmtShortDate = (d: Date) => d.toLocaleDateString('en-AU', { day: 'numeric', month: 'short' });
 
 /* ---------------------------------------------------------------- pacing
@@ -930,6 +936,7 @@ const WalkInTile: React.FC = () => {
 };
 
 export default function OPSPDashboard() {
+    const deadStock = useDeadStockData();
     const [isLoading, setIsLoading] = useState(true);
     const [data, setData] = useState<OpspData | null>(null);
     const [isLive, setIsLive] = useState(true);
@@ -1841,6 +1848,16 @@ export default function OPSPDashboard() {
                         )}
 
                         <WalkInTile />
+
+                        {/* Dead stock — tracked as a trend from Q2 FY27 onward, after Q1's
+                            "Reduce GC Dead Stock" Critical Number (frozen in opsp-finals.json,
+                            untouched here). Hidden on Q1 so that quarter's view doesn't change. */}
+                        {quarterIndex >= 1 && deadStock && (
+                            <>
+                                <GafDeadStockTile data={deadStock} annualSales={parseMoney(d.fy27Revenue)} />
+                                <GcSubLocationDeadStockTile data={deadStock} />
+                            </>
+                        )}
 
                         {/* Gym designs created — the third critical number with a live feed.
                             Unlike AOV and calls, this one comes straight from the app that

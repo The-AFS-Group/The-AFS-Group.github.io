@@ -207,24 +207,21 @@ const Chip = ({ children, solid }) => {
 };
 
 /* ===================== SLIDE 1: THE FY27 STRATEGY =====================
-   Who we build for, how we reach them, what it has to deliver.
-   One orange element: the Home Gym Builder revenue bar. */
+   Who we build for, how we reach them, what it has to deliver (gross profit).
+   One orange element: the Home Gym Builder customer bar. */
 const StrategySlide = ({ n, t }) => {
   const th = useTheme();
   const archetypes = [
-    { name: "Home Gym Builder", cust: 9, rev: 27.3, hero: true },
-    { name: "Budget Seeker", cust: 69.5, rev: 29.1 },
-    { name: "Performance Optimiser", cust: 12.6, rev: 19.3 },
+    { name: "Home Gym Builder", cust: 9, note: "Highest profit per customer", hero: true },
+    { name: "Budget Seeker", cust: 69.5, note: "High acquisition cost, loses money online" },
+    { name: "Performance Optimiser", cust: 12.6, note: "Profitable only with sales team contact" },
   ];
   const channels = [
-    { name: "Direct", sub: "Website, sales team, AI Gym Designer", stat: "104", label: "gyms designed by 30 Sep", icon: Monitor },
-    { name: "Retail & Wholesale", sub: "Experience Centre, Rebel, dealers", stat: "$516k", label: "first Rebel order", icon: Store },
-    { name: "Commercial", sub: "Gyms, mining, defence", stat: "$3,000", label: "profit per mining customer", icon: Briefcase },
+    { name: "Direct", sub: "Website, sales team, AI Gym Designer", icon: Monitor },
+    { name: "Retail & Wholesale", sub: "Experience Centre, Rebel, dealers", icon: Store },
+    { name: "Commercial", sub: "Gyms, mining, defence", icon: Briefcase },
   ];
-  const path = [
-    { label: "FY26 actual", value: "$20.6M", h: 20.6, strong: false },
-    { label: "FY27 target", value: "$25.8M", h: 25.8, strong: true },
-  ];
+  const q1Gp = 1.73, gpTarget = 9.6;
   return (
     <Slide num={n} total={t}>
       <SectionTitle pre="FY27 Annual Strategy" title="WIN THE HOME GYM BUILDER" sub="Be the No.1 choice for people building a gym at home. Every channel, at a profit." />
@@ -238,17 +235,14 @@ const StrategySlide = ({ n, t }) => {
               <div key={i}>
                 <p className={`text-[18px] font-heading font-semibold ${th.text} mb-2`}>{a.name}</p>
                 <div className="flex items-center gap-3 mb-1.5">
-                  <div className={`h-3 rounded-full ${th.barMid}`} style={{ width: `${a.cust * 2.4}px` }}></div>
-                  <span className={`text-[15px] font-body ${th.sub}`}>{a.cust}% of customers</span>
+                  <div className={`h-3 rounded-full ${a.hero ? 'bg-brand-accent' : th.barMid}`} style={{ width: `${a.cust * 2.4}px` }}></div>
+                  <span className={`text-[15px] font-body ${th.text} font-semibold`}>{a.cust}% of customers</span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <div className={`h-3 rounded-full ${a.hero ? 'bg-brand-accent' : th.barStrong}`} style={{ width: `${a.rev * 2.4}px` }}></div>
-                  <span className={`text-[15px] font-body ${th.text} font-semibold`}>{a.rev}% of revenue</span>
-                </div>
+                <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{a.note}</p>
               </div>
             ))}
           </div>
-          <p className={`text-[15px] font-body ${th.sub} leading-snug`}>9% of customers, 3x the revenue per customer.</p>
+          <p className={`text-[15px] font-body ${th.sub} leading-snug`}>A Home Gym Builder earns 2.5x the profit of an online-only buyer.</p>
         </div>
 
         {/* HOW */}
@@ -256,17 +250,13 @@ const StrategySlide = ({ n, t }) => {
           <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>How we reach them</p>
           <div className="flex-1 flex flex-col justify-center gap-4">
             {channels.map((c, i) => (
-              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg p-4 flex items-center gap-4`}>
-                <div className={`w-11 h-11 rounded-lg ${th.bg3} flex items-center justify-center shrink-0`}>
-                  <c.icon size={22} className={th.text} />
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg p-5 flex items-center gap-4`}>
+                <div className={`w-12 h-12 rounded-lg ${th.bg3} flex items-center justify-center shrink-0`}>
+                  <c.icon size={24} className={th.text} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className={`text-[18px] font-heading font-semibold ${th.text}`}>{c.name}</p>
-                  <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{c.sub}</p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className={`font-display text-3xl leading-none ${th.text}`}>{c.stat}</p>
-                  <p className={`text-[12px] font-body ${th.muted} mt-1 max-w-[120px] leading-tight`}>{c.label}</p>
+                  <p className={`text-[20px] font-heading font-semibold ${th.text}`}>{c.name}</p>
+                  <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{c.sub}</p>
                 </div>
               </div>
             ))}
@@ -277,39 +267,31 @@ const StrategySlide = ({ n, t }) => {
         {/* WHAT */}
         <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
           <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>What it has to deliver</p>
-          <div className="flex-1 flex items-end justify-center gap-10 pt-6 pb-4">
-            {path.map((p, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <p className={`font-display text-4xl leading-none ${th.text}`}>{p.value}</p>
-                <div className={`w-24 rounded-t-lg ${p.strong ? th.barStrong : th.barMid}`} style={{ height: `${p.h * 9}px` }}></div>
-                <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{p.label}</p>
-              </div>
-            ))}
+          <div className="flex-1 flex flex-col justify-center gap-8">
+            <div>
+              <p className={`font-display text-7xl leading-none ${th.text}`}>$9.6M</p>
+              <p className={`text-[16px] font-body ${th.sub} mt-2`}>FY27 gross profit target</p>
+            </div>
+            <div>
+              <p className={`font-display text-7xl leading-none ${th.text}`}>&gt;38%</p>
+              <p className={`text-[16px] font-body ${th.sub} mt-2`}>gross profit margin target</p>
+            </div>
           </div>
-          <div className="pb-4">
+          <div className={`border-t ${th.cardBorder} pt-4`}>
             <div className="flex items-baseline justify-between mb-2">
-              <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>Home gyms built</p>
-              <p className={`text-[15px] font-body ${th.text} font-semibold`}>1,626 of 10,000 by 2030</p>
+              <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>Q1 gross profit</p>
+              <p className={`text-[15px] font-body ${th.text} font-semibold`}>$1.73M of $9.6M</p>
             </div>
             <div className="relative h-3">
               <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
-              <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${1626 / 10000 * 100}%` }}></div>
+              <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${q1Gp / gpTarget * 100}%` }}></div>
             </div>
-          </div>
-          <div className={`grid grid-cols-2 gap-4 border-t ${th.cardBorder} pt-4`}>
-            <div>
-              <p className={`font-display text-3xl leading-none ${th.text}`}>$11M</p>
-              <p className={`text-[13px] font-body ${th.sub} mt-1`}>FY27 gross profit</p>
-            </div>
-            <div>
-              <p className={`font-display text-3xl leading-none ${th.text}`}>42.6%</p>
-              <p className={`text-[13px] font-body ${th.sub} mt-1`}>GP% in Q1</p>
-            </div>
+            <p className={`text-[13px] font-body ${th.muted} mt-2`}>Home gyms built: 1,626 of 10,000 by 2030.</p>
           </div>
         </div>
       </div>
-      <div className="mt-5"><Takeaway>Value over volume: the top 20% of customers deliver 130% of GAF's profit. Fix the whale, stop selling low-profit customers, products and channels.</Takeaway></div>
-      <Source>Sources: Strategy Day debrief (May 2026); GAF Master Dashboard (FY26 revenue); Q1 OPSP (designs); Weekly Strategy Meeting 19 Oct (Rebel); Profit Per X analysis via Claire Mula, 8 Oct (mining, top 20%).</Source>
+      <div className="mt-5"><Takeaway>Value over profit-poor volume: the top 20% of customers deliver 130% of GAF's profit. Fix the whale, stop selling low-profit customers, products and channels.</Takeaway></div>
+      <Source>Sources: Strategy Day debrief (May 2026, Profit Per X); FY27 gross profit targets; GAF Master Dashboard (Q1 gross profit created); top 20% insight via Claire Mula, 8 Oct.</Source>
     </Slide>
   );
 };

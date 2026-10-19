@@ -8,23 +8,23 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 ## Slide 1: Win the Home Gym Builder (FY27 annual strategy)
 
-**The one line:** we are building the business around one customer, reaching them through every channel, and measuring ourselves on profit, not volume.
+**The one line:** we are building the business around one customer, reaching them through every channel, and measuring ourselves on gross profit, not volume.
 
 **Who we build for (left)**
-- 678 sales calls plus profit-per-customer modelling. Home Gym Builder is 9% of customers but 27.3% of revenue, about 3x the revenue per customer.
-- Budget Seeker is 69.5% of customers and 29.1% of revenue. High acquisition cost, buys on promotion.
-- Extra detail if asked: HGB average order $4,031, median profit $1,271 per customer, 2.5x the profit of an online-only buyer, 47% garage-based. They are buying back time, progress and control.
+- 678 sales calls plus profit-per-customer modelling. Home Gym Builder is 9% of customers and the highest profit per customer: median $1,271, 2.5x an online-only buyer. Average order $4,031, 47% garage-based. They are buying back time, progress and control.
+- Budget Seeker is 69.5% of customers. High acquisition cost, buys on promotion, loses money online.
+- Performance Optimiser is 12.6% of customers. Profitable, but only when the sales team is involved.
 
-**How we reach them (middle): omni-channel**
+**How we reach them (middle): omni-channel** (names only on the slide, detail is yours)
 - Direct: website, sales team, AI Gym Designer as the front door. 104 designs by 30 Sep against a 100-design milestone.
-- Retail and wholesale: Experience Centre, Rebel, dealers. $516k first Rebel order processed this week.
-- Commercial: only mining and defence beat our best B2C customer on profit per customer (about $3,000 and $2,700). Everything else is below, so be selective.
+- Retail and wholesale: Experience Centre, Rebel ($516k first order), dealers.
+- Commercial: only mining and defence beat our best B2C customer on profit per customer (about $3,000 and $2,700), so be selective.
 - The flywheel: retail awareness should lower direct marketing cost, but only if margin holds.
 
 **What it has to deliver (right)**
-- FY26 revenue $20.6M (sum of the four FY26 quarters on the Master Dashboard) to FY27 target $25.8M, which is +25%.
-- FY27 gross profit $11M. Q1 GP% is 42.6% (Q1 OPSP scorecard).
-- Not on the slide, say it out loud: BHAG is home gyms designed and built by 2030. Slide 1 now shows 1,626 built since Jul 2025 against the 10,000 target (16%). FY27 to date is 307.
+- FY27 gross profit target $9.6M at a margin above 38%.
+- Q1 gross profit created was $1.73M, about 18% of the year. Q1 GP% was 42.6% (Q1 OPSP scorecard).
+- BHAG is home gyms designed and built by 2030: 1,626 built since Jul 2025 of 10,000 (16%). FY27 to date is 307.
 
 **Bottom line:** top 20% of B2C customers deliver 130% of GAF's profit. Fix the whale. Stop selling low-profit customers, products and channels, and cut marketing, COGS and warehouse cost.
 
@@ -83,9 +83,9 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 | Number | Source |
 |---|---|
 | Customer / revenue shares, 678 calls, HGB AOV and profit | `presentations/gaf-strategy-day-debrief-v2.html` (May 2026 strategy day) |
-| FY27 $25.8M revenue, $11M GP | Strategy day debrief, slide 14 |
+| FY27 $9.6M GP and >38% GP margin targets | Adam, 19 Oct |
 | Top 20% = 130% profit, mining $3,000 | Claire Mula email "GAF Coaching Call with Adam 8/10" |
-| FY26 $20.6M, Q1 $4.45M vs $3.83M, AOV, GP vs budget by month | Master Dashboard source sheets (Sales tab). I summed the daily rows by quarter |
+| Q1 GP created $1.73M, Q1 $4.45M revenue vs $3.83M, AOV, GP vs budget by month | Master Dashboard source sheets (Sales tab). I summed the daily rows by quarter |
 | Q1 critical numbers (dead stock, AOV, GP, designs) | `_src/gaf-master-dashboard/data/opsp-finals.json` (Q1 FY27) |
 | Dead stock $395k today | `gaf-master-dashboard/deadstock-tracker.json` |
 | Home gym builds 1,626 / 307 vs 301 | `gaf-master-dashboard/hgb-tracker.json` |
@@ -101,7 +101,9 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 Settled: BHAG is 10,000 (the strategy day deck and the BFCM slide in the October deck still say 30,000 and need correcting). Slide 1 shows the FY27 revenue target only, with no FY30 or operating profit figures. GP% headline is 42.6%. The Rebel order is accurate. The Asana AFS Group Priorities board, via the dashboard strategic priorities tab, is the right source.
 
-1. **September GP$:** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Different measures, but the room may hear both. Finance's September report also has GAF GP at 39.85% vs a 40.66% target, against the 42.6% on the slide.
-2. **Commercial:** dashboard shows $1.03M this Q1 vs $58k last year, while finance reports commercial $220k under budget. The slide only shows growth.
-3. **Q2 status will be stale quickly.** Three of four goals show Not started on day 19, and Goal 1 is Stuck. Refresh before presenting, or tell me and I will update the slide.
-4. **Revenue basis:** I used Master Dashboard total revenue. Shopify gross sales for September in the October deck ($1.72M) is a different basis from the dashboard's $1.40M. Say which you want shown.
+1. **$9.6M vs the dashboard budget:** the Master Dashboard's FY27 gross profit budget (GP created) sums to about $8.5M by quarter ($1.71M, $2.20M, $2.20M, $2.40M), not $9.6M. If the dashboard should track the $9.6M target, the budget rows need updating.
+2. **Two GP% targets:** slide 1 says >38% for the year, slide 2 shows the Q1 scorecard target of 40%. Same metric family, different bars. Say which is which, or align them.
+3. **September GP$:** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Different measures, but the room may hear both. Finance's September report also has GAF GP at 39.85% vs a 40.66% target, against the 42.6% on the slide.
+4. **Commercial:** dashboard shows $1.03M this Q1 vs $58k last year, while finance reports commercial $220k under budget. The slide only shows growth.
+5. **Q2 status will be stale quickly.** Three of four goals show Not started on day 19, and Goal 1 is Stuck. Refresh before presenting, or tell me and I will update the slide.
+6. **Revenue basis:** I used Master Dashboard total revenue. Shopify gross sales for September in the October deck ($1.72M) is a different basis from the dashboard's $1.40M. Say which you want shown.

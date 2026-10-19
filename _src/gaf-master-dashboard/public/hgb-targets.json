@@ -1,0 +1,11 @@
+{
+  "note": "Compounding yearly path to 10,000 cumulative Home Gym Builder builds by 30 Jun 2030, solved from the FY26 baseline (~21% growth a year; FY30 absorbs rounding so the total is exactly 10,000). If the FY26 baseline is re-locked, re-solve and update these figures.",
+  "baseline": { "fy": "FY26", "builds": 1319, "end": "2026-06-30" },
+  "growth": 1.2095,
+  "years": [
+    { "fy": "FY27", "target": 1595, "cumulative": 2914, "end": "2027-06-30" },
+    { "fy": "FY28", "target": 1929, "cumulative": 4843, "end": "2028-06-30" },
+    { "fy": "FY29", "target": 2334, "cumulative": 7177, "end": "2029-06-30" },
+    { "fy": "FY30", "target": 2823, "cumulative": 10000, "end": "2030-06-30" }
+  ]
+}

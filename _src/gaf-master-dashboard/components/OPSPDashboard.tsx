@@ -22,8 +22,19 @@ import { GafDeadStockTile, GcSubLocationDeadStockTile, useDeadStockData } from '
 // Reads a committed JSON refreshed from the read-only NetSuite HGB recalc.
 // Shows two pacing numbers: % to target and % elapsed through the BHAG period.
 interface HGBTrackerData { count: number; target: number; asOf: string; window: string; periodStart?: string; periodEnd?: string; fy27ToDate?: number; fy26Baseline?: number; fy26SamePoint?: number; fy26Computed?: number; note?: string; }
+interface HGBTargets {
+    baseline: { fy: string; builds: number; end: string };
+    years: { fy: string; target: number; cumulative: number; end: string }[];
+}
 const HGBTracker: React.FC = () => {
     const [t, setT] = useState<HGBTrackerData | null>(null);
+    const [targets, setTargets] = useState<HGBTargets | null>(null);
+    useEffect(() => {
+        fetch(`${import.meta.env.BASE_URL}hgb-targets.json?cb=${Date.now()}`)
+            .then((r) => (r.ok ? r.json() : null))
+            .then((d) => d && setTargets(d))
+            .catch(() => {});
+    }, []);
     useEffect(() => {
         fetch(`${import.meta.env.BASE_URL}hgb-tracker.json?cb=${Date.now()}`)
             .then((r) => (r.ok ? r.json() : null))
@@ -51,7 +62,7 @@ const HGBTracker: React.FC = () => {
             const sum = [1, 2, 3, 4].reduce((a, k) => a + t.fy26Baseline! * Math.pow(g, k), 0);
             if (sum < need) lo = g; else hi = g;
         }
-        const fy27Target = t.fy26Baseline * lo;
+        const fy27Target = targets?.years[0]?.target ?? t.fy26Baseline * lo;
         const share = t.fy26SamePoint / (t.fy26Computed ?? t.fy26Baseline);
         const expFY27 = fy27Target * share;
         expected = t.fy26Baseline + expFY27;
@@ -84,6 +95,55 @@ const HGBTracker: React.FC = () => {
                 <span className="text-gray-400">{expected != null ? `~${Math.round(expected).toLocaleString()} expected by now` : `${elapsed.toFixed(0)}% through period`}</span>
                 <span className={paceColor}>{paceLabel}</span>
             </div>
+            {targets && (() => {
+                // Cumulative target path (dashed) vs actual (solid), by fiscal year end.
+                const t0 = new Date(t.periodStart || '2025-07-01').getTime();
+                const ts = (d: string) => new Date(d).getTime();
+                const nowTs = new Date(t.asOf).getTime() || Date.now();
+                const rows = new Map<number, { x: number; target?: number; actual?: number }>();
+                const put = (x: number, k: 'target' | 'actual', v: number) => rows.set(x, { ...(rows.get(x) ?? { x }), [k]: v });
+                put(t0, 'target', 0); put(t0, 'actual', 0);
+                put(ts(targets.baseline.end), 'target', targets.baseline.builds);
+                put(ts(targets.baseline.end), 'actual', targets.baseline.builds);
+                targets.years.forEach((y) => put(ts(y.end), 'target', y.cumulative));
+                put(nowTs, 'actual', t.count);
+                const data = [...rows.values()].sort((a, b) => a.x - b.x);
+                const ticks = [t0, ts(targets.baseline.end), ...targets.years.map((y) => ts(y.end))];
+                const fmtTick = (x: number) => new Date(x).toLocaleDateString('en-AU', { month: 'short', year: '2-digit' });
+                return (
+                    <div className="mt-3 pt-3 border-t border-white/10">
+                        <div className="flex items-center justify-between gap-2 text-[11px] font-bold mb-1">
+                            <span className="text-gray-300">Yearly targets</span>
+                            <span className="text-gray-500 font-semibold">dashed = target path · solid = actual</span>
+                        </div>
+                        <div className="h-[170px]">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <ComposedChart data={data} margin={{ top: 8, right: 14, left: -14, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.08)" vertical={false} />
+                                    <XAxis dataKey="x" type="number" scale="time" domain={[t0, ts(targets.years[targets.years.length - 1].end)]} ticks={ticks} tickFormatter={fmtTick} tick={{ fontSize: 9, fill: '#94a3b8' }} stroke="rgba(255,255,255,0.15)" axisLine={false} tickLine={false} />
+                                    <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} stroke="rgba(255,255,255,0.15)" axisLine={false} tickLine={false} tickFormatter={(v) => (v >= 1000 ? `${v / 1000}k` : `${v}`)} />
+                                    <Tooltip
+                                        labelFormatter={(x: number) => fmtTick(x)}
+                                        formatter={(v: number, name: string) => [v.toLocaleString(), name === 'target' ? 'Target (cumulative)' : 'Actual (cumulative)']}
+                                        contentStyle={{ borderRadius: '8px', border: 'none', background: '#1e293b', color: '#fff', fontSize: 11 }}
+                                    />
+                                    <Line dataKey="target" type="linear" stroke="#94a3b8" strokeWidth={2} strokeDasharray="5 4" dot={{ r: 3, fill: '#94a3b8', stroke: 'none' }} connectNulls isAnimationActive={false} />
+                                    <Line dataKey="actual" type="linear" stroke={GAF_COLORS.orange} strokeWidth={3} dot={{ r: 3, fill: GAF_COLORS.orange, stroke: 'none' }} activeDot={{ r: 5 }} connectNulls isAnimationActive={false} />
+                                </ComposedChart>
+                            </ResponsiveContainer>
+                        </div>
+                        <div className="grid grid-cols-4 gap-1.5 mt-2">
+                            {targets.years.map((y, i) => (
+                                <div key={y.fy} className={`rounded-lg px-2 py-1.5 text-center ${i === 0 ? 'bg-orange-500/15 border border-orange-400/30' : 'bg-white/5 border border-white/10'}`}>
+                                    <div className="text-[10px] font-bold text-gray-400">{y.fy}</div>
+                                    <div className="text-xs font-black text-white">{y.target.toLocaleString()}</div>
+                                    <div className="text-[9px] text-gray-500 font-semibold">{y.cumulative.toLocaleString()} cum.</div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                );
+            })()}
             {t.fy27ToDate != null && t.fy26Baseline ? (() => {
                 const ref = t.fy26SamePoint ?? null;
                 const yoyPct = ref ? Math.round(((t.fy27ToDate! - ref) / ref) * 100) : null;

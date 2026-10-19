@@ -55,25 +55,25 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 ---
 
-## Slide 3: Q2 FY27 plan (1 Oct to 31 Dec)
+## Slide 3: Q2 FY27 plan (1 Oct to 31 Dec), quarter to date at 19 Oct
 
-**The one line:** Black Friday is the peak, and four company priorities need to close by 31 Dec. Three of the four haven't started and one is stuck.
+**The one line:** Q2 is Locked, Stocked, Loaded. Fill rate is the number that has to move, the quarter is 21% gone, and three of the four initiatives haven't really started.
 
-**Runway (top)**
-- 15 Oct: VIP pricing live. Shanice reports 575 leads in 5 days, more than previous annual totals.
-- 2 to 30 Nov: BFCM. Bundles targeting home gym builders plus the usual category sale. Warehouse on 7-day service with Saturday pick and pack. Install lead times already 2 to 3 weeks (possibly 3 to 4 in peak). Say this to the team.
-- 31 Dec: quarter ends. Quarterly theme is Locked, Stocked and Loaded. Reward is another paid day off if targets are hit.
-- Stock: Steven asked for no November orders except essential. Stock cover is 20 weeks vs 22 target, holding projected 13% above budget until May.
+**Strategic initiatives (left)** from the dashboard's Strategic Priorities tab (Asana, Sprint Q2FY27). Progress is completed subtasks.
+- Faster bundle builds to lift website AOV (Shanice), Stuck, 20% (1 of 5). Goal: cut internal bundle build time 50% and lift website AOV 20% to above $2,200 by 31 Dec. Done: workflow audit. Next: app trial due 28 Oct, 14 new bundles live by 13 Nov, refine to 7-8 core bundles by 31 Dec. Monday's action: review the bundle timeline and NetSuite requirements.
+- Retail channel costs and benefits (Joel), Not started, 0% (0 of 5). Define every cost and benefit behind the retail channel so investment drives profit. One step overdue (marketing and installation cost framework, due 16 Oct). Rest: stock inflow pipeline 30 Oct, freight 6 Nov, product ranges 20 Nov, business plan covering H2 FY27 and H1 FY28 on 4 Dec. Rebel context: $516k first order processed.
+- 12-month Tier 1 supplier forecast (Michelle), Not started, 0% (0 of 3). Fewer stockouts, better turns, less excess by 31 Dec. Steps: prioritise suppliers 30 Oct, build and validate 30 Nov, communicate and set monthly review 31 Dec. Steven's 15 Oct direction: no November orders except essential.
+- Experience Centre sales and content plan (Adam), Not started, 14% (1 of 7). Plan for +20% verified walk-ins and +15% verified orders by 31 Mar 2027. Baseline set. Two steps overdue (lock the 2027 figures due 13 Oct, attribution mechanics due 16 Oct). Walk-in tracking method is being refined with Nick and Todd. BFCM activation: influencer visits and TikTok Live, geo-targeted campaign by 30 Nov, post-BFCM ROI review 18 Dec.
 
-**Goal 1: website AOV above $2,200 by 31 Dec (Shanice), Stuck.** Cut internal bundle build time 50%, lift website AOV 20%. Timeline and NetSuite requirements under review (action from Monday's meeting).
+**Critical numbers (right)** from the Q2 FY27 OPSP and the Foundation doc. In-flight, so the slide shows pace, as the dashboard does.
+- Inventory fill rate: 85.2% in week 16, up from 81.7% (week 14 was the Q2 doc's starting point). Goal 95.5%. Quarter-end bands: super green 97%, green 95%, yellow 91.5%, red below 90%. Ahead of the straight-line glide path (about 84.6% by 19 Oct) but still red against the quarter-end bands. This is the quarter's theme target.
+- GAF IDC GP%: 41.4%, a $-weighted fulfilled margin over 12 dispatch days. Bands: super green above 42%, green 42%, yellow 40%, red below 40%. Yellow. Needs about 42.1% over the rest of the quarter to reach green.
+- Gym designs created: 51 this quarter (155 all time since 15 Jul). Quarter-end bands: super green 250, green 200, yellow 150, red 120. On pace for green (pace is about 41 by today), needing about 14 a week from here. Q1 did 104 in 11 weeks.
 
-**Goal 2: Experience Centre (Adam), Not started.** Sales, marketing and content plan for +20% verified walk-ins and +15% verified orders by 31 Mar 2027. Q2 walk-in target is 274 visitors (last 92 days of 228, +20%). 46 to 16 Oct, which is on pace. Tracking method being refined with Nick and Todd.
-
-**Goal 3: 12-month forecast for Tier 1 suppliers by 31 Dec (Michelle), Not started.** Fewer stockouts, better turns, less excess.
-
-**Goal 4: retail channel economics (Joel), Not started.** Define all costs and benefits so retail growth is profitable. Rebel is the proof point: first order $516k, plus $247k wholesale over budget in September.
-
-**Also in Q2 (not on slide):** Group priorities of hiring a Systems and AI lead by 31 Dec, and the A-player review. Wholesale partner pricing rollout carries over from Q1. Wholesale GP Q1 was $305k vs $191k budget, but lumpy (August $27k, September $214k).
+**Other things in play (not on the slide)**
+- VIP pricing went live 15 Oct: 575 leads in 5 days, more than previous annual totals. BFCM runs 2 to 30 Nov with bundles plus the category sale. Warehouse on 7-day service with Saturday pick and pack. Install lead times already 2 to 3 weeks, possibly 3 to 4 in peak.
+- Group Q2 priorities: hire a Systems and AI lead by 31 Dec, and the A-player review.
+- Wholesale partner pricing rollout and the SKU listings carry over from Q1.
 
 ---
 
@@ -89,8 +89,11 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 | Q1 initiative progress and status | Asana, AFS Group Priorities, GAF section, Q1FY27. I counted completed subtasks per card |
 | Dead stock $395k today | `gaf-master-dashboard/deadstock-tracker.json` |
 | Home gym builds 1,626 / 307 vs 301 | `gaf-master-dashboard/hgb-tracker.json` |
-| Walk-ins 46 vs 274 | `gaf-master-dashboard/walkin-tracker.json` |
-| Priority cards and status | Asana, AFS Group Priorities, GAF section, Sprint field |
+| Q2 initiative progress and status | Asana, AFS Group Priorities, GAF section, Q2FY27. I counted completed subtasks per card |
+| Q2 critical number bands, theme | Q2 FY27 OPSP (published doc) and Foundation doc |
+| Fill rate 85.2% (week 16) | Fill Rate Report FY27, TOTAL FILL RATE tab |
+| IDC GP% 41.4% | GAF DATA tab, fulfilled margin, $-weighted from 1 Oct |
+| Gym designs 51 / 155 | Designer app stats API |
 | VIP 575 leads, $516k Rebel, BFCM, install times | Gemini notes for the 19 Oct weekly strategy meeting and 15 Oct team meeting |
 | GP%, ad spend, commercial vs budget | Louis Battista, EOM report Sep 2026 |
 | Stock cover, no November orders | Michelle's OTB report and Steven's actions, 15 Oct |
@@ -101,8 +104,9 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 Settled: BHAG is 10,000 (the strategy day deck and the BFCM slide in the October deck still say 30,000 and need correcting). Slide 1 shows the FY27 revenue target only, with no FY30 or operating profit figures. GP% headline is 42.6%. The Rebel order is accurate. The Asana AFS Group Priorities board, via the dashboard strategic priorities tab, is the right source.
 
-1. **$9.6M vs the dashboard budget:** the Master Dashboard's FY27 gross profit budget (GP created) sums to about $8.5M by quarter ($1.71M, $2.20M, $2.20M, $2.40M), not $9.6M. If the dashboard should track the $9.6M target, the budget rows need updating.
-2. **Two GP% targets:** slide 1 says >38% for the year, slide 2 shows the Q1 scorecard target of 40%. Same metric family, different bars. Say which is which, or align them.
-3. **Q1 initiative status:** SKU rationalisation and wholesale pricing were due 30 Sep and are still open (75% and 80%), yet marked On Track in Asana. The slide shows what Asana says. Consider whether "On Track" is still the honest label before presenting.
-4. **Q2 status will be stale quickly.** Three of four goals show Not started on day 19, and Goal 1 is Stuck. Refresh before presenting, or tell me and I will update the slide.
-5. **September GP$ (only if asked):** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Finance's September report also has GAF GP at 39.85% vs 40.66% target, against the 42.6% scorecard figure.
+1. **$9.6M and >38% vs the Q2 OPSP doc:** the Q2 FY27 OPSP (and the dashboard's FY27 GP budget) says FY27 gross profit $9.39M at 37.19%, revenue $25.24M, not $9.6M and >38%. If $9.6M and >38% are now the targets, the OPSP doc needs updating.
+2. **$9.6M vs the dashboard budget:** the Master Dashboard's FY27 gross profit budget (GP created) sums to about $8.5M by quarter ($1.71M, $2.20M, $2.20M, $2.40M), not $9.6M. If the dashboard should track the $9.6M target, the budget rows need updating.
+3. **Two GP% targets:** slide 1 says >38% for the year, slide 2 shows the Q1 scorecard target of 40%. Same metric family, different bars. Say which is which, or align them.
+4. **Q1 initiative status:** SKU rationalisation and wholesale pricing were due 30 Sep and are still open (75% and 80%), yet marked On Track in Asana. The slide shows what Asana says. Consider whether "On Track" is still the honest label before presenting.
+5. **Q2 numbers are live and move daily.** Slide 3 is a snapshot at 19 Oct (fill rate week 16, IDC GP% 12 dispatch days, designs 51). Tell me and I will refresh them before you present. Three of four initiatives are Not started and one is Stuck in Asana.
+6. **September GP$ (only if asked):** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Finance's September report also has GAF GP at 39.85% vs 40.66% target, against the 42.6% scorecard figure.

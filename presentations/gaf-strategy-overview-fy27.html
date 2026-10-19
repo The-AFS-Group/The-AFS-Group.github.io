@@ -197,10 +197,10 @@ const Source = ({ children }) => {
   return <p className={`text-[12px] font-body ${th.muted} shrink-0 mt-3 mb-7 leading-snug`}>{children}</p>;
 };
 
-const Chip = ({ children, solid }) => {
+const Chip = ({ children, solid, strong }) => {
   const th = useTheme();
   return (
-    <span className={`inline-block text-[12px] font-heading font-bold tracking-[.12em] uppercase px-3 py-1 rounded-full ${solid ? `${th.barStrong} ${th.textInv}` : `border ${th.cardBorder} ${th.sub}`}`}>
+    <span className={`inline-block text-[12px] font-heading font-bold tracking-[.12em] uppercase px-3 py-1 rounded-full ${solid ? `${th.barStrong} ${th.textInv}` : strong ? `border-2 ${th.markerBorder} ${th.text}` : `border ${th.cardBorder} ${th.sub}`}`}>
       {children}
     </span>
   );
@@ -385,83 +385,97 @@ const Q1Slide = ({ n, t }) => {
 };
 
 /* ===================== SLIDE 3: Q2 FY27 =====================
-   Oct to Dec 2026. A dated runway with BFCM as the one orange element,
-   then the four GAF company priorities from Asana with their status today. */
+   Same shape as slide 2: the four GAF Q2 strategic initiatives (Strategic
+   Priorities tab, Asana, Sprint Q2FY27) and the Q2 critical numbers (OPSP).
+   The quarter is in flight, so the numbers show pace, not a final band.
+   One orange element: the Q2 theme chip. */
 const Q2Slide = ({ n, t }) => {
   const th = useTheme();
-  const day = (d) => (new Date(d) - new Date("2026-10-01")) / 86400000;
-  const span = day("2026-12-31");
-  const pct = (d) => `${(day(d) / span) * 100}%`;
-  const events = [
-    { d: "2026-10-15", label: "VIP pricing live", sub: "575 leads in 5 days", align: "left" },
-    { d: "2026-11-02", label: "BFCM starts", sub: "Bundles + category sale", align: "left" },
-    { d: "2026-11-30", label: "BFCM ends", sub: "Offers close", align: "left" },
-    { d: "2026-12-31", label: "Q2 goals due", sub: "End of quarter", align: "right" },
+  const initiatives = [
+    { name: "Faster bundle builds to lift website AOV", owner: "Shanice Thomas", done: 1, total: 5, status: "Stuck", strong: true,
+      next: "AOV above $2,200 by 31 Dec. App trial due 28 Oct, 14 new bundles live by 13 Nov." },
+    { name: "Retail channel costs and benefits", owner: "Joel Larter", done: 0, total: 5, status: "Not started",
+      next: "Business plan due 4 Dec. 1 step overdue." },
+    { name: "12-month Tier 1 supplier forecast", owner: "Michelle Wiseman", done: 0, total: 3, status: "Not started",
+      next: "Fewer stockouts, less excess. Priority suppliers named by 30 Oct." },
+    { name: "Experience Centre sales and content plan", owner: "Adam Carter", done: 1, total: 7, status: "Not started",
+      next: "+20% verified walk-ins and +15% orders by 31 Mar. Baseline set, 2 steps overdue." },
   ];
-  const goals = [
-    { stat: "$2,200", label: "website AOV by 31 Dec, via faster bundle builds", owner: "Shanice Thomas", status: "Stuck", solid: true },
-    { stat: "+20%", label: "verified walk-ins by 31 Mar, via the Experience Centre", owner: "Adam Carter", status: "Not started", bar: { fill: 46 / 274, tick: 16 / 92, note: "46 of 274 visitors to 16 Oct" } },
-    { stat: "12 mo", label: "forecast for Tier 1 suppliers by 31 Dec", owner: "Michelle Wiseman", status: "Not started" },
-    { stat: "$516k", label: "first Rebel order in. Retail costs and benefits to define", owner: "Joel Larter", status: "Not started" },
+  // Quarter to date, 1 to 19 Oct (day 19 of 92). `fill`/`tick` are 0 to 1 positions along each bar.
+  const elapsed = 19 / 92;
+  const numbers = [
+    { name: "Inventory fill rate", value: "85.2%", note: "week 16, up from 81.7%", target: "Goal 95.5%", left: "81.7%", right: "95.5%",
+      fill: (85.2 - 81.7) / (95.5 - 81.7), tick: elapsed, tickLabel: "glide path", badge: "Ahead of glide path", sub: "Red below 90% at quarter end" },
+    { name: "GAF IDC GP%", value: "41.4%", note: "12 dispatch days to 19 Oct", target: "Goal above 42%", left: "38%", right: "44%",
+      fill: (41.4 - 38) / 6, tick: (42 - 38) / 6, tickLabel: "42%", badge: "Yellow", sub: "Needs about 42.1% from here" },
+    { name: "Gym designs created", value: "51", note: "this quarter, 155 all time", target: "Green 200", left: "0", right: "200",
+      fill: 51 / 200, tick: elapsed, tickLabel: "pace 41", badge: "On pace", sub: "Needs about 14 a week from here" },
   ];
   return (
     <Slide num={n} total={t}>
-      <SectionTitle pre="Quarter 2 FY27 Plan" title="Q2: BFCM AND FOUR GOALS" sub="1 Oct to 31 Dec 2026. Black Friday builds the quarter, four company priorities close it." />
-      <div className="flex-1 flex flex-col gap-6 min-h-0">
+      <SectionTitle pre="Quarter 2 FY27 Plan" title="Q2: LOCKED, STOCKED, LOADED" sub="1 Oct to 31 Dec 2026, quarter to date at 19 Oct. Black Friday runs 2 to 30 November." />
+      <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
 
-        {/* Runway */}
-        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-10 pt-6 pb-7`}>
-          <div className="flex justify-between mb-5">
-            {["October", "November", "December"].map((m, i) => (
-              <p key={i} className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>{m}</p>
-            ))}
+        {/* Strategic initiatives */}
+        <div className={`col-span-7 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
+          <div className="flex items-center justify-between">
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Strategic initiatives</p>
+            <p className={`text-[14px] font-body ${th.sub}`}>Due 31 Dec</p>
           </div>
-          <div className="relative h-4">
-            <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full ${th.track}`}></div>
-            <div className={`absolute top-1/2 -translate-y-1/2 h-2 rounded-full ${th.barStrong}`} style={{ left: 0, width: pct("2026-10-19") }}></div>
-            <div className="absolute top-0 h-4 rounded-full bg-brand-accent" style={{ left: pct("2026-11-02"), width: `${((day("2026-11-30") - day("2026-11-02")) / span) * 100}%` }}></div>
-            {events.map((e, i) => (
-              <div key={i} className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-[3px] ${th.markerBorder} ${th.bg}`} style={{ left: pct(e.d), zIndex: 2 }}></div>
-            ))}
-          </div>
-          <div className="relative h-[64px] mt-3">
-            {events.map((e, i) => (
-              <div key={i} className="absolute top-0" style={e.align === "right" ? { right: 0, textAlign: "right" } : { left: pct(e.d), transform: "translateX(-50%)", textAlign: "center" }}>
-                <p className={`text-[16px] font-heading font-semibold ${th.text} whitespace-nowrap`}>{e.label}</p>
-                <p className={`text-[13px] font-body ${th.sub} whitespace-nowrap`}>{new Date(e.d).toLocaleDateString("en-AU", { day: "numeric", month: "short" })} · {e.sub}</p>
+          <div className="flex-1 flex flex-col justify-around gap-2 pt-3 min-h-0">
+            {initiatives.map((p, i) => (
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg px-5 py-3`}>
+                <div className="flex items-center justify-between gap-4">
+                  <p className={`text-[18px] font-heading font-semibold ${th.text}`}>{p.name}</p>
+                  <Chip strong={p.strong}>{p.status}</Chip>
+                </div>
+                <div className="flex items-center gap-4 mt-2">
+                  <div className="relative h-2.5 flex-1">
+                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+                    <div className={`absolute left-0 top-0 h-2.5 rounded-full ${th.barStrong}`} style={{ width: `${p.done / p.total * 100}%` }}></div>
+                  </div>
+                  <p className={`text-[14px] font-heading font-bold ${th.text} w-[110px] text-right`}>{Math.round(p.done / p.total * 100)}% · {p.done}/{p.total}</p>
+                </div>
+                <p className={`text-[14px] font-body ${th.sub} mt-2 leading-snug`}>{p.next} <span className={th.muted}>· {p.owner}</span></p>
               </div>
             ))}
           </div>
-          <p className={`text-[13px] font-body ${th.muted} mt-1`}>Filled bar: quarter to date (19 Oct).</p>
         </div>
 
-        {/* Goals */}
-        <div className="flex-1 grid grid-cols-4 gap-5 min-h-0">
-          {goals.map((g, i) => (
-            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
-              <div className="flex justify-between items-start">
-                <p className={`text-[12px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Goal {i + 1}</p>
-                <Chip solid={g.solid}>{g.status}</Chip>
-              </div>
-              <p className={`font-display text-6xl leading-none ${th.text} mt-5`}>{g.stat}</p>
-              <p className={`text-[16px] font-body ${th.sub} mt-3 leading-snug`}>{g.label}</p>
-              <div className="flex-1"></div>
-              {g.bar && (
-                <div className="mb-4">
-                  <div className="relative h-3">
-                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
-                    <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${g.bar.fill * 100}%` }}></div>
-                    <div className={`absolute -top-1 w-0.5 h-5 ${th.tick}`} style={{ left: `${g.bar.tick * 100}%` }}></div>
-                  </div>
-                  <p className={`text-[12px] font-body ${th.muted} mt-2`}>{g.bar.note}. Tick marks time elapsed.</p>
+        {/* Critical numbers */}
+        <div className={`col-span-5 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
+          <div className="flex items-center justify-between">
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Critical numbers</p>
+            <span className="inline-block text-[14px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">Fill rate 81.7% to 95.5%</span>
+          </div>
+          <div className="flex-1 flex flex-col justify-around gap-3 pt-3 min-h-0">
+            {numbers.map((c, i) => (
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg px-5 py-3`}>
+                <div className="flex items-baseline justify-between">
+                  <p className={`text-[16px] font-heading font-semibold ${th.sub}`}>{c.name}</p>
+                  <p className={`text-[13px] font-body ${th.muted}`}>{c.target}</p>
                 </div>
-              )}
-              <p className={`text-[14px] font-body ${th.text} font-semibold`}>{g.owner}</p>
-            </div>
-          ))}
+                <div className="flex items-end justify-between mt-1">
+                  <p className={`font-display text-4xl leading-none ${th.text}`}>{c.value}</p>
+                  <p className={`text-[13px] font-body ${th.muted} pb-1`}>{c.note}</p>
+                </div>
+                <div className="relative h-2.5 mt-3">
+                  <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+                  <div className={`absolute left-0 top-0 h-2.5 rounded-full ${th.barStrong}`} style={{ width: `${c.fill * 100}%` }}></div>
+                  <div className={`absolute -top-1 w-0.5 h-4.5 ${th.tick}`} style={{ left: `${c.tick * 100}%`, height: 18 }}></div>
+                </div>
+                <div className="relative h-4 mt-1">
+                  <span className={`absolute left-0 text-[11px] font-body ${th.muted}`}>{c.left}</span>
+                  <span className={`absolute -translate-x-1/2 text-[11px] font-body ${th.text}`} style={{ left: `${c.tick * 100}%` }}>{c.tickLabel}</span>
+                  <span className={`absolute right-0 text-[11px] font-body ${th.muted}`}>{c.right}</span>
+                </div>
+                <p className={`text-[12px] font-heading font-bold tracking-[.12em] uppercase ${th.text} mt-1`}>{c.badge} <span className={`font-body font-normal normal-case tracking-normal ${th.sub}`}>· {c.sub}</span></p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
-      <Source>Sources: Asana AFS Group Priorities, GAF, Q2FY27 (status at 19 Oct); meeting notes 15 and 19 Oct (VIP leads, Rebel, BFCM); walk-in tracker (Q2 target = last 92 days +20%).</Source>
+      <Source>Sources: GAF Master Dashboard, Strategic Priorities tab (Asana, Sprint Q2FY27, completed subtasks, 19 Oct); Q2 FY27 OPSP and Foundation doc bands; Fill Rate Report FY27 (week 16); designer app stats; GAF DATA fulfilled margin, $-weighted.</Source>
     </Slide>
   );
 };

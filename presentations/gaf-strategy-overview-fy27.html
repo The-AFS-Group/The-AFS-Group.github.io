@@ -309,8 +309,8 @@ const Q1Slide = ({ n, t }) => {
       outcome: "Weekly SKU health reporting live, GMROI method and dashboard in place." },
     { name: "Remove 50% of red and blue SKUs", owner: "Chris Ward", done: 3, total: 4, status: "On Track",
       outcome: "Categorisation and core lists done. Website AOV listings still open." },
-    { name: "Wholesale partner pricing program", owner: "Sue Lewis", done: 8, total: 10, status: "On Track",
-      outcome: "Tiered pricing built and with the GM. Rollout and comms plan still open." },
+    { name: "Wholesale partner pricing program", owner: "Sue Lewis", done: 8, total: 8, status: "Complete",
+      outcome: "Dealer audit, segmentation and tiered pricing built and presented to the GM." },
   ];
   // bands run red, yellow, green, super green; `at` is the band index the result landed in
   const numbers = [
@@ -321,14 +321,14 @@ const Q1Slide = ({ n, t }) => {
   ];
   return (
     <Slide num={n} total={t}>
-      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: NUMBERS GREEN, TWO INITIATIVES OPEN" sub="1 Jul to 30 Sep 2026. Every critical number landed green or better." />
+      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: NUMBERS GREEN, ONE INITIATIVE OPEN" sub="1 Jul to 30 Sep 2026. Every critical number landed green or better." />
       <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
 
         {/* Strategic initiatives */}
         <div className={`col-span-7 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
           <div className="flex items-center justify-between">
             <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Strategic initiatives</p>
-            <p className={`text-[14px] font-body ${th.sub}`}>2 of 4 complete</p>
+            <p className={`text-[14px] font-body ${th.sub}`}>3 of 4 complete</p>
           </div>
           <div className="flex-1 flex flex-col justify-around gap-2 pt-3 min-h-0">
             {initiatives.map((p, i) => (
@@ -394,12 +394,12 @@ const Q2Slide = ({ n, t }) => {
   const initiatives = [
     { name: "Faster bundle builds to lift website AOV", owner: "Shanice Thomas", done: 1, total: 5, status: "Stuck", strong: true,
       next: "AOV above $2,200 by 31 Dec. App trial due 28 Oct, 14 new bundles live by 13 Nov." },
-    { name: "Retail channel costs and benefits", owner: "Joel Larter", done: 0, total: 5, status: "Not started",
+    { name: "Retail channel costs and benefits", owner: "Joel Larter", done: 0, total: 5, status: "On Track",
       next: "Business plan due 4 Dec. 1 step overdue." },
-    { name: "12-month Tier 1 supplier forecast", owner: "Michelle Wiseman", done: 0, total: 3, status: "Not started",
+    { name: "12-month Tier 1 supplier forecast", owner: "Michelle Wiseman", done: 0, total: 3, status: "On Track",
       next: "Fewer stockouts, less excess. Priority suppliers named by 30 Oct." },
-    { name: "Experience Centre sales and content plan", owner: "Adam Carter", done: 1, total: 7, status: "Not started",
-      next: "+20% verified walk-ins and +15% orders by 31 Mar. Baseline set, 2 steps overdue." },
+    { name: "Experience Centre sales and content plan", owner: "Adam Carter", done: 3, total: 8, status: "On Track",
+      next: "+20% walk-ins, +15% orders by 31 Mar. Baseline, targets, sales briefing done." },
   ];
   // Quarter to date, 1 to 19 Oct (day 19 of 92). `fill`/`tick` are 0 to 1 positions along each bar.
   const elapsed = 19 / 92;

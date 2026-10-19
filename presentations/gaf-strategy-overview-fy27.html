@@ -286,6 +286,16 @@ const StrategySlide = ({ n, t }) => {
               </div>
             ))}
           </div>
+          <div className="pb-4">
+            <div className="flex items-baseline justify-between mb-2">
+              <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>Home gyms built</p>
+              <p className={`text-[15px] font-body ${th.text} font-semibold`}>1,626 of 10,000 by 2030</p>
+            </div>
+            <div className="relative h-3">
+              <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+              <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${1626 / 10000 * 100}%` }}></div>
+            </div>
+          </div>
           <div className={`grid grid-cols-2 gap-4 border-t ${th.cardBorder} pt-4`}>
             <div>
               <p className={`font-display text-3xl leading-none ${th.text}`}>$11M</p>

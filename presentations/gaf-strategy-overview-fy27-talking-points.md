@@ -24,7 +24,7 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 **What it has to deliver (right)**
 - FY26 revenue $20.6M (sum of the four FY26 quarters on the Master Dashboard) to FY27 target $25.8M, which is +25%.
 - FY27 gross profit $11M (about 42.6% of revenue). FY30 goal is 17% operating profit.
-- Not on the slide, say it out loud: BHAG is home gyms designed and built by 2030. 1,626 built since Jul 2025 (**CHECK** the denominator).
+- Not on the slide, say it out loud: BHAG is home gyms designed and built by 2030. Slide 1 now shows 1,626 built since Jul 2025 against the 10,000 target (16%). FY27 to date is 307.
 
 **Bottom line:** top 20% of B2C customers deliver 130% of GAF's profit. Fix the whale. Stop selling low-profit customers, products and channels, and cut marketing, COGS and warehouse cost.
 
@@ -99,7 +99,7 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 ## Questions to settle before you present
 
-1. **BHAG target:** the strategy day deck and the BFCM slide say 30,000 home gyms by 2030. The HGB tracker and Monday's meeting notes say 10,000 (1,626 = 16%). Which is current? Slide 1 deliberately avoids a denominator until this is settled.
+1. **BHAG target:** confirmed 10,000. The strategy day debrief and the BFCM slide in the October deck still say 30,000, so those need correcting.
 2. **FY30 revenue:** strategy day says $40.3M. Claire's 8 Oct email says $45.5M (and FY27 $25.5M, not $25.8M). The slide shows only FY27 $25.8M and FY30 17% OP.
 3. **Which GP% is the headline?** OPSP "IDC GP" 42.6% (that number is identical to the May "Q4 FY26" scorecard, so it may be carried over), Monday's notes say 41.2%, finance EOM says GAF 39.85% vs 40.66% target. The slide shows the OPSP figure because it is the official Q1 scorecard. What does IDC stand for and is 42.6% the Q1 number?
 4. **September GP$:** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Different measures, but the room may hear both.

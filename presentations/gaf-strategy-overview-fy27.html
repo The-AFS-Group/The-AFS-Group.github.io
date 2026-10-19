@@ -299,7 +299,7 @@ const StrategySlide = ({ n, t }) => {
 /* ===================== SLIDE 2: Q1 FY27 =====================
    Outcomes of the four GAF Q1 strategic initiatives (Strategic Priorities tab,
    Asana, Sprint Q1FY27) and the four Q1 critical numbers (OPSP).
-   One orange element: the "4 of 4 green or better" chip. */
+   One orange element: the Q1 theme target chip. */
 const Q1Slide = ({ n, t }) => {
   const th = useTheme();
   const initiatives = [
@@ -321,7 +321,7 @@ const Q1Slide = ({ n, t }) => {
   ];
   return (
     <Slide num={n} total={t}>
-      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: NUMBERS GREEN, ONE INITIATIVE OPEN" sub="1 Jul to 30 Sep 2026. Every critical number landed green or better." />
+      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: DROP THE DEAD WEIGHT" sub="1 Jul to 30 Sep 2026. Every critical number landed green or better." />
       <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
 
         {/* Strategic initiatives */}
@@ -354,7 +354,7 @@ const Q1Slide = ({ n, t }) => {
         <div className={`col-span-5 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
           <div className="flex items-center justify-between">
             <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Critical numbers</p>
-            <span className="inline-block text-[14px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">4 of 4 green or better</span>
+            <span className="inline-block text-[14px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">Dead stock $692k to under $400k</span>
           </div>
           <div className="flex-1 grid grid-cols-2 gap-4 pt-3">
             {numbers.map((c, i) => (

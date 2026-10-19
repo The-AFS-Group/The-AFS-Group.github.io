@@ -34,6 +34,8 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 ## Slide 2: Q1 FY27 recap (1 Jul to 30 Sep)
 
+**Q1 theme:** Drop the Dead Weight. Theme target: reduce GC dead stock from $692k to under $400k. Reward: "Flex Friday" (paid day off). We closed at $404k, just short of the target and in Green, and it is $395k today.
+
 **The one line:** all four critical numbers landed green or better, three of the four strategic initiatives are complete, and the SKU rationalisation is the one still open.
 
 **Strategic initiatives (left)** from the dashboard's Strategic Priorities tab (Asana, Sprint Q1FY27). Progress is completed subtasks, as at 19 Oct.

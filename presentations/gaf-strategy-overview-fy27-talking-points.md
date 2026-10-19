@@ -34,25 +34,24 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 
 ## Slide 2: Q1 FY27 recap (1 Jul to 30 Sep)
 
-**The one line:** sales were up 16%, gross profit landed on budget only because July was strong, and half the Q1 company priorities are still open.
+**The one line:** all four critical numbers landed green or better, two of the four strategic initiatives are complete, and the other two are close.
 
-**Revenue (left)**
-- $4.45M vs $3.83M same quarter last year, +16.3%. Source: Master Dashboard total revenue (offline + commercial + online).
-- Offline fell from $2.77M to $2.36M. Commercial went from $0.06M to $1.03M. Online up from $1.00M to $1.06M. Commercial is the swing (**CHECK**: finance reports commercial $220k under budget for the quarter).
-- Q1 AOV $1,713 vs $1,355 last year.
-- GP vs budget: July 112%, August 96%, September 96%. Quarter 101%. Be upfront that Aug and Sep were behind.
-- Context from finance (Sep EOM): GAF GP 39.85% vs 40.66% target, advertising 14.0% of fulfilled revenue vs 10.5% target. The Group hit its quarterly target for the first time in nearly 5 years, so the team earns the paid day off.
+**Strategic initiatives (left)** from the dashboard's Strategic Priorities tab (Asana, Sprint Q1FY27). Progress is completed subtasks, as at 19 Oct.
+- Home Gym Builder plan + AI Gym Designer (Shanice), complete, 10 of 10. Persona, customer journey map and archetype explorer delivered, AI Designer MVP shipped, leads wired to HubSpot with sales alerts, Meta ads run to drive volume, 104 designs against the 100 milestone. Honest caveat from your 1 Sep comment: the tool still feels a bit gimmicky and needs work to be more impactful, and lead-to-sale conversion isn't tracked yet.
+- SKU health + GMROI visibility (Michelle), complete, 3 of 3. Weekly SKU health rhythm, aged and excess stock identified with category reduction targets, GMROI method standardised and dashboard live. Q1 goal was GMROI above 0.45 and average stock on hand at or below $5.2m.
+- Remove 50% of red and blue SKUs (Chris), On Track, 75% (3 of 4). Red/blue list identified, SKU categorisation finalised, core/critical list per brand done. Still open: website listings with AOV options (at least 5 per brand across Force, Nike, REP, Centr). Due 30 Sep.
+- Wholesale partner pricing program (Sue), On Track, 80% (8 of 10). Dealer audit, Strategic Growth / Maintain / Exit criteria, segmentation, GM review, pricing tiers, draft program, dealer allocation, presented to the GM. Still open: implementation and comms plan, and GM approval of the rollout so Q2 can execute. Due 30 Sep.
 
-**Critical numbers (right-top)**
-- Dead stock (Gold Coast): $692k at the start, $404k at 30 Sep, $395k today. Goal under $550k, super green under $400k.
-- AOV +5% vs 4% target. IDC GP 42.6% vs 40% target. Designs 104 vs 15 target.
-- Home gym builds: 307 FY27 to date vs 301 at the same point last year. Flat, and this is the headline metric. Worth saying plainly.
+**Critical numbers (right)** from the Q1 FY27 OPSP, frozen at quarter end. Bands run red, yellow, green, super green.
+- GC dead stock: $404k, Green (goal under $550k, super green under $400k). Started at $692k. It is $395k today, so it has since crossed into super green.
+- GAF AOV growth: +5%, Super Green (green 4%, super 5%).
+- GAF IDC GP%: 42.6%, Super Green (green 40%, super above 40%).
+- Gym designs created: 104, Super Green (green 15, super 20). Counted 15 Jul to 30 Sep from the designer app.
 
-**Company priorities (right-bottom)**
-- Closed: Home Gym Builder plan plus AI Gym Designer live (Shanice); SKU-level inventory visibility and GMROI dashboard (Michelle).
-- Still open: remove 50% of red/blue SKUs and finalise SKU categorisation (Chris); wholesale dealer segmentation and partner pricing program (Sue). Both due 30 Sep but still marked "On Track" in Asana. The dashboard strategic priorities tab reads from Asana, so this is the status of record.
-
-**If asked "so what":** the strategy is working on top line and design volume. The gap is margin discipline (September discounting) and converting designs into builds.
+**Not on the slide, if asked**
+- Home gym builds: 307 FY27 to date vs 301 at the same point last year. Flat.
+- Revenue $4.45M vs $3.83M last year (+16%); GP created 101% of budget for the quarter, July 112%, August and September 96%.
+- Finance: September GAF GP 39.85% vs 40.66% target, advertising 14.0% of fulfilled revenue vs 10.5% target. The Group hit its quarterly target for the first time in nearly 5 years, so the team earns the paid day off.
 
 ---
 
@@ -86,7 +85,8 @@ Figures are as at 19 Oct 2026. Items marked **CHECK** are in the "Questions to s
 | FY27 $9.6M GP and >38% GP margin targets | Adam, 19 Oct |
 | Top 20% = 130% profit, mining $3,000 | Claire Mula email "GAF Coaching Call with Adam 8/10" |
 | Q1 GP created $1.73M, Q1 $4.45M revenue vs $3.83M, AOV, GP vs budget by month | Master Dashboard source sheets (Sales tab). I summed the daily rows by quarter |
-| Q1 critical numbers (dead stock, AOV, GP, designs) | `_src/gaf-master-dashboard/data/opsp-finals.json` (Q1 FY27) |
+| Q1 critical numbers and bands | `_src/gaf-master-dashboard/data/opsp-finals.json` (Q1 FY27) |
+| Q1 initiative progress and status | Asana, AFS Group Priorities, GAF section, Q1FY27. I counted completed subtasks per card |
 | Dead stock $395k today | `gaf-master-dashboard/deadstock-tracker.json` |
 | Home gym builds 1,626 / 307 vs 301 | `gaf-master-dashboard/hgb-tracker.json` |
 | Walk-ins 46 vs 274 | `gaf-master-dashboard/walkin-tracker.json` |
@@ -103,7 +103,6 @@ Settled: BHAG is 10,000 (the strategy day deck and the BFCM slide in the October
 
 1. **$9.6M vs the dashboard budget:** the Master Dashboard's FY27 gross profit budget (GP created) sums to about $8.5M by quarter ($1.71M, $2.20M, $2.20M, $2.40M), not $9.6M. If the dashboard should track the $9.6M target, the budget rows need updating.
 2. **Two GP% targets:** slide 1 says >38% for the year, slide 2 shows the Q1 scorecard target of 40%. Same metric family, different bars. Say which is which, or align them.
-3. **September GP$:** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Different measures, but the room may hear both. Finance's September report also has GAF GP at 39.85% vs a 40.66% target, against the 42.6% on the slide.
-4. **Commercial:** dashboard shows $1.03M this Q1 vs $58k last year, while finance reports commercial $220k under budget. The slide only shows growth.
-5. **Q2 status will be stale quickly.** Three of four goals show Not started on day 19, and Goal 1 is Stuck. Refresh before presenting, or tell me and I will update the slide.
-6. **Revenue basis:** I used Master Dashboard total revenue. Shopify gross sales for September in the October deck ($1.72M) is a different basis from the dashboard's $1.40M. Say which you want shown.
+3. **Q1 initiative status:** SKU rationalisation and wholesale pricing were due 30 Sep and are still open (75% and 80%), yet marked On Track in Asana. The slide shows what Asana says. Consider whether "On Track" is still the honest label before presenting.
+4. **Q2 status will be stale quickly.** Three of four goals show Not started on day 19, and Goal 1 is Stuck. Refresh before presenting, or tell me and I will update the slide.
+5. **September GP$ (only if asked):** Master Dashboard GP created is 95.6% of budget, but Michelle's OTB report says GAF GP$ was down 25% (about $189k) on budget. Finance's September report also has GAF GP at 39.85% vs 40.66% target, against the 42.6% scorecard figure.

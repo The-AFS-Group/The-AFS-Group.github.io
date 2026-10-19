@@ -297,115 +297,89 @@ const StrategySlide = ({ n, t }) => {
 };
 
 /* ===================== SLIDE 2: Q1 FY27 =====================
-   Jul to Sep 2026. Revenue by channel vs last year, monthly GP vs budget,
-   the Q1 critical numbers, and where the Q1 company priorities landed.
-   One orange element: the +16% revenue chip. */
+   Outcomes of the four GAF Q1 strategic initiatives (Strategic Priorities tab,
+   Asana, Sprint Q1FY27) and the four Q1 critical numbers (OPSP).
+   One orange element: the "4 of 4 green or better" chip. */
 const Q1Slide = ({ n, t }) => {
   const th = useTheme();
-  const rev = [
-    { label: "Q1 FY26", total: "$3.83M", seg: [["Offline", 2.77], ["Commercial", 0.06], ["Online", 1.00]] },
-    { label: "Q1 FY27", total: "$4.45M", seg: [["Offline", 2.36], ["Commercial", 1.03], ["Online", 1.06]] },
+  const initiatives = [
+    { name: "Home Gym Builder plan + AI Gym Designer", owner: "Shanice Thomas", done: 10, total: 10, status: "Complete",
+      outcome: "Plan delivered, AI Designer live and wired to HubSpot. 104 designs vs 100 milestone." },
+    { name: "SKU health + GMROI visibility", owner: "Michelle Wiseman", done: 3, total: 3, status: "Complete",
+      outcome: "Weekly SKU health reporting live, GMROI method and dashboard in place." },
+    { name: "Remove 50% of red and blue SKUs", owner: "Chris Ward", done: 3, total: 4, status: "On Track",
+      outcome: "Categorisation and core lists done. Website AOV listings still open." },
+    { name: "Wholesale partner pricing program", owner: "Sue Lewis", done: 8, total: 10, status: "On Track",
+      outcome: "Tiered pricing built and with the GM. Rollout and comms plan still open." },
   ];
-  const segStyle = [th.barStrong, th.barMid, th.barSoft];
-  const gp = [{ m: "Jul", pct: 112 }, { m: "Aug", pct: 96 }, { m: "Sep", pct: 96 }];
-  // pct of track = (value - min) / (max - min); tick marks the green threshold
-  const gauges = [
-    { name: "Home gym builds", val: "307", note: "301 same point FY26", fill: 307 / 350, tick: 301 / 350 },
-    { name: "GC dead stock", val: "$404k", note: "Green. Goal under $550k", fill: 404 / 692, tick: 550 / 692 },
-    { name: "GAF AOV growth", val: "+5%", note: "Super green. Target 4%", fill: 5 / 6, tick: 4 / 6 },
-    { name: "GAF IDC GP%", val: "42.6%", note: "Super green. Target 40%", fill: (42.6 - 30) / 15, tick: (40 - 30) / 15 },
-    { name: "Gym designs created", val: "104", note: "Super green. Target 15", fill: 104 / 120, tick: 15 / 120 },
+  // bands run red, yellow, green, super green; `at` is the band index the result landed in
+  const numbers = [
+    { name: "GC dead stock", value: "$404k", note: "down from $692k", bands: ["≥$692k", "<$692k", "<$550k", "<$400k"], at: 2, badge: "Green" },
+    { name: "GAF AOV growth", value: "+5%", note: "target 4%", bands: ["3%", "3.5%", "4%", "5%"], at: 3, badge: "Super green" },
+    { name: "GAF IDC GP%", value: "42.6%", note: "target above 40%", bands: ["<38%", "38%", "40%", ">40%"], at: 3, badge: "Super green" },
+    { name: "Gym designs created", value: "104", note: "target 15", bands: ["5", "10", "15", "20"], at: 3, badge: "Super green" },
   ];
-  const priorities = [
-    { name: "Home Gym Builder plan + AI Designer", done: true },
-    { name: "SKU health + GMROI visibility", done: true },
-    { name: "Remove 50% of red/blue SKUs", done: false },
-    { name: "Wholesale partner pricing program", done: false },
-  ];
-  const maxH = 4.6;
   return (
     <Slide num={n} total={t}>
-      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: SALES UP, MARGIN SOFT" sub="1 Jul to 30 Sep 2026. Gross profit landed 1% over budget, but July carried it." />
+      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: NUMBERS GREEN, TWO INITIATIVES OPEN" sub="1 Jul to 30 Sep 2026. Every critical number landed green or better." />
       <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
 
-        {/* Revenue + GP */}
-        <div className={`col-span-5 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+        {/* Strategic initiatives */}
+        <div className={`col-span-7 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
           <div className="flex items-center justify-between">
-            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Revenue by channel</p>
-            <span className="inline-block text-[16px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">+16% YoY</span>
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Strategic initiatives</p>
+            <p className={`text-[14px] font-body ${th.sub}`}>2 of 4 complete</p>
           </div>
-          <div className="flex items-end justify-center gap-14 pt-5">
-            {rev.map((r, i) => (
-              <div key={i} className="flex flex-col items-center gap-2">
-                <p className={`font-display text-4xl leading-none ${th.text}`}>{r.total}</p>
-                <div className="w-28 flex flex-col-reverse rounded-t-lg overflow-hidden">
-                  {r.seg.map(([name, v], j) => (
-                    <div key={j} className={`${segStyle[j]}`} style={{ height: `${Math.max(v / maxH * 190, 3)}px` }}></div>
-                  ))}
+          <div className="flex-1 flex flex-col justify-around gap-2 pt-3 min-h-0">
+            {initiatives.map((p, i) => (
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg px-5 py-3`}>
+                <div className="flex items-center justify-between gap-4">
+                  <p className={`text-[18px] font-heading font-semibold ${th.text}`}>{p.name}</p>
+                  <Chip solid={p.status === "Complete"}>{p.status}</Chip>
                 </div>
-                <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{r.label}</p>
+                <div className="flex items-center gap-4 mt-2">
+                  <div className="relative h-2.5 flex-1">
+                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+                    <div className={`absolute left-0 top-0 h-2.5 rounded-full ${th.barStrong}`} style={{ width: `${p.done / p.total * 100}%` }}></div>
+                  </div>
+                  <p className={`text-[14px] font-heading font-bold ${th.text} w-[110px] text-right`}>{Math.round(p.done / p.total * 100)}% · {p.done}/{p.total}</p>
+                </div>
+                <p className={`text-[14px] font-body ${th.sub} mt-2 leading-snug`}>{p.outcome} <span className={th.muted}>· {p.owner}</span></p>
               </div>
             ))}
           </div>
-          <div className="flex items-center justify-center gap-5 mt-3">
-            {["Offline", "Commercial", "Online"].map((l, j) => (
-              <span key={j} className={`flex items-center gap-2 text-[13px] font-body ${th.sub}`}>
-                <span className={`w-3 h-3 rounded-sm ${segStyle[j]}`}></span>{l}
-              </span>
-            ))}
-          </div>
-          <div className={`border-t ${th.cardBorder} mt-5 pt-4`}>
-            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub} mb-3`}>Gross profit vs budget</p>
-            <div className="flex items-end gap-8 h-[88px] relative">
-              <div className={`absolute left-0 right-0 border-t border-dashed ${th.cardBorder}`} style={{ bottom: `${100 / 112 * 64}px` }}></div>
-              {gp.map((g, i) => (
-                <div key={i} className="flex flex-col items-center gap-1 flex-1 justify-end h-full">
-                  <p className={`text-[15px] font-heading font-bold ${th.text}`}>{g.pct}%</p>
-                  <div className={`w-full rounded-t ${th.barMid}`} style={{ height: `${g.pct / 112 * 64}px` }}></div>
-                </div>
-              ))}
-            </div>
-            <div className="flex gap-8 mt-1">
-              {gp.map((g, i) => <p key={i} className={`flex-1 text-center text-[12px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{g.m}</p>)}
-            </div>
-          </div>
         </div>
 
-        {/* Critical numbers + priorities */}
-        <div className="col-span-7 flex flex-col gap-5 min-h-0">
-          <div className={`flex-1 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
-            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Q1 critical numbers</p>
-            <div className="flex-1 flex flex-col justify-center gap-5">
-              {gauges.map((g, i) => (
-                <div key={i} className="flex items-center gap-4">
-                  <p className={`text-[16px] font-heading font-semibold ${th.text} w-[200px] shrink-0`}>{g.name}</p>
-                  <div className="flex-1 relative h-3">
-                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
-                    <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${Math.min(g.fill, 1) * 100}%` }}></div>
-                    <div className={`absolute -top-1 w-0.5 h-5 ${th.tick}`} style={{ left: `${g.tick * 100}%` }}></div>
-                  </div>
-                  <p className={`font-display text-2xl leading-none ${th.text} w-[84px] text-right shrink-0`}>{g.val}</p>
-                  <p className={`text-[13px] font-body ${th.sub} w-[170px] shrink-0 leading-tight`}>{g.note}</p>
-                </div>
-              ))}
-            </div>
+        {/* Critical numbers */}
+        <div className={`col-span-5 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
+          <div className="flex items-center justify-between">
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Critical numbers</p>
+            <span className="inline-block text-[14px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">4 of 4 green or better</span>
           </div>
-          <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 shrink-0`}>
-            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub} mb-3`}>Q1 company priorities: 2 of 4 closed</p>
-            <div className="grid grid-cols-4 gap-3">
-              {priorities.map((p, i) => (
-                <div key={i} className="flex items-start gap-3">
-                  <div className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center ${p.done ? th.barStrong : `border-2 ${th.cardBorder}`}`}>
-                    {p.done && <Check size={14} className={th.textInv} />}
-                  </div>
-                  <p className={`text-[14px] font-body ${p.done ? th.text : th.sub} leading-snug`}>{p.name}</p>
+          <div className="flex-1 grid grid-cols-2 gap-4 pt-3">
+            {numbers.map((c, i) => (
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
+                <p className={`text-[14px] font-heading font-semibold ${th.sub}`}>{c.name}</p>
+                <p className={`font-display text-5xl leading-none ${th.text} mt-3`}>{c.value}</p>
+                <p className={`text-[13px] font-body ${th.muted} mt-1`}>{c.note}</p>
+                <div className="flex-1"></div>
+                <div className="grid grid-cols-4 gap-1 mt-3">
+                  {c.bands.map((_, j) => (
+                    <div key={j} className={`h-2.5 rounded-sm ${j === c.at ? th.barStrong : th.track}`}></div>
+                  ))}
                 </div>
-              ))}
-            </div>
+                <div className="grid grid-cols-4 gap-1 mt-1">
+                  {c.bands.map((l, j) => (
+                    <p key={j} className={`text-[11px] font-body text-center ${j === c.at ? th.text : th.muted}`}>{l}</p>
+                  ))}
+                </div>
+                <p className={`text-[12px] font-heading font-bold tracking-[.12em] uppercase ${th.text} mt-2`}>{c.badge}</p>
+              </div>
+            ))}
           </div>
         </div>
       </div>
-      <Source>Sources: GAF Master Dashboard (revenue, GP vs budget); Q1 FY27 OPSP; HGB tracker (FY27 builds to 19 Oct vs same point FY26); Asana AFS Group Priorities, GAF Q1FY27.</Source>
+      <Source>Sources: GAF Master Dashboard, Strategic Priorities tab (Asana, Sprint Q1FY27, progress = completed subtasks, 19 Oct); Q1 FY27 OPSP critical numbers, frozen at 30 Sep. Bands run red, yellow, green, super green.</Source>
     </Slide>
   );
 };

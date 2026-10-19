@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GAF Strategy Overview: FY27, Q1 and Q2</title>
+<link rel="icon" type="image/png" href="https://cdn.shopify.com/s/files/1/1950/1891/files/GAF-Icon.png">
+
+<!-- ============================================================
+     GYM AND FITNESS BRAND BLOCK — the only part that changes between brands.
+     Swap the Tailwind colour/font config, the theme map below,
+     the font <link>, and the LOGO constant. Everything else is
+     brand-agnostic engine.
+     ============================================================ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { accent: '#F26422', black: '#000000', dark: '#1A1A1A', mid: '#2B2B2B', steel: '#424242', ash: '#A0A0A0' },
+        lt:    { bg: '#FFFFFF', card: '#F0F0F0', card2: '#E2E2E2', border: '#E2E2E2', text: '#000000', sub: '#555555', muted: '#717171' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body:    ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.slide-enter{animation:se .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes se{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*{animation:st .42s cubic-bezier(.2,.8,.2,1) both}
+.stagger>*:nth-child(1){animation-delay:.04s}
+.stagger>*:nth-child(2){animation-delay:.08s}
+.stagger>*:nth-child(3){animation-delay:.12s}
+.stagger>*:nth-child(4){animation-delay:.16s}
+.stagger>*:nth-child(5){animation-delay:.20s}
+.stagger>*:nth-child(6){animation-delay:.24s}
+@keyframes st{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.slide-enter,.stagger>*{animation:none}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+/* ===================== THEME =====================
+   Two complete token maps, light and dark. Every slide reads from
+   useTheme() and never hardcodes a colour. Toggle with D.
+   Brand-tailoring = editing these two objects and the block above. */
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    bodyBg: '#f0f0f0', logoFilter: '',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-600',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-600',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-lt-muted',
+    barStrong: 'bg-lt-text', barMid: 'bg-brand-ash', barSoft: 'bg-lt-card2', track: 'bg-lt-card2', tick: 'bg-lt-text', markerBorder: 'border-lt-text',
+  },
+  dark: {
+    bg: 'bg-brand-black', bg2: 'bg-brand-dark', bg3: 'bg-brand-mid',
+    border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
+    text: 'text-white', sub: 'text-brand-ash', muted: 'text-lt-muted', textInv: 'text-brand-black',
+    cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
+    bodyBg: '#000000', logoFilter: 'brightness-0 invert',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent',
+    navDisabled: 'bg-brand-steel/20 text-brand-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-400',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-400',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-brand-steel',
+    barStrong: 'bg-white', barMid: 'bg-brand-ash', barSoft: 'bg-brand-steel', track: 'bg-brand-steel', tick: 'bg-white', markerBorder: 'border-white',
+  }
+};
+
+/* ===================== ICONS =====================
+   Inline SVG, no icon library. Add what you need, delete what you don't.
+   Paths are Lucide geometry (lucide.dev), 1.5 stroke, rounded caps. */
+const I = p => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+       className={p.className||''}>
+    {Array.isArray(p.d) ? p.d.map((d,i) => <path key={i} d={d} />) : <path d={p.d} />}
+  </svg>
+);
+const ChevL  = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR  = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Sun    = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon   = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Users  = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Pkg    = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Target = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
+const TrendUp= p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
+const Check  = p => <I {...p} d="M20 6L9 17l-5-5" />;
+const Monitor= p => <I {...p} d={["M4 3h16a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2z","M8 21h8","M12 17v4"]} />;
+const Store  = p => <I {...p} d={["M3 9l1.5-5h15L21 9","M3 9h18","M5 9v11h14V9","M10 20v-6h4v6"]} />;
+const Briefcase = p => <I {...p} d={["M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z","M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16"]} />;
+const Warn   = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+
+/* ===================== BRAND ASSETS ===================== */
+const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576';
+
+const Logo = ({ dark }) => {
+  const th = useTheme();
+  // The primary GAF logo asset has a flattened white background (design-system rule:
+  // "White or pale grey background ONLY for primary logo"), so it can't be filtered onto a
+  // dark surface without showing a white box. Use a text wordmark there instead.
+  const onDark = dark || th.logoFilter !== '';
+  return onDark
+    ? <span className="text-[14px] font-heading font-extrabold tracking-[.1em] uppercase text-white">Gym and Fitness</span>
+    : <img src={LOGO} alt="" className="h-7 w-auto" />;
+};
+
+/* ===================== SLIDE PRIMITIVES =====================
+   Slide        — the 1600x900 frame: padding, logo, slide counter.
+   SectionTitle — eyebrow + title + standfirst. Use on every slide but the cover.
+   Callout      — the accent strip for the one thing they must take away. */
+const Slide = ({ children, num, total, noPad, dark }) => {
+  const th = useTheme();
+  return (
+    <div className={`w-full h-full ${dark ? 'bg-brand-black' : th.bg} flex flex-col ${noPad ? '' : 'px-16 py-12'} relative overflow-hidden`}>
+      {children}
+      <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
+        <Logo dark={dark} />
+        <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${dark ? 'text-brand-steel' : th.footerText}`}>
+          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+    <div className="mb-7 shrink-0">
+      {pre && <p className="text-[13px] font-heading font-bold tracking-[.3em] uppercase text-brand-accent mb-2">{pre}</p>}
+      <h2 className={`font-display text-5xl uppercase leading-[1.05] ${th.text}`}>{title}</h2>
+      {sub && <p className={`text-[16px] font-body ${th.sub} mt-3 max-w-4xl leading-snug`}>{sub}</p>}
+    </div>
+  );
+};
+
+const Callout = ({ icon: Icon = Target, children }) => {
+  const th = useTheme();
+  return (
+    <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-4 flex items-start gap-3 shrink-0">
+      <Icon size={18} className="text-brand-accent shrink-0 mt-0.5" />
+      <p className={`text-[15px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+/* ===================== LOCAL PRIMITIVES =====================
+   Takeaway — the neutral one-line "so what" strip. Orange is reserved for the
+   single highlight on each slide, so this stays grey. */
+const Takeaway = ({ children }) => {
+  const th = useTheme();
+  return (
+    <div className={`${th.bg3} rounded-lg px-6 py-4 shrink-0`}>
+      <p className={`text-[18px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+const Source = ({ children }) => {
+  const th = useTheme();
+  return <p className={`text-[12px] font-body ${th.muted} shrink-0 mt-3 mb-7 leading-snug`}>{children}</p>;
+};
+
+const Chip = ({ children, solid }) => {
+  const th = useTheme();
+  return (
+    <span className={`inline-block text-[12px] font-heading font-bold tracking-[.12em] uppercase px-3 py-1 rounded-full ${solid ? `${th.barStrong} ${th.textInv}` : `border ${th.cardBorder} ${th.sub}`}`}>
+      {children}
+    </span>
+  );
+};
+
+/* ===================== SLIDE 1: THE FY27 STRATEGY =====================
+   Who we build for, how we reach them, what it has to deliver.
+   One orange element: the Home Gym Builder revenue bar. */
+const StrategySlide = ({ n, t }) => {
+  const th = useTheme();
+  const archetypes = [
+    { name: "Home Gym Builder", cust: 9, rev: 27.3, hero: true },
+    { name: "Budget Seeker", cust: 69.5, rev: 29.1 },
+    { name: "Performance Optimiser", cust: 12.6, rev: 19.3 },
+  ];
+  const channels = [
+    { name: "Direct", sub: "Website, sales team, AI Gym Designer", stat: "104", label: "gyms designed by 30 Sep", icon: Monitor },
+    { name: "Retail & Wholesale", sub: "Experience Centre, Rebel, dealers", stat: "$516k", label: "first Rebel order", icon: Store },
+    { name: "Commercial", sub: "Gyms, mining, defence", stat: "$3,000", label: "profit per mining customer", icon: Briefcase },
+  ];
+  const path = [
+    { label: "FY26 actual", value: "$20.6M", h: 20.6, strong: false },
+    { label: "FY27 target", value: "$25.8M", h: 25.8, strong: true },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="FY27 Annual Strategy" title="WIN THE HOME GYM BUILDER" sub="Be the No.1 choice for people building a gym at home. Every channel, at a profit." />
+      <div className="flex-1 grid grid-cols-3 gap-6 min-h-0">
+
+        {/* WHO */}
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+          <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Who we build for</p>
+          <div className="flex-1 flex flex-col justify-center gap-6">
+            {archetypes.map((a, i) => (
+              <div key={i}>
+                <p className={`text-[18px] font-heading font-semibold ${th.text} mb-2`}>{a.name}</p>
+                <div className="flex items-center gap-3 mb-1.5">
+                  <div className={`h-3 rounded-full ${th.barMid}`} style={{ width: `${a.cust * 2.4}px` }}></div>
+                  <span className={`text-[15px] font-body ${th.sub}`}>{a.cust}% of customers</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className={`h-3 rounded-full ${a.hero ? 'bg-brand-accent' : th.barStrong}`} style={{ width: `${a.rev * 2.4}px` }}></div>
+                  <span className={`text-[15px] font-body ${th.text} font-semibold`}>{a.rev}% of revenue</span>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[15px] font-body ${th.sub} leading-snug`}>9% of customers, 3x the revenue per customer.</p>
+        </div>
+
+        {/* HOW */}
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+          <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>How we reach them</p>
+          <div className="flex-1 flex flex-col justify-center gap-4">
+            {channels.map((c, i) => (
+              <div key={i} className={`${th.bg} border ${th.cardBorder} rounded-lg p-4 flex items-center gap-4`}>
+                <div className={`w-11 h-11 rounded-lg ${th.bg3} flex items-center justify-center shrink-0`}>
+                  <c.icon size={22} className={th.text} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-[18px] font-heading font-semibold ${th.text}`}>{c.name}</p>
+                  <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{c.sub}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  <p className={`font-display text-3xl leading-none ${th.text}`}>{c.stat}</p>
+                  <p className={`text-[12px] font-body ${th.muted} mt-1 max-w-[120px] leading-tight`}>{c.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[15px] font-body ${th.sub} leading-snug`}>Retail builds awareness, which lowers direct marketing cost.</p>
+        </div>
+
+        {/* WHAT */}
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+          <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>What it has to deliver</p>
+          <div className="flex-1 flex items-end justify-center gap-10 pt-6 pb-4">
+            {path.map((p, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <p className={`font-display text-4xl leading-none ${th.text}`}>{p.value}</p>
+                <div className={`w-24 rounded-t-lg ${p.strong ? th.barStrong : th.barMid}`} style={{ height: `${p.h * 9}px` }}></div>
+                <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{p.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className={`grid grid-cols-2 gap-4 border-t ${th.cardBorder} pt-4`}>
+            <div>
+              <p className={`font-display text-3xl leading-none ${th.text}`}>$11M</p>
+              <p className={`text-[13px] font-body ${th.sub} mt-1`}>FY27 gross profit</p>
+            </div>
+            <div>
+              <p className={`font-display text-3xl leading-none ${th.text}`}>17%</p>
+              <p className={`text-[13px] font-body ${th.sub} mt-1`}>operating profit by FY30</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="mt-5"><Takeaway>Value over volume: the top 20% of customers deliver 130% of GAF's profit. Fix the whale, stop selling low-profit customers, products and channels.</Takeaway></div>
+      <Source>Sources: Strategy Day debrief (May 2026); GAF Master Dashboard (FY26 revenue); Q1 OPSP (designs); Weekly Strategy Meeting 19 Oct (Rebel); Profit Per X analysis via Claire Mula, 8 Oct (mining, top 20%).</Source>
+    </Slide>
+  );
+};
+
+/* ===================== SLIDE 2: Q1 FY27 =====================
+   Jul to Sep 2026. Revenue by channel vs last year, monthly GP vs budget,
+   the Q1 critical numbers, and where the Q1 company priorities landed.
+   One orange element: the +16% revenue chip. */
+const Q1Slide = ({ n, t }) => {
+  const th = useTheme();
+  const rev = [
+    { label: "Q1 FY26", total: "$3.83M", seg: [["Offline", 2.77], ["Commercial", 0.06], ["Online", 1.00]] },
+    { label: "Q1 FY27", total: "$4.45M", seg: [["Offline", 2.36], ["Commercial", 1.03], ["Online", 1.06]] },
+  ];
+  const segStyle = [th.barStrong, th.barMid, th.barSoft];
+  const gp = [{ m: "Jul", pct: 112 }, { m: "Aug", pct: 96 }, { m: "Sep", pct: 96 }];
+  // pct of track = (value - min) / (max - min); tick marks the green threshold
+  const gauges = [
+    { name: "Home gym builds", val: "307", note: "301 same point FY26", fill: 307 / 350, tick: 301 / 350 },
+    { name: "GC dead stock", val: "$404k", note: "Green. Goal under $550k", fill: 404 / 692, tick: 550 / 692 },
+    { name: "GAF AOV growth", val: "+5%", note: "Super green. Target 4%", fill: 5 / 6, tick: 4 / 6 },
+    { name: "GAF IDC GP%", val: "42.6%", note: "Super green. Target 40%", fill: (42.6 - 30) / 15, tick: (40 - 30) / 15 },
+    { name: "Gym designs created", val: "104", note: "Super green. Target 15", fill: 104 / 120, tick: 15 / 120 },
+  ];
+  const priorities = [
+    { name: "Home Gym Builder plan + AI Designer", done: true },
+    { name: "SKU health + GMROI visibility", done: true },
+    { name: "Remove 50% of red/blue SKUs", done: false },
+    { name: "Wholesale partner pricing program", done: false },
+  ];
+  const maxH = 4.6;
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Quarter 1 FY27 Recap" title="Q1: SALES UP, MARGIN SOFT" sub="1 Jul to 30 Sep 2026. Gross profit landed 1% over budget, but July carried it." />
+      <div className="flex-1 grid grid-cols-12 gap-6 min-h-0">
+
+        {/* Revenue + GP */}
+        <div className={`col-span-5 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+          <div className="flex items-center justify-between">
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Revenue by channel</p>
+            <span className="inline-block text-[16px] font-heading font-bold px-3 py-1 rounded-full bg-brand-accent text-white">+16% YoY</span>
+          </div>
+          <div className="flex items-end justify-center gap-14 pt-5">
+            {rev.map((r, i) => (
+              <div key={i} className="flex flex-col items-center gap-2">
+                <p className={`font-display text-4xl leading-none ${th.text}`}>{r.total}</p>
+                <div className="w-28 flex flex-col-reverse rounded-t-lg overflow-hidden">
+                  {r.seg.map(([name, v], j) => (
+                    <div key={j} className={`${segStyle[j]}`} style={{ height: `${Math.max(v / maxH * 190, 3)}px` }}></div>
+                  ))}
+                </div>
+                <p className={`text-[13px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{r.label}</p>
+              </div>
+            ))}
+          </div>
+          <div className="flex items-center justify-center gap-5 mt-3">
+            {["Offline", "Commercial", "Online"].map((l, j) => (
+              <span key={j} className={`flex items-center gap-2 text-[13px] font-body ${th.sub}`}>
+                <span className={`w-3 h-3 rounded-sm ${segStyle[j]}`}></span>{l}
+              </span>
+            ))}
+          </div>
+          <div className={`border-t ${th.cardBorder} mt-5 pt-4`}>
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub} mb-3`}>Gross profit vs budget</p>
+            <div className="flex items-end gap-8 h-[88px] relative">
+              <div className={`absolute left-0 right-0 border-t border-dashed ${th.cardBorder}`} style={{ bottom: `${100 / 112 * 64}px` }}></div>
+              {gp.map((g, i) => (
+                <div key={i} className="flex flex-col items-center gap-1 flex-1 justify-end h-full">
+                  <p className={`text-[15px] font-heading font-bold ${th.text}`}>{g.pct}%</p>
+                  <div className={`w-full rounded-t ${th.barMid}`} style={{ height: `${g.pct / 112 * 64}px` }}></div>
+                </div>
+              ))}
+            </div>
+            <div className="flex gap-8 mt-1">
+              {gp.map((g, i) => <p key={i} className={`flex-1 text-center text-[12px] font-heading font-bold tracking-[.12em] uppercase ${th.sub}`}>{g.m}</p>)}
+            </div>
+          </div>
+        </div>
+
+        {/* Critical numbers + priorities */}
+        <div className="col-span-7 flex flex-col gap-5 min-h-0">
+          <div className={`flex-1 ${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col min-h-0`}>
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Q1 critical numbers</p>
+            <div className="flex-1 flex flex-col justify-center gap-5">
+              {gauges.map((g, i) => (
+                <div key={i} className="flex items-center gap-4">
+                  <p className={`text-[16px] font-heading font-semibold ${th.text} w-[200px] shrink-0`}>{g.name}</p>
+                  <div className="flex-1 relative h-3">
+                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+                    <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${Math.min(g.fill, 1) * 100}%` }}></div>
+                    <div className={`absolute -top-1 w-0.5 h-5 ${th.tick}`} style={{ left: `${g.tick * 100}%` }}></div>
+                  </div>
+                  <p className={`font-display text-2xl leading-none ${th.text} w-[84px] text-right shrink-0`}>{g.val}</p>
+                  <p className={`text-[13px] font-body ${th.sub} w-[170px] shrink-0 leading-tight`}>{g.note}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 shrink-0`}>
+            <p className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub} mb-3`}>Q1 company priorities: 2 of 4 closed</p>
+            <div className="grid grid-cols-4 gap-3">
+              {priorities.map((p, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <div className={`w-7 h-7 rounded-full shrink-0 flex items-center justify-center ${p.done ? th.barStrong : `border-2 ${th.cardBorder}`}`}>
+                    {p.done && <Check size={14} className={th.textInv} />}
+                  </div>
+                  <p className={`text-[14px] font-body ${p.done ? th.text : th.sub} leading-snug`}>{p.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Source>Sources: GAF Master Dashboard (revenue, GP vs budget); Q1 FY27 OPSP; HGB tracker (FY27 builds to 19 Oct vs same point FY26); Asana AFS Group Priorities, GAF Q1FY27.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== SLIDE 3: Q2 FY27 =====================
+   Oct to Dec 2026. A dated runway with BFCM as the one orange element,
+   then the four GAF company priorities from Asana with their status today. */
+const Q2Slide = ({ n, t }) => {
+  const th = useTheme();
+  const day = (d) => (new Date(d) - new Date("2026-10-01")) / 86400000;
+  const span = day("2026-12-31");
+  const pct = (d) => `${(day(d) / span) * 100}%`;
+  const events = [
+    { d: "2026-10-15", label: "VIP pricing live", sub: "575 leads in 5 days", align: "left" },
+    { d: "2026-11-02", label: "BFCM starts", sub: "Bundles + category sale", align: "left" },
+    { d: "2026-11-30", label: "BFCM ends", sub: "Offers close", align: "left" },
+    { d: "2026-12-31", label: "Q2 goals due", sub: "End of quarter", align: "right" },
+  ];
+  const goals = [
+    { stat: "$2,200", label: "website AOV by 31 Dec, via faster bundle builds", owner: "Shanice Thomas", status: "Stuck", solid: true },
+    { stat: "+20%", label: "verified walk-ins by 31 Mar, via the Experience Centre", owner: "Adam Carter", status: "Not started", bar: { fill: 46 / 274, tick: 16 / 92, note: "46 of 274 visitors to 16 Oct" } },
+    { stat: "12 mo", label: "forecast for Tier 1 suppliers by 31 Dec", owner: "Michelle Wiseman", status: "Not started" },
+    { stat: "$516k", label: "first Rebel order in. Retail costs and benefits to define", owner: "Joel Larter", status: "Not started" },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Quarter 2 FY27 Plan" title="Q2: BFCM AND FOUR GOALS" sub="1 Oct to 31 Dec 2026. Black Friday builds the quarter, four company priorities close it." />
+      <div className="flex-1 flex flex-col gap-6 min-h-0">
+
+        {/* Runway */}
+        <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-10 pt-6 pb-7`}>
+          <div className="flex justify-between mb-5">
+            {["October", "November", "December"].map((m, i) => (
+              <p key={i} className={`text-[13px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>{m}</p>
+            ))}
+          </div>
+          <div className="relative h-4">
+            <div className={`absolute inset-x-0 top-1/2 -translate-y-1/2 h-2 rounded-full ${th.track}`}></div>
+            <div className={`absolute top-1/2 -translate-y-1/2 h-2 rounded-full ${th.barStrong}`} style={{ left: 0, width: pct("2026-10-19") }}></div>
+            <div className="absolute top-0 h-4 rounded-full bg-brand-accent" style={{ left: pct("2026-11-02"), width: `${((day("2026-11-30") - day("2026-11-02")) / span) * 100}%` }}></div>
+            {events.map((e, i) => (
+              <div key={i} className={`absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 rounded-full border-[3px] ${th.markerBorder} ${th.bg}`} style={{ left: pct(e.d), zIndex: 2 }}></div>
+            ))}
+          </div>
+          <div className="relative h-[64px] mt-3">
+            {events.map((e, i) => (
+              <div key={i} className="absolute top-0" style={e.align === "right" ? { right: 0, textAlign: "right" } : { left: pct(e.d), transform: "translateX(-50%)", textAlign: "center" }}>
+                <p className={`text-[16px] font-heading font-semibold ${th.text} whitespace-nowrap`}>{e.label}</p>
+                <p className={`text-[13px] font-body ${th.sub} whitespace-nowrap`}>{new Date(e.d).toLocaleDateString("en-AU", { day: "numeric", month: "short" })} · {e.sub}</p>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[13px] font-body ${th.muted} mt-1`}>Filled bar: quarter to date (19 Oct).</p>
+        </div>
+
+        {/* Goals */}
+        <div className="flex-1 grid grid-cols-4 gap-5 min-h-0">
+          {goals.map((g, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-6 flex flex-col`}>
+              <div className="flex justify-between items-start">
+                <p className={`text-[12px] font-heading font-bold tracking-[.3em] uppercase ${th.sub}`}>Goal {i + 1}</p>
+                <Chip solid={g.solid}>{g.status}</Chip>
+              </div>
+              <p className={`font-display text-6xl leading-none ${th.text} mt-5`}>{g.stat}</p>
+              <p className={`text-[16px] font-body ${th.sub} mt-3 leading-snug`}>{g.label}</p>
+              <div className="flex-1"></div>
+              {g.bar && (
+                <div className="mb-4">
+                  <div className="relative h-3">
+                    <div className={`absolute inset-0 rounded-full ${th.track}`}></div>
+                    <div className={`absolute left-0 top-0 h-3 rounded-full ${th.barStrong}`} style={{ width: `${g.bar.fill * 100}%` }}></div>
+                    <div className={`absolute -top-1 w-0.5 h-5 ${th.tick}`} style={{ left: `${g.bar.tick * 100}%` }}></div>
+                  </div>
+                  <p className={`text-[12px] font-body ${th.muted} mt-2`}>{g.bar.note}. Tick marks time elapsed.</p>
+                </div>
+              )}
+              <p className={`text-[14px] font-body ${th.text} font-semibold`}>{g.owner}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <Source>Sources: Asana AFS Group Priorities, GAF, Q2FY27 (status at 19 Oct); meeting notes 15 and 19 Oct (VIP leads, Rebel, BFCM); walk-in tracker (Q2 target = last 92 days +20%).</Source>
+    </Slide>
+  );
+};
+
+/* ===================== ENGINE =====================
+   Do not edit below this line when building a deck. Add or remove
+   components in SLIDES; everything else is the shared contract. */
+const SLIDES = [StrategySlide, Q1Slide, Q2Slide];
+
+function App() {
+  const [idx, setIdx]   = useState(0);
+  const [key, setKey]   = useState(0);
+  const [dark, setDark] = useState(false);
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+
+  const go = useCallback((dir) => {
+    setIdx(prev => {
+      const next = prev + dir;
+      if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
+  useEffect(() => { document.body.style.background = th.bodyBg; }, [th.bodyBg]);
+
+  const Cur = SLIDES[idx];
+
+  return (
+    <ThemeCtx.Provider value={th}>
+      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
+          <div key={key} className="w-full h-full slide-enter">
+            <Cur n={idx + 1} t={SLIDES.length} />
+          </div>
+        </div>
+        <div className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)"
+            className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => go(-1)} disabled={idx === 0} title="Previous"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevL size={18} />
+          </button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1} title="Next"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevR size={18} />
+          </button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

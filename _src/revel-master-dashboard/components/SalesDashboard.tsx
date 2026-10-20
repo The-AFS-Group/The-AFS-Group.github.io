@@ -19,7 +19,7 @@ const brandConfig: BrandConfig = {
   REVEL: {
     colors: { accent: "#ABB99C", gradient: "from-gray-800 to-black" },
     currencySymbol: "$",
-    targetMargin: 40,
+    targetMargin: 45,
   }
 };
 

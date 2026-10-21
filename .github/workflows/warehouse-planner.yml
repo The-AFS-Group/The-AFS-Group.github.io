@@ -1,0 +1,88 @@
+name: Warehouse planner
+
+# Nightly refresh of the Warehouse Planner tab on the GAF master dashboard.
+# Reads three published Google Sheet CSVs fed by NetSuite saved searches (no
+# NetSuite or Google auth, same pattern as the HGB and dead stock trackers),
+# builds warehouse-planner.json and commits it with the workflow's own
+# GITHUB_TOKEN. Pipeline code and feed definitions: _pipelines/warehouse-planner/.
+#
+# Until the three feed URLs are added as repo Actions secrets, each run skips
+# cleanly and the tab keeps showing the committed example snapshot.
+#   WP_INBOUND_URL     open on-the-water PO lines, Gold Coast
+#   WP_ORDERS_URL      open Gold Coast sales orders of 2 m3 or more (type, never name)
+#   WP_CONTAINERS_URL  AVT container records with size
+#
+# 16:13 UTC = 2:13am AEST (Gold Coast has no daylight saving).
+
+on:
+  schedule:
+    - cron: "13 16 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: warehouse-planner
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      TZ: Australia/Brisbane
+      WP_INBOUND_URL: ${{ secrets.WP_INBOUND_URL }}
+      WP_ORDERS_URL: ${{ secrets.WP_ORDERS_URL }}
+      WP_CONTAINERS_URL: ${{ secrets.WP_CONTAINERS_URL }}
+    steps:
+      - name: Check the feeds are configured
+        id: feeds
+        run: |
+          if [ -z "$WP_INBOUND_URL" ] || [ -z "$WP_ORDERS_URL" ] || [ -z "$WP_CONTAINERS_URL" ]; then
+            echo "::notice::Warehouse planner feeds are not configured yet. Skipping; the tab keeps its current data."
+            echo "ready=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "ready=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.feeds.outputs.ready == 'true'
+
+      - uses: actions/setup-python@v5
+        if: steps.feeds.outputs.ready == 'true'
+        with:
+          python-version: "3.12"
+
+      - name: Build warehouse-planner.json
+        if: steps.feeds.outputs.ready == 'true'
+        working-directory: _pipelines/warehouse-planner
+        run: python build.py
+
+      - name: Commit if the data changed
+        if: steps.feeds.outputs.ready == 'true'
+        run: |
+          set -euo pipefail
+          cp _pipelines/warehouse-planner/warehouse-planner.json gaf-master-dashboard/warehouse-planner.json
+          cp _pipelines/warehouse-planner/warehouse-planner.json _src/gaf-master-dashboard/public/warehouse-planner.json
+          git config user.name "warehouse-planner-bot"
+          git config user.email "warehouse-planner@users.noreply.github.com"
+          git add gaf-master-dashboard/warehouse-planner.json _src/gaf-master-dashboard/public/warehouse-planner.json _pipelines/warehouse-planner/warehouse-planner.json
+          if git diff --cached --quiet; then
+            echo "No change, nothing to publish."
+            exit 0
+          fi
+          SUMMARY=$(python -c "import json; d=json.load(open('gaf-master-dashboard/warehouse-planner.json')); print(f\"{len(d['containers'])} containers, {len(d['orders'])} large orders\")")
+          git commit -m "Warehouse planner: ${SUMMARY} (auto-update)"
+          git push origin HEAD || { git pull --rebase origin main && git push origin HEAD; }
+
+      # Pushes made with GITHUB_TOKEN do not reliably trigger the Pages build.
+      - name: Request a Pages build
+        if: steps.feeds.outputs.ready == 'true'
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /dev/null -w "Pages build request: HTTP %{http_code}\n" || true

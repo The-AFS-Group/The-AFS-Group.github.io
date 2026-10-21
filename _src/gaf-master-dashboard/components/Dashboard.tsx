@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Target, Flag, Users, ExternalLink } from 'lucide-react';
+import React, { useState, lazy, Suspense } from 'react';
+import { Phone, BarChart3, Menu, X, ShoppingBag, ChevronLeft, ChevronRight, Mountain, Target, Flag, Users, ExternalLink, Warehouse } from 'lucide-react';
 import CallInsightsDashboard from './CallInsightsDashboard';
 import SalesDashboard from './SalesDashboard';
 import ProductInsightsDashboard from './ProductInsightsDashboard';
@@ -8,20 +8,24 @@ import OPSPDashboard from './OPSPDashboard';
 import StrategicInitiativesDashboard from './StrategicInitiativesDashboard';
 import { GAF_COLORS } from '../constants';
 
+// Loaded on demand: the planner's code and data download only when its tab is opened,
+// so the other tabs load exactly as before.
+const WarehousePlannerDashboard = lazy(() => import('./WarehousePlannerDashboard'));
+
 const Dashboard: React.FC = () => {
   // Default to 'sales' view as requested
   // A deep link can name its tab (?view=opsp#hgb-tracker). Without this the
   // dashboard always opens on Sales and an anchor from another page never lands.
   const initialView = (() => {
     if (typeof window === 'undefined') return 'sales';
-    const valid = ['call-insights','sales','product-insights','opsp','initiatives'];
+    const valid = ['call-insights','sales','product-insights','opsp','initiatives','warehouse'];
     const q = new URLSearchParams(window.location.search).get('view');
     if (q && valid.includes(q)) return q;
     const h = window.location.hash.replace('#','');
     if (h === 'hgb-tracker') return 'opsp';
     return 'sales';
-  })() as 'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives';
-  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives'>(initialView);
+  })() as 'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives' | 'warehouse';
+  const [activeView, setActiveView] = useState<'call-insights' | 'sales' | 'product-insights' | 'opsp' | 'initiatives' | 'warehouse'>(initialView);
 
   // once the OPSP tab has painted, honour the anchor
   React.useEffect(() => {
@@ -149,6 +153,19 @@ const Dashboard: React.FC = () => {
             {!isCollapsed && <span>Call Insights</span>}
           </button>
 
+          <button
+            onClick={() => { setActiveView('warehouse'); setIsSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
+              activeView === 'warehouse'
+                ? 'bg-[#ffebe3] text-[#F26422] shadow-sm border border-[#ffdbcc]'
+                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+            } ${isCollapsed ? 'justify-center' : ''}`}
+            title={isCollapsed ? "Warehouse Planner" : ""}
+          >
+            <Warehouse size={20} className="shrink-0" />
+            {!isCollapsed && <span>Warehouse Planner</span>}
+          </button>
+
           {/* External: the archetype page is its own site, so this opens in a new tab */}
           <a
             href="https://the-afs-group.github.io/briefs/gaf-hgb-film/"
@@ -196,6 +213,10 @@ const Dashboard: React.FC = () => {
             <StrategicInitiativesDashboard />
           ) : activeView === 'call-insights' ? (
             <CallInsightsDashboard />
+          ) : activeView === 'warehouse' ? (
+            <Suspense fallback={<div className="p-8 text-gray-500">Loading the warehouse planner…</div>}>
+              <WarehousePlannerDashboard />
+            </Suspense>
           ) : (
             <SalesDashboard />
           )}

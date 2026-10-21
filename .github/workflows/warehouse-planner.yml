@@ -1,16 +1,17 @@
 name: Warehouse planner
 
 # Nightly refresh of the Warehouse Planner tab on the GAF master dashboard.
-# Reads three published Google Sheet CSVs fed by NetSuite saved searches (no
-# NetSuite or Google auth, same pattern as the HGB and dead stock trackers),
-# builds warehouse-planner.json and commits it with the workflow's own
-# GITHUB_TOKEN. Pipeline code and feed definitions: _pipelines/warehouse-planner/.
+# Reads NetSuite directly through the REST query service (SuiteQL), signed in
+# with a token for a read-only integration role, builds warehouse-planner.json
+# and commits it with the workflow's own GITHUB_TOKEN.
+# Pipeline code and setup steps: _pipelines/warehouse-planner/README.md.
 #
-# Until the three feed URLs are added as repo Actions secrets, each run skips
-# cleanly and the tab keeps showing the committed example snapshot.
-#   WP_INBOUND_URL     open on-the-water PO lines, Gold Coast
-#   WP_ORDERS_URL      open Gold Coast sales orders of 2 m3 or more (type, never name)
-#   WP_CONTAINERS_URL  AVT container records with size
+# Until the five NetSuite secrets below exist, each run skips cleanly and the
+# tab keeps showing its current data.
+#   NS_ACCOUNT_ID, NS_CONSUMER_KEY, NS_CONSUMER_SECRET, NS_TOKEN_ID, NS_TOKEN_SECRET
+#
+# This repo is public, so its Actions logs are public: build.py only prints
+# counts and status codes, never record contents.
 #
 # 16:13 UTC = 2:13am AEST (Gold Coast has no daylight saving).
 
@@ -33,15 +34,17 @@ jobs:
     timeout-minutes: 10
     env:
       TZ: Australia/Brisbane
-      WP_INBOUND_URL: ${{ secrets.WP_INBOUND_URL }}
-      WP_ORDERS_URL: ${{ secrets.WP_ORDERS_URL }}
-      WP_CONTAINERS_URL: ${{ secrets.WP_CONTAINERS_URL }}
+      NS_ACCOUNT_ID: ${{ secrets.NS_ACCOUNT_ID }}
+      NS_CONSUMER_KEY: ${{ secrets.NS_CONSUMER_KEY }}
+      NS_CONSUMER_SECRET: ${{ secrets.NS_CONSUMER_SECRET }}
+      NS_TOKEN_ID: ${{ secrets.NS_TOKEN_ID }}
+      NS_TOKEN_SECRET: ${{ secrets.NS_TOKEN_SECRET }}
     steps:
-      - name: Check the feeds are configured
+      - name: Check the NetSuite secrets are configured
         id: feeds
         run: |
-          if [ -z "$WP_INBOUND_URL" ] || [ -z "$WP_ORDERS_URL" ] || [ -z "$WP_CONTAINERS_URL" ]; then
-            echo "::notice::Warehouse planner feeds are not configured yet. Skipping; the tab keeps its current data."
+          if [ -z "$NS_ACCOUNT_ID" ] || [ -z "$NS_CONSUMER_KEY" ] || [ -z "$NS_CONSUMER_SECRET" ] || [ -z "$NS_TOKEN_ID" ] || [ -z "$NS_TOKEN_SECRET" ]; then
+            echo "::notice::NetSuite secrets for the warehouse planner are not configured yet. Skipping; the tab keeps its current data."
             echo "ready=false" >> "$GITHUB_OUTPUT"
           else
             echo "ready=true" >> "$GITHUB_OUTPUT"
@@ -55,7 +58,7 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Build warehouse-planner.json
+      - name: Read NetSuite and build warehouse-planner.json
         if: steps.feeds.outputs.ready == 'true'
         working-directory: _pipelines/warehouse-planner
         run: python build.py

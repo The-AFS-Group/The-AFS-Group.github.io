@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2A44">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>AFS Showroom Check-in</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0E2A44;
+  --offwhite: #EDEAE3;
+  --orange: #F26422;
+  --grey: #424242;
+  --line: #D5D1C8;
+  --white: #FFFFFF;
+  --error: #B3261E;
+  --head: 'Archivo', Tahoma, sans-serif;
+  --body: 'Lato', Tahoma, sans-serif;
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: var(--offwhite); color: var(--navy); font-family: var(--body);
+  font-size: 20px; overflow: hidden; user-select: none; -webkit-user-select: none;
+  touch-action: manipulation;
+}
+input, button { font: inherit; color: inherit; }
+input { user-select: text; -webkit-user-select: text; }
+
+.screen {
+  position: absolute; inset: 0; display: none; flex-direction: column;
+  padding: clamp(20px, 4vh, 48px) clamp(24px, 5vw, 72px);
+}
+.screen.active { display: flex; animation: fade .25s ease; }
+@keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+h1 { font-family: var(--head); font-weight: 700; font-size: clamp(30px, 5.2vh, 52px); line-height: 1.15; margin: 0; text-align: center; }
+.sub { text-align: center; color: var(--grey); margin: 10px 0 0; font-size: clamp(17px, 2.4vh, 22px); }
+
+/* top bar on inner screens */
+.top { display: flex; align-items: center; justify-content: space-between; min-height: 56px; }
+.top img { height: clamp(34px, 5vh, 50px); width: auto; }
+.steps { display: flex; gap: 10px; }
+.steps i { width: 38px; height: 6px; border-radius: 3px; background: var(--line); }
+.steps i.on { background: var(--orange); }
+.back { background: none; border: 0; font-weight: 700; font-size: 20px; padding: 14px 8px; cursor: pointer; color: var(--navy); }
+.back:active { opacity: .5; }
+
+/* welcome */
+#s-welcome { align-items: center; }
+#s-welcome .logo { height: clamp(70px, 14vh, 130px); width: auto; margin-top: 1vh; }
+#s-welcome h1 { margin-top: clamp(14px, 3vh, 36px); }
+.tiles {
+  flex: 1; width: 100%; max-width: 1100px; display: grid; gap: clamp(14px, 2.4vh, 28px);
+  grid-template-columns: 1fr 1fr; grid-auto-rows: 1fr; margin-top: clamp(16px, 3vh, 36px); min-height: 0;
+}
+.tile {
+  background: var(--white); border: 3px solid transparent; border-radius: 22px; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  padding: 18px; box-shadow: 0 2px 0 rgba(14,42,68,.08), 0 10px 30px rgba(14,42,68,.08);
+  transition: transform .12s, border-color .12s; min-height: 0;
+}
+.tile:active { transform: scale(.97); border-color: var(--orange); }
+.tile .art { flex: 1; width: 100%; display: flex; align-items: center; justify-content: center; min-height: 0; }
+.tile .art img { max-width: 78%; max-height: 100%; object-fit: contain; }
+.tile .art .plus { font-family: var(--head); font-weight: 700; font-size: clamp(22px, 3.6vh, 34px); margin-left: 12px; white-space: nowrap; }
+.tile .art.stack { flex-direction: column; gap: 8px; }
+.tile .art.stack img { max-height: 55%; }
+.tile .name { font-family: var(--head); font-weight: 600; font-size: clamp(20px, 3vh, 28px); }
+
+/* form */
+.form-wrap { flex: 1; display: flex; flex-direction: column; align-items: center; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
+form { width: 100%; max-width: 860px; margin-top: clamp(14px, 3vh, 32px); display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; }
+.field { display: flex; flex-direction: column; gap: 8px; }
+.field.full { grid-column: 1 / -1; }
+.field label { font-weight: 700; font-size: 18px; }
+.field input[type=text], .field input[type=email], .field input[type=tel] {
+  height: 68px; border: 2px solid var(--line); border-radius: 14px; padding: 0 20px; background: var(--white); font-size: 24px; outline: none;
+}
+.field input:focus { border-color: var(--navy); }
+.field.bad input { border-color: var(--error); }
+.err { color: var(--error); font-weight: 700; font-size: 17px; min-height: 22px; }
+.hint { color: var(--grey); font-size: 17px; }
+.check { display: flex; gap: 16px; align-items: center; cursor: pointer; font-size: 19px; }
+.check input { width: 34px; height: 34px; accent-color: var(--orange); flex: none; }
+.notice { font-size: 14px; color: var(--grey); line-height: 1.4; }
+.notice a { color: var(--navy); }
+
+.btn {
+  height: 76px; min-width: 260px; padding: 0 44px; border: 0; border-radius: 18px; background: var(--navy); color: var(--white);
+  font-family: var(--head); font-weight: 600; font-size: 26px; cursor: pointer; transition: transform .12s, opacity .12s;
+}
+.btn:active { transform: scale(.97); }
+.btn[disabled] { opacity: .35; }
+.actions { display: flex; justify-content: center; padding-top: 14px; }
+
+/* source */
+.opts { width: 100%; max-width: 1000px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: clamp(14px, 3vh, 30px); }
+.opt {
+  min-height: clamp(64px, 10vh, 92px); background: var(--white); border: 3px solid transparent; border-radius: 16px; cursor: pointer;
+  font-family: var(--head); font-weight: 600; font-size: clamp(19px, 2.8vh, 25px); padding: 8px 14px; text-align: center;
+  box-shadow: 0 2px 0 rgba(14,42,68,.08);
+}
+.opt:active { transform: scale(.97); }
+.opt.sel { background: var(--navy); color: var(--white); border-color: var(--navy); }
+#other-wrap { width: 100%; max-width: 1000px; margin-top: 16px; display: none; }
+#other-wrap input { width: 100%; height: 64px; border: 2px solid var(--line); border-radius: 14px; padding: 0 20px; font-size: 22px; outline: none; background: var(--white); }
+#other-wrap input:focus { border-color: var(--navy); }
+
+/* thanks */
+#s-thanks { align-items: center; justify-content: center; text-align: center; gap: 18px; cursor: pointer; }
+#s-thanks .tick { width: 110px; height: 110px; border-radius: 50%; background: var(--orange); display: grid; place-items: center; }
+#s-thanks .tick svg { width: 56px; height: 56px; stroke: var(--white); }
+#s-thanks img { height: 56px; margin-top: 18px; }
+
+#queue-chip {
+  position: fixed; right: 12px; bottom: 10px; font-size: 13px; color: var(--grey); background: rgba(255,255,255,.8);
+  padding: 4px 10px; border-radius: 12px; display: none; pointer-events: none;
+}
+#setup-chip {
+  position: fixed; left: 12px; bottom: 10px; font-size: 13px; color: var(--white); background: var(--error);
+  padding: 4px 10px; border-radius: 12px; display: none; pointer-events: none;
+}
+
+@media (max-width: 760px) {
+  form { grid-template-columns: 1fr; }
+  .opts { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- 1. Welcome -->
+<section class="screen active" id="s-welcome">
+  <img class="logo" src="assets/afs-group.png" alt="The AFS Group">
+  <h1>Who are you here to shop?</h1>
+  <div class="tiles">
+    <button class="tile" data-brand="Gym and Fitness">
+      <div class="art"><img src="assets/gym-and-fitness.png" alt=""></div>
+      <div class="name">Gym and Fitness</div>
+    </button>
+    <button class="tile" data-brand="Revel Saunas">
+      <div class="art"><img src="assets/revel-saunas.svg" alt="" style="max-width:62%"></div>
+      <div class="name">Revel Saunas</div>
+    </button>
+    <button class="tile" data-brand="WaterRower / Nohrd">
+      <div class="art"><img src="assets/waterrower-nohrd.png" alt=""></div>
+      <div class="name">WaterRower / Nohrd</div>
+    </button>
+    <button class="tile" data-brand="NordicTrack + iFIT">
+      <div class="art"><img src="assets/nordictrack.png" alt="" style="max-width:62%"><span class="plus">+ iFIT</span></div>
+      <div class="name">NordicTrack + iFIT</div>
+    </button>
+  </div>
+</section>
+
+<!-- 2. Details -->
+<section class="screen" id="s-details">
+  <div class="top">
+    <button class="back" data-go="s-welcome">&larr; Back</button>
+    <div class="steps"><i class="on"></i><i class="on"></i><i></i></div>
+    <img src="assets/afs-group.png" alt="">
+  </div>
+  <h1>Tell us about you</h1>
+  <p class="sub">So we can follow up on anything you're looking at.</p>
+  <div class="form-wrap">
+    <form id="details-form" novalidate autocomplete="off">
+      <div class="field" id="f-first"><label for="first">First name</label><input type="text" id="first" autocapitalize="words" autocomplete="off"><div class="err"></div></div>
+      <div class="field" id="f-last"><label for="last">Last name</label><input type="text" id="last" autocapitalize="words" autocomplete="off"><div class="err"></div></div>
+      <div class="field" id="f-email"><label for="email">Email</label><input type="email" id="email" inputmode="email" autocapitalize="none" autocorrect="off" autocomplete="off"><div class="err"></div></div>
+      <div class="field" id="f-phone"><label for="phone">Mobile</label><input type="tel" id="phone" inputmode="tel" autocomplete="off"><div class="err"></div></div>
+      <div class="field full hint" style="margin-top:-8px">Email or mobile &mdash; we need at least one.</div>
+      <label class="check full"><input type="checkbox" id="optin"> Send me news and offers from The AFS Group brands</label>
+      <div class="field full notice" id="notice"></div>
+    </form>
+  </div>
+  <div class="actions"><button class="btn" id="to-source">Next</button></div>
+</section>
+
+<!-- 3. Source -->
+<section class="screen" id="s-source">
+  <div class="top">
+    <button class="back" data-go="s-details">&larr; Back</button>
+    <div class="steps"><i class="on"></i><i class="on"></i><i class="on"></i></div>
+    <img src="assets/afs-group.png" alt="">
+  </div>
+  <h1>How did you hear about us?</h1>
+  <div class="form-wrap">
+    <div class="opts" id="opts"></div>
+    <div id="other-wrap"><input type="text" id="other" placeholder="Tell us more (optional)" maxlength="80" autocomplete="off"></div>
+  </div>
+  <div class="actions"><button class="btn" id="finish" disabled>Finish</button></div>
+</section>
+
+<!-- 4. Thanks -->
+<section class="screen" id="s-thanks">
+  <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+  <h1 id="thanks-h">Thanks!</h1>
+  <p class="sub">Enjoy your visit &mdash; our team is here if you need anything.</p>
+  <img src="assets/afs-group.png" alt="">
+</section>
+
+<div id="queue-chip"></div>
+<div id="setup-chip">Setup needed: no endpoint &mdash; entries are not being sent</div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.SHOWROOM_CONFIG || {};
+  var SOURCES = ['Google search', 'Instagram', 'Facebook', 'TikTok', 'YouTube', 'Friend or family',
+                 'Walked past or saw the store', 'Email', 'Podcast or influencer', 'Returning customer', 'Other'];
+  var QUEUE_KEY = 'showroom-queue-v1';
+  var store = (new URLSearchParams(location.search).get('store') || 'Showroom').slice(0, 40);
+
+  var state = { brand: '', heard: '' };
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- screens ---------- */
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(function (s) { s.classList.toggle('active', s.id === id); });
+    clearTimeout(thanksTimer);
+    resetIdle();
+  }
+  document.querySelectorAll('[data-go]').forEach(function (b) {
+    b.addEventListener('click', function () { show(b.dataset.go); });
+  });
+  document.querySelectorAll('.tile').forEach(function (t) {
+    t.addEventListener('click', function () { state.brand = t.dataset.brand; show('s-details'); });
+  });
+
+  /* ---------- details ---------- */
+  var notice = 'We collect your details to follow up on your enquiry and to understand how customers find us. ' +
+    'Your information is handled by The AFS Group in line with the Privacy Act 1988 (Cth)' +
+    (CFG.PRIVACY_URL ? ' &mdash; <a href="' + CFG.PRIVACY_URL + '" target="_blank" rel="noopener">privacy policy</a>.' : '.');
+  $('notice').innerHTML = notice;
+
+  function setErr(fid, msg) {
+    var f = $(fid);
+    f.classList.toggle('bad', !!msg);
+    f.querySelector('.err').textContent = msg || '';
+  }
+  function validEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v); }
+  function phoneDigits(v) { return v.replace(/\D/g, ''); }
+  function validPhone(v) { var d = phoneDigits(v); return d.length >= 8 && d.length <= 15; }
+
+  function validateDetails() {
+    var first = $('first').value.trim(), last = $('last').value.trim();
+    var email = $('email').value.trim(), phone = $('phone').value.trim();
+    var ok = true;
+    setErr('f-first', first ? '' : 'Please enter your first name'); ok = ok && !!first;
+    setErr('f-last', last ? '' : 'Please enter your last name'); ok = ok && !!last;
+    var eMsg = '', pMsg = '';
+    if (!email && !phone) { eMsg = 'Email or mobile needed'; pMsg = 'Email or mobile needed'; }
+    if (email && !validEmail(email)) eMsg = 'That email doesn’t look right';
+    if (phone && !validPhone(phone)) pMsg = 'That number doesn’t look right';
+    setErr('f-email', eMsg); setErr('f-phone', pMsg);
+    return ok && !eMsg && !pMsg;
+  }
+  $('to-source').addEventListener('click', function () { if (validateDetails()) show('s-source'); });
+  $('details-form').addEventListener('submit', function (e) { e.preventDefault(); $('to-source').click(); });
+
+  /* ---------- source ---------- */
+  var optsEl = $('opts');
+  SOURCES.forEach(function (s) {
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'opt'; b.textContent = s;
+    b.addEventListener('click', function () {
+      state.heard = s;
+      optsEl.querySelectorAll('.opt').forEach(function (o) { o.classList.toggle('sel', o === b); });
+      $('other-wrap').style.display = s === 'Other' ? 'block' : 'none';
+      $('finish').disabled = false;
+      resetIdle();
+    });
+    optsEl.appendChild(b);
+  });
+
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  $('finish').addEventListener('click', function () {
+    if (!state.heard) return;
+    var rec = {
+      id: uuid(),
+      clientTime: new Date().toISOString(),
+      store: store,
+      brand: state.brand,
+      firstName: $('first').value.trim(),
+      lastName: $('last').value.trim(),
+      email: $('email').value.trim(),
+      phone: $('phone').value.trim(),
+      marketingOptIn: $('optin').checked,
+      heard: state.heard,
+      heardOther: state.heard === 'Other' ? $('other').value.trim() : ''
+    };
+    enqueue(rec);
+    $('thanks-h').textContent = 'Thanks, ' + rec.firstName + '!';
+    show('s-thanks');
+    thanksTimer = setTimeout(reset, (CFG.THANKS_SECONDS || 6) * 1000);
+    flush();
+  });
+  $('s-thanks').addEventListener('click', reset);
+
+  /* ---------- reset + idle ---------- */
+  var thanksTimer, idleTimer;
+  function reset() {
+    clearTimeout(thanksTimer);
+    state = { brand: '', heard: '' };
+    ['first', 'last', 'email', 'phone', 'other'].forEach(function (i) { $(i).value = ''; });
+    $('optin').checked = false;
+    ['f-first', 'f-last', 'f-email', 'f-phone'].forEach(function (f) { setErr(f, ''); });
+    optsEl.querySelectorAll('.opt').forEach(function (o) { o.classList.remove('sel'); });
+    $('other-wrap').style.display = 'none';
+    $('finish').disabled = true;
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    show('s-welcome');
+  }
+  function resetIdle() {
+    clearTimeout(idleTimer);
+    if ($('s-welcome').classList.contains('active')) return;
+    idleTimer = setTimeout(reset, (CFG.IDLE_SECONDS || 90) * 1000);
+  }
+  ['touchstart', 'mousedown', 'keydown', 'input'].forEach(function (ev) {
+    document.addEventListener(ev, resetIdle, { passive: true });
+  });
+
+  /* ---------- queue + sending ---------- */
+  function readQueue() {
+    try { return JSON.parse(localStorage.getItem(QUEUE_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function writeQueue(q) {
+    try { localStorage.setItem(QUEUE_KEY, JSON.stringify(q)); } catch (e) { /* storage full or blocked */ }
+    chip(q.length);
+  }
+  function enqueue(rec) { var q = readQueue(); q.push(rec); writeQueue(q); }
+  function chip(n) {
+    var c = $('queue-chip');
+    c.style.display = n ? 'block' : 'none';
+    c.textContent = n + ' waiting to send';
+    $('setup-chip').style.display = CFG.ENDPOINT ? 'none' : 'block';
+  }
+
+  var sending = false;
+  function flush() {
+    if (sending || !CFG.ENDPOINT) { chip(readQueue().length); return; }
+    var q = readQueue();
+    if (!q.length) { chip(0); return; }
+    sending = true;
+    (function next() {
+      var q2 = readQueue();
+      if (!q2.length) { sending = false; chip(0); return; }
+      var rec = q2[0];
+      fetch(CFG.ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ token: CFG.TOKEN, record: rec })
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        if (j && j.ok) {
+          var cur = readQueue().filter(function (x) { return x.id !== rec.id; });
+          writeQueue(cur);
+          next();
+        } else if (j && j.permanent) {
+          // Server rejected this record for good (bad data / token). Park it so it can't block the queue.
+          var cur2 = readQueue().filter(function (x) { return x.id !== rec.id; });
+          try { localStorage.setItem(QUEUE_KEY + '-rejected', JSON.stringify(
+            JSON.parse(localStorage.getItem(QUEUE_KEY + '-rejected') || '[]').concat([{ rec: rec, error: j.error }]))); } catch (e) {}
+          writeQueue(cur2);
+          next();
+        } else { sending = false; chip(readQueue().length); }
+      })
+      .catch(function () { sending = false; chip(readQueue().length); });
+    })();
+  }
+  window.addEventListener('online', flush);
+  setInterval(flush, 30000);
+  chip(readQueue().length);
+  flush();
+
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function () {});
+})();
+</script>
+</body>
+</html>

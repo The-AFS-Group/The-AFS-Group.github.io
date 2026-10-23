@@ -1,0 +1,13 @@
+{
+  "name": "AFS Showroom Check-in",
+  "short_name": "Check-in",
+  "start_url": "./",
+  "scope": "./",
+  "display": "fullscreen",
+  "background_color": "#EDEAE3",
+  "theme_color": "#0E2A44",
+  "icons": [
+    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

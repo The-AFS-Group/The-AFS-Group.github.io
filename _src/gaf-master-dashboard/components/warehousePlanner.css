@@ -201,6 +201,14 @@
 .wp-note b { font-family: var(--font-display); }
 .wp-tags { display: flex; flex-wrap: wrap; gap: 6px; }
 .wp-tag { font-family: var(--font-display); font-weight: 700; font-size: 12px; background: var(--track); border-radius: var(--r-pill); padding: 4px 10px; }
+.wp-po { display: grid; gap: 8px; }
+.wp-po + .wp-po { border-top: 1px solid var(--border-1); padding-top: 14px; }
+.wp-po-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; }
+.wp-skus { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.wp-skus li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1px 12px; padding: 6px 0 6px 10px; border-left: 2px solid var(--border-1); }
+.wp-skus .sku { font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .04em; overflow-wrap: anywhere; }
+.wp-skus .qty { font-family: var(--font-display); font-weight: 700; font-size: 12px; text-align: right; white-space: nowrap; }
+.wp-skus .nm { grid-column: 1 / -1; font-size: 12px; color: var(--fg-2); line-height: 1.4; }
 .wp-close { background: transparent; color: var(--on-ink); border: 1.5px solid var(--gaf-grey-dark); border-radius: var(--r-pill); font-family: var(--font-display); font-weight: 700; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; padding: 8px 14px; cursor: pointer; }
 
 .wp-about { padding: 14px 18px; }

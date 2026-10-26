@@ -110,7 +110,7 @@ Inactive. Create a new token and update the two token secrets to rotate it.
 
 | Query | Filters |
 |---|---|
-| On-the-water PO lines | PO status Pending Receipt, Partially Received or Pending Billing/Partially Received; header **Shipment on the water** ticked; Gold Coast line locations; item lines with unreceived quantity. The ETA is the line **Expected Receipt Date**. |
+| On-the-water PO lines | PO status Pending Receipt, Partially Received or Pending Billing/Partially Received; header **Shipment on the water** ticked; Gold Coast line locations; item lines with unreceived quantity. The ETA is the line **Expected Receipt Date**. Each line's SKU and description come from the PO line, falling back to the item's purchase description. |
 | Open sales order lines | SO status Pending Fulfillment, Partially Fulfilled or Pending Billing/Partially Fulfilled; Gold Coast line locations; open quantity. Summed per order, kept at 2 m³ or more. Dated by the header **Expected Ship Date** (`custbodycustbodyorder_edc`). Customer type from `custbodytransactioncustomertype`. |
 | AVT CM Container records | Gold Coast locations, created in the last year, for container sizes. |
 
@@ -123,7 +123,8 @@ what keeps received POs out. The exact SuiteQL is at the top of `build.py`.
 - A container's date is the line ETA that covers most of its volume; mixed ETAs are flagged.
 - A container or PO with an ETA before today, not yet received, is flagged overdue.
 - A header Order ETA more than 3 days from the line ETA is listed as out of date.
-- Lines with no container number appear as "Booked, not loaded yet", grouped by PO.
+- Each container lists its SKUs under each PO, with the quantity in that container. A line split across containers shows only its share.
+- Lines with no container number appear as "Booked, not loaded yet", grouped by PO, with their SKUs.
 - Orders under 2 m³ are dropped. Orders with no Expected Ship Date appear in their own tray.
 
 ## Run it locally

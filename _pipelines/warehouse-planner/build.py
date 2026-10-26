@@ -45,6 +45,7 @@ GOLD_COAST = "(SELECT id FROM location WHERE name LIKE '%Gold Coast%' OR name LI
 
 Q_INBOUND = f"""
 SELECT p.tranid AS po, BUILTIN.DF(p.entity) AS supplier, BUILTIN.DF(pl.item) AS sku,
+  COALESCE(pl.memo, i.purchasedescription) AS item_name,
   BUILTIN.DF(i.custitemitem_brand) AS brand,
   pl.quantity - NVL(pl.quantityshiprecv, 0) AS open_qty,
   ROUND((pl.quantity - NVL(pl.quantityshiprecv, 0)) * NVL(i.custitem_item_cubic_volume, 0), 3) AS cbm,
@@ -222,6 +223,21 @@ def brands_out(d):
     return sorted(({"brand": k, "units": round(v[0]), "cbm": round(v[1], 2)} for k, v in d.items()), key=lambda x: -x["cbm"])
 
 
+def item_name(v):
+    """PO line description, tidied: first line only, stray encoding junk removed, blank for placeholders."""
+    v = (v or "").replace("\u00e2\u20ac\u2039", "").replace("\u200b", "").replace("\u00c2\u00b2", "\u00b2")
+    v = next((ln for ln in re.split(r"[\r\n]+", v) if ln.strip()), "")
+    v = re.sub(r"\s+", " ", v).strip()
+    if not v or v.startswith("**"):
+        return ""
+    return v if len(v) <= 90 else v[:87].rstrip() + "..."
+
+
+def items_out(d):
+    """SKU rows for one PO: code, description and quantity, largest quantity first."""
+    return sorted(({"sku": k, "name": v[1], "qty": round(v[0])} for k, v in d.items()), key=lambda x: (-x["qty"], x["sku"]))
+
+
 def summarise_orders(rows):
     """Sum order lines (or pass through per-order rows) by sales order number. Whitelisted fields only."""
     agg = {}
@@ -240,9 +256,10 @@ def summarise_orders(rows):
 def build(inbound, order_rows, containers, today):
     sizes = {r["container"]: r.get("size", "") for r in containers if r.get("container")}
     cont = defaultdict(lambda: {"units": 0.0, "cbm": 0.0, "cartons": 0.0, "lines": 0, "brands": defaultdict(lambda: [0.0, 0.0]),
-                                "pos": set(), "suppliers": set(), "etas": Counter(), "hdr": set()})
+                                "pos": set(), "suppliers": set(), "etas": Counter(), "hdr": set(),
+                                "items": defaultdict(lambda: defaultdict(lambda: [0.0, ""]))})
     unl = defaultdict(lambda: {"units": 0.0, "cbm": 0.0, "lines": 0, "brands": defaultdict(lambda: [0.0, 0.0]),
-                               "etas": Counter(), "supplier": "", "hdr": None})
+                               "etas": Counter(), "supplier": "", "hdr": None, "items": defaultdict(lambda: [0.0, ""])})
     brand_cbm = Counter()
 
     for l in inbound:
@@ -252,12 +269,14 @@ def build(inbound, order_rows, containers, today):
         b = brand_label(l.get("brand"))
         q, cbm, ctn = num(l.get("open_qty")), num(l.get("cbm")), num(l.get("cartons"))
         hdr = to_iso(l.get("header_eta"))
+        sku, name = (l.get("sku") or "").strip() or "No SKU", item_name(l.get("item_name"))
         brand_cbm[b] += cbm
         parts = CONT_RE.findall(l.get("container_data", ""))
         if not parts:
             u = unl[l["po"]]
             u["units"] += q; u["cbm"] += cbm; u["lines"] += 1; u["supplier"] = l.get("supplier", ""); u["hdr"] = hdr
             u["brands"][b][0] += q; u["brands"][b][1] += cbm; u["etas"][eta] += max(cbm, 0.001)
+            u["items"][sku][0] += q; u["items"][sku][1] = u["items"][sku][1] or name
             continue
         total = sum(float(p[1]) for p in parts) or 1.0
         for cid, cq in parts:
@@ -266,6 +285,7 @@ def build(inbound, order_rows, containers, today):
             c["units"] += float(cq); c["cbm"] += cbm * share; c["cartons"] += ctn * share; c["lines"] += 1
             c["brands"][b][0] += float(cq); c["brands"][b][1] += cbm * share
             c["pos"].add(l["po"]); c["suppliers"].add(l.get("supplier", "")); c["etas"][eta] += max(cbm * share, 0.001)
+            it = c["items"][l["po"]][sku]; it[0] += float(cq); it[1] = it[1] or name
             if hdr and abs(days_between(hdr, eta)) > 3:
                 c["hdr"].add(f'{l["po"]} header {hdr}')
 
@@ -276,14 +296,16 @@ def build(inbound, order_rows, containers, today):
         out_c.append({"id": cid, "size": size_label(sizes.get(cid), cid), "eta": eta, "etas": sorted(c["etas"]),
                       "units": round(c["units"]), "cbm": round(c["cbm"], 2), "cartons": round(c["cartons"]), "lines": c["lines"],
                       "pos": sorted(c["pos"]), "suppliers": sorted(s for s in c["suppliers"] if s), "brands": brands_out(c["brands"]),
-                      "flags": flags, "header_notes": sorted(c["hdr"])})
+                      "flags": flags, "header_notes": sorted(c["hdr"]),
+                      "po_items": [{"po": po, "items": items_out(c["items"][po])} for po in sorted(c["items"])]})
 
     out_u = []
     for po, u in unl.items():
         eta = u["etas"].most_common(1)[0][0]
         flags = ["overdue"] if eta < today else (["some_lines_overdue"] if min(u["etas"]) < today else [])
         out_u.append({"po": po, "supplier": u["supplier"], "eta": eta, "header_eta": u["hdr"], "units": round(u["units"]),
-                      "cbm": round(u["cbm"], 2), "lines": u["lines"], "brands": brands_out(u["brands"]), "flags": flags})
+                      "cbm": round(u["cbm"], 2), "lines": u["lines"], "brands": brands_out(u["brands"]), "flags": flags,
+                      "items": items_out(u["items"])})
 
     out_o = summarise_orders(order_rows)
     return {"containers": sorted(out_c, key=lambda x: (x["eta"], x["id"])),

@@ -13,13 +13,16 @@ import './warehousePlanner.css';
  */
 
 type Brand = { brand: string; units: number; cbm: number };
+type Item = { sku: string; name: string; qty: number };
+type PoItems = { po: string; items: Item[] };
 type Container = {
   id: string; size: string | null; eta: string; etas: string[]; units: number; cbm: number; cartons: number;
   lines: number; pos: string[]; suppliers: string[]; brands: Brand[]; flags: string[]; header_notes: string[];
+  po_items?: PoItems[];
 };
 type Booked = {
   po: string; supplier: string; eta: string; header_eta: string | null; units: number; cbm: number;
-  lines: number; brands: Brand[]; flags: string[];
+  lines: number; brands: Brand[]; flags: string[]; items?: Item[];
 };
 type Order = { so: string; customer_type: string; ship: string | null; cbm: number; cartons: number; lines: number };
 type PlannerData = {
@@ -81,6 +84,25 @@ const MixLine: React.FC<{ brands: Brand[] }> = ({ brands }) => {
     </div>
   );
 };
+
+// One PO heading with the SKUs it has in this container (or on this booking), largest quantity first.
+const PoBlock: React.FC<{ po: string; items: Item[] }> = ({ po, items }) => (
+  <div className="wp-po">
+    <div className="wp-po-head">
+      <span className="wp-tag">{po}</span>
+      <span className="wp-meta num">{plural(items.length, 'SKU', 'SKUs')} · {n(sum(items, (i) => i.qty))} units</span>
+    </div>
+    <ul className="wp-skus">
+      {items.map((it) => (
+        <li key={it.sku}>
+          <span className="sku">{it.sku}</span>
+          <span className="qty num">× {n(it.qty)}</span>
+          {it.name && <span className="nm">{it.name}</span>}
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 
 const WarehousePlannerDashboard: React.FC = () => {
   const [data, setData] = useState<PlannerData | null>(null);
@@ -305,7 +327,11 @@ const WarehousePlannerDashboard: React.FC = () => {
         {c.flags.includes('mixed_eta') && <div className="wp-note"><b>Mixed ETAs.</b> Lines in this container carry {c.etas.map(fmtIso).join(' and ')}. The board uses the date covering most of the volume.</div>}
         <div className="wp-sec"><span className="label">Contents by brand</span><BrandRows brands={c.brands} /></div>
         <div className="wp-sec"><span className="label">Supplier</span><div>{c.suppliers.map((s) => <div key={s}>{s}</div>)}</div></div>
-        <div className="wp-sec"><span className="label">Purchase orders</span><div className="wp-tags">{c.pos.map((p) => <span className="wp-tag" key={p}>{p}</span>)}</div></div>
+        <div className="wp-sec"><span className="label">Purchase orders and SKUs</span>
+          {c.po_items && c.po_items.length
+            ? c.po_items.map((p) => <PoBlock key={p.po} po={p.po} items={p.items} />)
+            : <div className="wp-tags">{c.pos.map((p) => <span className="wp-tag" key={p}>{p}</span>)}</div>}
+        </div>
         {c.header_notes.length > 0 && (
           <div className="wp-sec"><span className="label">Header ETA out of date</span>
             <div className="wp-meta">{c.header_notes.map((h) => { const [po, d] = h.split(' header '); return <div key={h}>{po} header says {fmtIso(d)}</div>; })}</div>
@@ -324,6 +350,7 @@ const WarehousePlannerDashboard: React.FC = () => {
         {u.flags.includes('some_lines_overdue') && <div className="wp-note crit"><b>⚠ Lines past ETA.</b> Some lines on this PO have an ETA that has already passed.</div>}
         <div className="wp-sec"><span className="label">Contents by brand</span><BrandRows brands={u.brands} /></div>
         <div className="wp-sec"><span className="label">Supplier</span><div>{u.supplier}</div></div>
+        {u.items && u.items.length > 0 && <div className="wp-sec"><span className="label">SKUs on this PO</span><PoBlock po={u.po} items={u.items} /></div>}
       </>);
     }
   } else if (sel?.kind === 'o') {

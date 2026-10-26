@@ -234,10 +234,10 @@ const SectionTitle = ({ pre, title, sub }) => {
 //  EDITING GUIDE
 //  1. PERIOD    – reporting period label, shown on the title slide and as a
 //                 badge on every slide header.
-//  2. DATA      – sales + GA4 numbers (Apr – Sep 2026). Slides 2, 3, 4 and the
-//                 text in "Wins" are calculated from this block automatically.
-//  3. CONTENT   – all wording for Wins, Challenges, Plans, Experience Centre,
-//                 Support Needed, Data Notes. Edit the text between the quotes.
+//  2. DATA      – sales numbers (Apr – Sep 2026). Slides 2, 3 and 4 are
+//                 calculated from this block automatically.
+//  3. CONTENT   – wording for the Commercial Plan and Delivery Plan slides.
+//                 Edit the text between the quotes.
 //                 Add  review: true  to an item to show an amber REVIEW tag,
 //                 delete it once the item has been checked.
 //  Keyboard: ← / → or space = navigate, D = dark mode.
@@ -255,7 +255,6 @@ const PERIOD = {
 // ===== 2. DATA =====
 // Sales: NetSuite invoices + cash sales, 1 Apr – 30 Sep 2026, revenue ex GST net of discounts.
 //        Revenue only — gross profit / margin is intentionally not included in this deck.
-// GA4:   GAF Performance Dashboard feed (last 90 days, Australian traffic) — NOT the Apr – Sep window.
 const DATA = {
  "prior": {
   "prior_months": [
@@ -398,170 +397,12 @@ const DATA = {
    "value": 68916.41,
    "color": "#c03008"
   }
- ],
- "pages": [
-  {
-   "path": "/products/centr-1-home-gym-functional-trainer",
-   "sessions": 2920,
-   "views": 6263,
-   "bounceRate": 0.0664,
-   "avgEngagementTime": 41.1,
-   "label": "Centr 1 Home Gym Functional Trainer",
-   "atc": 45
-  },
-  {
-   "path": "/products/centr-x-hyrox-competition-wall-ball",
-   "sessions": 1702,
-   "views": 5083,
-   "bounceRate": 0.067,
-   "avgEngagementTime": 19.4,
-   "label": "Centr x HYROX Competition Wall Ball",
-   "atc": 317
-  },
-  {
-   "path": "/products/centr-2-home-gym-functional-trainer",
-   "sessions": 2393,
-   "views": 4886,
-   "bounceRate": 0.1015,
-   "avgEngagementTime": 22.6,
-   "label": "Centr 2 Home Gym Functional Trainer",
-   "atc": 37
-  },
-  {
-   "path": "/products/centr-body-weight-home-gym-machine",
-   "sessions": 1986,
-   "views": 4162,
-   "bounceRate": 0.075,
-   "avgEngagementTime": 34.1,
-   "label": "Centr Body Weight Home Gym Machine",
-   "atc": 54
-  },
-  {
-   "path": "/products/centr-x-hyrox-competition-octo-kettlebell",
-   "sessions": 1495,
-   "views": 3843,
-   "bounceRate": 0.0462,
-   "avgEngagementTime": 19.1,
-   "label": "Centr x HYROX Competition Octo Kettlebell",
-   "atc": 106
-  },
-  {
-   "path": "/products/centr-half-rack",
-   "sessions": 1722,
-   "views": 3805,
-   "bounceRate": 0.0703,
-   "avgEngagementTime": 29.3,
-   "label": "Centr Half Rack",
-   "atc": 100
-  },
-  {
-   "path": "/products/centr-x-hyrox-competition-sandbag",
-   "sessions": 1439,
-   "views": 3732,
-   "bounceRate": 0.0876,
-   "avgEngagementTime": 20.3,
-   "label": "Centr x HYROX Competition Sandbag",
-   "atc": 235
-  },
-  {
-   "path": "/products/centr-runr-treadmill",
-   "sessions": 1286,
-   "views": 2637,
-   "bounceRate": 0.0956,
-   "avgEngagementTime": 15.5,
-   "label": "Centr Runr Treadmill",
-   "atc": 35
-  },
-  {
-   "path": "/products/centr-3-home-gym-functional-trainer-with-selectorized-smith-bar",
-   "sessions": 965,
-   "views": 2050,
-   "bounceRate": 0.0788,
-   "avgEngagementTime": 34.6,
-   "label": "Centr 3 Home Gym Functional Trainer With Selectorized Smith Bar",
-   "atc": 15
-  },
-  {
-   "path": "/products/centr-x-hyrox-official-competition-perform-turf",
-   "sessions": 630,
-   "views": 1929,
-   "bounceRate": 0.0937,
-   "avgEngagementTime": 31.5,
-   "label": "Centr x HYROX Official Competition Perform Turf",
-   "atc": 19
-  },
-  {
-   "path": "/products/centr-x-hyrox-competition-sled",
-   "sessions": 894,
-   "views": 1818,
-   "bounceRate": 0.0917,
-   "avgEngagementTime": 19.4,
-   "label": "Centr x HYROX Competition Sled",
-   "atc": 81
-  },
-  {
-   "path": "/products/centr-x-hyrox-competition-rig-target",
-   "sessions": 833,
-   "views": 1694,
-   "bounceRate": 0.1068,
-   "avgEngagementTime": 15.9,
-   "label": "Centr x HYROX Competition Rig Target",
-   "atc": 91
-  },
-  {
-   "path": "/collections/centr-x-hyrox",
-   "sessions": 750,
-   "views": 1627,
-   "bounceRate": 0.0453,
-   "avgEngagementTime": 26.2,
-   "label": "Centr x HYROX",
-   "atc": 0
-  },
-  {
-   "path": "/products/centr-multi-adjustable-flat-incline-decline-workout-bench",
-   "sessions": 787,
-   "views": 1626,
-   "bounceRate": 0.0597,
-   "avgEngagementTime": 20.4,
-   "label": "Centr Multi Adjustable Flat Incline Decline Workout Bench",
-   "atc": 27
-  },
-  {
-   "path": "/collections/centr",
-   "sessions": 867,
-   "views": 1502,
-   "bounceRate": 0.346,
-   "avgEngagementTime": 8.2,
-   "label": "Centr",
-   "atc": 0
-  },
-  {
-   "path": "/products/centr-runr-s-treadmill",
-   "sessions": 699,
-   "views": 1434,
-   "bounceRate": 0.0944,
-   "avgEngagementTime": 29.4,
-   "label": "Centr Runr S Treadmill",
-   "atc": 15
-  },
-  {
-   "path": "/products/centr-x-hyrox-perform-tread",
-   "sessions": 696,
-   "views": 1369,
-   "bounceRate": 0.1164,
-   "avgEngagementTime": 12.0,
-   "label": "Centr x HYROX Perform Tread",
-   "atc": 0
-  }
- ],
- "atcTotal": 1417
+ ]
 };
 
 const monthlyData = DATA.months;          // [{ month, rev }]
 const categories = DATA.cats;             // [{ name, rev, color }]
 const departments = DATA.depts;           // [{ name, value, color }]  – 2nd entry (Commercial) is highlighted
-const topPages = DATA.pages;              // [{ label, path, sessions, views, atc, bounceRate }]
-const GA4_WINDOW = { label: '24 Jul – 21 Oct 2026', days: 90, source: 'GAF Performance Dashboard (GA4, Australian traffic)' };
 
 // ----- derived numbers (do not edit) -----
 const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
@@ -627,97 +468,6 @@ const CONTENT = {
   titleTag: 'Supplier Update',
   confidential: 'Confidential Internal Use',
 
-  winsSub: `Key highlights from ${PERIOD.label}`,
-  wins: [
-    { title: 'Premium Key Account wins — Total Fusion & Virgin Active', review: true,
-      desc: "Secured equipment sales with Total Fusion and Virgin Active — two of AU's largest fitness chains. Virgin Active 8-club deal and WGA pilot represent significant commercial validation of the brand." },
-    { title: `Revenue ${up(yoyRev)} on ${PRIOR.label}`,
-      desc: `Revenue grew from ${money(priorRev)} to ${money(totalRev)} year on year (${revMultiple.toFixed(1)}x). Every category grew, and revenue is up ${Math.round(vsSeqRev)}% on the previous six months.` },
-    { title: `${kFmt(totalRev)} revenue in six months`,
-      desc: `${money(totalRev)} revenue across ${PERIOD.label}. ${PERIOD.secondHalf} revenue (${kFmt(h2)}) was ${hoh >= 0 ? 'up' : 'down'} ${Math.abs(hoh).toFixed(1)}% on ${PERIOD.firstHalf} (${kFmt(h1)}).` },
-    { title: `Commercial channel strength — ${pct1(commPct)} (${kFmt(commercial.value)})`,
-      desc: `${pct1(commPct)} of revenue (${money(commercial.value)}) came from commercial accounts.` },
-    { title: `Peak month: ${peak.month.replace(" '26", '')} at ${kFmt(peak.rev)}`,
-      desc: `Highest revenue month in the period at ${money(peak.rev)} including ${kFmt(peakComm)} of commercial sales.` },
-  ],
-
-  challengesSub: 'Key areas requiring support and strategic focus',
-  challenges: [
-    { title: 'Commercial revenue is lumpy',
-      desc: `Commercial now drives ${pct1(commPct)} of revenue but lands in large, irregular orders (from about $24K in July to $107K in May). Monthly results swing with a handful of deals, so pipeline visibility matters.` },
-    { title: `Category concentration — ${topCat.name} at ${pct1(topCatPct)}`,
-      desc: `${topCat.name} accounts for ${pct1(topCatPct)} of revenue (${money(topCat.rev)}); the other five categories combined are ${pct1(100 - topCatPct)}. The mix is weighted heavily toward one category.` },
-    { title: 'Hyrox event attendance ROI', review: true,
-      desc: 'Hyrox events tend to yield little sales (even from leads generated) and stand to be more of a brand activation initiative. Supports theory that equipment is purchased by commercial facilities rather than home use.' },
-  ],
-  snapshotTitle: 'Channel & Market Snapshot',
-  snapshot: [
-    { label: 'Commercial concentration', issue: `${pct1(commPct)} of revenue from commercial accounts`, severity: 'high' },
-    { label: 'Home consumer segment', issue: `Direct to consumer is ${pct1(retailPct)} of revenue — room to grow`, severity: 'high', review: true },
-    { label: 'Event ROI', issue: 'High activation costs vs direct sales returns', severity: 'medium', review: true },
-    { label: 'Digital visibility', issue: '[EDIT — add traffic-source / organic search finding once the GA4 export is in]', severity: 'medium', review: true },
-  ],
-  snapshotNote: `Commercial is a genuine strength (<b>${pct1(commPct)}</b> of revenue). Event and digital strategy should focus on driving commercial pipeline.`,
-
-  plansSub: 'Scale Commercial Key Accounts & build consumer brand',
-  plansFocus: 'Double down on the commercial channel advantage with Total Fusion, Virgin Active, and WGA. Simultaneously invest in building consumer brand awareness through Hyrox event activations and dedicated content to unlock the home fitness segment.',
-  plans: [
-    { title: 'Commercial', icon: 'Dollar', items: [
-      'Expand Total Fusion relationship — equipment refresh and new club openings',
-      'Execute Virgin Active 8-club deal — standardise Centr x Hyrox functional zones',
-      'WGA pilot program — prove model then scale nationally',
-      'Build commercial sales collateral: case studies, 3D renders, fit-out proposals',
-    ]},
-    { title: 'Events & Activation', icon: 'Bolt', items: [
-      'Activate at all AU Hyrox events — shift from direct sales to brand awareness and lead capture',
-      'Experience Centre for product demos, athlete shoots, and commercial buyer walk-throughs',
-      'Leverage Hang Challenge format — high engagement, low cost activation at events',
-      'Post-event nurture sequences to convert attendee interest into pipeline',
-    ]},
-    { title: 'Digital & Brand', icon: 'Eye', items: [
-      { text: 'Increase paid social investment — already the #1 traffic driver at 29% of sessions', review: true },
-      'Build Hyrox training content for SEO — workout guides, race prep, functional training tips',
-      'Partner with Hyrox athletes and community influencers for UGC and social proof',
-      'Expand product page content — Wall Ball, Sandbag, Kettlebell pages already driving interest',
-    ]},
-  ],
-
-  expTitle: 'EXPERIENCE CENTRE',
-  expBody: 'Purpose-built Centr x Hyrox functional training zone at GAF HQ — serves as a product showcase for commercial buyers (Total Fusion, Virgin Active, WGA), content production studio for athlete and event content, and demonstration space for functional training equipment.',
-  expCards: [
-    { icon: 'Users', label: 'Commercial Showroom', desc: 'Walk-through experience for gym operators and facility managers' },
-    { icon: 'Cam', label: 'Content Studio', desc: 'In-house photo & video with complete Centr x Hyrox range' },
-    { icon: 'Bolt', label: 'Training Hub', desc: 'Athlete and influencer collaboration space for Hyrox training content' },
-  ],
-
-  supportSub: 'Key requests to accelerate ANZ growth',
-  supportBannerTitle: 'Local Support — Jay Clarke',
-  supportBanner: `Local support through Jay Clarke for direct customer conversations with Key Accounts. The commercial channel is our strongest growth lever (${pct1(commPct)} of revenue) and having local Centr representation to support GAF in Total Fusion, Virgin Active, and WGA discussions would accelerate deal velocity and account expansion.`,
-  support: [
-    { title: '3D Renders & Assets', icon: 'Cam', items: [
-      'Head office support with 3D renders for commercial proposals — gym operators need visual fit-out plans before committing',
-      'CAD files and space planning tools for Hyrox functional zones in different facility sizes',
-      'High-quality product photography and lifestyle imagery for AU marketing campaigns',
-      'Co-branded content assets adapted for AU market — event collateral, social content, POS materials',
-    ]},
-    { title: 'MDF & Product Seeding', icon: 'Pct', items: [
-      'Continued Marketing Development Fund support for AU brand-building — paid social, event activations, content production',
-      'Product seeding for Key Account demonstrations — sample equipment for Total Fusion and Virgin Active trials',
-    ]},
-    { title: 'Strategic Partnership', icon: 'Target', items: [
-      'Joint Key Account strategy — aligned approach to Total Fusion, Virgin Active, WGA with clear roles and commercial terms',
-      'New product roadmap visibility — first-mover on AU launches to maintain competitive advantage in commercial channel',
-      'Quarterly review cadence to track commercial pipeline and brand growth together',
-    ]},
-  ],
-
-  // Placeholders on the Digital slide (GA4 data the dashboard cannot provide for Apr – Sep)
-  digitalPlaceholders: [
-    { title: 'Monthly page views — Apr to Sep 2026', hint: '[EDIT] Paste Centr / Hyrox page views by month from a GA4 export (replaces the bar chart).' },
-    { title: 'Traffic sources', hint: '[EDIT] Add channel mix (paid social, paid shopping, organic, direct…) filtered to Centr / Hyrox pages for Apr – Sep.' },
-    { title: 'Sessions & growth', hint: '[EDIT] Add total sessions and month-on-month growth for the period.' },
-  ],
-
   commercialSub: 'FY27 revenue targets by channel, the levers behind them and how we will forecast',
   commercialLevers: {
     'Retail': [
@@ -771,21 +521,8 @@ const CONTENT = {
       { h: 'Finish EDI and name one owner', b: 'EDI/ASN automation by January, a dedicated retail account contact, and monthly on-time-in-full reporting from Q3.' },
     ],
   },
-
-  notesSub: 'Sources, definitions and exclusions — delete this slide before sending externally if not required',
-  notes: [
-    { h: 'Sales source', b: `NetSuite invoices and cash sales dated 1 April – 30 September 2026. Revenue is net of discounts and excludes GST.` },
-    { h: 'Scope', b: 'All Centr x HYROX and Centr branded SKUs, including the individual components of bundles (Centr 1/2/3 Home Gyms, HYROX bundles, turf sections). Categories follow the Q1 deck mapping: Functional Training, Home Gyms, Treadmills, Kettlebells, Weight Plates, Other.' },
-    { h: 'Departments', b: 'Direct to Consumer = GAF AU + GAF Online AU. Commercial = GAF Commercial Sales AU. Retail & Other Partners = GAF Wholesale AU plus SFF and lines with no department.' },
-    { h: 'FY27 targets and delivery metrics', b: 'FY27 = Jul 2026 – Jun 2027; Q1 is actual. FY26 baselines use the same NetSuite method (Commercial only began in NetSuite in Jan 2026, so its FY26 base covers six months). Retail targets are phased from the partner forecast (committed plan is about 60% of the 12-month conservative case, as the in-store rollout starts mid-year). All targets are proposals for review. Stock position is from a NetSuite check on 27 Oct 2026; on-time-in-full has not yet been measured.' },
-    { h: 'Exclusion', b: 'Invoice INV0319891 (24 Jun 2026) is a $0-revenue supply of Centr x HYROX turf and is excluded from sales.' },
-    { h: 'Prior-period comparison', b: `Year-on-year compares ${PERIOD.label} with ${PRIOR.label} using the same SKU set and the same NetSuite method (prior-year revenue ${money(priorRev)}). "Previous 6 months" is ${PRIOR.seqLabel}. Channel/department split is not compared because the Commercial department was only used from January 2026. Using the earlier deck's own monthly figures for Apr – Sep 2025 ($507K) the revenue uplift is about +79% rather than ${up(yoyRev)}.` },
-    { h: 'Comparison with the previous deck', b: 'The April 2025 – March 2026 deck used the GAF product sales performance export. This deck is calculated directly from NetSuite, so comparisons with the earlier figures are indicative only.' },
-    { h: 'GA4 / Digital', b: `Digital figures come from the ${GA4_WINDOW.source} and cover the last ${GA4_WINDOW.days} days (${GA4_WINDOW.label}) — not April – September. Page-level figures include Centr and Hyrox pages in the dashboard's top 250 pages. Monthly traffic and channel mix are placeholders pending a GA4 export.` },
-  ],
 };
 
-const ICONS = { Dollar, Bolt, Eye, Users, Cam, Pct, Target };
 const Review = () => <span className="ml-2 align-middle text-[10px] font-heading font-semibold tracking-[.15em] uppercase px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600">Review</span>;
 const itemText = i => (typeof i === 'string' ? { text: i } : i);
 
@@ -988,171 +725,6 @@ const SalesSlide = ({ n, t }) => {
   );
 };
 
-// ===== SLIDE 4: DIGITAL (GA4 from dashboard — different window to the rest of the deck) =====
-const DigitalSlide = ({ n, t }) => {
-  const th = useTheme();
-  const rows = topPages.slice(0, 10);
-  const totalViews = sum(topPages, p => p.views);
-  const hyroxViews = sum(topPages.filter(p => p.path.includes('hyrox')), p => p.views);
-  const top = topPages[0];
-  return (
-  <Slide num={n} total={t} badge={GA4_WINDOW.label} badgeAlt>
-    <SectionTitle pre="Digital" title="PERFORMANCE" sub={`Source: ${GA4_WINDOW.source} · last ${GA4_WINDOW.days} days`} />
-    <div className="flex flex-col flex-1 gap-3 min-h-0">
-      <div className={`${th.amberBg} border border-amber-500/30 rounded-lg px-4 py-2 shrink-0`}>
-        <p className={`text-[13px] font-body ${th.amber} leading-snug`}><span className="font-heading font-bold uppercase tracking-wider">Different period:</span> the dashboard only holds a rolling {GA4_WINDOW.days} days ({GA4_WINDOW.label}), so this slide does not cover April – September. Monthly traffic and channel mix are left as editable placeholders.</p>
-      </div>
-      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
-        <Kpi label="Page Views" value={totalViews.toLocaleString('en-AU')} sub="Centr + Hyrox pages" />
-        <Kpi label="Hyrox-branded" value={hyroxViews.toLocaleString('en-AU')} sub={`${pct1(hyroxViews / totalViews * 100)} of Centr/Hyrox views`} />
-        <Kpi label="Add-to-carts" value={DATA.atcTotal.toLocaleString('en-AU')} sub="Centr + Hyrox products" />
-        <Kpi label="Top Page" value={top.views.toLocaleString('en-AU')} sub={top.label} accent />
-      </div>
-      <div className="flex gap-4 flex-1 min-h-0">
-        <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
-          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-2`}>Top Centr / Hyrox Pages</p>
-          <div className={`grid grid-cols-[1fr_80px_80px_90px_80px] gap-2 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-1 border-b ${th.cardBorder}`}>
-            <span>Page</span><span className="text-right">Sessions</span><span className="text-right">Views</span><span className="text-right">Cart adds</span><span className="text-right">Bounce</span>
-          </div>
-          <div className="flex-1 flex flex-col justify-around">
-            {rows.map((p, i) => (
-              <div key={i} className="grid grid-cols-[1fr_80px_80px_90px_80px] gap-2 items-center">
-                <span className={`text-[13px] font-body ${th.text} truncate`}>{p.label}</span>
-                <span className={`text-[13px] font-body ${th.sub} text-right`}>{p.sessions.toLocaleString('en-AU')}</span>
-                <span className="text-[13px] font-heading font-bold text-gaf-orange text-right">{p.views.toLocaleString('en-AU')}</span>
-                <span className={`text-[13px] font-body ${th.sub} text-right`}>{p.atc || '—'}</span>
-                <span className={`text-[13px] font-body ${th.sub} text-right`}>{pct1(p.bounceRate * 100)}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="w-[380px] shrink-0 flex flex-col gap-3 pb-10">
-          {CONTENT.digitalPlaceholders.map((p, i) => (
-            <div key={i} className={`flex-1 rounded-lg border border-dashed border-gaf-orange/40 ${th.kpiAccentBg} p-3 flex flex-col justify-center`}>
-              <p className={`text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1`}>{p.title}</p>
-              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{p.hint}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 5: WINS =====
-const WinsSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t}>
-    <SectionTitle pre="Highlights" title="WINS" sub={CONTENT.winsSub} />
-    <div className="flex gap-6 flex-1 min-h-0">
-      <div className="flex-1 flex flex-col gap-2 stagger">
-        {CONTENT.wins.map((w, i) => (
-          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-3 flex items-start gap-2 ${th.greenBorder} transition-colors`}>
-            <div className={`w-5 h-5 rounded-full ${th.greenBg} flex items-center justify-center shrink-0 mt-0.5`}>
-              <Check size={12} className={th.green} />
-            </div>
-            <div>
-              <p className={`text-[14px] font-heading font-semibold ${th.text} mb-1`}>{w.title}{w.review && <Review />}</p>
-              <p className={`text-[13px] ${th.sub} font-body leading-snug`}>{w.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="w-[380px] shrink-0 flex flex-col">
-        <div className={`flex-1 rounded-lg overflow-hidden border ${th.cardBorder} relative`}>
-          <img src="assets/hyrox-hang-challenge.png" alt="Hyrox Hang Challenge — Brisbane" style={{maxHeight:'100%', maxWidth:'100%', objectFit:'contain', margin:'auto', display:'block', padding:'8px'}} />
-          <div className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t ${th.expOverlay} p-4`}>
-            <p className="text-[14px] font-heading tracking-[.2em] text-gaf-orange uppercase">Hyrox Hang Challenge — Brisbane</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 6: CHALLENGES =====
-const ChallengesSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t}>
-    <SectionTitle pre="Attention Areas" title="CHALLENGES" sub={CONTENT.challengesSub} />
-    <div className="flex gap-6 flex-1 min-h-0">
-      <div className="flex-1 flex flex-col gap-3 stagger">
-        {CONTENT.challenges.map((c, i) => (
-          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex items-start gap-3 ${th.amberBorder} transition-colors`}>
-            <div className={`w-5 h-5 rounded-full ${th.amberBg} flex items-center justify-center shrink-0 mt-0.5`}>
-              <Warn size={12} className={th.amber} />
-            </div>
-            <div>
-              <p className={`text-[15px] font-heading font-semibold ${th.text} mb-1`}>{c.title}{c.review && <Review />}</p>
-              <p className={`text-[14px] ${th.sub} font-body leading-snug`}>{c.desc}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className={`w-[340px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 pb-14 flex flex-col`}>
-        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-5">{CONTENT.snapshotTitle}</p>
-        <div className="flex-1 flex flex-col gap-4 justify-center">
-          {CONTENT.snapshot.map((m, i) => (
-            <div key={i}>
-              <div className="flex justify-between items-baseline mb-1.5">
-                <span className={`text-[12px] font-heading font-semibold ${m.severity === 'high' ? th.amber : th.text}`}>{m.label}{m.review && <Review />}</span>
-                <div className={`w-2 h-2 rounded-full shrink-0 ${m.severity === 'high' ? 'bg-red-400' : 'bg-amber-400'}`}></div>
-              </div>
-              <p className={`text-[14px] ${th.sub} font-body mb-2`}>{m.issue}</p>
-              <div className={`w-full ${th.bg3} rounded-full h-1.5`}>
-                <div className={`h-full rounded-full fill-anim ${m.severity === 'high' ? th.progressWarn : th.progressBg}`}
-                  style={{'--target-w': m.severity === 'high' ? '85%' : '55%'}}></div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className={`mt-5 pt-4 border-t ${th.cardBorder}`}>
-          <p className={`text-[14px] ${th.sub} font-body leading-snug`} dangerouslySetInnerHTML={{__html: CONTENT.snapshotNote.replace(/<b>/g, '<span class="text-gaf-orange font-semibold">').replace(/<\/b>/g, '</span>')}}></p>
-        </div>
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 7: PLANS =====
-const PlansSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t}>
-    <SectionTitle pre="Strategy" title="PLANS & PRIORITIES" sub={CONTENT.plansSub} />
-    <div className="flex flex-col flex-1 gap-3 min-h-0">
-      <div className={`${th.cardBg} border-l-2 border-gaf-orange rounded-lg p-4 shrink-0`}>
-        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-2">Strategic Focus</p>
-        <p className={`text-[15px] font-body ${th.text} leading-snug`}>{CONTENT.plansFocus}</p>
-      </div>
-      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 stagger">
-        {CONTENT.plans.map((s, i) => { const Ic = ICONS[s.icon]; return (
-          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
-            <div className="flex items-center gap-2 mb-3">
-              <Ic size={16} className="text-gaf-orange" />
-              <h4 className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{s.title}</h4>
-            </div>
-            <div className="space-y-2 flex-1">
-              {s.items.map(itemText).map((item, j) => (
-                <div key={j} className="flex items-start gap-2">
-                  <div className="w-1 h-1 rounded-full bg-gaf-orange mt-1.5 shrink-0"></div>
-                  <p className={`text-[14px] ${th.sub} font-body leading-snug`}>{item.text}{item.review && <Review />}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ); })}
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
 // ===== SLIDE: FY27 TARGETS =====
 const TargetsSlide = ({ n, t }) => {
   const th = useTheme();
@@ -1305,116 +877,8 @@ const DeliveryPlanSlide = ({ n, t }) => {
   );
 };
 
-// ===== SLIDE 8: EXPERIENCE CENTRE =====
-const ExpSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t} noPad>
-    <div className="flex-1 relative min-h-0 overflow-hidden">
-      <img src="assets/experience-centre.jpg" alt="GAF Experience Centre" className="absolute inset-0 w-full h-full object-cover" />
-      <div className={`absolute inset-0 bg-gradient-to-t ${th.expOverlay}`}></div>
-      <div className={`absolute inset-0 bg-gradient-to-r ${th.expOverlayR}`}></div>
-      <div className="absolute bottom-0 left-0 right-0 p-8 pb-6">
-        <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-3">Facility</p>
-        <h2 className={`font-display text-5xl md:text-7xl ${th.expText} tracking-wide mb-4`}>{CONTENT.expTitle}</h2>
-        <p className={`text-[15px] ${th.expSub} font-body max-w-xl leading-snug mb-8`}>{CONTENT.expBody}</p>
-        <div className="flex gap-3 pr-28">
-          {CONTENT.expCards.map((item, i) => { const Ic = ICONS[item.icon]; return (
-            <div key={i} className={`backdrop-blur-sm border rounded-lg px-4 py-3 flex-1 ${th.expCard}`}>
-              <Ic size={16} className="text-gaf-orange mb-2" />
-              <h4 className={`text-[14px] font-heading font-semibold tracking-wider uppercase mb-1 ${th.expText}`}>{item.label}</h4>
-              <p className={`text-[14px] ${th.expSub} font-body leading-snug opacity-70`}>{item.desc}</p>
-            </div>
-          ); })}
-        </div>
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 9: SUPPORT =====
-const SupportSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t}>
-    <SectionTitle pre="Partnership" title="SUPPORT NEEDED" sub={CONTENT.supportSub} />
-    <div className="flex flex-col flex-1 gap-3 min-h-0">
-      <div className="bg-gaf-orange rounded-lg p-4 flex items-center gap-4 shrink-0">
-        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0"><Users size={20} className="text-white" /></div>
-        <div>
-          <h3 className="font-heading font-bold text-white uppercase tracking-wider text-[15px]">{CONTENT.supportBannerTitle}</h3>
-          <p className="text-[14px] text-white/90 font-body mt-1 leading-snug">{CONTENT.supportBanner}</p>
-        </div>
-      </div>
-      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 stagger">
-        {CONTENT.support.map((s, i) => { const Ic = ICONS[s.icon]; return (
-          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
-            <div className="flex items-center gap-2 mb-3">
-              <Ic size={16} className="text-gaf-orange" />
-              <h4 className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{s.title}</h4>
-            </div>
-            <div className="space-y-2 flex-1">
-              {s.items.map(itemText).map((item, j) => (
-                <div key={j} className="flex items-start gap-2">
-                  <Msg size={10} className={`${th.muted} mt-1 shrink-0`} />
-                  <p className={`text-[14px] ${th.sub} font-body leading-snug`}>{item.text}{item.review && <Review />}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ); })}
-      </div>
-      <div className={`flex items-center justify-between ${th.cardBg} border ${th.cardBorder} rounded-lg pl-5 pr-32 py-2 shrink-0`}>
-        <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase">Financial Context · {PERIOD.short}</p>
-        <div className={`flex gap-8 text-[14px] font-body ${th.sub}`}>
-          <span>Revenue: <span className="text-gaf-orange font-semibold">{kFmt(totalRev)}</span></span>
-          <span>Commercial: <span className={`${th.text} font-semibold`}>{kFmt(commercial.value)} ({pct1(commPct)})</span></span>
-        </div>
-      </div>
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 10: DATA NOTES =====
-const NotesSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <Slide num={n} total={t}>
-    <SectionTitle pre="Appendix" title="DATA NOTES" sub={CONTENT.notesSub} />
-    <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 stagger content-start">
-      {CONTENT.notes.map((x, i) => (
-        <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4`}>
-          <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-2">{x.h}</p>
-          <p className={`text-[14px] ${th.sub} font-body leading-snug`}>{x.b}</p>
-        </div>
-      ))}
-    </div>
-  </Slide>
-  );
-};
-
-// ===== SLIDE 11: QUESTIONS =====
-const QSlide = ({ n, t }) => {
-  const th = useTheme();
-  return (
-  <div className={`w-full h-full ${th.bg} relative flex items-center justify-center overflow-hidden`}>
-    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
-    <div className={`absolute -left-[20%] bottom-[10%] w-[50%] h-[120%] border ${th.cardBorder} opacity-30 transform rotate-[-18deg]`}></div>
-    <div className="z-10 text-center stagger">
-      <p className="text-[14px] font-heading tracking-[.5em] text-gaf-orange uppercase mb-6">Thank You</p>
-      <h1 className={`font-display text-[10rem] md:text-[14rem] ${th.text} leading-[0.85] tracking-wider`}>Q&A</h1>
-      <div className="w-16 h-[2px] bg-gaf-orange mx-auto mt-8"></div>
-    </div>
-    <footer className="absolute bottom-0 left-0 h-1 bg-gaf-orange z-10 w-full"></footer>
-  </div>
-  );
-};
-
-
 // ===== APP =====
-const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, DigitalSlide, WinsSlide, ChallengesSlide, PlansSlide, TargetsSlide, CommercialPlanSlide, DeliveryPlanSlide, ExpSlide, SupportSlide, NotesSlide, QSlide];
+const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TargetsSlide, CommercialPlanSlide, DeliveryPlanSlide];
 
 function App() {
   const [idx, setIdx] = useState(0);

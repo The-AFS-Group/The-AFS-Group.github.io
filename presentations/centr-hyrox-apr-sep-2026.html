@@ -384,7 +384,7 @@ const DATA = {
  ],
  "depts": [
   {
-   "name": "Retail + Online",
+   "name": "Direct to Consumer",
    "value": 500091.66,
    "color": "#f26422"
   },
@@ -394,14 +394,9 @@ const DATA = {
    "color": "#888"
   },
   {
-   "name": "Wholesale",
-   "value": 31317.04,
-   "color": "#bbb"
-  },
-  {
-   "name": "Other (SFF / unassigned)",
-   "value": 37599.37,
-   "color": "#d4d4d4"
+   "name": "Retail & Other Partners",
+   "value": 68916.41,
+   "color": "#c03008"
   }
  ],
  "pages": [
@@ -578,7 +573,7 @@ const h2 = sum(monthlyData.slice(half), m => m.rev);
 const hoh = (h2 / h1 - 1) * 100;
 const dept = n => departments.find(d => d.name.startsWith(n)) || { value: 0 };
 const commercial = dept('Commercial');
-const retail = dept('Retail');
+const retail = dept('Direct');
 const deptTotal = sum(departments, d => d.value);
 const commPct = commercial.value / deptTotal * 100;
 const retailPct = retail.value / deptTotal * 100;
@@ -605,6 +600,27 @@ const catCompare = categories.map(c => {
   const p = DATA.prior.prior_cats[c.name] || { rev: 0, units: 0 };
   return { ...c, priorRev: p.rev, change: p.rev ? (c.rev / p.rev - 1) * 100 : null };
 });
+
+// ----- FY27 targets by channel ($K). Q1 is actual; Q2 – Q4 are proposed targets. Edit freely. -----
+const TARGETS = {
+  fy: 'FY27',
+  period: 'Jul 2026 – Jun 2027',
+  baselineLabel: 'FY26 (Jul 2025 – Jun 2026)',
+  quarters: ['Q1 Jul–Sep (actual)', 'Q2 Oct–Dec', 'Q3 Jan–Mar', 'Q4 Apr–Jun'],
+  channels: [
+    { name: 'Retail', color: '#c03008', fy26: 101, q: [27, 135, 100, 105], note: 'Retail & dealer partners' },
+    { name: 'Direct to Consumer', color: '#f26422', fy26: 866, q: [275, 255, 225, 245], note: 'Website and retail-store sales' },
+    { name: 'Commercial', color: '#888888', fy26: 270, q: [154, 165, 175, 190], note: 'FY26 base is Jan – Jun only' },
+  ],
+  other: [
+    { label: 'New commercial accounts', base: '≈9 in FY26 (5 in Q1)', target: '20', review: true },
+    { label: 'Key account revenue (excl. retail partner)', base: '$123K', target: '$180K (+45%)', review: true },
+    { label: 'Retail partner key account', base: '$19K', target: '$270K', review: true },
+    { label: 'On-time-in-full (retail partner orders)', base: 'Not yet measured', target: '≥ 98%', review: true },
+    { label: 'Core range in stock', base: '82% (27 Oct 2026)', target: '≥ 95%', review: true },
+  ],
+  stretchNote: 'Retail stretch case ≈ $0.6–0.75M — decide after 6–8 weeks of in-store sell-through.',
+};
 
 // ===== 3. CONTENT =====
 const CONTENT = {
@@ -637,7 +653,7 @@ const CONTENT = {
   snapshotTitle: 'Channel & Market Snapshot',
   snapshot: [
     { label: 'Commercial concentration', issue: `${pct1(commPct)} of revenue from commercial accounts`, severity: 'high' },
-    { label: 'Home consumer segment', issue: `Retail + Online is ${pct1(retailPct)} of revenue — room to grow`, severity: 'high', review: true },
+    { label: 'Home consumer segment', issue: `Direct to consumer is ${pct1(retailPct)} of revenue — room to grow`, severity: 'high', review: true },
     { label: 'Event ROI', issue: 'High activation costs vs direct sales returns', severity: 'medium', review: true },
     { label: 'Digital visibility', issue: '[EDIT — add traffic-source / organic search finding once the GA4 export is in]', severity: 'medium', review: true },
   ],
@@ -702,11 +718,66 @@ const CONTENT = {
     { title: 'Sessions & growth', hint: '[EDIT] Add total sessions and month-on-month growth for the period.' },
   ],
 
+  commercialSub: 'FY27 revenue targets by channel, the levers behind them and how we will forecast',
+  commercialLevers: {
+    'Retail': [
+      'Initial stock fill in Q2 — about 640 units of the core Hyrox range already on order',
+      'Phased in-store rollout from mid-Q3; committed plan vs stretch to be set after 6–8 weeks of sell-through',
+      'Seasonal promotional periods (Black Friday, Christmas, New Year) with display-ready packaging',
+      'Depends on the delivery plan: compliant cartons, EDI, stock availability',
+    ],
+    'Direct to Consumer': [
+      '+15% on FY26 — Apr to Sep was already +12% on last year',
+      'Q2 seasonal peak, with a Q3 dip as seen in FY26',
+      { text: 'Paid social and shopping stay the core traffic drivers; build Hyrox training content for organic', review: true },
+      'Event activations to feed consumer demand (see Plans & Priorities)',
+    ],
+    'Commercial': [
+      'Hold the ~$170K a quarter run rate, building to $190K by Q4',
+      '20 new commercial accounts in FY27 (about 9 in FY26, 5 already in Q1)',
+      'Grow existing key accounts ~45% ($123K to $180K)',
+      'Large, irregular orders — keep a named pipeline and review it monthly',
+    ],
+  },
+  forecastTitle: 'Forecast cadence (proposed)',
+  forecast: [
+    { h: 'Monthly', b: 'Refresh a rolling 3-month forecast by channel and compare with actual.' },
+    { h: 'Quarterly', b: 'Re-base targets, report against plan and agree actions.' },
+    { h: 'Checkpoint', b: 'Formal review at the end of Q3, once retail rollout sell-through is known.' },
+  ],
+  commercialNote: 'Revenue targets only — margin targets are not included in this deck.',
+
+  deliverySub: 'Operations and logistics: where we are, the standard we are aiming for and the top 3 actions',
+  delivery: {
+    gapTitle: 'Where we are today',
+    gap: [
+      '5 of 28 core Centr/Hyrox SKUs out of stock (82% in stock): Rig Target, Half Rack, Body Weight Home Gym and two turf lines',
+      'Several lines thin — Centr 2 and Centr 3 trainers at 4 to 7 units',
+      'Retail partner DC could not receipt early Hyrox stock: missing or incorrect barcodes and non-compliant carton weight labels, with rework charged hourly',
+      'A test order has since passed partner QC; EDI automation is not yet live (targeted for January)',
+      { text: 'On-time-in-full is not yet measured', review: true },
+    ],
+    standardTitle: 'Standard we are aiming for',
+    standard: [
+      { text: '98% on-time-in-full on retail partner orders — orders placed Monday ship complete by end of week, no partial shipments', review: true },
+      { text: '95% in stock on the core Hyrox range', review: true },
+      '100% first-time DC receipt: scannable barcodes, gross-weight and heavy-item labels',
+      'Weekly out-of-stock / back-in-stock report to partners; EDI and ASN live by January',
+    ],
+    actionsTitle: 'Top 3 actions',
+    actions: [
+      { h: 'Make cartons and barcodes compliant at source', b: 'Fix barcodes, gross-weight and heavy-item labels and display-ready packaging with the supplier before rollout (Q2).' },
+      { h: 'Close the stock gaps', b: 'Replenish the out-of-stock lines, ring-fence stock for retail partners, land the ~640 units due in November and automate the weekly out-of-stock report.' },
+      { h: 'Finish EDI and name one owner', b: 'EDI/ASN automation by January, a dedicated retail account contact, and monthly on-time-in-full reporting from Q3.' },
+    ],
+  },
+
   notesSub: 'Sources, definitions and exclusions — delete this slide before sending externally if not required',
   notes: [
     { h: 'Sales source', b: `NetSuite invoices and cash sales dated 1 April – 30 September 2026. Revenue is net of discounts and excludes GST.` },
     { h: 'Scope', b: 'All Centr x HYROX and Centr branded SKUs, including the individual components of bundles (Centr 1/2/3 Home Gyms, HYROX bundles, turf sections). Categories follow the Q1 deck mapping: Functional Training, Home Gyms, Treadmills, Kettlebells, Weight Plates, Other.' },
-    { h: 'Departments', b: 'Retail + Online = GAF AU + GAF Online AU. Commercial = GAF Commercial Sales AU. Wholesale = GAF Wholesale AU. Other = SFF and lines with no department.' },
+    { h: 'Departments', b: 'Direct to Consumer = GAF AU + GAF Online AU. Commercial = GAF Commercial Sales AU. Retail & Other Partners = GAF Wholesale AU plus SFF and lines with no department.' },
+    { h: 'FY27 targets and delivery metrics', b: 'FY27 = Jul 2026 – Jun 2027; Q1 is actual. FY26 baselines use the same NetSuite method (Commercial only began in NetSuite in Jan 2026, so its FY26 base covers six months). Retail targets are phased from the partner forecast (committed plan is about 60% of the 12-month conservative case, as the in-store rollout starts mid-year). All targets are proposals for review. Stock position is from a NetSuite check on 27 Oct 2026; on-time-in-full has not yet been measured.' },
     { h: 'Exclusion', b: 'Invoice INV0319891 (24 Jun 2026) is a $0-revenue supply of Centr x HYROX turf and is excluded from sales.' },
     { h: 'Prior-period comparison', b: `Year-on-year compares ${PERIOD.label} with ${PRIOR.label} using the same SKU set and the same NetSuite method (prior-year revenue ${money(priorRev)}). "Previous 6 months" is ${PRIOR.seqLabel}. Channel/department split is not compared because the Commercial department was only used from January 2026. Using the earlier deck's own monthly figures for Apr – Sep 2025 ($507K) the revenue uplift is about +79% rather than ${up(yoyRev)}.` },
     { h: 'Comparison with the previous deck', b: 'The April 2025 – March 2026 deck used the GAF product sales performance export. This deck is calculated directly from NetSuite, so comparisons with the earlier figures are indicative only.' },
@@ -873,7 +944,7 @@ const SalesSlide = ({ n, t }) => {
   const catTotal = sum(categories, c => c.rev);
   return (
   <Slide num={n} total={t}>
-    <SectionTitle pre="Revenue" title="SALES BREAKDOWN" sub={`Category performance and department distribution · ${PERIOD.label}`} />
+    <SectionTitle pre="Revenue" title="SALES BREAKDOWN" sub={`Category performance and channel distribution · ${PERIOD.label}`} />
     <div className="flex flex-1 gap-6 min-h-0">
       <div className="flex-1 flex flex-col gap-3 stagger">
         {categories.map((c, i) => (
@@ -898,7 +969,7 @@ const SalesSlide = ({ n, t }) => {
           <Donut data={departments} size={200} thickness={24} />
           <div className="absolute inset-0 flex flex-col items-center justify-center" style={{transform:'rotate(0deg)'}}>
             <span className={`text-3xl font-heading font-bold ${th.text}`}>{pct1(retailPct)}</span>
-            <span className={`text-[13px] ${th.sub} font-body`}>Retail + Online</span>
+            <span className={`text-[13px] ${th.sub} font-body`}>Direct to Consumer</span>
           </div>
         </div>
         <div className="w-full space-y-2">
@@ -1082,6 +1153,158 @@ const PlansSlide = ({ n, t }) => {
   );
 };
 
+// ===== SLIDE: FY27 TARGETS =====
+const TargetsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const qTotals = TARGETS.quarters.map((_, i) => sum(TARGETS.channels, c => c.q[i]));
+  const fyTarget = sum(qTotals, x => x);
+  const fyBase = sum(TARGETS.channels, c => c.fy26);
+  const maxQ = Math.max(...qTotals);
+  const k = v => (v >= 1000 ? '$' + (v / 1000).toFixed(2) + 'M' : '$' + Math.round(v) + 'K');
+  return (
+  <Slide num={n} total={t} badge={`${TARGETS.fy} targets`}>
+    <SectionTitle pre="Targets" title={`${TARGETS.fy} TARGETS`} sub={`${TARGETS.period} — quarterly revenue by channel, with FY26 baselines`} />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
+        <Kpi label={`${TARGETS.fy} Revenue Target`} value={`$${(fyTarget / 1000).toFixed(2)}M`} sub={`${up((fyTarget / fyBase - 1) * 100)} on FY26`} accent />
+        <Kpi label="FY26 Baseline" value={`$${(fyBase / 1000).toFixed(2)}M`} sub="Jul 2025 – Jun 2026" />
+        <Kpi label="Q1 Actual" value={k(qTotals[0])} sub={`${Math.round(qTotals[0] / fyTarget * 100)}% of the ${TARGETS.fy} target`} />
+        <Kpi label="Q2 – Q4 To Deliver" value={k(fyTarget - qTotals[0])} sub={`${k((fyTarget - qTotals[0]) / 3)} a quarter on average`} />
+      </div>
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+          <div className="flex items-center justify-between mb-2">
+            <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Quarterly Revenue by Channel ($K)</p>
+            <div className={`flex items-center gap-4 text-[12px] ${th.sub} font-body`}>
+              {TARGETS.channels.map((c, i) => <span key={i} className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: c.color}}></span>{c.name}</span>)}
+            </div>
+          </div>
+          <div className="flex-1 flex items-end gap-6 px-6 min-h-0">
+            {TARGETS.quarters.map((qn, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                <span className={`text-[18px] font-heading font-bold ${th.text} mb-1`}>{k(qTotals[i])}</span>
+                <div className="w-full flex flex-col-reverse rounded-sm overflow-hidden bar-grow origin-bottom" style={{ height: `${qTotals[i] / maxQ * 72}%`, opacity: i === 0 ? 1 : 0.78, animationDelay: `${i * 0.08}s` }}>
+                  {TARGETS.channels.map((c, j) => (
+                    <div key={j} className="flex items-center justify-center" style={{ height: `${c.q[i] / qTotals[i] * 100}%`, background: c.color, minHeight: c.q[i] ? '2px' : 0 }}>
+                      {c.q[i] / qTotals[i] > 0.09 && <span className={`text-[12px] font-heading font-semibold ${c.color === '#888888' ? 'text-white' : 'text-white'}`}>{c.q[i]}</span>}
+                    </div>
+                  ))}
+                </div>
+                <span className={`text-[12px] ${th.sub} mt-2 font-body text-center`}>{qn}</span>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[12px] ${th.muted} font-body mt-2`}>{TARGETS.stretchNote}</p>
+        </div>
+        <div className={`w-[470px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col pb-14`}>
+          <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-3">Other {TARGETS.fy} Targets</p>
+          <div className="flex-1 flex flex-col justify-around">
+            {TARGETS.other.map((o, i) => (
+              <div key={i} className={`border-b ${th.cardBorder} pb-2 last:border-b-0`}>
+                <p className={`text-[13px] font-heading font-semibold ${th.text}`}>{o.label}{o.review && <Review />}</p>
+                <div className="flex items-baseline justify-between mt-1">
+                  <span className={`text-[12px] font-body ${th.sub}`}>Baseline: {o.base}</span>
+                  <span className="text-[18px] font-heading font-black text-gaf-orange">{o.target}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE: COMMERCIAL PLAN =====
+const CommercialPlanSlide = ({ n, t }) => {
+  const th = useTheme();
+  return (
+  <Slide num={n} total={t} badge={`${TARGETS.fy} plan`}>
+    <SectionTitle pre="Strategy" title="COMMERCIAL PLAN" sub={CONTENT.commercialSub} />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 stagger">
+        {TARGETS.channels.map((c, i) => {
+          const fy = sum(c.q, x => x);
+          return (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`} style={{ borderTop: `3px solid ${c.color}` }}>
+            <p className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{c.name}</p>
+            <div className="flex items-baseline gap-3 mt-2">
+              <span className="text-5xl font-heading font-black text-gaf-orange leading-none">{fy >= 1000 ? '$' + (fy / 1000).toFixed(2) + 'M' : '$' + fy + 'K'}</span>
+              <span className={`text-[13px] font-body ${th.sub}`}>{TARGETS.fy} target</span>
+            </div>
+            <p className={`text-[13px] font-body ${th.sub} mt-1`}>{'$' + c.fy26 + 'K'} in FY26 · {c.note}</p>
+            <p className={`text-[12px] font-body ${th.muted} mt-0.5`}>Q1 actual {'$' + c.q[0] + 'K'} · Q2 {c.q[1]} · Q3 {c.q[2]} · Q4 {c.q[3]}</p>
+            <div className={`my-3 border-t ${th.cardBorder}`}></div>
+            <div className="space-y-2 flex-1">
+              {CONTENT.commercialLevers[c.name].map(itemText).map((item, j) => (
+                <div key={j} className="flex items-start gap-2">
+                  <div className="w-1 h-1 rounded-full bg-gaf-orange mt-1.5 shrink-0"></div>
+                  <p className={`text-[15px] ${th.sub} font-body leading-snug`}>{item.text}{item.review && <Review />}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          );
+        })}
+      </div>
+      <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg px-5 py-3 shrink-0 pr-32`}>
+        <div className="flex items-center gap-6">
+          <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase shrink-0">{CONTENT.forecastTitle}<Review /></p>
+          <div className="grid grid-cols-3 gap-6 flex-1">
+            {CONTENT.forecast.map((f, i) => (
+              <p key={i} className={`text-[13px] font-body ${th.sub} leading-snug`}><span className={`font-heading font-semibold ${th.text}`}>{f.h}: </span>{f.b}</p>
+            ))}
+          </div>
+        </div>
+        <p className={`text-[11px] font-body ${th.muted} mt-1`}>{CONTENT.commercialNote}</p>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== SLIDE: DELIVERY PLAN =====
+const DeliveryPlanSlide = ({ n, t }) => {
+  const th = useTheme();
+  const d = CONTENT.delivery;
+  const list = (items, bullet) => items.map(itemText).map((item, j) => (
+    <div key={j} className="flex items-start gap-2">
+      {bullet}
+      <p className={`text-[15px] ${th.sub} font-body leading-snug`}>{item.text}{item.review && <Review />}</p>
+    </div>
+  ));
+  return (
+  <Slide num={n} total={t} badge={`${TARGETS.fy} plan`}>
+    <SectionTitle pre="Operations & Logistics" title="DELIVERY PLAN" sub={CONTENT.deliverySub} />
+    <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 stagger">
+      <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
+        <div className="flex items-center gap-2 mb-3"><Warn size={16} className={th.amber} /><h4 className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{d.gapTitle}</h4></div>
+        <div className="space-y-2.5 flex-1">{list(d.gap, <div className="w-1 h-1 rounded-full bg-amber-500 mt-1.5 shrink-0"></div>)}</div>
+      </div>
+      <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4 flex flex-col`}>
+        <div className="flex items-center gap-2 mb-3"><Target size={16} className="text-gaf-orange" /><h4 className={`text-[14px] font-heading font-semibold tracking-[.2em] uppercase ${th.text}`}>{d.standardTitle}</h4></div>
+        <div className="space-y-2.5 flex-1">{list(d.standard, <Check size={11} className={`${th.green} mt-1 shrink-0`} />)}</div>
+      </div>
+      <div className="bg-gaf-orange rounded-lg p-4 flex flex-col">
+        <div className="flex items-center gap-2 mb-3"><Bolt size={16} className="text-white" /><h4 className="text-[14px] font-heading font-semibold tracking-[.2em] uppercase text-white">{d.actionsTitle}</h4></div>
+        <div className="space-y-4 flex-1">
+          {d.actions.map((a, i) => (
+            <div key={i} className="flex items-start gap-3">
+              <span className="w-7 h-7 rounded-full bg-white/20 text-white font-heading font-bold text-[14px] flex items-center justify-center shrink-0">{i + 1}</span>
+              <div>
+                <p className="text-[16px] font-heading font-semibold text-white leading-tight">{a.h}</p>
+                <p className="text-[14px] font-body text-white/90 leading-snug mt-1">{a.b}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
 // ===== SLIDE 8: EXPERIENCE CENTRE =====
 const ExpSlide = ({ n, t }) => {
   const th = useTheme();
@@ -1191,7 +1414,7 @@ const QSlide = ({ n, t }) => {
 
 
 // ===== APP =====
-const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, DigitalSlide, WinsSlide, ChallengesSlide, PlansSlide, ExpSlide, SupportSlide, NotesSlide, QSlide];
+const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, DigitalSlide, WinsSlide, ChallengesSlide, PlansSlide, TargetsSlide, CommercialPlanSlide, DeliveryPlanSlide, ExpSlide, SupportSlide, NotesSlide, QSlide];
 
 function App() {
   const [idx, setIdx] = useState(0);

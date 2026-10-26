@@ -253,78 +253,65 @@ const PERIOD = {
 };
 
 // ===== 2. DATA =====
-// Sales: NetSuite invoices + cash sales, 1 Apr – 30 Sep 2026, revenue ex GST net of discounts,
-//        gross profit = revenue less NetSuite estimated item cost.
+// Sales: NetSuite invoices + cash sales, 1 Apr – 30 Sep 2026, revenue ex GST net of discounts.
+//        Revenue only — gross profit / margin is intentionally not included in this deck.
 // GA4:   GAF Performance Dashboard feed (last 90 days, Australian traffic) — NOT the Apr – Sep window.
 const DATA = {
  "prior": {
   "prior_months": [
    {
     "month": "Apr '25",
-    "rev": 38567.03,
-    "gp": 10218.46
+    "rev": 38567.03
    },
    {
     "month": "May",
-    "rev": 96557.52,
-    "gp": 16725.94
+    "rev": 96557.52
    },
    {
     "month": "Jun",
-    "rev": 63099.26,
-    "gp": 4018.54
+    "rev": 63099.26
    },
    {
     "month": "Jul",
-    "rev": 71055.26,
-    "gp": 13412.11
+    "rev": 71055.26
    },
    {
     "month": "Aug",
-    "rev": 145931.05,
-    "gp": 43446.53
+    "rev": 145931.05
    },
    {
     "month": "Sep",
-    "rev": 55574.12,
-    "gp": 18855.33
+    "rev": 55574.12
    }
   ],
   "prior_cats": {
    "Functional Training": {
     "rev": 286372.35,
-    "gp": 67315.24,
     "units": 1371
    },
    "Home Gyms": {
     "rev": 95671.9,
-    "gp": 18770.74,
     "units": 210
    },
    "Treadmills": {
     "rev": 31468.9,
-    "gp": 10517.25,
     "units": 18
    },
    "Weight Plates": {
     "rev": 15975.48,
-    "gp": 3958.32,
     "units": 67
    },
    "Kettlebells": {
     "rev": 38090.61,
-    "gp": 5340.05,
     "units": 210
    },
    "Other Equipment": {
     "rev": 3205.0,
-    "gp": 775.31,
     "units": 18
    }
   },
   "seq": {
-   "rev": 515260.28,
-   "gp": 179610.93
+   "rev": 515260.28
   },
   "prior_units": 1894,
   "cur_units": {
@@ -337,74 +324,61 @@ const DATA = {
   },
   "cur_units_total": 3257
  },
-
  "months": [
   {
    "month": "Apr '26",
-   "rev": 119469.21,
-   "gp": 48201.94
+   "rev": 119469.21
   },
   {
    "month": "May",
-   "rev": 198274.45,
-   "gp": 69828.08
+   "rev": 198274.45
   },
   {
    "month": "Jun",
-   "rev": 132091.14,
-   "gp": 42370.6
+   "rev": 132091.14
   },
   {
    "month": "Jul",
-   "rev": 117195.96,
-   "gp": 42131.65
+   "rev": 117195.96
   },
   {
    "month": "Aug",
-   "rev": 159342.52,
-   "gp": 59133.37
+   "rev": 159342.52
   },
   {
    "month": "Sep",
-   "rev": 179439.74,
-   "gp": 54526.82
+   "rev": 179439.74
   }
  ],
  "cats": [
   {
    "name": "Functional Training",
    "rev": 548682.63,
-   "gp": 38.1,
    "color": "#f26422"
   },
   {
    "name": "Home Gyms",
    "rev": 156033.4,
-   "gp": 28.8,
    "color": "#e8520d"
   },
   {
    "name": "Treadmills",
    "rev": 92189.28,
-   "gp": 34.0,
    "color": "#d4410a"
   },
   {
    "name": "Kettlebells",
    "rev": 71155.42,
-   "gp": 27.2,
    "color": "#c03008"
   },
   {
    "name": "Weight Plates",
    "rev": 24955.62,
-   "gp": 41.9,
    "color": "#8a8a8a"
   },
   {
    "name": "Other Equipment",
    "rev": 12796.67,
-   "gp": 6.5,
    "color": "#aaa"
   }
  ],
@@ -412,25 +386,21 @@ const DATA = {
   {
    "name": "Retail + Online",
    "value": 500091.66,
-   "gp": 36.1,
    "color": "#f26422"
   },
   {
    "name": "Commercial",
    "value": 336804.95,
-   "gp": 38.2,
    "color": "#888"
   },
   {
    "name": "Wholesale",
    "value": 31317.04,
-   "gp": 14.9,
    "color": "#bbb"
   },
   {
    "name": "Other (SFF / unassigned)",
    "value": 37599.37,
-   "gp": 5.2,
    "color": "#d4d4d4"
   }
  ],
@@ -592,23 +562,21 @@ const DATA = {
  "atcTotal": 1417
 };
 
-const monthlyData = DATA.months;          // [{ month, rev, gp }]
-const categories = DATA.cats;             // [{ name, rev, gp (%), color }]
-const departments = DATA.depts;           // [{ name, value, gp (%), color }]  – 2nd entry (Commercial) is highlighted
+const monthlyData = DATA.months;          // [{ month, rev }]
+const categories = DATA.cats;             // [{ name, rev, color }]
+const departments = DATA.depts;           // [{ name, value, color }]  – 2nd entry (Commercial) is highlighted
 const topPages = DATA.pages;              // [{ label, path, sessions, views, atc, bounceRate }]
 const GA4_WINDOW = { label: '24 Jul – 21 Oct 2026', days: 90, source: 'GAF Performance Dashboard (GA4, Australian traffic)' };
 
 // ----- derived numbers (do not edit) -----
 const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
 const totalRev = sum(monthlyData, m => m.rev);
-const totalGp = sum(monthlyData, m => m.gp);
-const gpPct = totalGp / totalRev * 100;
 const peak = monthlyData.reduce((a, b) => (b.rev > a.rev ? b : a));
 const half = Math.floor(monthlyData.length / 2);
 const h1 = sum(monthlyData.slice(0, half), m => m.rev);
 const h2 = sum(monthlyData.slice(half), m => m.rev);
 const hoh = (h2 / h1 - 1) * 100;
-const dept = n => departments.find(d => d.name.startsWith(n)) || { value: 0, gp: 0 };
+const dept = n => departments.find(d => d.name.startsWith(n)) || { value: 0 };
 const commercial = dept('Commercial');
 const retail = dept('Retail');
 const deptTotal = sum(departments, d => d.value);
@@ -619,28 +587,23 @@ const kFmt = v => '$' + Math.round(v / 1000) + 'K';
 const mFmt = v => '$' + (v / 1e6).toFixed(2) + 'M';
 const pct1 = v => v.toFixed(1) + '%';
 const peakComm = 107233.75; // May '26 Commercial revenue (NetSuite) – update with the peak month if the data changes
-const bestCat = categories.reduce((a, b) => (b.gp > a.gp && b.rev > 50000 ? b : a));
-const lowCat = categories.filter(c => c.rev > 50000).reduce((a, b) => (b.gp < a.gp ? b : a));
+const topCat = categories.reduce((a, b) => (b.rev > a.rev ? b : a));
+const topCatPct = topCat.rev / sum(categories, c => c.rev) * 100;
 
 // ----- comparison with the same six months last year (same NetSuite method, same SKU set) -----
 const PRIOR = { label: 'Apr – Sep 2025', short: "Apr '25 – Sep '25", seqLabel: 'Oct 2025 – Mar 2026' };
-const priorMonths = DATA.prior.prior_months;           // [{ month, rev, gp }]
+const priorMonths = DATA.prior.prior_months;           // [{ month, rev }]
 const priorRev = sum(priorMonths, m => m.rev);
-const priorGp = sum(priorMonths, m => m.gp);
-const priorGpPct = priorGp / priorRev * 100;
 const yoyRev = (totalRev / priorRev - 1) * 100;
-const yoyGp = (totalGp / priorGp - 1) * 100;
-const gpMultiple = totalGp / priorGp;
-const marginPts = gpPct - priorGpPct;
+const revMultiple = totalRev / priorRev;
 const curUnits = DATA.prior.cur_units_total;
 const yoyUnits = (curUnits / DATA.prior.prior_units - 1) * 100;
-const seqRev = DATA.prior.seq.rev, seqGp = DATA.prior.seq.gp;
+const seqRev = DATA.prior.seq.rev;
 const vsSeqRev = (totalRev / seqRev - 1) * 100;
-const vsSeqGp = (totalGp / seqGp - 1) * 100;
 const up = v => (v >= 0 ? '+' : '') + Math.round(v) + '%';
 const catCompare = categories.map(c => {
-  const p = DATA.prior.prior_cats[c.name] || { rev: 0, gp: 0, units: 0 };
-  return { ...c, priorRev: p.rev, priorGpPct: p.rev ? p.gp / p.rev * 100 : null, change: p.rev ? (c.rev / p.rev - 1) * 100 : null };
+  const p = DATA.prior.prior_cats[c.name] || { rev: 0, units: 0 };
+  return { ...c, priorRev: p.rev, change: p.rev ? (c.rev / p.rev - 1) * 100 : null };
 });
 
 // ===== 3. CONTENT =====
@@ -652,22 +615,22 @@ const CONTENT = {
   wins: [
     { title: 'Premium Key Account wins — Total Fusion & Virgin Active', review: true,
       desc: "Secured equipment sales with Total Fusion and Virgin Active — two of AU's largest fitness chains. Virgin Active 8-club deal and WGA pilot represent significant commercial validation of the brand." },
-    { title: `Revenue ${up(yoyRev)} and gross profit ${gpMultiple.toFixed(1)}x on ${PRIOR.label}`,
-      desc: `Revenue grew from ${money(priorRev)} to ${money(totalRev)} and gross profit from ${money(priorGp)} to ${money(totalGp)} year on year, with gross margin up ${marginPts.toFixed(1)} points (${pct1(priorGpPct)} → ${pct1(gpPct)}). Every category grew, and revenue is up ${Math.round(vsSeqRev)}% on the previous six months.` },
-    { title: `${kFmt(totalRev)} revenue at ${pct1(gpPct)} gross margin in six months`,
-      desc: `${money(totalRev)} revenue and ${money(totalGp)} gross profit across ${PERIOD.label}. ${PERIOD.secondHalf} revenue (${kFmt(h2)}) was ${hoh >= 0 ? 'up' : 'down'} ${Math.abs(hoh).toFixed(1)}% on ${PERIOD.firstHalf} (${kFmt(h1)}).` },
+    { title: `Revenue ${up(yoyRev)} on ${PRIOR.label}`,
+      desc: `Revenue grew from ${money(priorRev)} to ${money(totalRev)} year on year (${revMultiple.toFixed(1)}x). Every category grew, and revenue is up ${Math.round(vsSeqRev)}% on the previous six months.` },
+    { title: `${kFmt(totalRev)} revenue in six months`,
+      desc: `${money(totalRev)} revenue across ${PERIOD.label}. ${PERIOD.secondHalf} revenue (${kFmt(h2)}) was ${hoh >= 0 ? 'up' : 'down'} ${Math.abs(hoh).toFixed(1)}% on ${PERIOD.firstHalf} (${kFmt(h1)}).` },
     { title: `Commercial channel strength — ${pct1(commPct)} (${kFmt(commercial.value)})`,
-      desc: `${pct1(commPct)} of revenue came from commercial accounts at a ${pct1(commercial.gp)} margin.` },
+      desc: `${pct1(commPct)} of revenue (${money(commercial.value)}) came from commercial accounts.` },
     { title: `Peak month: ${peak.month.replace(" '26", '')} at ${kFmt(peak.rev)}`,
-      desc: `Highest revenue month in the period at ${money(peak.rev)} (${money(peak.gp)} gross profit), including ${kFmt(peakComm)} of commercial sales.` },
+      desc: `Highest revenue month in the period at ${money(peak.rev)} including ${kFmt(peakComm)} of commercial sales.` },
   ],
 
   challengesSub: 'Key areas requiring support and strategic focus',
   challenges: [
     { title: 'Commercial revenue is lumpy',
       desc: `Commercial now drives ${pct1(commPct)} of revenue but lands in large, irregular orders (from about $24K in July to $107K in May). Monthly results swing with a handful of deals, so pipeline visibility matters.` },
-    { title: `Margin mix — ${lowCat.name} at ${pct1(lowCat.gp)}`,
-      desc: `${bestCat.name} earns ${pct1(bestCat.gp)} gross margin against ${pct1(lowCat.gp)} for ${lowCat.name}. Lower-margin categories pull down the blended margin.` },
+    { title: `Category concentration — ${topCat.name} at ${pct1(topCatPct)}`,
+      desc: `${topCat.name} accounts for ${pct1(topCatPct)} of revenue (${money(topCat.rev)}); the other five categories combined are ${pct1(100 - topCatPct)}. The mix is weighted heavily toward one category.` },
     { title: 'Hyrox event attendance ROI', review: true,
       desc: 'Hyrox events tend to yield little sales (even from leads generated) and stand to be more of a brand activation initiative. Supports theory that equipment is purchased by commercial facilities rather than home use.' },
   ],
@@ -741,11 +704,11 @@ const CONTENT = {
 
   notesSub: 'Sources, definitions and exclusions — delete this slide before sending externally if not required',
   notes: [
-    { h: 'Sales source', b: `NetSuite invoices and cash sales dated 1 April – 30 September 2026. Revenue is net of discounts and excludes GST. Gross profit = revenue less NetSuite estimated item cost.` },
+    { h: 'Sales source', b: `NetSuite invoices and cash sales dated 1 April – 30 September 2026. Revenue is net of discounts and excludes GST.` },
     { h: 'Scope', b: 'All Centr x HYROX and Centr branded SKUs, including the individual components of bundles (Centr 1/2/3 Home Gyms, HYROX bundles, turf sections). Categories follow the Q1 deck mapping: Functional Training, Home Gyms, Treadmills, Kettlebells, Weight Plates, Other.' },
     { h: 'Departments', b: 'Retail + Online = GAF AU + GAF Online AU. Commercial = GAF Commercial Sales AU. Wholesale = GAF Wholesale AU. Other = SFF and lines with no department.' },
-    { h: 'Exclusion', b: 'Invoice INV0319891 (24 Jun 2026) is a $0-revenue supply of Centr x HYROX turf (approx. $51K estimated cost) and is excluded from sales and gross profit. Including it would lower gross margin from 34.9% to about 29.3%.' },
-    { h: 'Prior-period comparison', b: `Year-on-year compares ${PERIOD.label} with ${PRIOR.label} using the same SKU set and the same NetSuite method (revenue ${money(priorRev)}, gross profit ${money(priorGp)}). "Previous 6 months" is ${PRIOR.seqLabel}. Channel/department split is not compared because the Commercial department was only used from January 2026. Using the earlier deck's own monthly figures for Apr – Sep 2025 ($507K) the revenue uplift is about +79% rather than ${up(yoyRev)}.` },
+    { h: 'Exclusion', b: 'Invoice INV0319891 (24 Jun 2026) is a $0-revenue supply of Centr x HYROX turf and is excluded from sales.' },
+    { h: 'Prior-period comparison', b: `Year-on-year compares ${PERIOD.label} with ${PRIOR.label} using the same SKU set and the same NetSuite method (prior-year revenue ${money(priorRev)}). "Previous 6 months" is ${PRIOR.seqLabel}. Channel/department split is not compared because the Commercial department was only used from January 2026. Using the earlier deck's own monthly figures for Apr – Sep 2025 ($507K) the revenue uplift is about +79% rather than ${up(yoyRev)}.` },
     { h: 'Comparison with the previous deck', b: 'The April 2025 – March 2026 deck used the GAF product sales performance export. This deck is calculated directly from NetSuite, so comparisons with the earlier figures are indicative only.' },
     { h: 'GA4 / Digital', b: `Digital figures come from the ${GA4_WINDOW.source} and cover the last ${GA4_WINDOW.days} days (${GA4_WINDOW.label}) — not April – September. Page-level figures include Centr and Hyrox pages in the dashboard's top 250 pages. Monthly traffic and channel mix are placeholders pending a GA4 export.` },
   ],
@@ -775,7 +738,7 @@ const TitleSlide = ({ n, t }) => {
         <div className="flex items-center gap-6 mt-10">
           <div className="w-16 h-[2px] bg-gaf-orange"></div>
           <span className="px-5 py-2 rounded-full bg-gaf-orange text-white font-heading font-bold text-[18px] tracking-[.25em] uppercase">{PERIOD.label}</span>
-          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>Revenue {up(yoyRev)} · gross profit {gpMultiple.toFixed(1)}x vs {PRIOR.label}</p>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>Revenue {up(yoyRev)} vs {PRIOR.label}</p>
         </div>
       </div>
     </div>
@@ -797,9 +760,9 @@ const PerfSlide = ({ n, t }) => {
     <div className="flex flex-col flex-1 gap-3 min-h-0">
       <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
         <Kpi label="Total Revenue" value={kFmt(totalRev)} sub={`${up(yoyRev)} vs ${PRIOR.label} (${kFmt(priorRev)})`} />
-        <Kpi label="Gross Profit" value={money(totalGp)} sub={`${up(yoyGp)} vs ${PRIOR.label} (${kFmt(priorGp)})`} />
-        <Kpi label="Gross Margin" value={pct1(gpPct)} sub={`Up ${marginPts.toFixed(1)} pts from ${pct1(priorGpPct)}`} />
-        <Kpi label="Gross Profit vs Last Year" value={`${gpMultiple.toFixed(1)}x`} sub={`${kFmt(priorGp)} → ${kFmt(totalGp)} · peak month ${kFmt(peak.rev)}`} accent />
+        <Kpi label="Peak Month" value={kFmt(peak.rev)} sub={peak.month.replace(" '26", " '26")} />
+        <Kpi label="Units Sold" value={curUnits.toLocaleString('en-AU')} sub={`${up(yoyUnits)} vs ${PRIOR.label}`} />
+        <Kpi label="Revenue vs Last Year" value={`${revMultiple.toFixed(1)}x`} sub={`${kFmt(priorRev)} → ${kFmt(totalRev)}`} accent />
       </div>
       <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0`}>
         <div className="flex items-center justify-between mb-3">
@@ -827,7 +790,6 @@ const PerfSlide = ({ n, t }) => {
                 </div>
               </div>
               <span className={`text-[12px] ${th.sub} mt-2 font-body`}>{d.month.replace(" '26", '')}</span>
-              <span className={`text-[11px] font-body font-semibold ${th.green}`}>{pct1(d.gp / d.rev * 100)} GP</span>
             </div>
             );
           })}
@@ -845,8 +807,8 @@ const UpliftSlide = ({ n, t }) => {
   const priorBar = th.donutTrack === '#eeeef0' ? '#c4c4c8' : '#555';
   const hero = [
     { label: 'Revenue', value: up(yoyRev), sub: `${kFmt(priorRev)} → ${kFmt(totalRev)}` },
-    { label: 'Gross Profit', value: `${gpMultiple.toFixed(1)}x`, sub: `${kFmt(priorGp)} → ${kFmt(totalGp)} (${up(yoyGp)})` },
-    { label: 'Gross Margin', value: `+${marginPts.toFixed(1)} pts`, sub: `${pct1(priorGpPct)} → ${pct1(gpPct)}` },
+    { label: 'Revenue Multiple', value: `${revMultiple.toFixed(1)}x`, sub: `${kFmt(priorRev)} → ${kFmt(totalRev)} year on year` },
+    { label: 'Peak Month', value: kFmt(peak.rev), sub: `${peak.month.replace(" '26", '')} · ${up((peak.rev / priorMonths[monthlyData.indexOf(peak)].rev - 1) * 100)} on ${priorMonths[monthlyData.indexOf(peak)].month.replace(" '25", '')} 2025` },
     { label: 'Units Sold', value: up(yoyUnits), sub: `${DATA.prior.prior_units.toLocaleString('en-AU')} → ${curUnits.toLocaleString('en-AU')} units` },
   ];
   return (
@@ -883,7 +845,7 @@ const UpliftSlide = ({ n, t }) => {
                   <span className="text-[18px] font-heading font-black text-gaf-orange">{up(c.change)}</span>
                   {c.priorRev < 20000 && <p className={`text-[10px] ${th.muted} font-body`}>small base</p>}
                 </div>
-                <span className={`text-[12px] font-body ${th.sub} text-right`}>GP {pct1(c.priorGpPct)} → <span className={`font-semibold ${c.gp >= c.priorGpPct ? th.green : th.amber}`}>{pct1(c.gp)}</span></span>
+                <span className={`text-[12px] font-body ${th.sub} text-right`}>{pct1(c.rev / sum(catCompare, x => x.rev) * 100)} of revenue</span>
               </div>
             ))}
           </div>
@@ -894,8 +856,8 @@ const UpliftSlide = ({ n, t }) => {
           <p className="text-6xl font-heading font-black text-gaf-orange leading-none">{up(vsSeqRev)}</p>
           <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Revenue {kFmt(seqRev)} → {kFmt(totalRev)}</p>
           <div className={`my-4 border-t ${th.cardBorder}`}></div>
-          <p className={`text-4xl font-heading font-black ${th.text} leading-none`}>{up(vsSeqGp)}</p>
-          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Gross profit {kFmt(seqGp)} → {kFmt(totalGp)}</p>
+          <p className={`text-4xl font-heading font-black ${th.text} leading-none`}>{`${hoh >= 0 ? '+' : ''}${hoh.toFixed(1)}%`}</p>
+          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>{PERIOD.secondHalf} vs {PERIOD.firstHalf} · {kFmt(h1)} → {kFmt(h2)}</p>
           <p className={`text-[12px] ${th.muted} mt-auto font-body leading-snug`}>Channel split not compared: the Commercial department was only used in NetSuite from Jan 2026.</p>
         </div>
       </div>
@@ -921,7 +883,6 @@ const SalesSlide = ({ n, t }) => {
               <div className="flex justify-between items-baseline mb-2">
                 <span className={`text-[15px] font-heading font-semibold ${th.text}`}>{c.name} <span className={`text-[12px] font-body ${th.muted}`}>· {pct1(c.rev / catTotal * 100)} of revenue</span></span>
                 <div className="flex items-baseline gap-3">
-                  <span className={`text-[14px] font-body font-semibold ${c.gp < 25 ? th.amber : th.green}`}>{c.gp}% GP</span>
                   <span className={`text-lg font-heading font-bold ${th.text}`}>{kFmt(c.rev)}</span>
                 </div>
               </div>
@@ -1185,7 +1146,6 @@ const SupportSlide = ({ n, t }) => {
         <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase">Financial Context · {PERIOD.short}</p>
         <div className={`flex gap-8 text-[14px] font-body ${th.sub}`}>
           <span>Revenue: <span className="text-gaf-orange font-semibold">{kFmt(totalRev)}</span></span>
-          <span>GP: <span className={`${th.green} font-semibold`}>{kFmt(totalGp)}</span></span>
           <span>Commercial: <span className={`${th.text} font-semibold`}>{kFmt(commercial.value)} ({pct1(commPct)})</span></span>
         </div>
       </div>

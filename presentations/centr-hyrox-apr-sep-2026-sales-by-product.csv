@@ -1,50 +1,50 @@
-SKU,Product Name,Deck Category,"Revenue (AUD, ex GST)",Gross Profit (AUD),Units Sold,Orders
-HPS,CENTR X HYROX Competition Sled,Functional Training,139017.64,36107.72,280,122
-HBR,CENTR X HYROX Competition Power Rope,Functional Training,107240.83,57506.59,281,117
-SF3.3,Centr 3 Home Gym Functional Trainer,Home Gyms,72768.25,32838.17,21,21
-NMT.3,CENTR X HYROX Perform Tread,Treadmills,53010.60,20350.57,7,3
-HSB20,CENTR X HYROX Competition Sandbag 20kg,Functional Training,40365.86,14867.03,253,120
-HTURF4,CENTR X HYROX Perform Turf (4 lane),Functional Training,37053.63,13770.35,7,3
-HBT,CENTR X HYROX Competition Rig Target,Functional Training,35084.47,15002.04,283,117
-HWB6,CENTR X HYROX Competition Wall Ball 6kg,Functional Training,32433.63,12100.55,303,131
-BW1.1,Centr Body Weight Home Gym,Home Gyms,31225.75,3744.75,25,25
-HSB10,CENTR X HYROX Competition Sandbag 10kg,Functional Training,28955.66,11999.06,197,80
-HSB30,CENTR X HYROX Competition Sandbag 30kg,Functional Training,27072.59,6867.68,165,97
-RUNR-S,Centr Runr-S Treadmill,Treadmills,26788.92,7612.64,16,16
-HUBP25,CENTR X HYROX 25kg Competition Plate,Weight Plates,24955.62,10465.50,83,9
-HUOKB24,CENTR X HYROX Octo Kettlebell 24kg,Kettlebells,24930.11,7931.94,110,35
-FTX.3,Centr 2 Home Gym Functional Trainer,Home Gyms,24199.76,8655.09,10,10
-HUOKB32,CENTR X HYROX Octo Kettlebell 32kg,Kettlebells,23644.55,5269.50,89,24
-HWB9,CENTR X HYROX Competition Wall Ball 9kg,Functional Training,23263.98,7635.22,201,102
-HWB4,CENTR X HYROX Competition Wall Ball 4kg,Functional Training,22143.43,8589.53,233,91
-SSFT.1,Centr 1 Home Gym Functional Trainer,Home Gyms,18657.25,-14.70,17,17
-HUOKB16,CENTR X HYROX Octo Kettlebell 16kg,Kettlebells,18582.85,5171.29,120,30
-HTURF7,CENTR X HYROX Perform Turf,Functional Training,14238.96,7079.88,6,6
-CHR.1,Centr Half Rack,Home Gyms,12745.47,3299.47,21,20
-RUNR,Centr Runr Treadmill,Treadmills,12389.76,3347.76,10,10
-HPR-4T,CENTR X HYROX Perform Rig (4 targets),Functional Training,11250.21,5220.66,1,1
-300ROLY.2,Centr 300lb Olympic Set,Other Equipment,7068.48,621.48,12,12
-2-HTURF7,CENTR X HYROX Perform Turf section,Functional Training,6662.93,3170.74,3,3
-2-HTURF9,CENTR X HYROX Perform Turf section,Functional Training,3885.19,1322.49,6,3
-HWB12,CENTR X HYROX Competition Wall Ball 12kg,Functional Training,2898.85,934.06,19,13
-2-HTURF10,CENTR X HYROX Perform Turf section,Functional Training,2689.71,1106.75,4,2
-HYSSB7.5,HYSSB7.5,Functional Training,2398.22,895.44,16,6
-HYSWB1,HYSWB1,Functional Training,2014.62,924.85,21,11
-HYSPR,HYSPR,Functional Training,1987.70,895.81,14,5
-HYSKB6,HYSKB6,Kettlebells,1956.01,549.08,16,5
-HYSKB4,HYSKB4,Kettlebells,1896.74,494.61,18,6
-2-HTURF8,CENTR X HYROX Perform Turf section,Functional Training,1794.38,682.73,1,1
-FID5,FID5,Other Equipment,1775.05,668.72,3,3
-HYSPRL,HYSPRL,Functional Training,1603.41,927.24,13,4
-HYSWB2,HYSWB2,Functional Training,1400.39,616.47,14,5
-HWB2,CENTR X HYROX Competition Wall Ball 2kg,Functional Training,1342.99,614.82,13,5
-HYSCH,HYSCH,Functional Training,1280.59,708.43,13,4
-CBWTK,CBWTK,Other Equipment,1269.35,-277.15,18,13
-CCK.1.1,CCK.1.1,Other Equipment,1255.18,182.06,16,9
-CTB,CTB,Other Equipment,810.88,-226.52,28,15
-HYSWB3,HYSWB3,Functional Training,602.76,-296.87,15,6
-BWTS,BWTS,Other Equipment,364.05,1.71,9,6
-CBR,CBR,Other Equipment,253.68,-134.88,4,3
-HKT2025,HKT2025,Kettlebells,145.16,-44.82,5,4
-CENTR-WS.2,Centr weight stack (adj.),Home Gyms,-727.27,-727.27,51,17
-CENTR-WS.1,Centr weight stack (adj.),Home Gyms,-2835.81,-2835.81,186,31
+SKU,Product Name,Deck Category,"Revenue (AUD, ex GST)",Units Sold,Orders
+HPS,CENTR X HYROX Competition Sled,Functional Training,139017.64,280,122
+HBR,CENTR X HYROX Competition Power Rope,Functional Training,107240.83,281,117
+SF3.3,Centr 3 Home Gym Functional Trainer,Home Gyms,72768.25,21,21
+NMT.3,CENTR X HYROX Perform Tread,Treadmills,53010.60,7,3
+HSB20,CENTR X HYROX Competition Sandbag 20kg,Functional Training,40365.86,253,120
+HTURF4,CENTR X HYROX Perform Turf (4 lane),Functional Training,37053.63,7,3
+HBT,CENTR X HYROX Competition Rig Target,Functional Training,35084.47,283,117
+HWB6,CENTR X HYROX Competition Wall Ball 6kg,Functional Training,32433.63,303,131
+BW1.1,Centr Body Weight Home Gym,Home Gyms,31225.75,25,25
+HSB10,CENTR X HYROX Competition Sandbag 10kg,Functional Training,28955.66,197,80
+HSB30,CENTR X HYROX Competition Sandbag 30kg,Functional Training,27072.59,165,97
+RUNR-S,Centr Runr-S Treadmill,Treadmills,26788.92,16,16
+HUBP25,CENTR X HYROX 25kg Competition Plate,Weight Plates,24955.62,83,9
+HUOKB24,CENTR X HYROX Octo Kettlebell 24kg,Kettlebells,24930.11,110,35
+FTX.3,Centr 2 Home Gym Functional Trainer,Home Gyms,24199.76,10,10
+HUOKB32,CENTR X HYROX Octo Kettlebell 32kg,Kettlebells,23644.55,89,24
+HWB9,CENTR X HYROX Competition Wall Ball 9kg,Functional Training,23263.98,201,102
+HWB4,CENTR X HYROX Competition Wall Ball 4kg,Functional Training,22143.43,233,91
+SSFT.1,Centr 1 Home Gym Functional Trainer,Home Gyms,18657.25,17,17
+HUOKB16,CENTR X HYROX Octo Kettlebell 16kg,Kettlebells,18582.85,120,30
+HTURF7,CENTR X HYROX Perform Turf,Functional Training,14238.96,6,6
+CHR.1,Centr Half Rack,Home Gyms,12745.47,21,20
+RUNR,Centr Runr Treadmill,Treadmills,12389.76,10,10
+HPR-4T,CENTR X HYROX Perform Rig (4 targets),Functional Training,11250.21,1,1
+300ROLY.2,Centr 300lb Olympic Set,Other Equipment,7068.48,12,12
+2-HTURF7,CENTR X HYROX Perform Turf section,Functional Training,6662.93,3,3
+2-HTURF9,CENTR X HYROX Perform Turf section,Functional Training,3885.19,6,3
+HWB12,CENTR X HYROX Competition Wall Ball 12kg,Functional Training,2898.85,19,13
+2-HTURF10,CENTR X HYROX Perform Turf section,Functional Training,2689.71,4,2
+HYSSB7.5,HYSSB7.5,Functional Training,2398.22,16,6
+HYSWB1,HYSWB1,Functional Training,2014.62,21,11
+HYSPR,HYSPR,Functional Training,1987.70,14,5
+HYSKB6,HYSKB6,Kettlebells,1956.01,16,5
+HYSKB4,HYSKB4,Kettlebells,1896.74,18,6
+2-HTURF8,CENTR X HYROX Perform Turf section,Functional Training,1794.38,1,1
+FID5,FID5,Other Equipment,1775.05,3,3
+HYSPRL,HYSPRL,Functional Training,1603.41,13,4
+HYSWB2,HYSWB2,Functional Training,1400.39,14,5
+HWB2,CENTR X HYROX Competition Wall Ball 2kg,Functional Training,1342.99,13,5
+HYSCH,HYSCH,Functional Training,1280.59,13,4
+CBWTK,CBWTK,Other Equipment,1269.35,18,13
+CCK.1.1,CCK.1.1,Other Equipment,1255.18,16,9
+CTB,CTB,Other Equipment,810.88,28,15
+HYSWB3,HYSWB3,Functional Training,602.76,15,6
+BWTS,BWTS,Other Equipment,364.05,9,6
+CBR,CBR,Other Equipment,253.68,4,3
+HKT2025,HKT2025,Kettlebells,145.16,5,4
+CENTR-WS.2,Centr weight stack (adj.),Home Gyms,-727.27,51,17
+CENTR-WS.1,Centr weight stack (adj.),Home Gyms,-2835.81,186,31

@@ -62,15 +62,21 @@ h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
 ::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
 
 .slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+
+/* click-to-edit mode */
+.edit-on [data-editable]{cursor:text;outline:1px dashed rgba(242,100,34,.45);outline-offset:2px;border-radius:2px}
+.edit-on [data-editable]:hover{outline-color:#f26422;background:rgba(242,100,34,.07)}
+.edit-on [data-editable]:focus{outline:2px solid #f26422;background:rgba(242,100,34,.10)}
 </style>
 </head>
 <body>
 <div id="root"></div>
+<script id="deck-edits" type="application/json">{"stamp":0,"edits":{}}</script>
 <script src="https://esm.sh/react@19.1.0" type="module"></script>
 <script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 <script type="text/babel" data-type="module">
-import React, { useState, useEffect, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
 import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
 
 // ===== THEME =====
@@ -148,6 +154,7 @@ const Pct = p => <I {...p} d={["M19 5L5 19","M6.5 9a2.5 2.5 0 100-5 2.5 2.5 0 00
 const Cam = p => <I {...p} d={["M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"]} />;
 const Sun = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
 const Moon = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Pencil = p => <I {...p} d={["M12 20h9","M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"]} />;
 const BarIcon = p => <I {...p} d={["M12 20V10","M18 20V4","M6 20v-4"]} />;
 
 const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
@@ -240,7 +247,9 @@ const SectionTitle = ({ pre, title, sub }) => {
 //                 Edit the text between the quotes.
 //                 Add  review: true  to an item to show an amber REVIEW tag,
 //                 delete it once the item has been checked.
-//  Keyboard: ← / → or space = navigate, D = dark mode.
+//  Keyboard: ← / → or space = navigate, D = dark mode, E = click-to-edit mode.
+//  Click-to-edit: press E (or the pencil button), click any text on a slide and type.
+//  Edits autosave in this browser; use "Download deck" to save them into a new copy of this file.
 // =====================================================================
 
 // ===== 1. PERIOD =====
@@ -877,6 +886,37 @@ const DeliveryPlanSlide = ({ n, t }) => {
   );
 };
 
+// ===== CLICK-TO-EDIT =====
+// Edits are stored per slide as { i: element position, from: original html, to: edited html }.
+// They autosave in this browser (localStorage). "Download deck" bakes them into a copy of this file
+// (the <script id="deck-edits"> tag), so everyone who opens that copy sees the edited text.
+const BAKED = (() => { try { return JSON.parse(document.getElementById('deck-edits').textContent); } catch (e) { return { stamp: 0, edits: {} }; } })();
+const LS_KEY = 'centrHyroxEdits:' + (BAKED.stamp || 0);
+const loadEdits = () => {
+  try { const s = localStorage.getItem(LS_KEY); if (s) return JSON.parse(s); } catch (e) {}
+  return JSON.parse(JSON.stringify(BAKED.edits || {}));
+};
+const persistEdits = (edits) => { try { localStorage.setItem(LS_KEY, JSON.stringify(edits)); } catch (e) {} };
+const countEdits = (edits) => Object.values(edits).reduce((s, l) => s + (l ? l.length : 0), 0);
+// Outermost elements that hold their own text (so a paragraph with a REVIEW tag edits as one block).
+const collectEditable = (root) => {
+  const out = [];
+  const walk = (el) => {
+    for (const c of el.children) {
+      if (c instanceof SVGElement || c.tagName === 'IMG' || c.tagName === 'SCRIPT' || c.hasAttribute('data-noedit')) continue;
+      const hasText = [...c.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+      if (hasText) out.push(c); else walk(c);
+    }
+  };
+  walk(root);
+  return out;
+};
+const saveFile = (content, name, type) => {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
 // ===== APP =====
 const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TargetsSlide, CommercialPlanSlide, DeliveryPlanSlide];
 
@@ -884,8 +924,15 @@ function App() {
   const [idx, setIdx] = useState(0);
   const [key, setKey] = useState(0);
   const [dark, setDark] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editCount, setEditCount] = useState(() => countEdits(loadEdits()));
   const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
   const th = dark ? themes.dark : themes.light;
+  const stageRef = useRef(null);
+  const fileRef = useRef(null);
+  const editsRef = useRef(loadEdits());
+  const elsRef = useRef([]);
+  const origRef = useRef([]);
 
   const go = useCallback((dir) => {
     const next = idx + dir;
@@ -900,9 +947,11 @@ function App() {
 
   useEffect(() => {
     const h = e => {
+      if (e.target && e.target.isContentEditable) return;           // typing on a slide
       if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
       else if (e.key === 'ArrowLeft') go(-1);
       else if (e.key === 'd' || e.key === 'D') setDark(d => !d);
+      else if (e.key === 'e' || e.key === 'E') setEditMode(m => !m);
     };
     window.addEventListener('keydown', h);
     return () => window.removeEventListener('keydown', h);
@@ -910,17 +959,100 @@ function App() {
 
   useEffect(() => {
     document.body.style.background = th.bodyBg;
-    document.body.className = th.grainClass;
-  }, [dark]);
+    document.body.className = th.grainClass + (editMode ? ' edit-on' : '');
+  }, [dark, editMode]);
+
+  // Each time a slide is mounted: find its editable text, remember the originals, apply saved edits.
+  useLayoutEffect(() => {
+    const els = collectEditable(stageRef.current);
+    elsRef.current = els;
+    origRef.current = els.map(e => e.innerHTML);
+    (editsRef.current[idx] || []).forEach(({ i, from, to }) => {
+      if (els[i] && origRef.current[i] === from) els[i].innerHTML = to;
+    });
+    els.forEach(e => { e.setAttribute('data-editable', ''); e.setAttribute('spellcheck', 'false'); e.contentEditable = editMode ? 'true' : 'false'; });
+  }, [idx, key]);
+
+  useEffect(() => {
+    elsRef.current.forEach(e => { e.contentEditable = editMode ? 'true' : 'false'; });
+    if (!editMode && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }, [editMode]);
+
+  const recordEdits = () => {
+    const list = [];
+    elsRef.current.forEach((e, i) => { if (e.innerHTML !== origRef.current[i]) list.push({ i, from: origRef.current[i], to: e.innerHTML }); });
+    if (list.length) editsRef.current[idx] = list; else delete editsRef.current[idx];
+    persistEdits(editsRef.current);
+    setEditCount(countEdits(editsRef.current));
+  };
+  const onKeyDown = (e) => {
+    if (!e.target.isContentEditable) return;
+    if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) document.execCommand('insertLineBreak'); else e.target.blur(); }
+    else if (e.key === 'Escape') { e.target.blur(); }
+  };
+  const onPaste = (e) => {
+    if (!e.target.isContentEditable) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  };
+  const resetSlide = () => {
+    elsRef.current.forEach((e, i) => { e.innerHTML = origRef.current[i]; });
+    delete editsRef.current[idx]; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current));
+  };
+  const resetAll = () => {
+    if (!window.confirm('Discard every edit on every slide?')) return;
+    editsRef.current = {}; try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    setEditCount(0); setKey(k => k + 1);
+  };
+  const downloadEdits = () => saveFile(JSON.stringify({ stamp: BAKED.stamp || 0, edits: editsRef.current }, null, 1), 'centr-hyrox-edits.json', 'application/json');
+  const loadEditsFile = (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try { const j = JSON.parse(r.result); editsRef.current = j.edits || j; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current)); setKey(k => k + 1); }
+      catch (err) { window.alert('That file is not a valid edits file.'); }
+    };
+    r.readAsText(f); e.target.value = '';
+  };
+  const downloadDeck = async () => {
+    try {
+      const res = await fetch(location.href.split('#')[0]);
+      if (!res.ok) throw new Error('fetch failed');
+      const src = await res.text();
+      const payload = JSON.stringify({ stamp: Date.now(), edits: editsRef.current }).replace(/</g, '\\u003c');
+      const out = src.replace(/(<script id="deck-edits" type="application\/json">)[\s\S]*?(<\/script>)/, (m, a, b) => a + payload + b);
+      saveFile(out, 'centr-hyrox-apr-sep-2026.html', 'text/html');
+    } catch (err) {
+      window.alert('"Download deck" only works when the deck is opened from a web address (for example the published site). Use "Download edits" instead, and "Load edits" on another copy.');
+    }
+  };
 
   const C = SLIDES[idx];
+  const tbtn = 'px-3 py-1.5 rounded-md text-[12px] font-heading font-semibold tracking-wide whitespace-nowrap bg-white/10 hover:bg-gaf-orange text-white transition-colors';
   return (
     <ThemeCtx.Provider value={th}>
+      {editMode && (
+        <div data-noedit className="fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-gaf-black/95 text-white rounded-lg px-3 py-2 shadow-xl">
+          <Pencil size={14} className="text-gaf-orange" />
+          <span className="text-[12px] font-body mr-1 whitespace-nowrap">Edit mode · click text to edit · {editCount} change{editCount === 1 ? '' : 's'}</span>
+          <button className={tbtn} onClick={resetSlide}>Reset slide</button>
+          <button className={tbtn} onClick={resetAll}>Reset all</button>
+          <button className={tbtn} onClick={downloadDeck}>Download deck</button>
+          <button className={tbtn} onClick={downloadEdits}>Download edits</button>
+          <button className={tbtn} onClick={() => fileRef.current && fileRef.current.click()}>Load edits</button>
+          <button className="px-3 py-1.5 rounded-md text-[12px] font-heading font-bold whitespace-nowrap bg-gaf-orange text-white" onClick={() => setEditMode(false)}>Done</button>
+          <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={loadEditsFile} />
+        </div>
+      )}
       <div className="w-screen h-screen overflow-hidden flex items-center justify-center" style={{background: th.bodyBg}}>
-        <div key={key} className="overflow-hidden slide-enter rounded-lg shrink-0" style={{width: 1600, height: 900, zoom, boxShadow: dark ? '0 0 80px rgba(0,0,0,.6)' : '0 4px 60px rgba(0,0,0,.12)'}}>
+        <div key={key} ref={stageRef} onInput={recordEdits} onKeyDown={onKeyDown} onPaste={onPaste} className="overflow-hidden slide-enter rounded-lg shrink-0" style={{width: 1600, height: 900, zoom, boxShadow: dark ? '0 0 80px rgba(0,0,0,.6)' : '0 4px 60px rgba(0,0,0,.12)'}}>
           <C n={idx + 1} t={SLIDES.length} />
           {/* Nav + theme toggle */}
-          <div className="absolute bottom-6 right-8 flex gap-2 z-50">
+          <div data-noedit className="absolute bottom-6 right-8 flex gap-2 z-50">
+            <button onClick={() => setEditMode(m => !m)} title="Click-to-edit mode (E)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${editMode ? 'bg-gaf-orange border-gaf-orange text-white' : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <Pencil size={14} />
+            </button>
             <button onClick={() => setDark(d => !d)} title="Toggle theme (D)"
               className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
               {dark ? <Sun size={14} /> : <Moon size={14} />}

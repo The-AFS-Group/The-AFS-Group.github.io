@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Q1 FY27 Shareholder Update | Gym and Fitness AU</title>
+
+<!-- ============================================================
+     GYM AND FITNESS BRAND BLOCK — the only part that changes between brands.
+     Swap the Tailwind colour/font config, the theme map below,
+     the font <link>, and the LOGO constant. Everything else is
+     brand-agnostic engine.
+     ============================================================ -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        brand: { accent: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt:    { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body:    ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.slide-enter{animation:se .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes se{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.stagger>*{animation:st .42s cubic-bezier(.2,.8,.2,1) both}
+.stagger>*:nth-child(1){animation-delay:.04s}
+.stagger>*:nth-child(2){animation-delay:.08s}
+.stagger>*:nth-child(3){animation-delay:.12s}
+.stagger>*:nth-child(4){animation-delay:.16s}
+.stagger>*:nth-child(5){animation-delay:.20s}
+.stagger>*:nth-child(6){animation-delay:.24s}
+@keyframes st{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.slide-enter,.stagger>*{animation:none}}
+/* click-to-edit mode */
+.edit-on [data-editable]{cursor:text;outline:1px dashed rgba(242,100,34,.45);outline-offset:2px;border-radius:2px}
+.edit-on [data-editable]:hover{outline-color:#f26422;background:rgba(242,100,34,.07)}
+.edit-on [data-editable]:focus{outline:2px solid #f26422;background:rgba(242,100,34,.10)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="deck-edits" type="application/json">{"stamp":0,"edits":{}}</script>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+/* ===================== THEME =====================
+   Two complete token maps, light and dark. Every slide reads from
+   useTheme() and never hardcodes a colour. Toggle with D.
+   Brand-tailoring = editing these two objects and the block above. */
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-brand-accent/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted', textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    bodyBg: '#f0f0f0', logoFilter: '',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-600',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-600',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-lt-muted', barGrey: 'bg-lt-border',
+  },
+  dark: {
+    bg: 'bg-brand-black', bg2: 'bg-brand-dark', bg3: 'bg-brand-mid',
+    border: 'border-brand-steel/20', borderAccent: 'border-brand-accent/20',
+    text: 'text-white', sub: 'text-brand-ash', muted: 'text-brand-steel', textInv: 'text-brand-black',
+    cardBg: 'bg-brand-dark', cardBorder: 'border-brand-steel/20',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert',
+    kpiAccentBg: 'bg-brand-accent/5',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-brand-accent hover:border-brand-accent',
+    navDisabled: 'bg-brand-steel/20 text-brand-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'border-emerald-500/25',
+    amber: 'text-amber-400',   amberBg: 'bg-amber-500/10',   amberBorder: 'border-amber-500/25',
+    red:   'text-rose-400',    redBg:   'bg-rose-500/10',    redBorder:   'border-rose-500/25',
+    imgBg: 'bg-white', footerText: 'text-brand-steel', barGrey: 'bg-brand-steel',
+  }
+};
+
+/* ===================== ICONS =====================
+   Inline SVG, no icon library. Add what you need, delete what you don't.
+   Paths are Lucide geometry (lucide.dev), 1.5 stroke, rounded caps. */
+const I = p => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24"
+       fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
+       className={p.className||''}>
+    {Array.isArray(p.d) ? p.d.map((d,i) => <path key={i} d={d} />) : <path d={p.d} />}
+  </svg>
+);
+const ChevL  = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR  = p => <I {...p} d="M9 18l6-6-6-6" />;
+const Sun    = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon   = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Users  = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Pkg    = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Target = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
+const TrendUp= p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
+const Pencil = p => <I {...p} d={["M12 20h9","M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"]} />;
+const Warn   = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+
+/* ===================== BRAND ASSETS ===================== */
+const LOGO = 'https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576';
+
+const Logo = () => {
+  const th = useTheme();
+  return <img src={LOGO} alt="" className={`h-7 w-auto ${th.logoFilter}`} />;
+};
+
+/* ===================== SLIDE PRIMITIVES =====================
+   Slide        — the 1600x900 frame: padding, logo, slide counter.
+   SectionTitle — eyebrow + title + standfirst. Use on every slide but the cover.
+   Callout      — the accent strip for the one thing they must take away. */
+const Slide = ({ children, num, total, noPad, dark }) => {
+  const th = useTheme();
+  return (
+    <div className={`w-full h-full ${dark ? 'bg-brand-black' : th.bg} flex flex-col ${noPad ? '' : 'px-16 py-12'} relative overflow-hidden`}>
+      {children}
+      <div className="absolute bottom-6 left-16 right-16 flex items-center justify-between">
+        <Logo />
+        <span className={`text-[12px] font-heading tracking-[.3em] uppercase ${th.footerText}`}>
+          {String(num).padStart(2,'0')} / {String(total).padStart(2,'0')}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+    <div className="mb-7 shrink-0">
+      {pre && <p className="text-[13px] font-heading font-bold tracking-[.3em] uppercase text-brand-accent mb-2">{pre}</p>}
+      <h2 className={`font-display text-5xl uppercase leading-[1.05] ${th.text}`}>{title}</h2>
+      {sub && <p className={`text-[16px] font-body ${th.sub} mt-3 max-w-4xl leading-snug`}>{sub}</p>}
+    </div>
+  );
+};
+
+const Callout = ({ icon: Icon = Target, children }) => {
+  const th = useTheme();
+  return (
+    <div className="bg-brand-accent/5 border border-brand-accent/20 rounded-lg p-4 flex items-start gap-3 shrink-0">
+      <Icon size={18} className="text-brand-accent shrink-0 mt-0.5" />
+      <p className={`text-[15px] font-body ${th.text} leading-snug`}>{children}</p>
+    </div>
+  );
+};
+
+
+/* ===================== EXTRA PRIMITIVES ===================== */
+const Pill = ({ tone = 'green', children }) => {
+  const th = useTheme();
+  const map = { green: `${th.greenBg} ${th.green}`, amber: `${th.amberBg} ${th.amber}`, red: `${th.redBg} ${th.red}`, accent: 'bg-brand-accent text-white' };
+  return <span className={`text-[11px] font-heading font-bold tracking-[.15em] uppercase px-2 py-1 rounded whitespace-nowrap ${map[tone]}`}>{children}</span>;
+};
+const Source = ({ children }) => {
+  const th = useTheme();
+  return <p className={`text-[11px] font-body ${th.muted} shrink-0 mb-10 mt-3 leading-snug`}>{children}</p>;
+};
+const k = v => '$' + Math.round(v / 1000).toLocaleString('en-AU') + 'k';
+const m = v => '$' + (v / 1e6).toFixed(2) + 'M';
+const pc = (a, b) => { const d = (a / b - 1) * 100; return (d >= 0 ? '+' : '−') + Math.abs(d).toFixed(1) + '%'; };
+
+const KpiGrid = ({ headline, supporting }) => {
+  const th = useTheme();
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-5 stagger">
+        {headline.map((x, i) => (
+          <div key={i} className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-7 flex flex-col gap-3`}>
+            <div className="flex items-center justify-between">
+              <p className="text-[14px] font-heading font-medium tracking-[.3em] uppercase text-brand-accent">{x.label}</p>
+              <div className="w-11 h-11 rounded-lg bg-brand-accent/10 flex items-center justify-center"><x.icon size={22} className="text-brand-accent" /></div>
+            </div>
+            <p className="font-display text-7xl tracking-wide leading-[0.9] text-brand-accent">{x.value}</p>
+            <p className={`text-[15px] font-body ${th.sub} leading-snug`}>{x.sub}</p>
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-3 gap-4 stagger">
+        {supporting.map((x, i) => (
+          <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+            <div className="flex items-center justify-between">
+              <p className={`text-[12px] font-heading font-medium tracking-[.3em] uppercase ${th.sub}`}>{x.label}</p>
+              <x.icon size={16} className="text-brand-accent" />
+            </div>
+            <p className={`font-display text-5xl tracking-wide leading-[0.9] ${th.text}`}>{x.value}</p>
+            <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{x.sub}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
+};
+
+/* Paired bars: budget (grey) vs actual / pace (orange). rows = [{label, budget, actual, note}] in $ */
+const PairBars = ({ rows, max, actualName = 'Actual', showBudgetOnly = false }) => {
+  const th = useTheme();
+  const H = 300;
+  return (
+    <div className="flex flex-col h-full justify-end">
+      <div className="flex items-end justify-around gap-6" style={{ height: H + 40 }}>
+        {rows.map((r, i) => (
+          <div key={i} className="flex items-end gap-3">
+            {[['budget', r.budget, th.barGrey], ['actual', r.actual, 'bg-brand-accent']].map(([key, val, cls]) => val == null ? null : (
+              <div key={key} className="flex flex-col items-center justify-end">
+                <span className={`text-[15px] font-heading font-bold mb-1 ${th.text}`}>{k(val)}</span>
+                <div className={`w-20 rounded-t ${cls}`} style={{ height: Math.max(4, (val / max) * H) }} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-around gap-6 mt-3">
+        {rows.map((r, i) => <p key={i} className={`text-[14px] font-heading font-semibold tracking-[.15em] uppercase ${th.sub} w-48 text-center`}>{r.label}</p>)}
+      </div>
+      <div className="flex items-center justify-center gap-6 mt-4">
+        <span className={`flex items-center gap-2 text-[13px] font-body ${th.sub}`}><span className={`w-3 h-3 rounded-sm ${th.barGrey}`} />Budget</span>
+        <span className={`flex items-center gap-2 text-[13px] font-body ${th.sub}`}><span className="w-3 h-3 rounded-sm bg-brand-accent" />{actualName}</span>
+      </div>
+    </div>
+  );
+};
+
+const Card = ({ title, tag, children, tone }) => {
+  const th = useTheme();
+  return (
+    <div className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-5 flex flex-col gap-2`}>
+      <div className="flex items-start justify-between gap-3">
+        <p className={`text-[18px] font-heading font-semibold ${th.text} leading-tight`}>{title}</p>
+        {tag && <Pill tone={tone}>{tag}</Pill>}
+      </div>
+      <div className={`text-[14px] font-body ${th.sub} leading-snug`}>{children}</div>
+    </div>
+  );
+};
+
+/* ===================== DATA (edit here, not in JSX) =====================
+   Sources: NetSuite via GAF Master Dashboard feeds (core channels: GAF DATA tab,
+   channel revenue: BHAG AOV tab, Wholesale: Wholesale Monthly Budget FY27 tab),
+   Q1/Q2 FY27 OPSP docs, gaf-strategy-overview-fy27, hgb-tracker, Centr/Hyrox deck. */
+const Q1 = {
+  core:  { gpAct: [878543, 483102, 508606], gpBud: [554204, 554204, 519566], revAct: 4439603, createdGP: 1728593, createdGPBud: 1709374 },
+  ws:    { gpAct: [63981, 26515, 214351], gpBud: [67630, 61911, 61797], revAct: 766657, revBud: 539510 },
+  created: { cur: 4454480, ly: 3830477, orders: 2598, ordersLy: 2826 },
+  chan: { offline: [2361401, 2767318], commercial: [1030368, 58493], online: [1062711, 1004665] },
+  hyrox: { cur: 455978, ly: 272560 },
+};
+const sum = a => a.reduce((s, x) => s + x, 0);
+const tot = { gp: sum(Q1.core.gpAct) + sum(Q1.ws.gpAct), bud: sum(Q1.core.gpBud) + sum(Q1.ws.gpBud), rev: Q1.core.revAct + Q1.ws.revAct };
+tot.gm = tot.gp / tot.rev * 100;
+const OCT = { gpInv: 532149, gpInvBud: 493884, gpCr: 578716, gpCrBud: 518579, gm: 42.25, crRev: 1442423, crRevLy: 1203798, orders: 750, ordersLy: 775, sess: 157708, sessTgt: 163774,
+  fullBudInv: 588862, fullBudCr: 618305, novBudInv: 845162, decBudInv: 658118 };
+OCT.pace = OCT.gpInv / OCT.gpInvBud * OCT.fullBudInv;
+
+/* ===================== 1. COVER ===================== */
+const TitleSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col justify-center px-24 relative">
+      <p className="text-[14px] font-heading font-bold tracking-[.4em] uppercase text-brand-accent mb-6">Gym and Fitness AU · Shareholder Update</p>
+      <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Q1 FY27 Results</h1>
+      <p className="text-[20px] font-body text-white/70 mt-8 max-w-3xl leading-snug">July to September 2026: financials, sales by channel and strategic initiatives, plus the quarter ahead and October to date.</p>
+      <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
+        <img src={LOGO} alt="" className="h-8 w-auto brightness-0 invert" />
+        <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">Presented 27 October 2026</span>
+      </div>
+    </div>
+  </Slide>
+);
+
+/* ===================== 2. FY27 STRATEGY ===================== */
+const StrategySlide = ({ n, t }) => {
+  const priorities = [
+    ['1 · Home Gym Builder', 'Pivot brand and digital acquisition to the Home Gym Builder, including the AI Gym Designer.'],
+    ['2 · High-margin core range', 'Rationalise product by 30 June 2027 and focus on our best-performing customers.'],
+    ['3 · Profitable wholesale', 'A scalable dealer channel that strengthens relationships and aligns with GAF Retail.'],
+    ['4 · Inventory returns', 'Lift GMROI through stock velocity, optimisation and category margin management.'],
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="FY27 Strategy" title="WIN THE HOME GYM BUILDER" sub="Be the No.1 choice for people building a gym at home. Every channel, at a profit." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-2 gap-4 stagger">
+          {priorities.map(([a, b], i) => <Card key={i} title={a}>{b}</Card>)}
+        </div>
+        <Callout>FY27 goal: $25.2M revenue, $9.39M gross profit at a 37.2% margin. A Home Gym Builder (9% of customers) earns 2.5x the profit of an online-only buyer.</Callout>
+      </div>
+      <Source>Sources: GAF OPSP Q1 FY27 (FY27 goals and annual priorities); Strategy Day debrief, May 2026 (Profit Per X).</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 3. Q1 FINANCIALS ===================== */
+const FinancialsSlide = ({ n, t }) => {
+  const headline = [
+    { label: 'Gross Profit (Invoiced)', value: m(tot.gp), icon: Dollar, sub: `Budget ${m(tot.bud)}. ${pc(tot.gp, tot.bud)} ahead. Core channels plus Wholesale, Q1 FY27.` },
+    { label: 'Gross Margin', value: tot.gm.toFixed(1) + '%', icon: TrendUp, sub: 'Against a 37.2% FY27 goal. Q1 FY26 was 36%.' },
+  ];
+  const supporting = [
+    { label: 'Invoiced Revenue', value: '~' + m(tot.rev), icon: Dollar, sub: 'Derived from GP and margin' },
+    { label: 'Created Sales', value: m(Q1.created.cur), icon: Pkg, sub: `${pc(Q1.created.cur, Q1.created.ly)} on Q1 FY26 (${m(Q1.created.ly)})` },
+    { label: 'Orders Created', value: Q1.created.orders.toLocaleString('en-AU'), icon: Users, sub: `${pc(Q1.created.orders, Q1.created.ordersLy)} on Q1 FY26, so value per order rose` },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Jul to Sep 2026" title="Q1 BEAT BUDGET ON GROSS PROFIT" sub="On track against the annual gross profit goal: 23% of the $9.39M FY27 target delivered against 19% budgeted for the quarter." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <KpiGrid headline={headline} supporting={supporting} />
+        <Callout>Margin is the story: fewer, bigger orders at a higher margin. Order intake was close to budget (created gross profit {pc(Q1.core.createdGP, Q1.core.createdGPBud)}), so most of the beat came from July invoicing.</Callout>
+      </div>
+      <Source>Sources: NetSuite via GAF Master Dashboard (invoiced = fulfilled GP; Wholesale from NetSuite Budget vs Actual export). Revenue is derived (GP divided by margin), not a ledger figure. Q1 FY26 margin from the Q1 FY26 shareholder update.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 4. MONTH BY MONTH ===================== */
+const MonthlySlide = ({ n, t }) => {
+  const rows = ['July', 'August', 'September'].map((label, i) => ({ label, budget: Q1.core.gpBud[i] + Q1.ws.gpBud[i], actual: Q1.core.gpAct[i] + Q1.ws.gpAct[i] }));
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Gross Profit by Month" title="JULY CARRIED THE QUARTER" sub="Invoiced gross profit against budget. August was the soft month." />
+      <div className="flex-1 grid grid-cols-5 gap-8 min-h-0">
+        <div className="col-span-3 min-h-0"><PairBars rows={rows} max={1000000} /></div>
+        <div className="col-span-2 flex flex-col justify-center gap-4 stagger">
+          <Card title={`July ${pc(rows[0].actual, rows[0].budget)}`}>Strongest month by far. Likely helped by June EOFY orders invoicing in July, so partly timing.</Card>
+          <Card title={`August ${pc(rows[1].actual, rows[1].budget)}`} tag="Below budget" tone="amber">Core invoicing and Wholesale both ran under plan.</Card>
+          <Card title={`September ${pc(rows[2].actual, rows[2].budget)}`}>Back above budget, with a large Wholesale month ($423k revenue).</Card>
+        </div>
+      </div>
+      <Source>Source: NetSuite via GAF Master Dashboard, core channels plus Wholesale, invoiced gross profit vs FY27 budget. The July timing explanation is an inference from order flow and should be confirmed before presenting.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 5. CHANNELS ===================== */
+const ChannelsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const c = Q1.chan;
+  const items = [
+    { name: 'Offline', value: m(c.offline[0]), sub: `${pc(c.offline[0], c.offline[1])} on Q1 FY26 (${m(c.offline[1])})`, note: 'Sales team and assisted orders', tag: 'Down', tone: 'amber' },
+    { name: 'Commercial', value: m(c.commercial[0]), sub: `Q1 FY26 ${k(c.commercial[1])}, first reported Sep 2025`, note: 'Gyms, mining, defence, schools', tag: 'New view', tone: 'accent' },
+    { name: 'Online', value: m(c.online[0]), sub: `${pc(c.online[0], c.online[1])} on Q1 FY26 (${m(c.online[1])})`, note: 'Website checkout', tag: 'Up', tone: 'green' },
+    { name: 'Wholesale', value: m(Q1.ws.revAct), sub: `Budget ${m(Q1.ws.revBud)}, ${pc(Q1.ws.revAct, Q1.ws.revBud)}`, note: 'Dealers and retail partners, invoiced', tag: 'Ahead', tone: 'green' },
+  ];
+  const assisted = c.offline[0] + c.commercial[0], assistedLy = c.offline[1] + c.commercial[1];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Sales by Channel" title="SALES BY CHANNEL" sub="Created sales by channel against the same quarter last year. Wholesale is invoiced revenue against budget." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-4 gap-4 stagger">
+          {items.map((p, i) => (
+            <div key={i} className={`${i === 3 ? `${th.kpiAccentBg} ${th.borderAccent}` : `${th.cardBg} ${th.cardBorder}`} border rounded-lg p-5 flex flex-col gap-3 ${th.text}`}>
+              <div className="flex items-center justify-between">
+                <p className="text-[13px] font-heading font-bold tracking-[.25em] uppercase text-brand-accent">{p.name}</p>
+                <Pill tone={p.tone}>{p.tag}</Pill>
+              </div>
+              <p className="font-display text-5xl leading-[0.95]">{p.value}</p>
+              <p className="text-[14px] font-body leading-snug">{p.sub}</p>
+              <p className="text-[12px] font-body opacity-60 leading-snug">{p.note}</p>
+            </div>
+          ))}
+        </div>
+        <Callout>Offline and Commercial together are {m(assisted)}, {pc(assisted, assistedLy)} on last year. Commercial was not reported separately in Jul to Aug 2025, so the two are best read combined.</Callout>
+      </div>
+      <Source>Sources: NetSuite via GAF Master Dashboard (created sales ex GST by channel, 1 Jul to 30 Sep 2026 vs 2025); Wholesale invoiced revenue vs FY27 budget (NetSuite Budget vs Actual export). Channel totals exclude Wholesale in the created-sales comparison.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 6. GROWTH CHANNELS ===================== */
+const GrowthSlide = ({ n, t }) => {
+  const wsGp = sum(Q1.ws.gpAct), wsBud = sum(Q1.ws.gpBud);
+  const headline = [
+    { label: 'Wholesale Gross Profit', value: k(wsGp), icon: TrendUp, sub: `Budget ${k(wsBud)}. ${pc(wsGp, wsBud)} ahead on ${pc(Q1.ws.revAct, Q1.ws.revBud)} revenue.` },
+    { label: 'Centr / Hyrox Revenue', value: k(Q1.hyrox.cur), icon: Dollar, sub: `${pc(Q1.hyrox.cur, Q1.hyrox.ly)} on Q1 FY26 (${k(Q1.hyrox.ly)}). Exclusive Hyrox equipment provider.` },
+  ];
+  const supporting = [
+    { label: 'Sep Wholesale Rev', value: '$423k', icon: Pkg, sub: 'vs $100k in August' },
+    { label: 'Dealer Pricing', value: '8 of 8', icon: Users, sub: 'Partner pricing program steps done' },
+    { label: 'Commercial Created', value: m(Q1.chan.commercial[0]), icon: Target, sub: 'Q1 created sales' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Growth Channels" title="WHOLESALE AND HYROX GAINED GROUND" sub="Wholesale (an FY27 priority) and Hyrox (our exclusive equipment play) are both showing up in the numbers." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <KpiGrid headline={headline} supporting={supporting} />
+        <Callout icon={Warn}>Wholesale is lumpy: one strong month (September) delivered most of the beat, and October invoicing is light so far. Treat it as a trend to prove, not a run-rate.</Callout>
+      </div>
+      <Source>Sources: Wholesale Monthly Budget FY27 (NetSuite export); Centr/Hyrox Apr to Sep 2026 deck (NetSuite, Jul to Sep vs Jul to Sep 2025); Strategic Priorities tab (Asana, at 19 Oct).</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 7. Q1 INITIATIVES ===================== */
+const Q1InitiativesSlide = ({ n, t }) => {
+  const items = [
+    { name: 'Home Gym Builder plan + AI Gym Designer', status: 'Complete', tone: 'green', prog: '10 of 10 steps', note: 'Plan delivered, AI Designer live and wired to HubSpot. 104 designs against a 100 milestone.' },
+    { name: 'SKU health + GMROI visibility', status: 'Complete', tone: 'green', prog: '3 of 3 steps', note: 'Weekly SKU health reporting live; GMROI method and dashboard in place.' },
+    { name: 'Wholesale partner pricing program', status: 'Complete', tone: 'green', prog: '8 of 8 steps', note: 'Dealer audit, segmentation and tiered pricing built and presented.' },
+    { name: 'Remove 50% of red and blue SKUs', status: 'On track', tone: 'amber', prog: '3 of 4 steps', note: 'Categorisation and core lists done. Website AOV listings still open.' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Strategic Initiatives" title="THREE OF FOUR COMPLETE" sub="Quarter theme: Drop the Dead Weight. Status as at 19 October." />
+      <div className="flex-1 grid grid-cols-2 gap-4 min-h-0 content-center stagger">
+        {items.map((p, i) => (
+          <Card key={i} title={p.name} tag={p.status} tone={p.tone}>
+            <p className="font-heading font-semibold text-[13px] tracking-[.1em] uppercase mb-1">{p.prog}</p>
+            {p.note}
+          </Card>
+        ))}
+      </div>
+      <Source>Source: GAF Master Dashboard, Strategic Priorities tab (Asana, Sprint Q1FY27; progress = completed subtasks).</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 8. Q1 CRITICAL NUMBERS ===================== */
+const Q1NumbersSlide = ({ n, t }) => {
+  const th = useTheme();
+  const items = [
+    { label: 'GC Dead Stock', value: '$404k', sub: 'Down from $692k (a 42% cut). Target under $550k; stretch under $400k.', pill: 'Green', tone: 'green', hero: true },
+    { label: 'GAF AOV Growth', value: '+5%', sub: 'Target 4%', pill: 'Super green', tone: 'green' },
+    { label: 'IDC Gross Margin', value: '42.6%', sub: 'Target above 40%', pill: 'Super green', tone: 'green' },
+    { label: 'Gym Designs Created', value: '104', sub: 'Target 15 (milestone 100)', pill: 'Super green', tone: 'green' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Q1 FY27 · Critical Numbers" title="EVERY CRITICAL NUMBER LANDED GREEN" sub="Frozen at 30 September. Bands run red, yellow, green, super green." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <div className="grid grid-cols-4 gap-4 stagger">
+          {items.map((p, i) => (
+            <div key={i} className={`${p.hero ? `${th.kpiAccentBg} border ${th.borderAccent}` : `${th.cardBg} border ${th.cardBorder}`} rounded-lg p-5 flex flex-col gap-3`}>
+              <p className={`text-[12px] font-heading font-medium tracking-[.25em] uppercase ${p.hero ? 'text-brand-accent' : th.sub}`}>{p.label}</p>
+              <p className={`font-display text-6xl leading-[0.95] ${p.hero ? 'text-brand-accent' : th.text}`}>{p.value}</p>
+              <p className={`text-[13px] font-body ${th.sub} leading-snug`}>{p.sub}</p>
+              <div><Pill tone={p.tone}>{p.pill}</Pill></div>
+            </div>
+          ))}
+        </div>
+        <Callout>Dead stock was the theme and the biggest win: $288k of capital released. It has since dipped under $400k (GC dead stock $395k at 19 October).</Callout>
+      </div>
+      <Source>Sources: GAF OPSP Q1 FY27 critical numbers; Deadstock Tracker FY27 (AFS-Gold Coast only); Gym Designer app count, 15 Jul to 30 Sep.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 9. QUARTER AHEAD ===================== */
+const Q2PlanSlide = ({ n, t }) => {
+  const items = [
+    { name: 'Faster bundle builds to lift AOV', status: 'Stuck', tone: 'red', note: 'AOV above $2,200 by 31 Dec. 1 of 5 steps done; app trial due 28 Oct, 14 new bundles live by 13 Nov. Owner: Shanice.' },
+    { name: 'Retail channel costs and benefits', status: 'On track', tone: 'amber', note: 'Business plan due 4 Dec. 0 of 5 steps done, 1 step overdue. Owner: Joel.' },
+    { name: '12-month Tier 1 supplier forecast', status: 'On track', tone: 'amber', note: 'Fewer stockouts, less excess. Priority suppliers named by 30 Oct. Owner: Michelle.' },
+    { name: 'Experience Centre sales and content plan', status: 'On track', tone: 'green', note: '+20% walk-ins and +15% orders by 31 Mar. 3 of 8 steps done: baseline, targets and sales briefing. Owner: Adam.' },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Quarter Ahead · Q2 FY27 · Oct to Dec" title="LOCKED, STOCKED, LOADED" sub="From shedding dead stock to never being out of the right stock. Critical number: inventory fill rate from 81.7% to 95.5%. Status at 19 October." />
+      <div className="flex-1 grid grid-cols-2 gap-4 min-h-0 content-center stagger">
+        {items.map((p, i) => <Card key={i} title={p.name} tag={p.status} tone={p.tone}>{p.note}</Card>)}
+      </div>
+      <Source>Sources: GAF OPSP Q2 FY27 (theme and critical number); GAF Master Dashboard, Strategic Priorities tab (Asana, Sprint Q2FY27, completed subtasks, 19 Oct). Black Friday runs 2 to 30 November.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 10. OCTOBER TO DATE ===================== */
+const OctoberSlide = ({ n, t }) => {
+  const headline = [
+    { label: 'Gross Profit Invoiced', value: k(OCT.gpInv), icon: Dollar, sub: `Budget for the same days ${k(OCT.gpInvBud)}. ${pc(OCT.gpInv, OCT.gpInvBud)} ahead.` },
+    { label: 'Gross Profit Created', value: k(OCT.gpCr), icon: TrendUp, sub: `Budget for the same days ${k(OCT.gpCrBud)}. ${pc(OCT.gpCr, OCT.gpCrBud)} ahead.` },
+  ];
+  const supporting = [
+    { label: 'Margin (Invoiced)', value: OCT.gm.toFixed(1) + '%', icon: Target, sub: 'Above the 42% goal' },
+    { label: 'Created Sales', value: m(OCT.crRev), icon: Pkg, sub: `${pc(OCT.crRev, OCT.crRevLy)} on the same days last year; orders ${pc(OCT.orders, OCT.ordersLy)}` },
+    { label: 'Web Sessions', value: Math.round(OCT.sess / 1000) + 'k', icon: Users, sub: `${pc(OCT.sess, OCT.sessTgt)} vs target (${Math.round(OCT.sessTgt / 1000)}k)` },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Quarter to Date · 1 to 26 October (Month to Date)" title="OCTOBER IS RUNNING AHEAD" sub="Core channels, day-matched to budget. This is 26 days, not a full month." />
+      <div className="flex-1 flex flex-col gap-4 min-h-0 justify-center">
+        <KpiGrid headline={headline} supporting={supporting} />
+        <Callout>Higher margin on fewer orders again. Traffic is slightly under target, so the lift is coming from conversion and order value, not volume.</Callout>
+      </div>
+      <Source>Sources: NetSuite via GAF Master Dashboard (GAF DATA, BHAG AOV and website sessions tabs), 1 to 26 Oct 2026 vs budget and vs 1 to 26 Oct 2025. Excludes Wholesale. 27 Oct excluded as a partial day.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 11. TRAJECTORY ===================== */
+const TrajectorySlide = ({ n, t }) => {
+  const rows = [
+    { label: 'Oct (pace)', budget: OCT.fullBudInv, actual: OCT.pace },
+    { label: 'Nov', budget: OCT.novBudInv },
+    { label: 'Dec', budget: OCT.decBudInv },
+  ];
+  return (
+    <Slide num={n} total={t}>
+      <SectionTitle pre="Quarter Ahead · Trajectory" title="BLACK FRIDAY IS THE BIG TEST" sub={`October pace points to about ${k(OCT.pace)} against a ${k(OCT.fullBudInv)} budget. November carries the largest budget of the half.`} />
+      <div className="flex-1 grid grid-cols-5 gap-8 min-h-0">
+        <div className="col-span-3 min-h-0"><PairBars rows={rows} max={1000000} actualName="October pace (MTD run-rate)" /></div>
+        <div className="col-span-2 flex flex-col justify-center gap-3 stagger">
+          <Card title="Fill rate 85.2%" tag="Ahead of glide" tone="green">Goal 95.5% by quarter end, up from 81.7%. Below 90% at 31 Dec is red.</Card>
+          <Card title="Bundle AOV push" tag="Stuck" tone="red">Needs the app trial and 14 bundles live before Black Friday.</Card>
+          <Card title="Wholesale in October" tag="Watch" tone="amber">$5k gross profit invoiced so far against a $75k monthly budget (NetSuite export, may lag).</Card>
+          <Card title="Home gym builds: 339 FYTD" tag="Watch" tone="amber">+2% on the same point last year; the FY27 target of 1,595 needs about 21% growth.</Card>
+        </div>
+      </div>
+      <Source>Sources: Core invoiced GP budget from GAF DATA tab. October pace = month-to-date result against day-matched budget, applied to the full-month budget: an extrapolation, not a forecast. Fill rate from Fill Rate Report FY27 (week 16). Builds: hgb-tracker, 27 Oct. Wholesale: Wholesale Monthly Budget FY27 tab.</Source>
+    </Slide>
+  );
+};
+
+/* ===================== 12. CLOSE ===================== */
+const CloseSlide = ({ n, t }) => (
+  <Slide num={n} total={t} noPad>
+    <div className="w-full h-full bg-brand-black flex flex-col items-center justify-center gap-6">
+      <h2 className="font-display text-8xl uppercase text-white">Questions</h2>
+      <p className="text-[18px] font-body text-white/60">Gym and Fitness AU · Q1 FY27 shareholder update</p>
+    </div>
+  </Slide>
+);
+
+/* ===================== CLICK-TO-EDIT =====================
+   Edits are stored per slide as { i: element position, from: original html, to: edited html }.
+   They autosave in this browser (localStorage). "Download deck" bakes them into a copy of this file
+   (the <script id="deck-edits"> tag), so everyone who opens that copy sees the edited text. */
+const BAKED = (() => { try { return JSON.parse(document.getElementById('deck-edits').textContent); } catch (e) { return { stamp: 0, edits: {} }; } })();
+const LS_KEY = 'gafShareholderQ1FY27Edits:' + (BAKED.stamp || 0);
+const loadEdits = () => {
+  try { const s = localStorage.getItem(LS_KEY); if (s) return JSON.parse(s); } catch (e) {}
+  return JSON.parse(JSON.stringify(BAKED.edits || {}));
+};
+const persistEdits = (edits) => { try { localStorage.setItem(LS_KEY, JSON.stringify(edits)); } catch (e) {} };
+const countEdits = (edits) => Object.values(edits).reduce((s, l) => s + (l ? l.length : 0), 0);
+// Outermost elements that hold their own text (so a pill-tagged card title edits as one block).
+const collectEditable = (root) => {
+  const out = [];
+  const walk = (el) => {
+    for (const c of el.children) {
+      if (c instanceof SVGElement || c.tagName === 'IMG' || c.tagName === 'SCRIPT' || c.hasAttribute('data-noedit')) continue;
+      const hasText = [...c.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+      if (hasText) out.push(c); else walk(c);
+    }
+  };
+  walk(root);
+  return out;
+};
+const saveFile = (content, name, type) => {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+/* ===================== ENGINE ===================== */
+const SLIDES = [TitleSlide, StrategySlide, FinancialsSlide, MonthlySlide, ChannelsSlide, GrowthSlide, Q1InitiativesSlide, Q1NumbersSlide, Q2PlanSlide, OctoberSlide, TrajectorySlide, CloseSlide];
+
+function App() {
+  const [idx, setIdx]   = useState(0);
+  const [key, setKey]   = useState(0);
+  const [dark, setDark] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editCount, setEditCount] = useState(() => countEdits(loadEdits()));
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+  const stageRef = useRef(null);
+  const fileRef = useRef(null);
+  const editsRef = useRef(loadEdits());
+  const elsRef = useRef([]);
+  const origRef = useRef([]);
+
+  const go = useCallback((dir) => {
+    setIdx(prev => {
+      const next = prev + dir;
+      if (next >= 0 && next < SLIDES.length) { setKey(k => k + 1); return next; }
+      return prev;
+    });
+  }, []);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.target && e.target.isContentEditable) return;           // typing on a slide
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      if (e.key === 'd' || e.key === 'D') setDark(v => !v);
+      if (e.key === 'e' || e.key === 'E') setEditMode(v => !v);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [go]);
+
+  useEffect(() => {
+    document.body.style.background = th.bodyBg;
+    document.body.className = editMode ? 'edit-on' : '';
+  }, [th.bodyBg, editMode]);
+
+  // Each time a slide is mounted: find its editable text, remember the originals, apply saved edits.
+  useLayoutEffect(() => {
+    const els = collectEditable(stageRef.current);
+    elsRef.current = els;
+    origRef.current = els.map(e => e.innerHTML);
+    (editsRef.current[idx] || []).forEach(({ i, from, to }) => {
+      if (els[i] && origRef.current[i] === from) els[i].innerHTML = to;
+    });
+    els.forEach(e => { e.setAttribute('data-editable', ''); e.setAttribute('spellcheck', 'false'); e.contentEditable = editMode ? 'true' : 'false'; });
+  }, [idx, key]);
+
+  useEffect(() => {
+    elsRef.current.forEach(e => { e.contentEditable = editMode ? 'true' : 'false'; });
+    if (!editMode && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }, [editMode]);
+
+  const recordEdits = () => {
+    const list = [];
+    elsRef.current.forEach((e, i) => { if (e.innerHTML !== origRef.current[i]) list.push({ i, from: origRef.current[i], to: e.innerHTML }); });
+    if (list.length) editsRef.current[idx] = list; else delete editsRef.current[idx];
+    persistEdits(editsRef.current);
+    setEditCount(countEdits(editsRef.current));
+  };
+  const onKeyDown = (e) => {
+    if (!e.target.isContentEditable) return;
+    if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) document.execCommand('insertLineBreak'); else e.target.blur(); }
+    else if (e.key === 'Escape') { e.target.blur(); }
+  };
+  const onPaste = (e) => {
+    if (!e.target.isContentEditable) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  };
+  const resetSlide = () => {
+    elsRef.current.forEach((e, i) => { e.innerHTML = origRef.current[i]; });
+    delete editsRef.current[idx]; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current));
+  };
+  const resetAll = () => {
+    if (!window.confirm('Discard every edit on every slide?')) return;
+    editsRef.current = {}; try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    setEditCount(0); setKey(k => k + 1);
+  };
+  const downloadEdits = () => saveFile(JSON.stringify({ stamp: BAKED.stamp || 0, edits: editsRef.current }, null, 1), 'gaf-shareholder-update-q1-fy27-edits.json', 'application/json');
+  const loadEditsFile = (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try { const j = JSON.parse(r.result); editsRef.current = j.edits || j; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current)); setKey(k => k + 1); }
+      catch (err) { window.alert('That file is not a valid edits file.'); }
+    };
+    r.readAsText(f); e.target.value = '';
+  };
+  const downloadDeck = async () => {
+    try {
+      const res = await fetch(location.href.split('#')[0]);
+      if (!res.ok) throw new Error('fetch failed');
+      const src = await res.text();
+      const payload = JSON.stringify({ stamp: Date.now(), edits: editsRef.current }).replace(/</g, '\\u003c');
+      const out = src.replace(/(<script id="deck-edits" type="application\/json">)[\s\S]*?(<\/script>)/, (m, a, b) => a + payload + b);
+      saveFile(out, 'gaf-shareholder-update-q1-fy27.html', 'text/html');
+    } catch (err) {
+      window.alert('"Download deck" only works when the deck is opened from a web address (for example the published site). Use "Download edits" instead, and "Load edits" on another copy.');
+    }
+  };
+  const tbtn = 'px-3 py-1.5 rounded-md text-[12px] font-heading font-semibold tracking-wide whitespace-nowrap bg-white/10 hover:bg-brand-accent text-white transition-colors';
+
+  const Cur = SLIDES[idx];
+
+  return (
+    <ThemeCtx.Provider value={th}>
+      {editMode && (
+        <div data-noedit className="fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-brand-black/95 text-white rounded-lg px-3 py-2 shadow-xl">
+          <Pencil size={14} className="text-brand-accent" />
+          <span className="text-[12px] font-body mr-1 whitespace-nowrap">Edit mode · click text to edit · {editCount} change{editCount === 1 ? '' : 's'}</span>
+          <button className={tbtn} onClick={resetSlide}>Reset slide</button>
+          <button className={tbtn} onClick={resetAll}>Reset all</button>
+          <button className={tbtn} onClick={downloadDeck}>Download deck</button>
+          <button className={tbtn} onClick={downloadEdits}>Download edits</button>
+          <button className={tbtn} onClick={() => fileRef.current && fileRef.current.click()}>Load edits</button>
+          <button className="px-3 py-1.5 rounded-md text-[12px] font-heading font-bold whitespace-nowrap bg-brand-accent text-white" onClick={() => setEditMode(false)}>Done</button>
+          <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={loadEditsFile} />
+        </div>
+      )}
+      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div ref={stageRef} onInput={recordEdits} onKeyDown={onKeyDown} onPaste={onPaste} style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
+          <div key={key} className="w-full h-full slide-enter">
+            <Cur n={idx + 1} t={SLIDES.length} />
+          </div>
+        </div>
+        <div data-noedit className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={() => setEditMode(v => !v)} title="Click-to-edit mode (E)"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${editMode ? 'bg-brand-accent border-brand-accent text-white' : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <Pencil size={18} />
+          </button>
+          <button onClick={() => setDark(v => !v)} title="Toggle theme (D)"
+            className={`w-10 h-10 rounded-lg border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover} flex items-center justify-center transition-colors`}>
+            {dark ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button onClick={() => go(-1)} disabled={idx === 0} title="Previous"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === 0 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevL size={18} />
+          </button>
+          <button onClick={() => go(1)} disabled={idx === SLIDES.length - 1} title="Next"
+            className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${idx === SLIDES.length - 1 ? th.navDisabled + ' ' + th.navBorder : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+            <ChevR size={18} />
+          </button>
+        </div>
+      </div>
+    </ThemeCtx.Provider>
+  );
+}
+
+createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

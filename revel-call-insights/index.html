@@ -1,0 +1,1095 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revel Call Insights</title>
+<link rel="icon" type="image/png" href="../revel-customer-intelligence-july-2026/revel-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f6f6f2;
+  --surface: #ffffff;
+  --surface-2: #f3f4ef;
+  --ink: #141714;
+  --ink-2: #4f554f;
+  --muted: #7d827b;
+  --hair: #e3e5de;
+  --axis: #c6c9c0;
+  --ring: rgba(20, 23, 20, 0.08);
+  --brand: #485d4d;          /* Revel dark green */
+  --brand-soft: #abb99c;     /* Revel sage */
+  --brand-wash: #eef1e9;
+  --bar: #485d4d;            /* single-series bars */
+  --bar-track: #eef0ea;
+  --good-text: #006300;
+  --bad-text: #c4302f;
+  /* diverging scale (poor -> excellent, very negative -> very positive) */
+  --div-n2: #e34948;
+  --div-n1: #f4a09e;
+  --div-0: #d6d5cf;
+  --div-p1: #86b6ef;
+  --div-p2: #2a78d6;
+  /* pricing classes (categorical, fixed order) */
+  --pr-u: #eb6834;
+  --pr-po: #2a78d6;
+  --pr-ph: #1baf7a;
+  --pr-n: #d6d5cf;
+  /* sequential (brand green) for score heatmaps */
+  --seq-1: #f1f4ec;
+  --seq-2: #d9e1cf;
+  --seq-3: #b4c3a6;
+  --seq-4: #7f9478;
+  --seq-5: #485d4d;
+  --line-1: #2a78d6;
+  --line-2: #eb6834;
+  --line-3: #1baf7a;
+  --shadow: 0 1px 2px rgba(20, 23, 20, 0.04), 0 4px 16px rgba(20, 23, 20, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0f110f;
+    --surface: #181b18;
+    --surface-2: #202420;
+    --ink: #eef0ea;
+    --ink-2: #c2c7bd;
+    --muted: #8d9389;
+    --hair: #2a2e2a;
+    --axis: #3a3f39;
+    --ring: rgba(255, 255, 255, 0.08);
+    --brand: #abb99c;
+    --brand-soft: #6f8166;
+    --brand-wash: #232a22;
+    --bar: #abb99c;
+    --bar-track: #232723;
+    --good-text: #35b935;
+    --bad-text: #f07a79;
+    --div-n2: #e66767;
+    --div-n1: #a34a49;
+    --div-0: #4f4f4a;
+    --div-p1: #256abf;
+    --div-p2: #6da7ec;
+    --pr-u: #d95926;
+    --pr-po: #3987e5;
+    --pr-ph: #199e70;
+    --pr-n: #3a3a37;
+    --seq-1: #222821;
+    --seq-2: #344031;
+    --seq-3: #4f6249;
+    --seq-4: #7b9070;
+    --seq-5: #b6c6a6;
+    --line-1: #3987e5;
+    --line-2: #d95926;
+    --line-3: #199e70;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0f110f;
+  --surface: #181b18;
+  --surface-2: #202420;
+  --ink: #eef0ea;
+  --ink-2: #c2c7bd;
+  --muted: #8d9389;
+  --hair: #2a2e2a;
+  --axis: #3a3f39;
+  --ring: rgba(255, 255, 255, 0.08);
+  --brand: #abb99c;
+  --brand-soft: #6f8166;
+  --brand-wash: #232a22;
+  --bar: #abb99c;
+  --bar-track: #232723;
+  --good-text: #35b935;
+  --bad-text: #f07a79;
+  --div-n2: #e66767;
+  --div-n1: #a34a49;
+  --div-0: #4f4f4a;
+  --div-p1: #256abf;
+  --div-p2: #6da7ec;
+  --pr-u: #d95926;
+  --pr-po: #3987e5;
+  --pr-ph: #199e70;
+  --pr-n: #3a3a37;
+  --seq-1: #222821;
+  --seq-2: #344031;
+  --seq-3: #4f6249;
+  --seq-4: #7b9070;
+  --seq-5: #b6c6a6;
+  --line-1: #3987e5;
+  --line-2: #d95926;
+  --line-3: #199e70;
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.5 "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: Montserrat, "Open Sans", system-ui, sans-serif; margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+a { color: var(--brand); }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+/* header */
+.top { padding: 28px 0 18px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.brand-row { display: flex; align-items: center; gap: 12px; }
+.wordmark { font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: 0.32em; font-size: 13px; color: var(--brand); padding: 6px 10px 6px 12px; border: 1.5px solid var(--brand); border-radius: 4px; }
+.top h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+.top .sub { color: var(--ink-2); margin-top: 4px; max-width: 760px; }
+.top .meta { color: var(--muted); font-size: 12.5px; text-align: right; }
+.theme-btn { border: 1px solid var(--hair); background: var(--surface); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+
+/* filters */
+.filters { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--page) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--hair); }
+.filters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding-top: 10px; padding-bottom: 10px; }
+.fgroup { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.flabel { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--hair); border-radius: 8px; padding: 2px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; cursor: pointer; color: var(--ink-2); font-size: 13px; white-space: nowrap; }
+.seg button:hover { background: var(--ring); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+select, input[type="date"], input[type="search"] { background: var(--surface); border: 1px solid var(--hair); border-radius: 8px; padding: 5px 8px; font-size: 13px; max-width: 100%; }
+select:focus-visible, input:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.reset { border: 0; background: none; color: var(--brand); cursor: pointer; font-size: 13px; font-weight: 600; padding: 4px 2px; }
+.focus-pill { display: none; align-items: center; gap: 6px; background: var(--brand-wash); border: 1px solid var(--brand-soft); color: var(--ink); border-radius: 999px; padding: 3px 6px 3px 12px; font-size: 12.5px; }
+.focus-pill.on { display: inline-flex; }
+.focus-pill a { font-weight: 600; text-decoration: none; }
+.focus-pill button { border: 0; background: var(--surface); border-radius: 999px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
+
+/* layout */
+main { padding: 20px 0 64px; }
+.section { margin-top: 34px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-head h2 { font-size: 18px; font-weight: 600; }
+.section-head p { margin: 2px 0 0; color: var(--ink-2); max-width: 820px; }
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g-skills { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+@media (max-width: 1080px) { .g2, .g-skills { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 18px 18px 16px; box-shadow: var(--shadow); min-width: 0; }
+.card h3 { font-size: 14.5px; font-weight: 600; }
+.card .cap { color: var(--muted); font-size: 12.5px; margin: 2px 0 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.empty { color: var(--muted); padding: 18px 0; text-align: center; font-size: 13px; }
+
+/* KPI tiles */
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1180px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.kpi { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 14px 14px 12px; box-shadow: var(--shadow); min-width: 0; }
+.kpi .k-label { color: var(--ink-2); font-size: 12.5px; font-weight: 500; }
+.kpi .k-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; font-family: Montserrat, sans-serif; }
+.kpi .k-foot { color: var(--muted); font-size: 12px; min-height: 18px; }
+.delta { font-weight: 600; font-size: 12px; }
+.delta.up-good, .delta.down-good { color: var(--good-text); }
+.delta.up-bad, .delta.down-bad { color: var(--bad-text); }
+.delta.flat { color: var(--muted); }
+
+/* horizontal bars */
+.hbars { display: grid; gap: 7px; }
+.hbar { display: grid; grid-template-columns: minmax(120px, 42%) minmax(0, 1fr) 76px; align-items: center; gap: 10px; cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: 0 -4px; }
+.hbar:hover, .hbar.sel { background: var(--brand-wash); }
+.hbar .lab { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar .track { height: 14px; background: var(--bar-track); border-radius: 0 4px 4px 0; position: relative; }
+.hbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hbar .val { font-size: 12.5px; color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hbar .val b { color: var(--ink); font-weight: 600; }
+/* stacked bars */
+.stack { display: flex; gap: 2px; height: 26px; border-radius: 4px; overflow: hidden; }
+.stack .s { position: relative; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 600; cursor: pointer; min-width: 0; color: #fff; }
+.stack .s.dark-text { color: #141714; }
+.stack .s:hover { filter: brightness(1.08); }
+.stack .s span { white-space: nowrap; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 2px; font-size: 12.5px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.legend .line-key { width: 14px; height: 2px; border-radius: 1px; vertical-align: 3px; }
+.rows { display: grid; gap: 8px; }
+.srow { display: grid; grid-template-columns: minmax(110px, 30%) minmax(0, 1fr) 54px; gap: 10px; align-items: center; }
+.srow .lab { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow .lab small { color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+.srow .end { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.srow .end b { color: var(--ink); }
+.srow.me .lab { font-weight: 700; }
+.srow.team .lab { color: var(--ink-2); font-style: italic; }
+.srow .stack { height: 18px; }
+.wide-lab .srow { grid-template-columns: minmax(150px, 42%) minmax(0, 1fr) 54px; }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+td { padding: 7px 8px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.me td { font-weight: 700; background: var(--brand-wash); }
+tr.team td { color: var(--ink-2); font-style: italic; }
+.heat td.h { text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 58px; border-left: 2px solid var(--surface); }
+.heat th.c { text-align: center; white-space: normal; line-height: 1.25; vertical-align: bottom; }
+.heat td:first-child, #priceReps td:first-child { white-space: nowrap; }
+.mini { display: inline-block; height: 8px; border-radius: 0 3px 3px 0; vertical-align: middle; margin-left: 6px; }
+
+/* trend */
+.trend-svg { width: 100%; display: block; overflow: visible; }
+.trend-svg text { fill: var(--muted); font-size: 11px; font-family: "Open Sans", system-ui, sans-serif; }
+.trend-svg .grid-line { stroke: var(--hair); stroke-width: 1; }
+.trend-svg .base-line { stroke: var(--axis); stroke-width: 1; }
+.trend-svg .cross { stroke: var(--ink-2); stroke-width: 1; }
+.trend-svg .end-label { fill: var(--ink-2); font-weight: 600; }
+
+/* call log */
+.log-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.log-tools input[type="search"] { width: 260px; }
+.log tr.row { cursor: pointer; }
+.log tr.row:hover td { background: var(--brand-wash); }
+.log td { font-size: 12.5px; }
+.log .detail td { background: var(--surface-2); padding: 12px 14px; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+@media (max-width: 760px) { .detail-grid { grid-template-columns: minmax(0, 1fr); } }
+.detail-grid .dl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.detail-grid .dv { font-size: 13px; }
+.quote { border-left: 3px solid var(--brand-soft); padding-left: 10px; font-style: italic; }
+.chip { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--hair); font-size: 11.5px; white-space: nowrap; margin: 1px 2px 1px 0; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; color: var(--muted); font-size: 12.5px; }
+.pager button { border: 1px solid var(--hair); background: var(--surface); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.pager button:disabled { opacity: 0.4; cursor: default; }
+.toggle { border: 1px solid var(--hair); background: var(--surface); border-radius: 6px; padding: 2px 9px; cursor: pointer; font-size: 12px; color: var(--ink-2); }
+.note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.foot { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--hair); padding-top: 14px; }
+.foot li { margin: 3px 0; }
+
+/* tooltip */
+#tip { position: fixed; z-index: 50; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--hair); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 6px 24px rgba(0,0,0,0.14); max-width: 300px; opacity: 0; transition: opacity 0.08s; }
+#tip.on { opacity: 1; }
+#tip .t-head { font-weight: 600; margin-bottom: 2px; }
+#tip .t-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+#tip .t-row b { font-variant-numeric: tabular-nums; }
+#tip .t-key { display: inline-block; width: 12px; height: 2px; margin-right: 6px; vertical-align: 3px; }
+#tip .t-sub { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.stale { opacity: 0.55; transition: opacity 0.12s; }
+@media (max-width: 560px) {
+  .hbar { grid-template-columns: minmax(0, 1fr) 72px; row-gap: 3px; }
+  .hbar .lab { grid-column: 1 / -1; white-space: normal; }
+  .srow, .wide-lab .srow { grid-template-columns: minmax(0, 1fr) 48px; row-gap: 3px; }
+  .srow .lab { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .filters { position: static; }
+  .seg { flex-wrap: wrap; }
+  .top .meta { text-align: left; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand-row"><span class="wordmark">REVEL</span><h1>Call insights</h1></div>
+      <p class="sub">What customers ask for, why they call, how the sales team handles price and rapport, and why sales don't close. Built from Aircall conversations analysed by AI.</p>
+    </div>
+    <div class="meta"><div id="asof"></div><button class="theme-btn" id="themeBtn" type="button">Dark mode</button></div>
+  </header>
+</div>
+
+<div class="filters" role="region" aria-label="Filters">
+  <div class="wrap">
+    <div class="fgroup">
+      <span class="flabel">Period</span>
+      <div class="seg" id="periodSeg" role="group" aria-label="Period">
+        <button type="button" data-v="all">All time</button>
+        <button type="button" data-v="month">Month</button>
+        <button type="button" data-v="week">Week</button>
+        <button type="button" data-v="day">Day</button>
+        <button type="button" data-v="range">Range</button>
+      </div>
+      <span id="periodPick"></span>
+    </div>
+    <div class="fgroup">
+      <label class="flabel" for="agentSel">Sales person</label>
+      <select id="agentSel"></select>
+    </div>
+    <div class="fgroup">
+      <span class="flabel">Product</span>
+      <div class="seg" id="catSeg" role="group" aria-label="Product category"></div>
+    </div>
+    <div class="fgroup">
+      <span class="flabel">Calls</span>
+      <div class="seg" id="dirSeg" role="group" aria-label="Call direction">
+        <button type="button" data-v="">All</button>
+        <button type="button" data-v="I">Inbound</button>
+        <button type="button" data-v="O">Outbound</button>
+      </div>
+    </div>
+    <button class="reset" id="resetBtn" type="button">Reset</button>
+    <span class="focus-pill" id="focusPill"><span id="focusText"></span><a href="#log">View calls ↓</a><button type="button" id="focusClear" aria-label="Clear call log focus">×</button></span>
+  </div>
+</div>
+
+<div class="wrap">
+<main id="main">
+  <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Why customers call</h2><p>The main reason behind each call, and what customers asked about on it. Click a bar to see those calls in the log.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>Main reasons for calling</h3><p class="cap" id="capReasons"></p><div class="hbars" id="reasons"></div></div>
+      <div class="card"><h3>Main customer requests</h3><p class="cap" id="capReq"></p><div class="hbars" id="requests"></div></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Pricing: unprompted offers vs customer price pressure</h2><p>Read from the call transcripts. A call counts as an <b>unprompted offer</b> when the rep raised a discount, a sale or a free add-on before the customer pushed on price. <b>Price pressure</b> means the customer asked for a discount or better price, said it was too expensive, or quoted a competitor or sale.</p></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Who brings up a deal first</h3><p class="cap" id="capPrice"></p>
+        <div class="stack" id="priceStack" style="height:32px"></div>
+        <div class="legend" id="priceLegend"></div>
+        <div class="tbl-wrap" style="margin-top:16px"><table id="offerTypes"></table></div>
+      </div>
+      <div class="card">
+        <h3>By product category</h3><p class="cap">Same split for each category. Ignores the product filter so the categories can be compared.</p>
+        <div class="rows" id="priceCats"></div>
+        <div style="margin-top:20px"><h3 style="font-size:13.5px">Customer price sensitivity</h3><p class="cap" style="margin-bottom:8px">How price-focused the customer was, judged from the whole call</p><div class="hbars" id="sensitivity"></div></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>By sales person</h3><p class="cap">Share of each person's calls. Everyone in the current filters is listed (5+ calls); the selected person is highlighted. Click a figure to see those calls.</p>
+      <div class="tbl-wrap"><table id="priceReps"></table></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Rapport and selling skills</h2><p>The AI rates each call on rapport, discovery, product matching, objection handling and closing: poor, fair, good or excellent.</p></div></div>
+    <div class="grid g-skills">
+      <div class="card">
+        <h3>Rapport built, by sales person</h3><p class="cap" id="capRapport"></p>
+        <div class="rows" id="rapportReps"></div>
+        <div class="legend" id="rapportLegend"></div>
+      </div>
+      <div class="card">
+        <h3>Selling skills scorecard</h3><p class="cap">Average rating out of 4 (poor 1, fair 2, good 3, excellent 4). Darker is better.</p>
+        <div class="tbl-wrap"><table class="heat" id="skills"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Overall sentiment</h2><p>How the customer came across over the call, from very negative to very positive.</p></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Sentiment by product category</h3><p class="cap" id="capSent"></p>
+        <div class="rows" id="sentRows"></div>
+        <div class="legend" id="sentLegend"></div>
+        <h3 style="font-size:13.5px;margin-top:20px">By reason for calling</h3><p class="cap" style="margin-bottom:10px">The six most common reasons in the current filters</p>
+        <div class="rows wide-lab" id="sentReasons"></div>
+      </div>
+      <div class="card">
+        <div class="card-head">
+          <div><h3>Trend</h3><p class="cap" id="capTrend"></p></div>
+          <div style="display:flex;gap:8px;align-items:center">
+            <div class="seg" id="granSeg" role="group" aria-label="Trend grouping">
+              <button type="button" data-v="day">Day</button><button type="button" data-v="week">Week</button><button type="button" data-v="month">Month</button>
+            </div>
+            <button class="toggle" id="trendTableBtn" type="button" aria-pressed="false">Table</button>
+          </div>
+        </div>
+        <div id="trend"></div>
+        <div class="legend" id="trendLegend"></div>
+        <div class="tbl-wrap" id="trendTable" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head"><div><h2>Why sales didn't close</h2><p>Sales conversations that ended without a purchase on the call (support and post-purchase calls are left out). One main reason per call, taken from the AI's outcome notes and unresolved objections.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>Main reason the sale didn't close</h3><p class="cap" id="capNC"></p><div class="hbars" id="notClosed"></div>
+        <div style="margin-top:16px"><h3 style="font-size:13.5px">Where those calls ended up</h3><p class="cap" style="margin-bottom:8px">AI's read of the customer's intent at the end of the call</p><div class="hbars" id="ncOutcome"></div></div>
+      </div>
+      <div class="card"><h3>Reasons by product category</h3><p class="cap">Share of not-closed calls in each category. Ignores the product filter so the categories can be compared.</p><div class="tbl-wrap"><table class="heat" id="ncMatrix"></table></div></div>
+    </div>
+  </section>
+
+  <section class="section" id="log">
+    <div class="section-head"><div><h2>Call log</h2><p>Every analysed call in the current filters. Click a row for the customer quote, outcome notes and pricing evidence.</p></div></div>
+    <div class="card">
+      <div class="log-tools">
+        <input type="search" id="search" placeholder="Search notes, products, quotes…" aria-label="Search the call log">
+        <span id="logCount" class="note" style="margin:0"></span>
+      </div>
+      <div class="tbl-wrap"><table class="log" id="logTable"></table></div>
+      <div class="pager"><span id="pageInfo"></span><button type="button" id="prevPg">Previous</button><button type="button" id="nextPg">Next</button></div>
+    </div>
+  </section>
+
+  <section class="foot">
+    <b>How to read this</b>
+    <ul>
+      <li>Source: every call on the Revel Saunas line in Aircall. Calls with a real sales conversation (a transcript, enough back-and-forth, not voicemail) are analysed by AI; post-purchase service calls are mostly screened out before analysis.</li>
+      <li>Reasons, requests and not-closed reasons are grouped from the AI's free-text notes with keyword rules, so treat them as directional. The call log shows the original notes for every call.</li>
+      <li>Pricing offers and price pressure are detected from who said what in the transcript (Revel staff vs customer). Mentioning a running sale counts as an offer; a discount the rep puts on the table is shown separately.</li>
+      <li>Closed on the call means the AI marked the outcome as purchased during that conversation. Many sales complete later online, so this understates total conversion.</li>
+      <li>Weeks run Monday to Sunday. Times are Brisbane time. Data refreshes nightly.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.REVEL_CALLS;
+  const $ = (id) => document.getElementById(id);
+  if (!D || !D.calls) { $("main").innerHTML = '<p class="empty">The call data did not load.</p>'; return; }
+
+  // ---------- reference data ----------
+  const AGENTS = D.agents;
+  const CATS = D.productCategories;
+  const QUAL = ["", "Poor", "Fair", "Good", "Excellent"];
+  const SENT_KEYS = [-2, -1, 0, 1, 2];
+  const SENT_LABEL = { "-2": "Very negative", "-1": "Negative", "0": "Neutral", "1": "Positive", "2": "Very positive" };
+  const DIV_VARS = ["--div-n2", "--div-n1", "--div-0", "--div-p1", "--div-p2"];
+  const PR_KEYS = ["U", "PO", "PH", "N"];
+  const PR_VAR = { U: "--pr-u", PO: "--pr-po", PH: "--pr-ph", N: "--pr-n" };
+  const PR_LABEL = D.priceClasses;
+  const OFFER_LABEL = D.offerTypes;
+  const OUTCOME_LABEL = { purchased: "Purchased", strong_intent: "Strong intent", moderate_interest: "Moderate interest", low_interest: "Low interest", wrong_fit: "Wrong fit", lost_to_competitor: "Lost to competitor" };
+  const SENSITIVITY = [["low", "Low"], ["moderate", "Moderate"], ["high", "High"], ["very_high", "Very high"]];
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+  const calls = D.calls;
+  calls.forEach((c) => { c.ag = AGENTS[c.a]; c.mo = c.d.slice(0, 7); c.wk = mondayOf(c.d); });
+
+  // ---------- dates ----------
+  function toDate(s) { return new Date(s + "T00:00:00Z"); }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function addDays(s, n) { const d = toDate(s); d.setUTCDate(d.getUTCDate() + n); return iso(d); }
+  function mondayOf(s) { const d = toDate(s); const wd = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - wd); return iso(d); }
+  function fmtDay(s, withYear) { const d = toDate(s); return d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + (withYear === false ? "" : " " + d.getUTCFullYear()); }
+  function fmtMonth(m) { return MONTHS[+m.slice(5, 7) - 1] + " " + m.slice(0, 4); }
+  function monthEnd(m) { const d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0)); return iso(d); }
+  function prevMonth(m) { const d = new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7) - 2, 1)); return iso(d).slice(0, 7); }
+
+  const firstDay = calls[0].d, lastDay = calls[calls.length - 1].d;
+  const monthsList = [...new Set(calls.map((c) => c.mo))].sort().reverse();
+  const weeksList = [...new Set(calls.map((c) => c.wk))].sort().reverse();
+
+  // ---------- state (mirrored in the URL hash so a filtered view can be shared) ----------
+  const DEFAULTS = { p: "all", m: monthsList[0], w: weeksList[0], day: lastDay, from: addDays(lastDay, -29), to: lastDay, ag: "", cat: "", dir: "", gran: "", fk: "", fv: "", q: "", pg: 0 };
+  const S = Object.assign({}, DEFAULTS);
+  try {
+    const h = new URLSearchParams(location.hash.slice(1));
+    for (const k of Object.keys(DEFAULTS)) if (h.has(k)) S[k] = k === "pg" ? +h.get(k) || 0 : h.get(k);
+  } catch (e) { /* ignore a malformed hash */ }
+  if (!monthsList.includes(S.m)) S.m = DEFAULTS.m;
+  if (!weeksList.includes(S.w)) S.w = DEFAULTS.w;
+  if (!["all", "month", "week", "day", "range"].includes(S.p)) S.p = "all";
+  if (S.ag !== "" && !AGENTS[+S.ag]) S.ag = "";
+  if (S.cat && !CATS.includes(S.cat)) S.cat = "";
+  function saveHash() {
+    try {
+      const h = new URLSearchParams();
+      for (const k of Object.keys(DEFAULTS)) if (String(S[k]) !== String(DEFAULTS[k]) && k !== "pg") h.set(k, S[k]);
+      history.replaceState(null, "", h.toString() ? "#" + h.toString() : location.pathname + location.search);
+    } catch (e) { /* history API can be blocked in sandboxes */ }
+  }
+
+  function periodRange(prior) {
+    let from, to;
+    if (S.p === "month") { const m = prior ? prevMonth(S.m) : S.m; from = m + "-01"; to = monthEnd(m); }
+    else if (S.p === "week") { from = prior ? addDays(S.w, -7) : S.w; to = addDays(from, 6); }
+    else if (S.p === "day") { from = to = prior ? addDays(S.day, -1) : S.day; }
+    else if (S.p === "range") {
+      from = S.from <= S.to ? S.from : S.to; to = S.from <= S.to ? S.to : S.from;
+      if (prior) { const len = Math.round((toDate(to) - toDate(from)) / 864e5) + 1; to = addDays(from, -1); from = addDays(to, -(len - 1)); }
+    } else { if (prior) return null; from = "0000"; to = "9999"; }
+    return [from, to];
+  }
+  function inScope(c, o) {
+    o = o || {};
+    const r = o.range || periodRange(false);
+    if (c.d < r[0] || c.d > r[1]) return false;
+    if (!o.anyAgent && S.ag !== "" && c.a !== +S.ag) return false;
+    if (!o.anyCat && S.cat && !c.cat.includes(S.cat)) return false;
+    if (S.dir && c.dir !== S.dir) return false;
+    return true;
+  }
+  function slice(o) { return calls.filter((c) => inScope(c, o)); }
+
+  // ---------- helpers ----------
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  const fmtN = (n) => n.toLocaleString("en-AU");
+  function pct(x, digits) {
+    if (x == null || !isFinite(x)) return "–";
+    const v = x * 100;
+    const d = digits != null ? digits : (v > 0 && v < 10 ? 1 : 0);
+    return v.toFixed(d) + "%";
+  }
+  const share = (n, d) => (d ? n / d : null);
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  function count(list, fn) { const m = new Map(); list.forEach((c) => { const ks = fn(c); (Array.isArray(ks) ? ks : [ks]).forEach((k) => { if (k == null || k === "") return; m.set(k, (m.get(k) || 0) + 1); }); }); return m; }
+  function luminance(hex) {
+    const m = hex.replace("#", "").match(/.{2}/g); if (!m) return 0;
+    const [r, g, b] = m.map((x) => { const v = parseInt(x, 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+  const isSales = (c) => c.sale;
+  const closed = (c) => c.out === "purchased";
+  const posSent = (c) => c.sl != null && c.sl >= 1;
+  const goodRap = (c) => c.rap >= 3;
+  function metrics(list) {
+    const sales = list.filter(isSales);
+    const rated = list.filter((c) => c.rap > 0);
+    const sent = list.filter((c) => c.sl != null);
+    return {
+      n: list.length,
+      sales: sales.length,
+      closed: sales.filter(closed).length,
+      close: share(sales.filter(closed).length, sales.length),
+      rapport: share(rated.filter(goodRap).length, rated.length),
+      positive: share(sent.filter(posSent).length, sent.length),
+      sentAvg: sent.length ? sent.reduce((a, c) => a + (c.ss || 0), 0) / sent.length : null,
+      unprompted: share(list.filter((c) => c.pr === "U").length, list.length),
+      pressure: share(list.filter((c) => c.pr === "PO" || c.pr === "PH").length, list.length),
+    };
+  }
+
+  // ---------- tooltip ----------
+  const tip = $("tip");
+  function showTip(el, x, y) {
+    const raw = el.getAttribute("data-tip"); if (!raw) return;
+    let t; try { t = JSON.parse(raw); } catch (e) { return; }
+    tip.textContent = "";
+    const head = document.createElement("div"); head.className = "t-head"; head.textContent = t.h; tip.appendChild(head);
+    (t.r || []).forEach((row) => {
+      const r = document.createElement("div"); r.className = "t-row";
+      const l = document.createElement("span");
+      if (row.c) { const k = document.createElement("span"); k.className = "t-key"; k.style.background = row.c; l.appendChild(k); }
+      l.appendChild(document.createTextNode(row.l));
+      const v = document.createElement("b"); v.textContent = row.v;
+      r.appendChild(l); r.appendChild(v); tip.appendChild(r);
+    });
+    if (t.s) { const s = document.createElement("div"); s.className = "t-sub"; s.textContent = t.s; tip.appendChild(s); }
+    tip.classList.add("on");
+    const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    let left = x + pad, top = y + pad;
+    if (left + w > window.innerWidth - 8) left = x - w - pad;
+    if (top + h > window.innerHeight - 8) top = y - h - pad;
+    tip.style.left = Math.max(8, left) + "px"; tip.style.top = Math.max(8, top) + "px";
+  }
+  function hideTip() { tip.classList.remove("on"); }
+  document.addEventListener("pointermove", (e) => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); });
+  document.addEventListener("focusin", (e) => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.bottom); } });
+  document.addEventListener("focusout", hideTip);
+  document.addEventListener("scroll", hideTip, { passive: true });
+  const tipAttr = (o) => esc(JSON.stringify(o));
+
+  // ---------- drill-down focus (scopes the call log only) ----------
+  const FOCUS_NAME = { rsn: "Reason", req: "Request", pr: "Pricing", pt: "Offer type", ps: "Price sensitivity", rap: "Rapport", sl: "Sentiment", nc: "Not closed", out: "Outcome", ncCat: "Not closed" };
+  function focusMatch(c) {
+    if (!S.fk) return true;
+    const v = S.fv;
+    switch (S.fk) {
+      case "rsn": return c.rsn === v;
+      case "req": return c.req.includes(v);
+      case "pr": return c.pr === v;
+      case "pt": { const [cls, t] = v.split(":"); return (cls === "*" ? c.pr === "U" || c.pr === "PO" : c.pr === cls) && c.pt === t; }
+      case "ps": return c.ps === v;
+      case "rap": { const [a, q] = v.split(":"); return (a === "*" || c.a === +a) && c.rap === +q; }
+      case "sl": { const [cat, s] = v.split(":"); return (cat === "*" || c.cat.includes(cat)) && c.sl === +s; }
+      case "nc": return c.nc === v;
+      case "out": return c.nc && c.out === v;
+      case "ncCat": { const [cat, r] = v.split("|"); return c.nc === r && (cat === "*" || c.cat.includes(cat)); }
+      case "prRep": { const [a, cls] = v.split(":"); return c.a === +a && (cls === "P" ? c.pr === "PO" || c.pr === "PH" : c.pr === cls); }
+      default: return true;
+    }
+  }
+  function focusLabel() {
+    if (!S.fk) return "";
+    const v = S.fv;
+    if (S.fk === "pt") { const [cls, t] = v.split(":"); return "Pricing: " + (cls === "*" ? "offers" : PR_LABEL[cls]) + " · " + OFFER_LABEL[t]; }
+    if (S.fk === "rap") { const [a, q] = v.split(":"); return "Rapport: " + QUAL[+q] + (a === "*" ? "" : " · " + AGENTS[+a]); }
+    if (S.fk === "sl") { const [cat, s] = v.split(":"); return "Sentiment: " + SENT_LABEL[s] + (cat === "*" ? "" : " · " + cat); }
+    if (S.fk === "pr") return "Pricing: " + PR_LABEL[v];
+    if (S.fk === "ps") return "Price sensitivity: " + (SENSITIVITY.find((x) => x[0] === v) || [v, v])[1];
+    if (S.fk === "out") return "Not closed · " + (OUTCOME_LABEL[v] || v);
+    if (S.fk === "ncCat") { const [cat, r] = v.split("|"); return "Not closed: " + r + (cat === "*" ? "" : " · " + cat); }
+    if (S.fk === "prRep") { const [a, cls] = v.split(":"); return AGENTS[+a] + " · " + (cls === "P" ? "Customer price pressure" : PR_LABEL[cls]); }
+    return (FOCUS_NAME[S.fk] || S.fk) + ": " + v;
+  }
+  function setFocus(k, v) {
+    if (S.fk === k && S.fv === v) { S.fk = ""; S.fv = ""; } else { S.fk = k; S.fv = v; }
+    S.pg = 0; render();
+  }
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest && e.target.closest("[data-fk]");
+    if (el) setFocus(el.getAttribute("data-fk"), el.getAttribute("data-fv"));
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-fk]")) { e.preventDefault(); e.target.click(); }
+  });
+  const isSel = (k, v) => S.fk === k && S.fv === v;
+  const focusAttrs = (k, v) => `data-fk="${esc(k)}" data-fv="${esc(v)}" tabindex="0" role="button" aria-pressed="${isSel(k, v)}"`;
+
+  // ---------- filter controls ----------
+  function bindSeg(el, key, onChange) {
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      S[key] = b.dataset.v; S.pg = 0;
+      if (onChange) onChange();
+      render();
+    });
+  }
+  function syncSeg(el, val) { el.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === val))); }
+
+  $("catSeg").innerHTML = ['<button type="button" data-v="">All</button>'].concat(CATS.map((c) => `<button type="button" data-v="${esc(c)}">${esc(c)}</button>`)).join("");
+  bindSeg($("periodSeg"), "p");
+  bindSeg($("catSeg"), "cat");
+  bindSeg($("dirSeg"), "dir");
+  bindSeg($("granSeg"), "gran");
+
+  function renderPeriodPick() {
+    const el = $("periodPick");
+    if (S.p === "month") {
+      el.innerHTML = `<select id="pMonth" aria-label="Month">${monthsList.map((m) => `<option value="${m}"${m === S.m ? " selected" : ""}>${fmtMonth(m)}</option>`).join("")}</select>`;
+      $("pMonth").onchange = (e) => { S.m = e.target.value; S.pg = 0; render(); };
+    } else if (S.p === "week") {
+      el.innerHTML = `<select id="pWeek" aria-label="Week">${weeksList.map((w) => `<option value="${w}"${w === S.w ? " selected" : ""}>Week of ${fmtDay(w)}</option>`).join("")}</select>`;
+      $("pWeek").onchange = (e) => { S.w = e.target.value; S.pg = 0; render(); };
+    } else if (S.p === "day") {
+      el.innerHTML = `<input type="date" id="pDay" aria-label="Day" min="${firstDay}" max="${lastDay}" value="${S.day}">`;
+      $("pDay").onchange = (e) => { if (e.target.value) { S.day = e.target.value; S.pg = 0; render(); } };
+    } else if (S.p === "range") {
+      el.innerHTML = `<input type="date" id="pFrom" aria-label="From" min="${firstDay}" max="${lastDay}" value="${S.from}"> <span class="note" style="margin:0">to</span> <input type="date" id="pTo" aria-label="To" min="${firstDay}" max="${lastDay}" value="${S.to}">`;
+      $("pFrom").onchange = (e) => { if (e.target.value) { S.from = e.target.value; S.pg = 0; render(); } };
+      $("pTo").onchange = (e) => { if (e.target.value) { S.to = e.target.value; S.pg = 0; render(); } };
+    } else el.innerHTML = "";
+  }
+
+  function renderAgentSel() {
+    const counts = count(slice({ anyAgent: true }), (c) => c.a);
+    const ids = AGENTS.map((_, i) => i).filter((i) => counts.get(i) || String(i) === S.ag).sort((a, b) => (counts.get(b) || 0) - (counts.get(a) || 0));
+    const total = [...counts.values()].reduce((a, b) => a + b, 0);
+    $("agentSel").innerHTML = `<option value="">All sales people (${fmtN(total)})</option>` + ids.map((i) => `<option value="${i}"${String(i) === S.ag ? " selected" : ""}>${esc(AGENTS[i])} (${fmtN(counts.get(i) || 0)})</option>`).join("");
+  }
+  $("agentSel").onchange = (e) => { S.ag = e.target.value; S.pg = 0; render(); };
+  $("resetBtn").onclick = () => { Object.assign(S, DEFAULTS); render(); };
+  $("focusClear").onclick = () => { S.fk = ""; S.fv = ""; render(); };
+  $("search").oninput = (e) => { S.q = e.target.value; S.pg = 0; renderLog(); saveHash(); };
+  $("prevPg").onclick = () => { S.pg = Math.max(0, S.pg - 1); renderLog(); };
+  $("nextPg").onclick = () => { S.pg += 1; renderLog(); };
+
+  // theme toggle: wins over the OS setting both ways
+  const themeBtn = $("themeBtn");
+  function currentTheme() { const t = document.documentElement.getAttribute("data-theme"); return t || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function syncThemeBtn() { themeBtn.textContent = currentTheme() === "dark" ? "Light mode" : "Dark mode"; }
+  try { const saved = localStorage.getItem("revel-calls-theme"); if (saved) document.documentElement.setAttribute("data-theme", saved); } catch (e) { /* storage blocked */ }
+  syncThemeBtn();
+  themeBtn.onclick = () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("revel-calls-theme", next); } catch (e) { /* storage blocked */ }
+    syncThemeBtn(); render();
+  };
+
+  // ---------- renderers ----------
+  function periodText() {
+    if (S.p === "month") return fmtMonth(S.m);
+    if (S.p === "week") return "week of " + fmtDay(S.w);
+    if (S.p === "day") return fmtDay(S.day);
+    if (S.p === "range") { const r = periodRange(false); return fmtDay(r[0]) + " to " + fmtDay(r[1]); }
+    return fmtDay(firstDay) + " to " + fmtDay(lastDay);
+  }
+  function priorText() {
+    return { month: "vs " + fmtMonth(prevMonth(S.m)), week: "vs prior week", day: "vs prior day", range: "vs prior period" }[S.p] || "";
+  }
+
+  function deltaHtml(cur, prev, upIs) {
+    if (cur == null || prev == null) return "";
+    const diff = (cur - prev) * 100;
+    if (Math.abs(diff) < 0.5) return `<span class="delta flat">● level ${priorText()}</span>`;
+    const up = diff > 0;
+    const cls = upIs === "neutral" ? "flat" : (up ? (upIs === "good" ? "up-good" : "up-bad") : (upIs === "good" ? "down-bad" : "down-good"));
+    return `<span class="delta ${cls}">${up ? "▲" : "▼"} ${Math.abs(diff).toFixed(0)} pts</span> <span>${priorText()}</span>`;
+  }
+
+  function renderKPIs(list) {
+    const m = metrics(list);
+    const pr = periodRange(true);
+    const pm = pr ? metrics(slice({ range: pr })) : null;
+    const r = periodRange(false);
+    let logged = 0;
+    D.volume.forEach(([d, a, dir, , n]) => {
+      if (d < r[0] || d > r[1]) return;
+      if (S.ag !== "" && a !== +S.ag) return;
+      if (S.dir && dir !== S.dir) return;
+      logged += n;
+    });
+    const tiles = [
+      { l: "Conversations analysed", v: fmtN(m.n), f: `of ${fmtN(logged)} calls logged${S.cat ? " (all products)" : ""}` },
+      { l: "Closed on the call", v: pct(m.close), f: pm ? deltaHtml(m.close, pm.close, "good") : `${fmtN(m.closed)} of ${fmtN(m.sales)} sales calls` },
+      { l: "Good or excellent rapport", v: pct(m.rapport), f: pm ? deltaHtml(m.rapport, pm.rapport, "good") : "of rated calls" },
+      { l: "Positive sentiment", v: pct(m.positive), f: pm ? deltaHtml(m.positive, pm.positive, "good") : (m.sentAvg == null ? "" : `average score ${m.sentAvg >= 0 ? "+" : ""}${m.sentAvg.toFixed(2)} (−1 to +1)`) },
+      { l: "Unprompted price offers", v: pct(m.unprompted), f: pm ? deltaHtml(m.unprompted, pm.unprompted, "bad") : "rep raised a deal first" },
+      { l: "Customer price pressure", v: pct(m.pressure), f: pm ? deltaHtml(m.pressure, pm.pressure, "neutral") : "customer pushed on price" },
+    ];
+    $("kpis").innerHTML = tiles.map((t) => `<div class="kpi"><div class="k-label">${t.l}</div><div class="k-value">${t.v}</div><div class="k-foot">${t.f}</div></div>`).join("");
+  }
+
+  function hbars(el, items, total, opts) {
+    opts = opts || {};
+    if (!total || !items.length) { el.innerHTML = '<div class="empty">No calls in this selection</div>'; return; }
+    const max = Math.max(...items.map((i) => i.n));
+    el.innerHTML = items.map((i) => {
+      const p = i.n / total;
+      const tipObj = { h: i.label, r: [{ l: "Calls", v: fmtN(i.n) }, { l: opts.shareLabel || "Share", v: pct(p) }], s: "Click to see these calls in the log" };
+      return `<div class="hbar${isSel(i.fk, i.fv) ? " sel" : ""}" ${focusAttrs(i.fk, i.fv)} data-tip="${tipAttr(tipObj)}">
+        <div class="lab">${esc(i.label)}</div>
+        <div class="track"><div class="fill" style="width:${(i.n / max) * 100}%"></div></div>
+        <div class="val"><b>${pct(p)}</b> · ${fmtN(i.n)}</div></div>`;
+    }).join("");
+  }
+
+  function stackSegments(parts, total, opts) {
+    // parts: [{key,label,n,color,fk,fv}]
+    opts = opts || {};
+    return parts.filter((p) => p.n > 0).map((p) => {
+      const w = (p.n / total) * 100;
+      const hex = p.color;
+      const dark = luminance(hex) > 0.45;
+      const label = opts.labels !== false && w >= (opts.minLabel || 9) ? `<span>${pct(p.n / total, 0)}</span>` : "";
+      const tipObj = { h: (opts.title ? opts.title + " · " : "") + p.label, r: [{ l: "Calls", v: fmtN(p.n) }, { l: "Share", v: pct(p.n / total) }], s: p.fk ? "Click to see these calls in the log" : "" };
+      const fa = p.fk ? focusAttrs(p.fk, p.fv) : "";
+      return `<div class="s${dark ? " dark-text" : ""}" style="flex:${p.n} 1 0;background:${hex};${isSel(p.fk, p.fv) ? "outline:2px solid var(--ink);outline-offset:-2px;" : ""}" ${fa} data-tip="${tipAttr(tipObj)}">${label}</div>`;
+    }).join("");
+  }
+  function legend(el, items, line) { el.innerHTML = items.map((i) => `<span><i class="${line ? "line-key" : ""}" style="background:${i.color}"></i>${esc(i.label)}</span>`).join(""); }
+
+  function renderWhy(list) {
+    const reasons = count(list, (c) => c.rsn);
+    const items = D.callReasons.map((r) => ({ label: r, n: reasons.get(r) || 0, fk: "rsn", fv: r })).filter((i) => i.n).sort((a, b) => b.n - a.n);
+    hbars($("reasons"), items, list.length, { shareLabel: "Share of calls" });
+    $("capReasons").textContent = `One main reason per call · ${fmtN(list.length)} calls`;
+    const req = count(list, (c) => c.req);
+    const ritems = D.requests.map((r) => ({ label: r, n: req.get(r) || 0, fk: "req", fv: r })).filter((i) => i.n).sort((a, b) => b.n - a.n);
+    hbars($("requests"), ritems, list.length, { shareLabel: "Share of calls" });
+    $("capReq").textContent = "Share of calls where the customer raised it. A call can raise several.";
+  }
+
+  function renderPricing(list) {
+    const total = list.length;
+    const pc = count(list, (c) => c.pr);
+    const parts = PR_KEYS.map((k) => ({ key: k, label: PR_LABEL[k], n: pc.get(k) || 0, color: cssVar(PR_VAR[k]), fk: "pr", fv: k }));
+    $("priceStack").innerHTML = total ? stackSegments(parts, total, { minLabel: 6 }) : '<div class="empty" style="width:100%;padding:4px">No calls</div>';
+    legend($("priceLegend"), parts);
+    const u = pc.get("U") || 0, po = pc.get("PO") || 0, ph = pc.get("PH") || 0;
+    $("capPrice").textContent = total ? `${fmtN(total)} calls · reps raised a deal unprompted on ${pct(u / total)}; customers pushed on price on ${pct((po + ph) / total)}, and the rep then offered something on ${pct(share(po, po + ph))} of those` : "";
+
+    // offer types: unprompted vs after pressure
+    const types = ["D", "P", "F"];
+    const row = (cls, label) => {
+      const sub = list.filter((c) => c.pr === cls);
+      return `<tr><td>${label}</td>${types.map((t) => { const n = sub.filter((c) => c.pt === t).length; return `<td class="num" ${n ? focusAttrs("pt", cls + ":" + t) : ""} style="cursor:${n ? "pointer" : "default"}" data-tip="${tipAttr({ h: label + " · " + OFFER_LABEL[t], r: [{ l: "Calls", v: fmtN(n) }, { l: "Share of these offers", v: pct(share(n, sub.length)) }] })}">${fmtN(n)} <span style="color:var(--muted)">${sub.length ? "(" + pct(n / sub.length, 0) + ")" : ""}</span></td>`; }).join("")}<td class="num"><b>${fmtN(sub.length)}</b></td></tr>`;
+    };
+    $("offerTypes").innerHTML = `<thead><tr><th>What was offered</th>${types.map((t) => `<th class="num" style="white-space:normal">${esc(OFFER_LABEL[t])}</th>`).join("")}<th class="num">Total</th></tr></thead>
+      <tbody>${row("U", "Unprompted")}${row("PO", "After customer pushed")}</tbody>`;
+
+    // by product category (ignores the product filter)
+    const baseAll = slice({ anyCat: true });
+    $("priceCats").innerHTML = [["All products", baseAll]].concat(CATS.map((cat) => [cat, baseAll.filter((c) => c.cat.includes(cat))])).map(([name, l]) => {
+      if (!l.length) return `<div class="srow"><div class="lab">${esc(name)}</div><div class="note" style="margin:0">No calls</div><div></div></div>`;
+      const cnt2 = count(l, (c) => c.pr);
+      const parts2 = PR_KEYS.map((k) => ({ label: PR_LABEL[k], n: cnt2.get(k) || 0, color: cssVar(PR_VAR[k]) }));
+      const pushed = (cnt2.get("PO") || 0) + (cnt2.get("PH") || 0);
+      return `<div class="srow${S.cat === name ? " me" : ""}"><div class="lab">${esc(name)}<small>${fmtN(l.length)}</small></div><div class="stack">${stackSegments(parts2, l.length, { title: name, minLabel: 8 })}</div><div class="end" title="Customer pushed on price"><b>${pct(pushed / l.length, 0)}</b></div></div>`;
+    }).join("") + '<p class="note" style="margin-top:6px">Figure on the right: share of calls where the customer pushed on price.</p>';
+
+    // sensitivity
+    const withPs = list.filter((c) => c.ps);
+    const ps = count(withPs, (c) => c.ps);
+    hbars($("sensitivity"), SENSITIVITY.map(([k, l]) => ({ label: l, n: ps.get(k) || 0, fk: "ps", fv: k })).filter((i) => i.n), withPs.length, { shareLabel: "Share of calls with a reading" });
+
+    // by rep (ignores the person filter, highlights the selected person)
+    const all = slice({ anyAgent: true });
+    const byRep = new Map();
+    all.forEach((c) => { if (!byRep.has(c.a)) byRep.set(c.a, []); byRep.get(c.a).push(c); });
+    const reps = [...byRep.entries()].filter(([a, l]) => l.length >= 5 || String(a) === S.ag).sort((x, y) => y[1].length - x[1].length);
+    const others = [...byRep.entries()].filter(([a, l]) => !(l.length >= 5 || String(a) === S.ag)).flatMap(([, l]) => l);
+    const maxU = Math.max(0.0001, ...reps.map(([, l]) => l.filter((c) => c.pr === "U").length / l.length));
+    const line = (name, l, cls, a) => {
+      const n = l.length, uu = l.filter((c) => c.pr === "U").length, p = l.filter((c) => c.pr === "PO").length, h = l.filter((c) => c.pr === "PH").length, d = l.filter((c) => c.pr === "U" && c.pt === "D").length;
+      const cell = (val, k) => a == null ? `<td class="num">${val}</td>` : `<td class="num" ${focusAttrs("prRep", a + ":" + k)} style="cursor:pointer">${val}</td>`;
+      return `<tr class="${cls || ""}"><td>${esc(name)}</td><td class="num">${fmtN(n)}</td>
+        ${cell(`${pct(uu / n)}<span class="mini" style="width:${Math.round((uu / n) / maxU * 36)}px;background:var(--pr-u)"></span>`, "U")}
+        <td class="num">${pct(d / n)}</td>
+        ${cell(pct((p + h) / n), "P")}
+        <td class="num">${p + h ? pct(p / (p + h), 0) : "–"}</td>
+        <td class="num">${p + h ? pct(h / (p + h), 0) : "–"}</td></tr>`;
+    };
+    $("priceReps").innerHTML = `<thead><tr><th>Sales person</th><th class="num">Calls</th><th class="num" title="Rep raised a sale, discount or freebie before any customer pressure">Unprompted offer</th><th class="num" title="Rep put a discount or deal on the table unprompted">…of which discount</th><th class="num">Customer pushed</th><th class="num">Then offered</th><th class="num">Held price</th></tr></thead>
+      <tbody>${reps.map(([a, l]) => line(AGENTS[a], l, String(a) === S.ag ? "me" : "", a)).join("")}
+      ${others.length ? line(`Others (${new Set(others.map((c) => c.a)).size} people)`, others, "") : ""}
+      ${all.length ? line("Team", all, "team") : ""}</tbody>`;
+    if (!all.length) $("priceReps").innerHTML = '<tbody><tr><td class="empty">No calls in this selection</td></tr></tbody>';
+  }
+
+  function renderRapport(list) {
+    const all = slice({ anyAgent: true });
+    const rated = all.filter((c) => c.rap > 0);
+    const byRep = new Map();
+    rated.forEach((c) => { if (!byRep.has(c.a)) byRep.set(c.a, []); byRep.get(c.a).push(c); });
+    const reps = [...byRep.entries()].filter(([a, l]) => l.length >= 5 || String(a) === S.ag)
+      .map(([a, l]) => ({ a, l, good: l.filter(goodRap).length / l.length })).sort((x, y) => y.good - x.good);
+    const cols = [1, 2, 3, 4].map((q) => cssVar(["--div-n2", "--div-n1", "--div-p1", "--div-p2"][q - 1]));
+    const row = (name, l, cls, a) => {
+      const parts = [1, 2, 3, 4].map((q) => ({ label: QUAL[q], n: l.filter((c) => c.rap === q).length, color: cols[q - 1], fk: "rap", fv: (a == null ? "*" : a) + ":" + q }));
+      return `<div class="srow ${cls || ""}"><div class="lab" title="${esc(name)}">${esc(name)}<small>${fmtN(l.length)}</small></div><div class="stack">${stackSegments(parts, l.length, { title: name, labels: false })}</div><div class="end"><b>${pct(l.filter(goodRap).length / l.length, 0)}</b></div></div>`;
+    };
+    $("rapportReps").innerHTML = rated.length ? reps.map((r) => row(AGENTS[r.a], r.l, String(r.a) === S.ag ? "me" : "", r.a)).join("") + row("Team", rated, "team", null) : '<div class="empty">No rated calls in this selection</div>';
+    legend($("rapportLegend"), [1, 2, 3, 4].map((q) => ({ label: QUAL[q], color: cols[q - 1] })));
+    $("capRapport").textContent = "Share of calls at each rating; the figure on the right is good or excellent. People with 5+ rated calls.";
+
+    // skills heatmap
+    const dims = [["rap", "Rapport"], ["nd", "Needs discovery"], ["pm", "Product matching"], ["oh", "Objection handling"], ["ce", "Closing"], ["sat", "Customer satis\u00adfaction"]];
+    const byRepAll = new Map();
+    all.forEach((c) => { if (!byRepAll.has(c.a)) byRepAll.set(c.a, []); byRepAll.get(c.a).push(c); });
+    const repRows = [...byRepAll.entries()].filter(([a, l]) => l.length >= 5 || String(a) === S.ag).sort((x, y) => y[1].length - x[1].length);
+    const seq = [1, 2, 3, 4, 5].map((i) => cssVar("--seq-" + i));
+    const cell = (l, k, name, label) => {
+      const vals = l.map((c) => c[k]).filter((v) => v > 0);
+      if (!vals.length) return `<td class="h" style="color:var(--muted)">–</td>`;
+      const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
+      const step = Math.max(0, Math.min(4, Math.round(((avg - 1.5) / 2.5) * 4)));
+      const bg = seq[step];
+      const txt = luminance(bg) > 0.3 ? "#141714" : "#ffffff";
+      return `<td class="h" style="background:${bg};color:${txt}" data-tip="${tipAttr({ h: name + " · " + label, r: [{ l: "Average", v: avg.toFixed(2) + " / 4" }, { l: "Good or excellent", v: pct(vals.filter((v) => v >= 3).length / vals.length, 0) }, { l: "Rated calls", v: fmtN(vals.length) }] })}">${avg.toFixed(1)}</td>`;
+    };
+    $("skills").innerHTML = all.length ? `<thead><tr><th>Sales person</th><th class="num">Calls</th>${dims.map((d) => `<th class="c">${d[1]}</th>`).join("")}</tr></thead>
+      <tbody>${repRows.map(([a, l]) => `<tr class="${String(a) === S.ag ? "me" : ""}"><td>${esc(AGENTS[a])}</td><td class="num">${fmtN(l.length)}</td>${dims.map((d) => cell(l, d[0], AGENTS[a], d[1])).join("")}</tr>`).join("")}
+      <tr class="team"><td>Team</td><td class="num">${fmtN(all.length)}</td>${dims.map((d) => cell(all, d[0], "Team", d[1])).join("")}</tr></tbody>` : '<tbody><tr><td class="empty">No calls in this selection</td></tr></tbody>';
+  }
+
+  function renderSentiment(list) {
+    const cols = DIV_VARS.map(cssVar);
+    const base = slice({ anyCat: true });
+    const rowsDef = [["*", "All products", S.cat ? list : base]].concat(CATS.map((cat) => [cat, cat, base.filter((c) => c.cat.includes(cat))]));
+    const html = rowsDef.map(([key, name, l]) => {
+      const lab = l.filter((c) => c.sl != null);
+      if (!lab.length) return `<div class="srow"><div class="lab">${esc(name)}</div><div class="note" style="margin:0">No calls</div><div></div></div>`;
+      const parts = SENT_KEYS.map((s, i) => ({ label: SENT_LABEL[s], n: lab.filter((c) => c.sl === s).length, color: cols[i], fk: "sl", fv: key + ":" + s }));
+      const sel = S.cat && key === S.cat;
+      return `<div class="srow${sel ? " me" : ""}"><div class="lab">${esc(name)}<small>${fmtN(lab.length)}</small></div><div class="stack">${stackSegments(parts, lab.length, { title: name, minLabel: 11 })}</div><div class="end"><b>${pct(lab.filter(posSent).length / lab.length, 0)}</b></div></div>`;
+    }).join("");
+    $("sentRows").innerHTML = html;
+    const reasonCounts = count(list, (c) => c.rsn);
+    const topReasons = [...reasonCounts.entries()].sort((x, y) => y[1] - x[1]).slice(0, 6).map((e) => e[0]);
+    $("sentReasons").innerHTML = topReasons.length ? topReasons.map((r) => {
+      const lab = list.filter((c) => c.rsn === r && c.sl != null);
+      if (!lab.length) return "";
+      const parts = SENT_KEYS.map((s2, i) => ({ label: SENT_LABEL[s2], n: lab.filter((c) => c.sl === s2).length, color: cols[i] }));
+      return `<div class="srow"><div class="lab" title="${esc(r)}">${esc(r)}<small>${fmtN(lab.length)}</small></div><div class="stack">${stackSegments(parts, lab.length, { title: r, labels: false })}</div><div class="end"><b>${pct(lab.filter(posSent).length / lab.length, 0)}</b></div></div>`;
+    }).join("") : '<div class="empty">No calls in this selection</div>';
+    legend($("sentLegend"), SENT_KEYS.map((s, i) => ({ label: SENT_LABEL[s], color: cols[i] })));
+    $("capSent").textContent = "Share of calls at each level; the figure on the right is positive or very positive." + (S.cat ? " “All products” follows the product filter; category rows ignore it." : "");
+  }
+
+  // ---------- trend (one percentage axis) ----------
+  let trendTable = false;
+  $("trendTableBtn").onclick = () => { trendTable = !trendTable; $("trendTableBtn").setAttribute("aria-pressed", String(trendTable)); renderTrend(slice()); };
+  function autoGran() {
+    if (S.gran) return S.gran;
+    if (S.p === "week" || S.p === "day") return "day";
+    if (S.p === "month") return "week";
+    if (S.p === "range") { const r = periodRange(false); const days = (toDate(r[1]) - toDate(r[0])) / 864e5; return days <= 31 ? "day" : days <= 120 ? "week" : "month"; }
+    return "month";
+  }
+  function bucketKey(d, g) { return g === "day" ? d : g === "week" ? mondayOf(d) : d.slice(0, 7); }
+  function bucketLabel(k, g) { return g === "month" ? fmtMonth(k) : g === "week" ? "Wk " + fmtDay(k, false) : fmtDay(k, false); }
+  function renderTrend(list) {
+    const g = autoGran();
+    syncSeg($("granSeg"), g);
+    const el = $("trend");
+    const buckets = new Map();
+    list.forEach((c) => { const k = bucketKey(c.d, g); if (!buckets.has(k)) buckets.set(k, []); buckets.get(k).push(c); });
+    const keys = [...buckets.keys()].sort();
+    const series = [
+      { key: "positive", label: "Positive sentiment", color: cssVar("--line-1") },
+      { key: "rapport", label: "Good or excellent rapport", color: cssVar("--line-2") },
+      { key: "close", label: "Closed on the call", color: cssVar("--line-3") },
+    ];
+    const pts = keys.map((k) => ({ k, m: metrics(buckets.get(k)) }));
+    $("capTrend").textContent = `By ${g} · ${keys.length} ${g}${keys.length === 1 ? "" : "s"} · thin periods (under 5 calls) are hollow`;
+    legend($("trendLegend"), series, true);
+    // table view
+    const tbl = $("trendTable");
+    tbl.hidden = !trendTable; el.hidden = trendTable;
+    if (trendTable) {
+      tbl.innerHTML = `<table><thead><tr><th>${g === "month" ? "Month" : g === "week" ? "Week of" : "Day"}</th><th class="num">Calls</th>${series.map((s) => `<th class="num">${s.label}</th>`).join("")}</tr></thead><tbody>${pts.map((p) => `<tr><td>${g === "month" ? fmtMonth(p.k) : fmtDay(p.k)}</td><td class="num">${fmtN(p.m.n)}</td>${series.map((s) => `<td class="num">${pct(p.m[s.key], 0)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+      return;
+    }
+    if (keys.length < 2) { el.innerHTML = `<div class="empty">Pick a longer period or a finer grouping to see a trend${keys.length === 1 ? ` (${fmtN(pts[0].m.n)} calls in this ${g})` : ""}.</div>`; return; }
+
+    const W = Math.max(280, el.clientWidth || 560), H = 250, ml = 38, mr = 118, mt = 10, mb = 26;
+    const volH = 46, gap = 18;
+    const plotH = H - mt - mb - volH - gap;
+    const x = (i) => ml + (keys.length === 1 ? 0 : (i / (keys.length - 1)) * (W - ml - mr));
+    const y = (v) => mt + (1 - v) * plotH;
+    const maxN = Math.max(...pts.map((p) => p.m.n));
+    const vy0 = mt + plotH + gap + volH;
+    let svg = `<svg class="trend-svg" viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Trend of positive sentiment, good rapport and close rate">`;
+    [0, 0.25, 0.5, 0.75, 1].forEach((t) => { svg += `<line class="${t === 0 ? "base-line" : "grid-line"}" x1="${ml}" x2="${W - mr}" y1="${y(t)}" y2="${y(t)}"/><text x="${ml - 6}" y="${y(t) + 4}" text-anchor="end">${t * 100}%</text>`; });
+    // volume columns (own scale, counts) under the plot
+    const bw = Math.max(2, Math.min(18, ((W - ml - mr) / keys.length) * 0.6));
+    pts.forEach((p, i) => { const h = Math.max(1, (p.m.n / maxN) * volH); svg += `<rect x="${x(i) - bw / 2}" y="${vy0 - h}" width="${bw}" height="${h}" rx="2" fill="var(--brand-soft)" opacity="0.8"/>`; });
+    svg += `<line class="base-line" x1="${ml}" x2="${W - mr}" y1="${vy0}" y2="${vy0}"/><text x="${ml - 6}" y="${vy0 - volH + 8}" text-anchor="end">${fmtN(maxN)}</text><text x="${ml - 6}" y="${vy0}" text-anchor="end">0</text>`;
+    svg += `<text x="${W - mr + 8}" y="${vy0 - volH / 2 + 4}">Calls</text>`;
+    // x labels
+    const every = Math.ceil(keys.length / Math.max(2, Math.floor((W - ml - mr) / 70)));
+    keys.forEach((k, i) => {
+      const show = i === keys.length - 1 || (i % every === 0 && keys.length - 1 - i >= every * 0.75);
+      if (show) svg += `<text x="${x(i)}" y="${H - 6}" text-anchor="middle">${esc(bucketLabel(k, g))}</text>`;
+    });
+    // lines
+    const ends = [];
+    series.forEach((s) => {
+      let d = "", started = false;
+      pts.forEach((p, i) => { const v = p.m[s.key]; if (v == null) { started = false; return; } d += (started ? "L" : "M") + x(i).toFixed(1) + "," + y(v).toFixed(1); started = true; });
+      svg += `<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+      pts.forEach((p, i) => { const v = p.m[s.key]; if (v == null) return; const thin = p.m.n < 5; svg += `<circle cx="${x(i)}" cy="${y(v)}" r="${keys.length > 40 ? 2.5 : 4}" fill="${thin ? "var(--surface)" : s.color}" stroke="${thin ? s.color : "var(--surface)"}" stroke-width="2"/>`; });
+      const last = [...pts].reverse().find((p) => p.m[s.key] != null);
+      if (last) ends.push({ y: y(last.m[s.key]), text: s.label.split(" ")[0] + " " + pct(last.m[s.key], 0), color: s.color });
+    });
+    // end labels with simple collision spacing + leader ticks
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 14) ends[i].ly = (ends[i - 1].ly || ends[i - 1].y) + 14;
+    ends.forEach((e) => { const ly = e.ly || e.y; svg += `<line x1="${W - mr + 3}" x2="${W - mr + 9}" y1="${e.y}" y2="${ly}" stroke="${e.color}" stroke-width="1"/><text class="end-label" x="${W - mr + 12}" y="${ly + 4}">${esc(e.text)}</text>`; });
+    svg += `<line class="cross" id="trendCross" x1="0" x2="0" y1="${mt}" y2="${vy0}" visibility="hidden"/>`;
+    svg += `<rect id="trendHit" x="${ml - 10}" y="0" width="${W - ml - mr + 20}" height="${H}" fill="transparent"/>`;
+    svg += "</svg>";
+    el.innerHTML = svg;
+    const hit = $("trendHit"), cross = $("trendCross"), svgEl = el.querySelector("svg");
+    const nearest = (clientX) => { const r = svgEl.getBoundingClientRect(); const px = ((clientX - r.left) / r.width) * W; let best = 0; keys.forEach((_, i) => { if (Math.abs(x(i) - px) < Math.abs(x(best) - px)) best = i; }); return best; };
+    hit.addEventListener("pointermove", (e) => {
+      const i = nearest(e.clientX); const p = pts[i];
+      cross.setAttribute("x1", x(i)); cross.setAttribute("x2", x(i)); cross.setAttribute("visibility", "visible");
+      const head = g === "month" ? fmtMonth(p.k) : g === "week" ? "Week of " + fmtDay(p.k) : fmtDay(p.k);
+      hit.setAttribute("data-tip", JSON.stringify({ h: head, r: series.map((s) => ({ l: s.label, v: pct(p.m[s.key], 0), c: s.color })).concat([{ l: "Calls analysed", v: fmtN(p.m.n) }]) }));
+      showTip(hit, e.clientX, e.clientY);
+      e.stopPropagation();
+    });
+    hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
+  }
+
+  function renderNotClosed(list) {
+    const nc = list.filter((c) => c.nc);
+    const sales = list.filter(isSales);
+    const cnt = count(nc, (c) => c.nc);
+    const items = D.notClosedReasons.map((r) => ({ label: r, n: cnt.get(r) || 0, fk: "nc", fv: r })).filter((i) => i.n).sort((a, b) => b.n - a.n);
+    hbars($("notClosed"), items, nc.length, { shareLabel: "Share of not-closed calls" });
+    $("capNC").textContent = `${fmtN(nc.length)} of ${fmtN(sales.length)} sales calls didn't close on the call`;
+    const oc = count(nc, (c) => c.out);
+    hbars($("ncOutcome"), ["strong_intent", "moderate_interest", "low_interest", "wrong_fit", "lost_to_competitor"].map((k) => ({ label: OUTCOME_LABEL[k], n: oc.get(k) || 0, fk: "out", fv: k })).filter((i) => i.n), nc.length);
+
+    // matrix: reasons x category (ignores the product filter)
+    const base = slice({ anyCat: true }).filter((c) => c.nc);
+    const colsDef = [["*", "All", base]].concat(CATS.map((cat) => [cat, cat, base.filter((c) => c.cat.includes(cat))]));
+    const topReasons = items.length ? D.notClosedReasons.filter((r) => base.some((c) => c.nc === r)) : [];
+    const totals = new Map(); base.forEach((c) => totals.set(c.nc, (totals.get(c.nc) || 0) + 1));
+    topReasons.sort((a, b) => (totals.get(b) || 0) - (totals.get(a) || 0));
+    const seq = [1, 2, 3, 4, 5].map((i) => cssVar("--seq-" + i));
+    const maxShare = Math.max(0.0001, ...topReasons.flatMap((r) => colsDef.map(([, , l]) => (l.length ? l.filter((c) => c.nc === r).length / l.length : 0))));
+    $("ncMatrix").innerHTML = base.length ? `<thead><tr><th>Reason</th>${colsDef.map(([k, n, l]) => `<th class="c">${esc(n)}<br><span style="font-weight:400;text-transform:none;letter-spacing:0">${fmtN(l.length)} calls</span></th>`).join("")}</tr></thead>
+      <tbody>${topReasons.map((r) => `<tr><td>${esc(r)}</td>${colsDef.map(([k, n, l]) => {
+        const c = l.filter((x) => x.nc === r).length; const s = l.length ? c / l.length : 0;
+        const step = s === 0 ? 0 : Math.max(0, Math.min(4, Math.ceil((s / maxShare) * 4)));
+        const bg = seq[step]; const txt = luminance(bg) > 0.3 ? "#141714" : "#ffffff";
+        return `<td class="h" style="background:${bg};color:${txt};cursor:${c ? "pointer" : "default"}" ${c ? focusAttrs("ncCat", k + "|" + r) : ""} data-tip="${tipAttr({ h: r + " · " + n, r: [{ l: "Calls", v: fmtN(c) }, { l: "Share of not-closed calls", v: pct(s) }] })}">${l.length ? pct(s, 0) : "–"}</td>`;
+      }).join("")}</tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">No not-closed sales calls in this selection</td></tr></tbody>';
+  }
+
+  // ---------- call log ----------
+  const PAGE = 25;
+  function logRows() {
+    const q = S.q.trim().toLowerCase();
+    return slice().filter(focusMatch).filter((c) => !q || [c.ag, c.pi, c.trig, c.why, c.obj, c.q, c.co, c.rsn, c.nc, c.pq, c.oq, c.cat.join(" "), c.req.join(" ")].join(" ").toLowerCase().includes(q)).reverse();
+  }
+  function sentDot(sl) { if (sl == null) return "–"; const i = SENT_KEYS.indexOf(sl); return `<span class="dot" style="background:${cssVar(DIV_VARS[i])}"></span>${SENT_LABEL[sl]}`; }
+  function renderLog() {
+    const rows = logRows();
+    const pages = Math.max(1, Math.ceil(rows.length / PAGE));
+    S.pg = Math.min(S.pg, pages - 1);
+    const pageRows = rows.slice(S.pg * PAGE, S.pg * PAGE + PAGE);
+    $("logCount").textContent = `${fmtN(rows.length)} call${rows.length === 1 ? "" : "s"}${S.fk ? " · " + focusLabel() : ""}`;
+    $("pageInfo").textContent = rows.length ? `${S.pg * PAGE + 1}–${Math.min(rows.length, (S.pg + 1) * PAGE)} of ${fmtN(rows.length)}` : "";
+    $("prevPg").disabled = S.pg === 0; $("nextPg").disabled = S.pg >= pages - 1;
+    const head = `<thead><tr><th>When</th><th>Sales person</th><th>Product</th><th>Reason for call</th><th>Outcome</th><th>Sentiment</th><th>Rapport</th><th>Pricing</th></tr></thead>`;
+    if (!rows.length) { $("logTable").innerHTML = head + '<tbody><tr><td colspan="8" class="empty">No calls match</td></tr></tbody>'; return; }
+    $("logTable").innerHTML = head + "<tbody>" + pageRows.map((c, i) => {
+      const prColor = cssVar(PR_VAR[c.pr]);
+      const detail = [
+        c.q && ["Customer, in their words", `<div class="quote">“${esc(c.q)}”</div>`],
+        ["Reason for call", esc(c.rsn) + (c.trig ? ` <span style="color:var(--muted)">· ${esc(c.trig)}</span>` : "")],
+        c.req.length && ["Customer asked about", c.req.map((r) => `<span class="chip">${esc(r)}</span>`).join("")],
+        ["Outcome", esc(OUTCOME_LABEL[c.out] || c.out || "–") + (c.why ? ` · ${esc(c.why)}` : "")],
+        c.nc && ["Why it didn't close", esc(c.nc) + (c.obj ? ` <span style="color:var(--muted)">· unresolved: ${esc(c.obj)}</span>` : "")],
+        c.pq && ["Customer on price", `<div class="quote">“${esc(c.pq)}”</div>`],
+        c.oq && ["Rep's offer" + (c.pt ? " · " + esc(OFFER_LABEL[c.pt]) : ""), `<div class="quote">“${esc(c.oq)}”</div>`],
+        c.co && ["Coaching tip", esc(c.co)],
+        ["Call", `${c.dir === "O" ? "Outbound" : "Inbound"} · ${Math.round(c.dur / 60)} min${c.seg ? " · " + esc(c.seg) : ""}${c.pi ? " · " + esc(c.pi) : ""} · <a href="https://assets.aircall.io/calls/${esc(c.id)}/recording" target="_blank" rel="noopener">Recording</a> <span style="color:var(--muted)">(Aircall login)</span>`],
+      ].filter(Boolean);
+      return `<tr class="row" data-i="${i}" tabindex="0" aria-expanded="false"><td style="white-space:nowrap">${fmtDay(c.d)} <span style="color:var(--muted)">${c.h}</span></td><td style="white-space:nowrap">${esc(c.ag)}</td>
+        <td>${c.cat.length ? c.cat.map((x) => `<span class="chip">${esc(x)}</span>`).join("") : '<span style="color:var(--muted)">–</span>'}</td>
+        <td>${esc(c.rsn)}</td><td style="white-space:nowrap">${esc(OUTCOME_LABEL[c.out] || "–")}</td><td style="white-space:nowrap">${sentDot(c.sl)}</td>
+        <td>${c.rap ? QUAL[c.rap] : "–"}</td><td style="white-space:nowrap"><span class="dot" style="background:${prColor}"></span>${esc(PR_LABEL[c.pr])}</td></tr>
+        <tr class="detail" hidden><td colspan="8"><div class="detail-grid">${detail.map(([l, v]) => `<div><div class="dl">${l}</div><div class="dv">${v}</div></div>`).join("")}</div></td></tr>`;
+    }).join("") + "</tbody>";
+  }
+  $("logTable").addEventListener("click", (e) => {
+    if (e.target.closest("a")) return;
+    const tr = e.target.closest("tr.row"); if (!tr) return;
+    const d = tr.nextElementSibling; d.hidden = !d.hidden; tr.setAttribute("aria-expanded", String(!d.hidden));
+  });
+  $("logTable").addEventListener("keydown", (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("tr.row")) { e.preventDefault(); e.target.click(); } });
+
+  // A label inside a stacked segment only shows when it fits with padding.
+  function fitLabels() {
+    document.querySelectorAll(".stack .s span").forEach((sp) => {
+      sp.style.visibility = "";
+      if (sp.offsetWidth > sp.parentElement.clientWidth - 6) sp.style.visibility = "hidden";
+    });
+  }
+
+  // ---------- main render ----------
+  function render() {
+    syncSeg($("periodSeg"), S.p); syncSeg($("catSeg"), S.cat); syncSeg($("dirSeg"), S.dir);
+    renderPeriodPick(); renderAgentSel();
+    $("search").value = S.q;
+    const list = slice();
+    $("asof").textContent = `Showing ${S.p === "all" ? "all time" : periodText()} · data to ${fmtDay(lastDay)} · refreshed ${D.generated}`;
+    renderKPIs(list); renderWhy(list); renderPricing(list); renderRapport(list); renderSentiment(list); renderTrend(list); renderNotClosed(list); renderLog();
+    fitLabels();
+    const fl = focusLabel();
+    $("focusPill").classList.toggle("on", !!fl); $("focusText").textContent = fl ? "Call log: " + fl : "";
+    saveHash();
+  }
+  render();
+  let rt; window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { renderTrend(slice()); fitLabels(); }, 120); });
+  matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => { syncThemeBtn(); render(); });
+})();
+</script>
+</body>
+</html>

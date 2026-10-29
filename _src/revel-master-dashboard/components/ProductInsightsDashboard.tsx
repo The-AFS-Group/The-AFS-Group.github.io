@@ -203,7 +203,7 @@ const ProductTable: React.FC<ProductTableProps> = ({
                 const isLower = !isNaN(compVal) && compVal > 0 && compVal < row.currentPriceIncGst;
                 return <span className={`text-sm ${isLower ? 'text-red-600 font-medium' : 'text-gray-900'}`}>{row.lowestCompetitorPrice}</span>;
             }
-            case 'GAF URL': {
+            case 'REVEL URL': {
                 const url = row.url.startsWith('http') ? row.url : `https://revelsaunas.com.au${row.url.startsWith('/') ? '' : '/'}${row.url}`;
                 return (
                     <a 
@@ -543,7 +543,7 @@ export default function ProductInsightsDashboard() {
   const columns = useMemo(() => [
       'SKU', 'Name', 'Est Revenue (30d)', 'GP/Visit (30d)', 'Qty (30d)', 'Views (30d)', 'GP/Visit (3m)', 'Qty (3m)', 'Views (3m)',
       'Inv', 'Days Left', 'Run Rate OK?', 'PreOrder Inv', 'Next ETA',
-      'Type', 'RRP', 'Sell Price (Inc GST)', 'Cost (Ex)', 'GP %', 'Vendor', 'Discontinued', 'Comp. Price', 'GAF URL'
+      'Type', 'RRP', 'Sell Price (Inc GST)', 'Cost (Ex)', 'GP %', 'Vendor', 'Discontinued', 'Comp. Price', 'REVEL URL'
   ], []);
 
   if (!data && isUpdating) {

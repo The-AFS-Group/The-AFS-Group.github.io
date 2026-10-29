@@ -303,6 +303,11 @@ export default function SalesDashboard() {
   }, [allBrandBudget, timeframe, startOfSelectedMonth, endOfSelectedMonth, startOfSelectedQuarter, endOfSelectedQuarter]);
 
   const fullCampaignData: any[] = [];
+  const weeklyCampaignData: any[] = [];
+  const chartSumKeys = [
+    "grossProfitCreated", "grossProfitCreatedBudget", "grossProfitFulfilled", "grossProfitFulfilledBudget",
+    "sessions", "targetSessions", "abandonedCarts", "adSpend", "inboundSalesCalls", "outboundSalesCalls",
+  ];
   const startDate = timeframe === "month" ? startOfSelectedMonth : startOfSelectedQuarter;
   const endDate = timeframe === "month" ? endOfSelectedMonth : endOfSelectedQuarter;
   const daysInTimeframe = Math.round((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -321,7 +326,7 @@ export default function SalesDashboard() {
                         (loopDate.getFullYear() === currentYear && loopDate.getMonth() > currentMonth) ||
                         (loopDate.getFullYear() === currentYear && loopDate.getMonth() === currentMonth && loopDate.getDate() >= currentDay);
 
-    fullCampaignData.push({
+    const dayRow: Record<string, any> = {
       date: dateStr,
       grossProfitCreated: isFutureDay ? null : (actualData?.grossProfitCreated || null),
       grossMarginCreated: isFutureDay ? null : (actualData?.grossMarginCreated || null),
@@ -335,8 +340,21 @@ export default function SalesDashboard() {
       adSpend: isFutureDay ? null : (actualData?.adSpend || null),
       inboundSalesCalls: isFutureDay ? null : (actualData?.inboundSalesCalls || 0),
       outboundSalesCalls: isFutureDay ? null : (actualData?.outboundSalesCalls || 0),
+    };
+    fullCampaignData.push(dayRow);
+
+    // Quarter view totals each week (commencing Monday) so the charts aren't ~90 hairline daily bars
+    if (weeklyCampaignData.length === 0 || loopDate.getDay() === 1) {
+      weeklyCampaignData.push({ date: dateStr, weekStart: dateStr });
+    }
+    const week = weeklyCampaignData[weeklyCampaignData.length - 1];
+    week.weekLabel = week.weekStart === dateStr ? dateStr : `${week.weekStart} – ${dateStr}`;
+    chartSumKeys.forEach((key) => {
+      if (dayRow[key] !== null) week[key] = (week[key] || 0) + dayRow[key];
     });
   }
+
+  const chartData = timeframe === "quarter" ? weeklyCampaignData : fullCampaignData;
 
   const totalGrossProfit = activeData.reduce(
     (sum, day) => sum + (isCreated ? day.grossProfitCreated || 0 : day.grossProfitFulfilled || 0),
@@ -757,7 +775,7 @@ export default function SalesDashboard() {
               </div>
               <div className="h-72 w-full">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={fullCampaignData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
                     <XAxis 
                       dataKey="date" 
@@ -784,6 +802,7 @@ export default function SalesDashboard() {
                         boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
                         fontSize: "13px"
                       }}
+                      labelFormatter={(label: string, payload: any[]) => payload?.[0]?.payload?.weekLabel || label}
                       formatter={(val: number, name: string) => {
                         const formattedVal = val.toLocaleString(undefined, { maximumFractionDigits: 0 });
                         

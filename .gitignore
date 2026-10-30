@@ -17,3 +17,6 @@ _src/*/dist-artifact/
 # OS noise
 .DS_Store
 Thumbs.db
+
+# Python bytecode from running the pipelines locally
+__pycache__/

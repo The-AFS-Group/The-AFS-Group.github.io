@@ -236,6 +236,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
 .heat td.h { text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 58px; border-left: 2px solid var(--surface); }
 .heat th.c { text-align: center; white-space: normal; line-height: 1.25; vertical-align: bottom; }
 .heat td:first-child, #priceReps td:first-child { white-space: nowrap; }
+.wrap-head th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
 .mini { display: inline-block; height: 8px; border-radius: 0 3px 3px 0; vertical-align: middle; margin-left: 6px; }
 
 /* trend */
@@ -421,6 +422,28 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     </div>
   </section>
 
+  <section class="section" id="competitors">
+    <div class="section-head"><div><h2>Competitors mentioned</h2><p>Other brands customers named on the call, the models they mentioned, and how Revel stacked up. Names come from speech-to-text, so spellings are grouped where the brand is clear (for example SoundSpace and FoundSpace both count as Found Space).</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>Competitors named on calls</h3><p class="cap" id="capComp"></p><div class="hbars" id="compBars"></div></div>
+      <div class="card">
+        <h3>How Revel's price compared</h3><p class="cap" id="capCpc"></p>
+        <div class="stack" id="cpcStack" style="height:32px"></div>
+        <div class="legend" id="cpcLegend"></div>
+        <h3 style="font-size:13.5px;margin-top:20px">Calls that named a competitor vs calls that didn't</h3><p class="cap" style="margin-bottom:6px">Same filters, split by whether another brand came up</p>
+        <div class="tbl-wrap"><table id="compVs" class="wrap-head"></table></div>
+      </div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Where Revel wins</h3><p class="cap" id="capEdge"></p><div class="hbars" id="edgeBars"></div></div>
+      <div class="card"><h3>Where Revel falls short</h3><p class="cap" id="capGap"></p><div class="hbars" id="gapBars"></div></div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Competitor models mentioned</h3><p class="cap">Brands named on 2+ calls in the current filters (every brand when there are 12 or fewer). Models are listed when the call named a single brand; the call log has every call's models, including one-off brands.</p>
+      <div class="tbl-wrap"><table id="compModels"></table></div>
+    </div>
+  </section>
+
   <section class="section" id="log">
     <div class="section-head"><div><h2>Call log</h2><p>Every analysed call in the current filters. Click a row for the customer quote, outcome notes and pricing evidence.</p></div></div>
     <div class="card">
@@ -440,6 +463,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
       <li>Reasons, requests and not-closed reasons are grouped from the AI's free-text notes with keyword rules, so treat them as directional. The call log shows the original notes for every call.</li>
       <li>Pricing offers and price pressure are detected from who said what in the transcript (Revel staff vs customer). Mentioning a running sale counts as an offer; a discount the rep puts on the table is shown separately.</li>
       <li>Closed on the call means the AI marked the outcome as purchased during that conversation. Many sales complete later online, so this understates total conversion.</li>
+      <li>Competitors, competitor models and Revel's edge or drawback come from the AI's notes on each call. Beyond the 12 most-named brands, the rest are grouped as "Other brands"; hover that bar to see them.</li>
       <li>Weeks run Monday to Sunday. Times are Brisbane time. Data refreshes nightly.</li>
     </ul>
   </section>
@@ -599,7 +623,9 @@ tr.team td { color: var(--ink-2); font-style: italic; }
   const tipAttr = (o) => esc(JSON.stringify(o));
 
   // ---------- drill-down focus (scopes the call log only) ----------
-  const FOCUS_NAME = { rsn: "Reason", req: "Request", pr: "Pricing", pt: "Offer type", ps: "Price sensitivity", rap: "Rapport", sl: "Sentiment", nc: "Not closed", out: "Outcome", ncCat: "Not closed" };
+  const FOCUS_NAME = { rsn: "Reason", req: "Request", pr: "Pricing", pt: "Offer type", ps: "Price sensitivity", rap: "Rapport", sl: "Sentiment", nc: "Not closed", out: "Outcome", ncCat: "Not closed", comp: "Competitor", edge: "Revel wins on", gap: "Revel falls short on" };
+  const CPC_LABEL = { cheaper: "Revel cheaper", similar: "Similar price", premium: "Revel more expensive" };
+  let compOther = new Set(); // brands folded into "Other brands" in the current view
   function focusMatch(c) {
     if (!S.fk) return true;
     const v = S.fv;
@@ -615,6 +641,11 @@ tr.team td { color: var(--ink-2); font-style: italic; }
       case "out": return c.nc && c.out === v;
       case "ncCat": { const [cat, r] = v.split("|"); return c.nc === r && (cat === "*" || c.cat.includes(cat)); }
       case "prRep": { const [a, cls] = v.split(":"); return c.a === +a && (cls === "P" ? c.pr === "PO" || c.pr === "PH" : c.pr === cls); }
+      case "comp": return v === "__other__" ? c.comp.some((b) => compOther.has(b)) : v === "__any__" ? c.comp.length > 0 : c.comp.includes(v);
+      case "cpc": return c.cpc === v;
+      case "edge": return c.edge.includes(v) && (c.comp.length > 0 || !!c.cpc);
+      case "gap": return c.gap.includes(v) && (c.comp.length > 0 || !!c.cpc);
+      case "compCpc": { const [b, cpc] = v.split("|"); return c.comp.includes(b) && c.cpc === cpc; }
       default: return true;
     }
   }
@@ -629,6 +660,9 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     if (S.fk === "out") return "Not closed · " + (OUTCOME_LABEL[v] || v);
     if (S.fk === "ncCat") { const [cat, r] = v.split("|"); return "Not closed: " + r + (cat === "*" ? "" : " · " + cat); }
     if (S.fk === "prRep") { const [a, cls] = v.split(":"); return AGENTS[+a] + " · " + (cls === "P" ? "Customer price pressure" : PR_LABEL[cls]); }
+    if (S.fk === "comp") return "Competitor: " + (v === "__other__" ? "other brands" : v === "__any__" ? "any" : v);
+    if (S.fk === "cpc") return "Price vs competitors: " + (CPC_LABEL[v] || v);
+    if (S.fk === "compCpc") { const [b, cpc] = v.split("|"); return b + " · " + (CPC_LABEL[cpc] || cpc); }
     return (FOCUS_NAME[S.fk] || S.fk) + ": " + v;
   }
   function setFocus(k, v) {
@@ -994,6 +1028,75 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
   }
 
+  function renderCompetitors(list) {
+    const named = list.filter((c) => c.comp.length);
+    const cnt = count(named, (c) => c.comp);
+    // Up to 12 brands get their own bar; when there are more, one-call brands and the long tail fold into "Other brands".
+    const ranked = [...cnt.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const showAll = ranked.length <= 12;
+    const main = ranked.filter(([, n], i) => i < 12 && (n >= 2 || showAll));
+    const tail = ranked.filter((e) => !main.includes(e)).map(([b]) => b).sort();
+    compOther = new Set(tail);
+    const items = main.map(([b, n]) => ({ label: b, n, fk: "comp", fv: b }));
+    const otherCalls = named.filter((c) => c.comp.some((b) => compOther.has(b))).length;
+    $("capComp").textContent = named.length ? `${fmtN(named.length)} calls named another brand (${pct(named.length / list.length)} of conversations). A call can name several.` : "";
+    hbars($("compBars"), items, named.length, { shareLabel: "Share of calls naming a competitor" });
+    if (otherCalls) {
+      const el = document.createElement("div");
+      el.innerHTML = `<div class="hbar${isSel("comp", "__other__") ? " sel" : ""}" ${focusAttrs("comp", "__other__")} data-tip="${tipAttr({ h: `Other brands (${tail.length})`, r: [{ l: "Calls", v: fmtN(otherCalls) }], s: tail.slice(0, 18).join(", ") + (tail.length > 18 ? "…" : "") })}">
+        <div class="lab">Other brands (${tail.length})</div><div class="track"><div class="fill" style="width:${(otherCalls / Math.max(1, ...items.map((i) => i.n), otherCalls)) * 100}%;opacity:0.55"></div></div>
+        <div class="val"><b>${pct(otherCalls / named.length)}</b> · ${fmtN(otherCalls)}</div></div>`;
+      $("compBars").appendChild(el.firstElementChild);
+    }
+
+    // price comparison (any call where the AI compared Revel's price with another brand)
+    const priced = list.filter((c) => c.cpc);
+    const cpcCnt = count(priced, (c) => c.cpc);
+    const cpcParts = [["cheaper", "--div-p2"], ["similar", "--div-0"], ["premium", "--div-n2"]].map(([k, v]) => ({ label: CPC_LABEL[k], n: cpcCnt.get(k) || 0, color: cssVar(v), fk: "cpc", fv: k }));
+    $("cpcStack").innerHTML = priced.length ? stackSegments(cpcParts, priced.length, { minLabel: 6 }) : '<div class="empty" style="width:100%;padding:4px">No price comparisons</div>';
+    legend($("cpcLegend"), cpcParts);
+    $("capCpc").textContent = priced.length ? `${fmtN(priced.length)} calls where the customer compared Revel's price with another brand or quote` : "";
+
+    const others = list.filter((c) => !c.comp.length);
+    const vsRow = (label, l) => {
+      const m = metrics(l);
+      const lost = l.filter((c) => c.out === "lost_to_competitor").length;
+      return `<tr><td>${label}</td><td class="num">${fmtN(l.length)}</td><td class="num">${pct(m.close)}</td><td class="num">${pct(share(lost, m.sales))}</td><td class="num">${pct(m.positive, 0)}</td><td class="num">${pct(m.unprompted, 0)}</td></tr>`;
+    };
+    $("compVs").innerHTML = `<thead><tr><th></th><th class="num">Calls</th><th class="num">Closed on call</th><th class="num">Lost to competitor</th><th class="num">Positive sentiment</th><th class="num">Unprompted offer</th></tr></thead>
+      <tbody>${vsRow("Named a competitor", named)}${vsRow("Didn't", others)}</tbody>`;
+
+    // wins and gaps on calls where another brand or a price comparison came up
+    const ctx = list.filter((c) => c.comp.length || c.cpc);
+    const withEdge = ctx.filter((c) => c.edt), withGap = ctx.filter((c) => c.gpt);
+    const ec = count(withEdge, (c) => c.edge), gc = count(withGap, (c) => c.gap);
+    hbars($("edgeBars"), D.edgeThemes.map((t) => ({ label: t, n: ec.get(t) || 0, fk: "edge", fv: t })).filter((i) => i.n).sort((a, b) => b.n - a.n), withEdge.length, { shareLabel: "Share of these calls" });
+    hbars($("gapBars"), D.gapThemes.map((t) => ({ label: t, n: gc.get(t) || 0, fk: "gap", fv: t })).filter((i) => i.n).sort((a, b) => b.n - a.n), withGap.length, { shareLabel: "Share of these calls" });
+    $("capEdge").textContent = `What the AI saw as Revel's advantage, on ${fmtN(withEdge.length)} calls where another brand or a price comparison came up. A call can cite several.`;
+    $("capGap").textContent = `What the AI saw as Revel's disadvantage, on ${fmtN(withGap.length)} of those calls.`;
+
+    // models table
+    const models = new Map();
+    named.forEach((c) => {
+      const brands = c.comp.filter((b) => b !== "Unnamed competitor");
+      if (brands.length !== 1) return;
+      const m = models.get(brands[0]) || new Map();
+      c.cmod.forEach((x) => m.set(x, (m.get(x) || 0) + 1));
+      models.set(brands[0], m);
+    });
+    const rows = ranked.filter(([, n]) => n >= 2 || showAll);
+    $("compModels").innerHTML = rows.length ? `<thead><tr><th>Competitor</th><th class="num">Calls</th><th>Models mentioned</th><th class="num">Revel cheaper</th><th class="num">Similar</th><th class="num">Revel dearer</th><th class="num">Closed on call</th><th class="num">Lost to competitor</th></tr></thead>
+      <tbody>${rows.map(([b, n]) => {
+        const l = named.filter((c) => c.comp.includes(b));
+        const m = models.get(b);
+        const chips = m && m.size ? [...m.entries()].sort((x, y) => y[1] - x[1]).map(([x, k]) => `<span class="chip">${esc(x)}${k > 1 ? " ×" + k : ""}</span>`).join("") : '<span style="color:var(--muted)">–</span>';
+        const cpcCell = (k) => { const k2 = l.filter((c) => c.cpc === k).length; return `<td class="num"${k2 ? ` ${focusAttrs("compCpc", b + "|" + k)} style="cursor:pointer"` : ""}>${k2 || '<span style="color:var(--muted)">–</span>'}</td>`; };
+        const sales = l.filter(isSales);
+        const closedN = sales.filter(closed).length, lostN = l.filter((c) => c.out === "lost_to_competitor").length;
+        return `<tr><td style="white-space:nowrap"><a href="#log" ${focusAttrs("comp", b)} style="text-decoration:none">${esc(b)}</a></td><td class="num">${fmtN(n)}</td><td style="min-width:220px">${chips}</td>${cpcCell("cheaper")}${cpcCell("similar")}${cpcCell("premium")}<td class="num">${closedN || '<span style="color:var(--muted)">–</span>'}</td><td class="num">${lostN || '<span style="color:var(--muted)">–</span>'}</td></tr>`;
+      }).join("")}</tbody>` : '<tbody><tr><td class="empty">No competitors named in this selection</td></tr></tbody>';
+  }
+
   function renderNotClosed(list) {
     const nc = list.filter((c) => c.nc);
     const sales = list.filter(isSales);
@@ -1025,7 +1128,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
   const PAGE = 25;
   function logRows() {
     const q = S.q.trim().toLowerCase();
-    return slice().filter(focusMatch).filter((c) => !q || [c.ag, c.pi, c.trig, c.why, c.obj, c.q, c.co, c.rsn, c.nc, c.pq, c.oq, c.cat.join(" "), c.req.join(" ")].join(" ").toLowerCase().includes(q)).reverse();
+    return slice().filter(focusMatch).filter((c) => !q || [c.ag, c.pi, c.trig, c.why, c.obj, c.q, c.co, c.rsn, c.nc, c.pq, c.oq, c.cat.join(" "), c.req.join(" "), c.comp.join(" "), c.cmod.join(" "), c.edt, c.gpt].join(" ").toLowerCase().includes(q)).reverse();
   }
   function sentDot(sl) { if (sl == null) return "–"; const i = SENT_KEYS.indexOf(sl); return `<span class="dot" style="background:${cssVar(DIV_VARS[i])}"></span>${SENT_LABEL[sl]}`; }
   function renderLog() {
@@ -1048,6 +1151,10 @@ tr.team td { color: var(--ink-2); font-style: italic; }
         c.nc && ["Why it didn't close", esc(c.nc) + (c.obj ? ` <span style="color:var(--muted)">· unresolved: ${esc(c.obj)}</span>` : "")],
         c.pq && ["Customer on price", `<div class="quote">“${esc(c.pq)}”</div>`],
         c.oq && ["Rep's offer" + (c.pt ? " · " + esc(OFFER_LABEL[c.pt]) : ""), `<div class="quote">“${esc(c.oq)}”</div>`],
+        c.comp.length && ["Competitors named", c.comp.map((b) => `<span class="chip">${esc(b)}</span>`).join("") + (c.cmod.length ? ` <span style="color:var(--muted)">· models: ${esc(c.cmod.join(", "))}</span>` : "") + (c.cpc ? ` <span style="color:var(--muted)">· ${esc(CPC_LABEL[c.cpc] || c.cpc)}</span>` : "")],
+        !c.comp.length && c.cpc && ["Price vs other brands", esc(CPC_LABEL[c.cpc] || c.cpc)],
+        c.edt && ["Revel's edge", esc(c.edt)],
+        c.gpt && ["Revel's drawback", esc(c.gpt)],
         c.co && ["Coaching tip", esc(c.co)],
         ["Call", `${c.dir === "O" ? "Outbound" : "Inbound"} · ${Math.round(c.dur / 60)} min${c.seg ? " · " + esc(c.seg) : ""}${c.pi ? " · " + esc(c.pi) : ""} · <a href="https://assets.aircall.io/calls/${esc(c.id)}/recording" target="_blank" rel="noopener">Recording</a> <span style="color:var(--muted)">(Aircall login)</span>`],
       ].filter(Boolean);
@@ -1080,7 +1187,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     $("search").value = S.q;
     const list = slice();
     $("asof").textContent = `Showing ${S.p === "all" ? "all time" : periodText()} · data to ${fmtDay(lastDay)} · refreshed ${D.generated}`;
-    renderKPIs(list); renderWhy(list); renderPricing(list); renderRapport(list); renderSentiment(list); renderTrend(list); renderNotClosed(list); renderLog();
+    renderKPIs(list); renderWhy(list); renderPricing(list); renderRapport(list); renderSentiment(list); renderTrend(list); renderNotClosed(list); renderCompetitors(list); renderLog();
     fitLabels();
     const fl = focusLabel();
     $("focusPill").classList.toggle("on", !!fl); $("focusText").textContent = fl ? "Call log: " + fl : "";

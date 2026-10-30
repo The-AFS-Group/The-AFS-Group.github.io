@@ -403,3 +403,36 @@ def themes(text, theme_list):
     if not text.strip() or text.strip().lower() in ("none", "n/a", "na"):
         return []
     return [label for label, rx in theme_list if rx.search(text)]
+
+
+# --- What researching customers want ---------------------------------------------
+
+FEATURE_THEMES = [
+    ("Outdoor use & weatherproofing", _rx(r"outdoor", r"weather", r"under ?cover", r"\broof", r"rain", r"\buv\b resist")),
+    ("Size & capacity", _rx(r"\bsize", r"person", r"compact", r"dimension", r"space", r"\bfit", r"large", r"small", r"capacity", r"seat(?:ing|s)? for", r"roomy|spacious")),
+    ("Timber & build quality", _rx(r"cedar", r"timber", r"\bwood", r"durab", r"quality", r"\bbuil[dt]", r"thick", r"hemlock", r"spruce", r"material", r"sturdy|solid")),
+    ("Wi-Fi & app control", _rx(r"wi-?fi", r"\bapp\b", r"remote", r"smart")),
+    ("Full spectrum & infrared type", _rx(r"full[- ]spectrum", r"infra-?red", r"far[- ]infra", r"near[- ]infra", r"red light", r"carbon", r"ceramic")),
+    ("Hybrid (infrared + traditional)", _rx(r"hybrid", r"both infrared and traditional", r"infrared and traditional")),
+    ("Heat-up speed & heat", _rx(r"heat(?:s|ing)? up", r"heat(?:ing)? time", r"heat retention", r"quick heat", r"fast heat", r"\bhot\b", r"temperature range", r"heater (?:power|size)", r"\bkw\b", r"kilowatt", r"steam", r"stones|rocks")),
+    ("Low EMF & non-toxic materials", _rx(r"\bemf", r"toxic", r"off-?gas", r"chemical", r"safe(?:ty)?\b", r"glue")),
+    ("Easy install & installation service", _rx(r"install", r"assembl", r"set ?up", r"plug(?: and play|-in| in)", r"\bplug\b", r"diy")),
+    ("Lighting, sound & comfort", _rx(r"bluetooth", r"speaker", r"\bled\b", r"lighting", r"chromo", r"starlight", r"backrest", r"bench", r"glass", r"ventilation", r"comfort", r"music", r"aesthetic", r"design", r"look")),
+    ("Ice bath & chiller performance", _rx(r"chiller", r"horse ?power", r"\bhp\b", r"filtrat", r"filter", r"ozone", r"\buv\b", r"degrees", r"\bcold", r"plunge", r"insulat")),
+    ("Price & value", _rx(r"pric", r"cost", r"value", r"afford", r"budget", r"cheap")),
+    ("Stock & delivery", _rx(r"availab", r"in stock", r"\bstock", r"deliver", r"shipping", r"freight", r"before christmas")),
+]
+
+MISSING_INFO_THEMES = [
+    ("Stock & delivery timing", _rx(r"stock", r"availab", r"\beta\b", r"lead time", r"delivery (?:time|timing|date)", r"sold out", r"when (?:it|they) (?:arrive|will)")),
+    ("Dimensions & specifications", _rx(r"dimension", r"\bsize", r"spec", r"measure", r"clearance", r"weight", r"height", r"width", r"depth", r"capacity")),
+    ("Differences between models", _rx(r"differen", r"compar", r"\bvs\b", r"versus", r"which (?:model|one)", r"models\b", r"infrared (?:vs|or|and) traditional")),
+    ("Installation details & cost", _rx(r"install", r"assembl", r"set ?up", r"base", r"slab")),
+    ("Electrical requirements", _rx(r"electric", r"\bamps?\b", r"\bpower", r"\bplug", r"wiring", r"circuit")),
+    ("Price, shipping & discounts", _rx(r"pric", r"cost", r"shipping", r"freight", r"discount", r"\bsale\b", r"\bfee", r"quote", r"payment")),
+    ("Features & controls", _rx(r"wi-?fi", r"feature", r"control", r"\bapp\b", r"heater", r"stones", r"light", r"chiller", r"filter", r"temperature")),
+    ("Materials & safety", _rx(r"material", r"timber", r"\bwood", r"\bemf", r"safety", r"toxic", r"cedar")),
+    ("Warranty & longevity", _rx(r"warrant", r"longevity", r"lifespan", r"durab", r"how long (?:it|they) last")),
+    ("Showroom & seeing it in person", _rx(r"showroom", r"in person", r"display", r"visit")),
+    ("Website & ordering", _rx(r"website", r"online", r"checkout", r"\border", r"link", r"page")),
+]

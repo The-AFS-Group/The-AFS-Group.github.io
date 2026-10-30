@@ -176,6 +176,18 @@ main { padding: 20px 0 64px; }
 .grid { display: grid; gap: 16px; }
 .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .g-skills { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+@media (max-width: 1080px) { .g3 { grid-template-columns: minmax(0, 1fr); } }
+.sumbox { background: var(--surface-2); border: 1px solid var(--hair); border-radius: 10px; padding: 12px 14px; }
+.sumbox h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.sumbox ol { margin: 0; padding-left: 18px; }
+.sumbox li { margin: 3px 0; font-size: 13px; }
+.sumbox li span { color: var(--muted); }
+.gap-chip { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: var(--bad-text); color: #fff; margin-left: 6px; vertical-align: 1px; }
+.topic-about { display: block; color: var(--muted); font-size: 11.5px; }
+.ex-q { font-style: italic; color: var(--ink-2); font-size: 12.5px; }
+.hbars.stacked .hbar { grid-template-columns: minmax(0, 1fr) 72px; row-gap: 3px; }
+.hbars.stacked .hbar .lab { grid-column: 1 / -1; white-space: normal; }
 @media (max-width: 1080px) { .g2, .g-skills { grid-template-columns: minmax(0, 1fr); } }
 .card { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 18px 18px 16px; box-shadow: var(--shadow); min-width: 0; }
 .card h3 { font-size: 14.5px; font-weight: 600; }
@@ -383,6 +395,16 @@ tr.team td { color: var(--ink-2); font-style: italic; }
         <div class="tbl-wrap"><table class="heat" id="skills"></table></div>
       </div>
     </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Needs discovery: what reps ask, and what they miss</h3><p class="cap" id="capDisc"></p>
+      <div class="grid g3" id="discSummary" style="margin-bottom:16px"></div>
+      <div class="tbl-wrap"><table id="discTable"></table></div>
+      <p class="note">Read from the rep's side of the transcript: a question counts when the rep asked it in their own words. "Went well" compares calls of 3+ minutes ending in a purchase or strong intent, so it shows a link, not proof. Shown when at least 20 such calls asked it.</p>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>Discovery coverage by sales person</h3><p class="cap">Share of each person's sales calls where they asked about each topic. People with 5+ sales calls; the selected person is highlighted. Darker means asked more often.</p>
+      <div class="tbl-wrap"><table class="heat" id="discReps"></table></div>
+    </div>
   </section>
 
   <section class="section">
@@ -408,6 +430,14 @@ tr.team td { color: var(--ink-2); font-style: italic; }
         <div id="trend"></div>
         <div class="legend" id="trendLegend"></div>
         <div class="tbl-wrap" id="trendTable" hidden></div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px">
+      <h3>When customers are researching and comparing: what they ask for</h3><p class="cap" id="capResearch"></p>
+      <div class="grid g3">
+        <div><h3 style="font-size:13.5px">What they ask about</h3><p class="cap" style="margin-bottom:8px">Share of these calls, and the share of those calls with positive sentiment</p><div class="tbl-wrap"><table id="resReq"></table></div></div>
+        <div><h3 style="font-size:13.5px">Features they want</h3><p class="cap" style="margin-bottom:8px">Share of these calls where the AI noted each as a must-have or nice-to-have</p><div class="tbl-wrap"><table id="resFeat"></table></div></div>
+        <div><h3 style="font-size:13.5px">What they couldn't find or understand</h3><p class="cap" style="margin-bottom:8px">Information the customer was missing or confused about</p><div class="hbars stacked" id="resMiss"></div></div>
       </div>
     </div>
   </section>
@@ -464,6 +494,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
       <li>Pricing offers and price pressure are detected from who said what in the transcript (Revel staff vs customer). Mentioning a running sale counts as an offer; a discount the rep puts on the table is shown separately.</li>
       <li>Closed on the call means the AI marked the outcome as purchased during that conversation. Many sales complete later online, so this understates total conversion.</li>
       <li>Competitors, competitor models and Revel's edge or drawback come from the AI's notes on each call. Beyond the 12 most-named brands, the rest are grouped as "Other brands"; hover that bar to see them.</li>
+      <li>Discovery questions are read from the rep's lines in the transcript, so a question phrased unusually can be missed. Use the coverage figures to compare people and topics rather than as exact counts.</li>
       <li>Weeks run Monday to Sunday. Times are Brisbane time. Data refreshes nightly.</li>
     </ul>
   </section>
@@ -626,6 +657,16 @@ tr.team td { color: var(--ink-2); font-style: italic; }
   const FOCUS_NAME = { rsn: "Reason", req: "Request", pr: "Pricing", pt: "Offer type", ps: "Price sensitivity", rap: "Rapport", sl: "Sentiment", nc: "Not closed", out: "Outcome", ncCat: "Not closed", comp: "Competitor", edge: "Revel wins on", gap: "Revel falls short on" };
   const CPC_LABEL = { cheaper: "Revel cheaper", similar: "Similar price", premium: "Revel more expensive" };
   let compOther = new Set(); // brands folded into "Other brands" in the current view
+  const RESEARCH = "Researching and comparing options";
+  const DQ_TOPICS = D.discoveryTopics.map((t) => t.label);
+  const DQ_ABOUT = Object.fromEntries(D.discoveryTopics.map((t) => [t.label, t.about]));
+  // The not-closed reason each discovery topic would have surfaced early.
+  const DQ_BLOCKER = {
+    "Purpose": ["Product didn't fit their needs"], "People": ["Product didn't fit their needs"], "Space": ["Space or fit"],
+    "Electrical": ["Electrical requirements"], "Install & site": ["Delivery or installation logistics"],
+    "Timeframe": ["Timing - not ready yet", "Waiting on renovation, build or approvals"], "Budget": ["Price or budget"],
+    "Decision-makers": ["Needs partner or decision-maker"], "Other brands": ["Lost to a competitor", "Still researching or comparing"],
+  };
   function focusMatch(c) {
     if (!S.fk) return true;
     const v = S.fv;
@@ -646,6 +687,12 @@ tr.team td { color: var(--ink-2); font-style: italic; }
       case "edge": return c.edge.includes(v) && (c.comp.length > 0 || !!c.cpc);
       case "gap": return c.gap.includes(v) && (c.comp.length > 0 || !!c.cpc);
       case "compCpc": { const [b, cpc] = v.split("|"); return c.comp.includes(b) && c.cpc === cpc; }
+      case "resReq": return c.rsn === RESEARCH && c.req.includes(v);
+      case "resFeat": return c.rsn === RESEARCH && (c.mh.includes(v) || c.nh.includes(v));
+      case "resMiss": return c.rsn === RESEARCH && c.mi.includes(v);
+      case "dq": { const [a, t] = v.split("|"); return c.sale && (a === "*" || c.a === +a) && t in c.dq; }
+      case "dqNot": return c.sale && !(v in c.dq);
+      case "dqBlock": return c.sale && !(v in c.dq) && (DQ_BLOCKER[v] || []).includes(c.nc);
       default: return true;
     }
   }
@@ -663,6 +710,12 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     if (S.fk === "comp") return "Competitor: " + (v === "__other__" ? "other brands" : v === "__any__" ? "any" : v);
     if (S.fk === "cpc") return "Price vs competitors: " + (CPC_LABEL[v] || v);
     if (S.fk === "compCpc") { const [b, cpc] = v.split("|"); return b + " · " + (CPC_LABEL[cpc] || cpc); }
+    if (S.fk === "resReq") return "Researching · asked about " + v;
+    if (S.fk === "resFeat") return "Researching · wants " + v;
+    if (S.fk === "resMiss") return "Researching · couldn't find " + v;
+    if (S.fk === "dq") { const [a, t] = v.split("|"); return "Rep asked about " + t + (a === "*" ? "" : " · " + AGENTS[+a]); }
+    if (S.fk === "dqNot") return "Rep didn't ask about " + v;
+    if (S.fk === "dqBlock") return "Blocker was " + v.toLowerCase() + ", never asked";
     return (FOCUS_NAME[S.fk] || S.fk) + ": " + v;
   }
   function setFocus(k, v) {
@@ -1028,6 +1081,89 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     hit.addEventListener("pointerleave", () => { cross.setAttribute("visibility", "hidden"); hideTip(); });
   }
 
+  function renderResearch(list) {
+    const R = list.filter((c) => c.rsn === RESEARCH);
+    const n = R.length;
+    $("capResearch").textContent = n ? `${fmtN(n)} calls where the main reason for calling was researching and comparing options (${pct(n / list.length)} of calls in the current filters). Click a row to see those calls.` : "No researching calls in the current filters.";
+    const rowPos = (l) => { const lab = l.filter((c) => c.sl != null); return lab.length ? lab.filter(posSent).length / lab.length : null; };
+    const allPos = rowPos(R);
+    const req = D.requests.map((r) => { const l = R.filter((c) => c.req.includes(r)); return { r, l }; }).filter((x) => x.l.length).sort((a, b) => b.l.length - a.l.length);
+    const maxReq = Math.max(1, ...req.map((x) => x.l.length));
+    $("resReq").innerHTML = n ? `<thead><tr><th>Asked about</th><th class="num">Calls</th><th class="num">Positive</th></tr></thead><tbody>${req.map(({ r, l }) => {
+      const p = rowPos(l);
+      return `<tr ${focusAttrs("resReq", r)} style="cursor:pointer" data-tip="${tipAttr({ h: r, r: [{ l: "Researching calls", v: fmtN(l.length) }, { l: "Share", v: pct(l.length / n) }, { l: "Positive sentiment", v: pct(p, 0) }, { l: "All researching calls", v: pct(allPos, 0) }], s: "Click to see these calls in the log" })}">
+        <td>${esc(r)}</td><td class="num">${pct(l.length / n, 0)}<span class="mini" style="width:${Math.round((l.length / maxReq) * 34)}px;background:var(--bar)"></span></td>
+        <td class="num">${pct(p, 0)}</td></tr>`;
+    }).join("")}</tbody>` : "";
+    const feats = D.featureThemes.map((f) => ({ f, m: R.filter((c) => c.mh.includes(f)).length, nh: R.filter((c) => c.nh.includes(f)).length })).filter((x) => x.m + x.nh).sort((a, b) => b.m - a.m || b.nh - a.nh);
+    $("resFeat").innerHTML = n ? `<thead><tr><th>Feature</th><th class="num">Must-have</th><th class="num">Nice to have</th></tr></thead><tbody>${feats.map((x) =>
+      `<tr ${focusAttrs("resFeat", x.f)} style="cursor:pointer"><td>${esc(x.f)}</td><td class="num">${pct(x.m / n, 0)}</td><td class="num" style="color:var(--ink-2)">${x.nh ? pct(x.nh / n, 0) : "–"}</td></tr>`).join("")}</tbody>` : "";
+    const withMiss = R.filter((c) => c.mi.length);
+    const mc = count(withMiss, (c) => c.mi);
+    hbars($("resMiss"), D.missingThemes.map((t) => ({ label: t, n: mc.get(t) || 0, fk: "resMiss", fv: t })).filter((i) => i.n).sort((a, b) => b.n - a.n), n, { shareLabel: "Share of researching calls" });
+  }
+
+  function renderDiscovery(list) {
+    const all = slice({ anyAgent: true }).filter(isSales);
+    const sales = list.filter(isSales);
+    const ns = sales.length;
+    const long = sales.filter((c) => c.dur >= 180);
+    const went = (c) => c.out === "purchased" || c.out === "strong_intent";
+    const avgTopics = ns ? sales.reduce((a, c) => a + Object.keys(c.dq).length, 0) / ns : 0;
+    $("capDisc").textContent = ns ? `${fmtN(ns)} sales calls in the current filters. Reps asked about ${avgTopics.toFixed(1)} of these ${DQ_TOPICS.length} topics per call on average.` : "No sales calls in the current filters.";
+    const stats = DQ_TOPICS.map((t) => {
+      const asked = sales.filter((c) => t in c.dq).length;
+      const la = long.filter((c) => t in c.dq), ln = long.filter((c) => !(t in c.dq));
+      const wa = la.length >= 20 ? la.filter(went).length / la.length : null;
+      const wn = ln.length ? ln.filter(went).length / ln.length : null;
+      const blockers = DQ_BLOCKER[t] || [];
+      const blockedNever = blockers.length ? sales.filter((c) => blockers.includes(c.nc) && !(t in c.dq)).length : null;
+      const blockedAll = blockers.length ? sales.filter((c) => blockers.includes(c.nc)).length : null;
+      // an example from a call that went well, short enough to read at a glance
+      const pool = sales.filter((c) => t in c.dq && c.dq[t].length <= 110);
+      const good = pool.filter((c) => went(c) && c.nd >= 3);
+      const rank = (c) => (c.dq[t].includes("?") ? 0 : 1000) + Math.abs(c.dq[t].length - 60);
+      const pick = (good.length ? good : pool).slice().sort((a, b) => rank(a) - rank(b))[0];
+      return { t, asked, share: ns ? asked / ns : 0, wa, wn, lift: wa != null && wn != null ? wa - wn : null, blockedNever, blockedAll, ex: pick ? pick.dq[t] : "" };
+    });
+    const byAsked = stats.slice().sort((a, b) => b.share - a.share);
+    const byLift = stats.filter((s) => s.lift != null && s.lift > 0).sort((a, b) => b.lift - a.lift);
+    const gaps = stats.slice().sort((a, b) => a.share - b.share || (b.blockedNever || 0) - (a.blockedNever || 0));
+    const gapSet = new Set(gaps.slice(0, 4).map((s) => s.t));
+    const isGap = (s) => gapSet.has(s.t);
+    const li = (s, tail) => `<li ${focusAttrs("dq", "*|" + s.t)} style="cursor:pointer">${esc(s.t)} <span>· ${tail}</span></li>`;
+    $("discSummary").innerHTML = ns ? `
+      <div class="sumbox"><h4>Asked most often</h4><ol>${byAsked.slice(0, 4).map((s) => li(s, pct(s.share) + " of calls")).join("")}</ol></div>
+      <div class="sumbox"><h4>Linked to calls going well</h4>${byLift.length ? `<ol>${byLift.slice(0, 4).map((s) => li(s, `+${Math.round(s.lift * 100)} pts (${pct(s.wa, 0)} vs ${pct(s.wn, 0)})`)).join("")}</ol>` : '<p class="note" style="margin:0">Not enough calls in this selection</p>'}</div>
+      <div class="sumbox"><h4>Biggest gaps: rarely or never asked</h4><ol>${gaps.slice(0, 4).map((s) => `<li ${focusAttrs("dqNot", s.t)} style="cursor:pointer">${esc(s.t)} <span>· ${s.asked ? pct(s.share) + " of calls" : "never asked"}${s.blockedNever ? `; main blocker on ${fmtN(s.blockedNever)} calls that never asked` : ""}</span></li>`).join("")}</ol></div>` : "";
+    const maxShare = Math.max(0.01, ...stats.map((s) => s.share));
+    $("discTable").innerHTML = ns ? `<thead><tr><th>Discovery topic</th><th class="num">Asked on</th><th class="num" title="Purchase or strong intent, calls of 3+ minutes">Went well: asked vs not</th><th class="num" title="Not-closed sales calls where this was the main blocker and the rep never asked about it">Main blocker, never asked</th><th title="Taken from a call that ended in a purchase or strong intent where there is one">Example question</th></tr></thead>
+      <tbody>${byAsked.map((s) => `<tr>
+        <td style="min-width:190px"><b>${esc(s.t)}</b>${isGap(s) ? '<span class="gap-chip">Gap</span>' : ""}<span class="topic-about">${esc(DQ_ABOUT[s.t])}</span></td>
+        <td class="num" ${s.asked ? focusAttrs("dq", "*|" + s.t) + ' style="cursor:pointer"' : ""}>${s.asked ? pct(s.share) : "never"}<span class="mini" style="width:${Math.round((s.share / maxShare) * 40)}px;background:var(--bar)"></span></td>
+        <td class="num">${s.lift == null ? '<span style="color:var(--muted)">too few</span>' : `${pct(s.wa, 0)} vs ${pct(s.wn, 0)} <span class="delta ${s.lift >= 0.03 ? "up-good" : s.lift <= -0.03 ? "down-bad" : "flat"}">${s.lift >= 0 ? "+" : "−"}${Math.abs(Math.round(s.lift * 100))}</span>`}</td>
+        <td class="num" ${s.blockedNever ? focusAttrs("dqBlock", s.t) + ' style="cursor:pointer"' : ""}>${s.blockedNever == null ? '<span style="color:var(--muted)">–</span>' : `${fmtN(s.blockedNever)} <span style="color:var(--muted)">of ${fmtN(s.blockedAll)}</span>`}</td>
+        <td>${s.ex ? `<span class="ex-q">“${esc(s.ex)}”</span>` : '<span style="color:var(--muted)">–</span>'}</td></tr>`).join("")}</tbody>` : "";
+
+    // per sales person heatmap
+    const byRep = new Map();
+    all.forEach((c) => { if (!byRep.has(c.a)) byRep.set(c.a, []); byRep.get(c.a).push(c); });
+    const reps = [...byRep.entries()].filter(([a, l]) => l.length >= 5 || String(a) === S.ag).sort((x, y) => y[1].length - x[1].length);
+    const seq = [1, 2, 3, 4, 5].map((i) => cssVar("--seq-" + i));
+    const maxCell = Math.max(0.05, ...reps.flatMap(([, l]) => DQ_TOPICS.map((t) => l.filter((c) => t in c.dq).length / l.length)));
+    const cell = (l, t, name, a) => {
+      const k = l.filter((c) => t in c.dq).length, sh = k / l.length;
+      const step = sh === 0 ? 0 : Math.max(1, Math.min(4, Math.ceil((sh / maxCell) * 4)));
+      const bg = seq[step], txt = luminance(bg) > 0.3 ? "#141714" : "#ffffff";
+      const fa = k && a != null ? focusAttrs("dq", a + "|" + t) : "";
+      return `<td class="h" style="background:${bg};color:${txt};${k && a != null ? "cursor:pointer" : ""}" ${fa} data-tip="${tipAttr({ h: name + " · " + t, r: [{ l: "Asked on", v: pct(sh) }, { l: "Calls", v: fmtN(k) + " of " + fmtN(l.length) }], s: DQ_ABOUT[t] })}">${k ? pct(sh, 0) : "–"}</td>`;
+    };
+    const avg = (l) => (l.reduce((x, c) => x + Object.keys(c.dq).length, 0) / l.length).toFixed(1);
+    $("discReps").innerHTML = all.length ? `<thead><tr><th>Sales person</th><th class="num">Sales calls</th><th class="num">Topics per call</th>${DQ_TOPICS.map((t) => `<th class="c">${esc(t)}</th>`).join("")}</tr></thead>
+      <tbody>${reps.map(([a, l]) => `<tr class="${String(a) === S.ag ? "me" : ""}"><td>${esc(AGENTS[a])}</td><td class="num">${fmtN(l.length)}</td><td class="num">${avg(l)}</td>${DQ_TOPICS.map((t) => cell(l, t, AGENTS[a], a)).join("")}</tr>`).join("")}
+      <tr class="team"><td>Team</td><td class="num">${fmtN(all.length)}</td><td class="num">${avg(all)}</td>${DQ_TOPICS.map((t) => cell(all, t, "Team", null)).join("")}</tr></tbody>` : '<tbody><tr><td class="empty">No sales calls in this selection</td></tr></tbody>';
+  }
+
   function renderCompetitors(list) {
     const named = list.filter((c) => c.comp.length);
     const cnt = count(named, (c) => c.comp);
@@ -1128,7 +1264,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
   const PAGE = 25;
   function logRows() {
     const q = S.q.trim().toLowerCase();
-    return slice().filter(focusMatch).filter((c) => !q || [c.ag, c.pi, c.trig, c.why, c.obj, c.q, c.co, c.rsn, c.nc, c.pq, c.oq, c.cat.join(" "), c.req.join(" "), c.comp.join(" "), c.cmod.join(" "), c.edt, c.gpt].join(" ").toLowerCase().includes(q)).reverse();
+    return slice().filter(focusMatch).filter((c) => !q || [c.ag, c.pi, c.trig, c.why, c.obj, c.q, c.co, c.rsn, c.nc, c.pq, c.oq, c.cat.join(" "), c.req.join(" "), c.comp.join(" "), c.cmod.join(" "), c.edt, c.gpt, Object.values(c.dq).join(" ")].join(" ").toLowerCase().includes(q)).reverse();
   }
   function sentDot(sl) { if (sl == null) return "–"; const i = SENT_KEYS.indexOf(sl); return `<span class="dot" style="background:${cssVar(DIV_VARS[i])}"></span>${SENT_LABEL[sl]}`; }
   function renderLog() {
@@ -1151,6 +1287,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
         c.nc && ["Why it didn't close", esc(c.nc) + (c.obj ? ` <span style="color:var(--muted)">· unresolved: ${esc(c.obj)}</span>` : "")],
         c.pq && ["Customer on price", `<div class="quote">“${esc(c.pq)}”</div>`],
         c.oq && ["Rep's offer" + (c.pt ? " · " + esc(OFFER_LABEL[c.pt]) : ""), `<div class="quote">“${esc(c.oq)}”</div>`],
+        c.sale && ["Discovery questions the rep asked", Object.keys(c.dq).length ? Object.entries(c.dq).map(([t, qq]) => `<div><span class="chip">${esc(t)}</span> <span class="ex-q">“${esc(qq)}”</span></div>`).join("") : '<span style="color:var(--muted)">None picked up</span>'],
         c.comp.length && ["Competitors named", c.comp.map((b) => `<span class="chip">${esc(b)}</span>`).join("") + (c.cmod.length ? ` <span style="color:var(--muted)">· models: ${esc(c.cmod.join(", "))}</span>` : "") + (c.cpc ? ` <span style="color:var(--muted)">· ${esc(CPC_LABEL[c.cpc] || c.cpc)}</span>` : "")],
         !c.comp.length && c.cpc && ["Price vs other brands", esc(CPC_LABEL[c.cpc] || c.cpc)],
         c.edt && ["Revel's edge", esc(c.edt)],
@@ -1187,7 +1324,7 @@ tr.team td { color: var(--ink-2); font-style: italic; }
     $("search").value = S.q;
     const list = slice();
     $("asof").textContent = `Showing ${S.p === "all" ? "all time" : periodText()} · data to ${fmtDay(lastDay)} · refreshed ${D.generated}`;
-    renderKPIs(list); renderWhy(list); renderPricing(list); renderRapport(list); renderSentiment(list); renderTrend(list); renderNotClosed(list); renderCompetitors(list); renderLog();
+    renderKPIs(list); renderWhy(list); renderPricing(list); renderRapport(list); renderDiscovery(list); renderSentiment(list); renderResearch(list); renderTrend(list); renderNotClosed(list); renderCompetitors(list); renderLog();
     fitLabels();
     const fl = focusLabel();
     $("focusPill").classList.toggle("on", !!fl); $("focusText").textContent = fl ? "Call log: " + fl : "";

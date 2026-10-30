@@ -44,7 +44,8 @@ interface OpspData {
     opportunities: string[];
     threats: string[];
     criticalNumbers: CriticalNumber[];
-    theme: KeyValue[];
+    themeAnnual: KeyValue[];
+    themeQuarter: KeyValue[];
     people: KeyValue[];
     process: KeyValue[];
     sandbox: KeyValue[];
@@ -76,7 +77,7 @@ const FALLBACK: OpspData = {
     actions: [],
     strengths: [], weaknesses: [], opportunities: [], threats: [],
     criticalNumbers: [],
-    theme: [], people: [], process: [], sandbox: [],
+    themeAnnual: [], themeQuarter: [], people: [], process: [], sandbox: [],
 };
 
 /* ------------------------------------------------------------------ parsing */
@@ -237,7 +238,10 @@ function parseDoc(htmlText: string): OpspData {
     }
     out.criticalNumbers = criticalNumbers;
 
-    out.theme = keyValues(/^Theme \(Qtr\/Annual\)/i);
+    // The doc carries two theme tables: "Theme (Annual)" then "Theme (QTR)" below it.
+    // The quarterly pattern also matches the older combined "Theme (Qtr/Annual)" heading.
+    out.themeAnnual = keyValues(/^Theme \(Annual\)/i);
+    out.themeQuarter = keyValues(/^Theme \((Qtr|Quarter)/i);
     out.people = keyValues(/^People \(Reputation Drivers\)/i);
     out.process = keyValues(/^Process \(Productivity Drivers\)/i);
     out.sandbox = keyValues(/^Sandbox \/ Ideal Client/i);
@@ -537,19 +541,27 @@ export default function OPSPDashboard() {
                             })}
                         </div>
 
-                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10">
-                            <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4">Theme (Qtr / Annual)</div>
-                            {d.theme.length === 0 && <p className="text-sm text-gray-400 italic">Not entered.</p>}
-                            {d.theme.map((t, i) => (
-                                <div key={i} className="mb-4 last:mb-0">
-                                    <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">{t.key}</div>
-                                    <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
-                                        ? 'text-lg font-black text-orange-300 font-montserrat'
-                                        : 'text-sm text-gray-200 font-medium'}`}>
-                                        {t.value && !PLACEHOLDER.test(t.value)
-                                            ? t.value
-                                            : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}
-                                    </div>
+                        {/* Annual theme sits above the quarterly one, matching the doc order. */}
+                        <div className="bg-white/5 rounded-2xl p-6 border border-white/10 divide-y divide-white/10">
+                            {([
+                                ['Theme (Annual)', d.themeAnnual],
+                                [`Theme (Quarter) • ${d.quarterLabel.replace(/^Quarterly\s*/i, '').replace(/[()]/g, '')}`, d.themeQuarter],
+                            ] as const).map(([label, rows]) => (
+                                <div key={label} className="py-5 first:pt-0 last:pb-0">
+                                    <div className="text-[10px] uppercase tracking-widest text-gray-400 font-bold mb-4">{label}</div>
+                                    {rows.length === 0 && <p className="text-sm text-gray-400 italic">Not entered.</p>}
+                                    {rows.map((t, i) => (
+                                        <div key={i} className="mb-4 last:mb-0">
+                                            <div className="text-[10px] uppercase tracking-wider text-gray-500 font-bold mb-1">{t.key}</div>
+                                            <div className={`leading-snug ${t.key.toLowerCase() === 'theme'
+                                                ? 'text-lg font-black text-orange-300 font-montserrat'
+                                                : 'text-sm text-gray-200 font-medium'}`}>
+                                                {t.value && !PLACEHOLDER.test(t.value)
+                                                    ? t.value
+                                                    : <span className="text-gray-500 italic font-normal text-sm">Not set</span>}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
                             ))}
                         </div>

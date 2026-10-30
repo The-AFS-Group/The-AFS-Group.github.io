@@ -1,0 +1,71 @@
+name: Revel service insights
+
+# Nightly refresh of the Revel service insights dashboard (revel-service-insights/).
+# Downloads the published "Revel call analysis" sheet (Aircall calls with their
+# AI analysis), reads the after-sales calls, adds HubSpot Desk tickets and commits
+# revel-service-insights/data.js, playbook.json and the ticket snapshot with the
+# workflow's own GITHUB_TOKEN.
+# Pipeline code and notes: _pipelines/revel-service-insights/README.md.
+#
+# HUBSPOT_TOKEN is a HubSpot private app token (tickets + owners read). Until it
+# is set, tickets stay at the last snapshot and only the calls refresh.
+#
+# This repo is public, so its Actions logs are public: build.py only prints
+# counts and status codes, never call or ticket contents.
+#
+# 19:53 UTC = 5:53am AEST (Brisbane has no daylight saving).
+
+on:
+  schedule:
+    - cron: "53 19 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: revel-service-insights
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TZ: Australia/Brisbane
+      REVEL_CALLS_CSV_URL: ${{ secrets.REVEL_CALLS_CSV_URL }}
+      HUBSPOT_TOKEN: ${{ secrets.HUBSPOT_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download the sheet, read HubSpot and build data.js
+        working-directory: _pipelines/revel-service-insights
+        run: python build.py
+
+      - name: Commit if the data changed
+        run: |
+          set -euo pipefail
+          git config user.name "revel-service-insights-bot"
+          git config user.email "revel-service-insights@users.noreply.github.com"
+          git add revel-service-insights/data.js revel-service-insights/playbook.json _pipelines/revel-service-insights/tickets.json
+          if git diff --cached --quiet; then
+            echo "No change, nothing to publish."
+            exit 0
+          fi
+          SUMMARY=$(python -c "import json; t=open('revel-service-insights/data.js').read(); d=json.loads(t[t.index('{'):t.rindex('}')+1]); print(f\"{len(d['calls'])} calls, {len(d['tickets'])} tickets\")")
+          git commit -m "Revel service insights: ${SUMMARY} (auto-update)"
+          git push origin HEAD || { git pull --rebase origin main && git push origin HEAD; }
+
+      # Pushes made with GITHUB_TOKEN do not reliably trigger the Pages build.
+      - name: Request a Pages build
+        run: |
+          curl -s -X POST \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pages/builds" \
+            -o /dev/null -w "Pages build request: HTTP %{http_code}\n" || true

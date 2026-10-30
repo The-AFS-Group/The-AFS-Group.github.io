@@ -1,0 +1,1315 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Revel Service Insights</title>
+<link rel="icon" type="image/png" href="../revel-customer-intelligence-july-2026/revel-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f6f6f2;
+  --surface: #ffffff;
+  --surface-2: #f3f4ef;
+  --ink: #141714;
+  --ink-2: #4f554f;
+  --muted: #7d827b;
+  --hair: #e3e5de;
+  --axis: #c6c9c0;
+  --ring: rgba(20, 23, 20, 0.08);
+  --brand: #485d4d;          /* Revel dark green */
+  --brand-soft: #abb99c;     /* Revel sage */
+  --brand-wash: #eef1e9;
+  --bar: #485d4d;            /* single-series bars */
+  --bar-track: #eef0ea;
+  --good-text: #006300;
+  --bad-text: #c4302f;
+  /* diverging scale (poor -> excellent, very negative -> very positive) */
+  --div-n2: #e34948;
+  --div-n1: #f4a09e;
+  --div-0: #d6d5cf;
+  --div-p1: #86b6ef;
+  --div-p2: #2a78d6;
+  /* pricing classes (categorical, fixed order) */
+  --pr-u: #eb6834;
+  --pr-po: #2a78d6;
+  --pr-ph: #1baf7a;
+  --pr-n: #d6d5cf;
+  /* sequential (brand green) for score heatmaps */
+  --seq-1: #f1f4ec;
+  --seq-2: #d9e1cf;
+  --seq-3: #b4c3a6;
+  --seq-4: #7f9478;
+  --seq-5: #485d4d;
+  --line-1: #2a78d6;
+  --line-2: #eb6834;
+  --line-3: #1baf7a;
+  --shadow: 0 1px 2px rgba(20, 23, 20, 0.04), 0 4px 16px rgba(20, 23, 20, 0.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0f110f;
+    --surface: #181b18;
+    --surface-2: #202420;
+    --ink: #eef0ea;
+    --ink-2: #c2c7bd;
+    --muted: #8d9389;
+    --hair: #2a2e2a;
+    --axis: #3a3f39;
+    --ring: rgba(255, 255, 255, 0.08);
+    --brand: #abb99c;
+    --brand-soft: #6f8166;
+    --brand-wash: #232a22;
+    --bar: #abb99c;
+    --bar-track: #232723;
+    --good-text: #35b935;
+    --bad-text: #f07a79;
+    --div-n2: #e66767;
+    --div-n1: #a34a49;
+    --div-0: #4f4f4a;
+    --div-p1: #256abf;
+    --div-p2: #6da7ec;
+    --pr-u: #d95926;
+    --pr-po: #3987e5;
+    --pr-ph: #199e70;
+    --pr-n: #3a3a37;
+    --seq-1: #222821;
+    --seq-2: #344031;
+    --seq-3: #4f6249;
+    --seq-4: #7b9070;
+    --seq-5: #b6c6a6;
+    --line-1: #3987e5;
+    --line-2: #d95926;
+    --line-3: #199e70;
+    --shadow: none;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0f110f;
+  --surface: #181b18;
+  --surface-2: #202420;
+  --ink: #eef0ea;
+  --ink-2: #c2c7bd;
+  --muted: #8d9389;
+  --hair: #2a2e2a;
+  --axis: #3a3f39;
+  --ring: rgba(255, 255, 255, 0.08);
+  --brand: #abb99c;
+  --brand-soft: #6f8166;
+  --brand-wash: #232a22;
+  --bar: #abb99c;
+  --bar-track: #232723;
+  --good-text: #35b935;
+  --bad-text: #f07a79;
+  --div-n2: #e66767;
+  --div-n1: #a34a49;
+  --div-0: #4f4f4a;
+  --div-p1: #256abf;
+  --div-p2: #6da7ec;
+  --pr-u: #d95926;
+  --pr-po: #3987e5;
+  --pr-ph: #199e70;
+  --pr-n: #3a3a37;
+  --seq-1: #222821;
+  --seq-2: #344031;
+  --seq-3: #4f6249;
+  --seq-4: #7b9070;
+  --seq-5: #b6c6a6;
+  --line-1: #3987e5;
+  --line-2: #d95926;
+  --line-3: #199e70;
+  --shadow: none;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--page);
+  color: var(--ink);
+  font: 14px/1.5 "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: Montserrat, "Open Sans", system-ui, sans-serif; margin: 0; }
+button, select, input { font: inherit; color: inherit; }
+a { color: var(--brand); }
+
+.wrap { max-width: 1320px; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 640px) { .wrap { padding: 0 16px; } }
+
+/* header */
+.top { padding: 28px 0 18px; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px 24px; }
+.brand-row { display: flex; align-items: center; gap: 12px; }
+.wordmark { font-family: Montserrat, sans-serif; font-weight: 700; letter-spacing: 0.32em; font-size: 13px; color: var(--brand); padding: 6px 10px 6px 12px; border: 1.5px solid var(--brand); border-radius: 4px; }
+.top h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.01em; }
+.top .sub { color: var(--ink-2); margin-top: 4px; max-width: 760px; }
+.top .meta { color: var(--muted); font-size: 12.5px; text-align: right; }
+.theme-btn { border: 1px solid var(--hair); background: var(--surface); border-radius: 999px; padding: 4px 12px; cursor: pointer; font-size: 12.5px; color: var(--ink-2); margin-top: 6px; }
+
+/* filters */
+.filters { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--page) 92%, transparent); backdrop-filter: blur(8px); border-bottom: 1px solid var(--hair); }
+.filters .wrap { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding-top: 10px; padding-bottom: 10px; }
+.fgroup { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.flabel { font-size: 11.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.seg { display: inline-flex; background: var(--surface-2); border: 1px solid var(--hair); border-radius: 8px; padding: 2px; }
+.seg button { border: 0; background: transparent; padding: 4px 10px; border-radius: 6px; cursor: pointer; color: var(--ink-2); font-size: 13px; white-space: nowrap; }
+.seg button:hover { background: var(--ring); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+select, input[type="date"], input[type="search"] { background: var(--surface); border: 1px solid var(--hair); border-radius: 8px; padding: 5px 8px; font-size: 13px; max-width: 100%; }
+select:focus-visible, input:focus-visible, button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.reset { border: 0; background: none; color: var(--brand); cursor: pointer; font-size: 13px; font-weight: 600; padding: 4px 2px; }
+.focus-pill { display: none; align-items: center; gap: 6px; background: var(--brand-wash); border: 1px solid var(--brand-soft); color: var(--ink); border-radius: 999px; padding: 3px 6px 3px 12px; font-size: 12.5px; }
+.focus-pill.on { display: inline-flex; }
+.focus-pill a { font-weight: 600; text-decoration: none; }
+.focus-pill button { border: 0; background: var(--surface); border-radius: 999px; width: 22px; height: 22px; cursor: pointer; line-height: 1; }
+
+/* layout */
+main { padding: 20px 0 64px; }
+.section { margin-top: 34px; }
+.section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.section-head h2 { font-size: 18px; font-weight: 600; }
+.section-head p { margin: 2px 0 0; color: var(--ink-2); max-width: 820px; }
+.grid { display: grid; gap: 16px; }
+.g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g-skills { grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); }
+.g3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+@media (max-width: 1080px) { .g3 { grid-template-columns: minmax(0, 1fr); } }
+.sumbox { background: var(--surface-2); border: 1px solid var(--hair); border-radius: 10px; padding: 12px 14px; }
+.sumbox h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.sumbox ol { margin: 0; padding-left: 18px; }
+.sumbox li { margin: 3px 0; font-size: 13px; }
+.sumbox li span { color: var(--muted); }
+.gap-chip { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: var(--bad-text); color: #fff; margin-left: 6px; vertical-align: 1px; }
+.topic-about { display: block; color: var(--muted); font-size: 11.5px; }
+.ex-q { font-style: italic; color: var(--ink-2); font-size: 12.5px; }
+.hbars.stacked .hbar { grid-template-columns: minmax(0, 1fr) 72px; row-gap: 3px; }
+.hbars.stacked .hbar .lab { grid-column: 1 / -1; white-space: normal; }
+@media (max-width: 1080px) { .g2, .g-skills { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 18px 18px 16px; box-shadow: var(--shadow); min-width: 0; }
+.card h3 { font-size: 14.5px; font-weight: 600; }
+.card .cap { color: var(--muted); font-size: 12.5px; margin: 2px 0 14px; }
+.card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.empty { color: var(--muted); padding: 18px 0; text-align: center; font-size: 13px; }
+
+/* KPI tiles */
+.kpis { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1180px) { .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.kpi { background: var(--surface); border: 1px solid var(--hair); border-radius: 12px; padding: 14px 14px 12px; box-shadow: var(--shadow); min-width: 0; }
+.kpi .k-label { color: var(--ink-2); font-size: 12.5px; font-weight: 500; }
+.kpi .k-value { font-size: 28px; font-weight: 600; letter-spacing: -0.02em; margin-top: 2px; font-family: Montserrat, sans-serif; }
+.kpi .k-foot { color: var(--muted); font-size: 12px; min-height: 18px; }
+.delta { font-weight: 600; font-size: 12px; }
+.delta.up-good, .delta.down-good { color: var(--good-text); }
+.delta.up-bad, .delta.down-bad { color: var(--bad-text); }
+.delta.flat { color: var(--muted); }
+
+/* horizontal bars */
+.hbars { display: grid; gap: 7px; }
+.hbar { display: grid; grid-template-columns: minmax(120px, 42%) minmax(0, 1fr) 76px; align-items: center; gap: 10px; cursor: pointer; border-radius: 6px; padding: 2px 4px; margin: 0 -4px; }
+.hbar:hover, .hbar.sel { background: var(--brand-wash); }
+.hbar .lab { font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hbar .track { height: 14px; background: var(--bar-track); border-radius: 0 4px 4px 0; position: relative; }
+.hbar .fill { position: absolute; inset: 0 auto 0 0; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 2px; }
+.hbar .val { font-size: 12.5px; color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.hbar .val b { color: var(--ink); font-weight: 600; }
+/* stacked bars */
+.stack { display: flex; gap: 2px; height: 26px; border-radius: 4px; overflow: hidden; }
+.stack .s { position: relative; display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 600; cursor: pointer; min-width: 0; color: #fff; }
+.stack .s.dark-text { color: #141714; }
+.stack .s:hover { filter: brightness(1.08); }
+.stack .s span { white-space: nowrap; pointer-events: none; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 10px 0 2px; font-size: 12.5px; color: var(--ink-2); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+.legend .line-key { width: 14px; height: 2px; border-radius: 1px; vertical-align: 3px; }
+.rows { display: grid; gap: 8px; }
+.srow { display: grid; grid-template-columns: minmax(110px, 30%) minmax(0, 1fr) 54px; gap: 10px; align-items: center; }
+.srow .lab { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.srow .lab small { color: var(--muted); font-size: 11.5px; margin-left: 4px; }
+.srow .end { font-size: 12.5px; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.srow .end b { color: var(--ink); }
+.srow.me .lab { font-weight: 700; }
+.srow.team .lab { color: var(--ink-2); font-style: italic; }
+.srow .stack { height: 18px; }
+.wide-lab .srow { grid-template-columns: minmax(150px, 42%) minmax(0, 1fr) 54px; }
+
+/* tables */
+.tbl-wrap { overflow-x: auto; margin: 0 -4px; padding: 0 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; letter-spacing: 0.04em; text-transform: uppercase; padding: 6px 8px; border-bottom: 1px solid var(--hair); white-space: nowrap; }
+td { padding: 7px 8px; border-bottom: 1px solid var(--hair); vertical-align: middle; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+tr.me td { font-weight: 700; background: var(--brand-wash); }
+tr.team td { color: var(--ink-2); font-style: italic; }
+.heat td.h { text-align: center; font-variant-numeric: tabular-nums; font-weight: 600; min-width: 58px; border-left: 2px solid var(--surface); }
+.heat th.c { text-align: center; white-space: normal; line-height: 1.25; vertical-align: bottom; }
+.heat td:first-child, #priceReps td:first-child { white-space: nowrap; }
+.wrap-head th { white-space: normal; vertical-align: bottom; line-height: 1.25; }
+.mini { display: inline-block; height: 8px; border-radius: 0 3px 3px 0; vertical-align: middle; margin-left: 6px; }
+
+/* trend */
+.trend-svg { width: 100%; display: block; overflow: visible; }
+.trend-svg text { fill: var(--muted); font-size: 11px; font-family: "Open Sans", system-ui, sans-serif; }
+.trend-svg .grid-line { stroke: var(--hair); stroke-width: 1; }
+.trend-svg .base-line { stroke: var(--axis); stroke-width: 1; }
+.trend-svg .cross { stroke: var(--ink-2); stroke-width: 1; }
+.trend-svg .end-label { fill: var(--ink-2); font-weight: 600; }
+
+/* call log */
+.log-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+.log-tools input[type="search"] { width: 260px; }
+.log tr.row { cursor: pointer; }
+.log tr.row:hover td { background: var(--brand-wash); }
+.log td { font-size: 12.5px; }
+.log .detail td { background: var(--surface-2); padding: 12px 14px; }
+.detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 24px; }
+@media (max-width: 760px) { .detail-grid { grid-template-columns: minmax(0, 1fr); } }
+.detail-grid .dl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+.detail-grid .dv { font-size: 13px; }
+.quote { border-left: 3px solid var(--brand-soft); padding-left: 10px; font-style: italic; }
+.chip { display: inline-block; padding: 1px 8px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--hair); font-size: 11.5px; white-space: nowrap; margin: 1px 2px 1px 0; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 0; }
+.pager { display: flex; gap: 8px; align-items: center; justify-content: flex-end; margin-top: 10px; color: var(--muted); font-size: 12.5px; }
+.pager button { border: 1px solid var(--hair); background: var(--surface); border-radius: 6px; padding: 3px 10px; cursor: pointer; }
+.pager button:disabled { opacity: 0.4; cursor: default; }
+.toggle { border: 1px solid var(--hair); background: var(--surface); border-radius: 6px; padding: 2px 9px; cursor: pointer; font-size: 12px; color: var(--ink-2); }
+.note { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.foot { color: var(--muted); font-size: 12px; margin-top: 40px; border-top: 1px solid var(--hair); padding-top: 14px; }
+.foot li { margin: 3px 0; }
+
+/* tooltip */
+#tip { position: fixed; z-index: 50; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--hair); border-radius: 8px; padding: 8px 10px; font-size: 12.5px; box-shadow: 0 6px 24px rgba(0,0,0,0.14); max-width: 300px; opacity: 0; transition: opacity 0.08s; }
+#tip.on { opacity: 1; }
+#tip .t-head { font-weight: 600; margin-bottom: 2px; }
+#tip .t-row { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+#tip .t-row b { font-variant-numeric: tabular-nums; }
+#tip .t-key { display: inline-block; width: 12px; height: 2px; margin-right: 6px; vertical-align: 3px; }
+#tip .t-sub { color: var(--muted); font-size: 11.5px; margin-top: 3px; }
+.stale { opacity: 0.55; transition: opacity 0.12s; }
+@media (max-width: 560px) {
+  .hbar { grid-template-columns: minmax(0, 1fr) 72px; row-gap: 3px; }
+  .hbar .lab { grid-column: 1 / -1; white-space: normal; }
+  .srow, .wide-lab .srow { grid-template-columns: minmax(0, 1fr) 48px; row-gap: 3px; }
+  .srow .lab { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .filters { position: static; }
+  .seg { flex-wrap: wrap; }
+  .top .meta { text-align: left; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+/* --- service dashboard additions --- */
+:root { --oc-r: #1baf7a; --oc-f: #2a78d6; --oc-h: #eb6834; --oc-u: #e34948; --pl-c: #485d4d; --pl-w: #eb6834; --pl-f: #abb99c; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --oc-r: #199e70; --oc-f: #3987e5; --oc-h: #d95926; --oc-u: #e66767; --pl-c: #abb99c; --pl-w: #d95926; --pl-f: #6f8166; } }
+:root[data-theme="dark"] { --oc-r: #199e70; --oc-f: #3987e5; --oc-h: #d95926; --oc-u: #e66767; --pl-c: #abb99c; --pl-w: #d95926; --pl-f: #6f8166; }
+.findings { margin-top: 14px; }
+.findings ul { margin: 0; padding-left: 18px; }
+.findings li { margin: 4px 0; font-size: 13px; color: var(--ink); }
+.findings li b { font-weight: 600; }
+.mood-grid td.h { min-width: 74px; }
+.pb-head { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+.pb-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 24px; }
+@media (max-width: 900px) { .pb-grid { grid-template-columns: minmax(0, 1fr); } }
+.pb-grid h4 { margin: 0 0 6px; font-size: 12px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
+.pb-list { margin: 0; padding-left: 18px; }
+.pb-list li { margin: 4px 0; font-size: 13px; }
+.pb-quote { border-left: 3px solid var(--brand-soft); padding: 2px 0 2px 10px; margin: 6px 0; font-size: 12.5px; color: var(--ink-2); font-style: italic; }
+.pb-stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); margin-bottom: 10px; }
+.pb-stats b { color: var(--ink); }
+.tag { display: inline-block; font-size: 10.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; padding: 1px 6px; border-radius: 4px; background: var(--brand-wash); color: var(--brand); border: 1px solid var(--brand-soft); margin-left: 6px; vertical-align: 1px; }
+.score-bar { display: inline-block; height: 8px; border-radius: 0 3px 3px 0; background: var(--bar); vertical-align: middle; margin-right: 6px; }
+.cols-svg { width: 100%; display: block; overflow: visible; }
+.cols-svg text { fill: var(--muted); font-size: 11px; font-family: "Open Sans", system-ui, sans-serif; }
+.cols-svg .grid-line { stroke: var(--hair); stroke-width: 1; }
+.cols-svg .base-line { stroke: var(--axis); stroke-width: 1; }
+.cols-svg rect.col { cursor: pointer; }
+.cols-svg rect.col:hover { filter: brightness(1.08); }
+.dl-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; }
+.subnote { color: var(--muted); font-size: 12px; margin: -8px 0 12px; }
+td.wrapcell { white-space: normal; min-width: 180px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="brand-row"><span class="wordmark">REVEL</span><h1>Service insights</h1></div>
+      <p class="sub">How after-sales problems get resolved: the common issues, what fixes them, how customers' mood moves on a call, and who resolves fastest. Built from Aircall service calls and HubSpot Desk tickets (Customer Service, Warranty and Forms pipelines).</p>
+    </div>
+    <div class="meta"><div id="asof"></div><button class="theme-btn" id="themeBtn" type="button">Dark mode</button></div>
+  </header>
+</div>
+
+<div class="filters" role="region" aria-label="Filters">
+  <div class="wrap">
+    <div class="fgroup">
+      <span class="flabel">Period</span>
+      <div class="seg" id="periodSeg" role="group" aria-label="Period">
+        <button type="button" data-v="all">All time</button>
+        <button type="button" data-v="month">Month</button>
+        <button type="button" data-v="week">Week</button>
+        <button type="button" data-v="day">Day</button>
+        <button type="button" data-v="range">Range</button>
+      </div>
+      <span id="periodPick"></span>
+    </div>
+    <div class="fgroup">
+      <label class="flabel" for="personSel">Person</label>
+      <select id="personSel"></select>
+    </div>
+    <div class="fgroup">
+      <label class="flabel" for="issueSel">Issue</label>
+      <select id="issueSel"></select>
+    </div>
+    <div class="fgroup">
+      <span class="flabel">Product</span>
+      <div class="seg" id="catSeg" role="group" aria-label="Product category"></div>
+    </div>
+    <div class="fgroup">
+      <span class="flabel">Calls</span>
+      <div class="seg" id="dirSeg" role="group" aria-label="Call direction">
+        <button type="button" data-v="">All</button>
+        <button type="button" data-v="I">Inbound</button>
+        <button type="button" data-v="O">Outbound</button>
+      </div>
+    </div>
+    <div class="fgroup">
+      <span class="flabel">Tickets</span>
+      <div class="seg" id="pipeSeg" role="group" aria-label="Ticket pipeline">
+        <button type="button" data-v="">All</button>
+        <button type="button" data-v="C">Customer Service</button>
+        <button type="button" data-v="W">Warranty</button>
+        <button type="button" data-v="F">Forms</button>
+      </div>
+    </div>
+    <button class="reset" id="resetBtn" type="button">Reset</button>
+    <span class="focus-pill" id="focusPill"><span id="focusText"></span><a id="focusLink" href="#calllog">View ↓</a><button type="button" id="focusClear" aria-label="Clear log focus">×</button></span>
+  </div>
+</div>
+
+<div class="wrap">
+<main id="main">
+  <section class="kpis" id="kpis" aria-label="Headline numbers"></section>
+  <div class="sumbox findings" id="sumTop"></div>
+
+  <section class="section" id="issues">
+    <div class="section-head"><div><h2>Common issues</h2><p>The main problem behind each service call and Desk ticket, read from the call transcript or the ticket's subject, claim form and first email. Click a bar to see those calls or tickets in the logs.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>Issues on service calls</h3><p class="cap" id="capCallIss"></p><div class="hbars" id="callIssues"></div></div>
+      <div class="card"><h3>Issues on Desk tickets</h3><p class="cap" id="capTixIss"></p><div class="hbars" id="tixIssues"></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Issues by product</h3><p class="cap">Share of each product's calls and tickets that are about each issue (columns add to 100%). Calls and tickets that don't name a product are left out.</p><div class="tbl-wrap"><table class="heat" id="issueProduct"></table></div></div>
+      <div class="card"><h3>Parts and components customers mention</h3><p class="cap" id="capCmp"></p><div class="hbars" id="components"></div></div>
+    </div>
+    <div class="sumbox findings" id="sumIssues"></div>
+  </section>
+
+  <section class="section" id="resolution">
+    <div class="section-head"><div><h2>Resolution rate</h2><p>How each service call ended, read from its last few minutes. <b>Fixed or answered</b>: the customer confirmed it was sorted and nothing was owed. <b>Next step booked</b>: someone committed to a specific action (a part, a technician, a delivery date, an email). <b>Handed over</b>: passed to a colleague or team. <b>No clear resolution</b>: none of those.</p></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>How service calls end</h3><p class="cap" id="capRes"></p>
+        <div class="stack" id="resStack" style="height:32px"></div>
+        <div class="legend" id="resLegend"></div>
+        <h3 style="font-size:13.5px;margin-top:22px">By month</h3><p class="cap" style="margin-bottom:6px">Service calls per month, split by how they ended</p>
+        <div id="resTrend"></div>
+      </div>
+      <div class="card"><h3>Resolution by issue</h3><p class="cap">Issues with 5+ calls. The figure on the right is fixed or next step booked.</p><div class="rows wide-lab" id="resByIssue"></div></div>
+    </div>
+    <div class="sumbox findings" id="sumRes"></div>
+  </section>
+
+  <section class="section" id="mood">
+    <div class="section-head"><div><h2>Customer sentiment turnaround</h2><p>The customer's mood at the start of the call (first third) against the end (last third), read from their own words. Unhappy customers here are usually polite, so <b>upset</b> picks up urgency, repeat contact and loss ("ASAP", "since April", "I can't even use it") as well as frustration words. <b>Won over</b> means a call that opened upset and closed positive.</p></div></div>
+    <div class="grid g2">
+      <div class="card">
+        <h3>Mood at the start vs the end</h3><p class="cap" id="capMood"></p>
+        <div class="tbl-wrap"><table class="heat mood-grid" id="moodGrid"></table></div>
+        <div class="legend" id="moodLegend" style="margin-top:14px"></div>
+      </div>
+      <div class="card"><h3>Turnaround by issue</h3><p class="cap">Issues with 5+ callers who opened upset</p><div class="tbl-wrap"><table id="moodByIssue" class="wrap-head"></table></div></div>
+    </div>
+    <div class="sumbox findings" id="sumMood"></div>
+  </section>
+
+  <section class="section" id="solutions">
+    <div class="section-head"><div><h2>Solution finding: what fixes each problem</h2><p>What the rep did on the call, read from their own lines, and how those calls ended. A call can use several approaches. <b>Time to a solution</b> is roughly how far into the call the rep first offered a fix or next step.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>What reps did, and how those calls ended</h3><p class="cap" id="capSol"></p><div class="tbl-wrap"><table id="solTable" class="wrap-head"></table></div></div>
+      <div class="card"><h3>Best approach for each issue</h3><p class="cap">For each issue (20+ calls), the approach whose calls most often ended with the customer positive (15+ calls), against that issue's average. Issues where no approach beats the average are left out.</p><div class="tbl-wrap"><table id="bestFix" class="wrap-head"></table></div></div>
+    </div>
+    <div class="card" style="margin-top:16px" id="playbook">
+      <div class="card-head"><div><h3>Issue playbook</h3><p class="cap" style="margin-bottom:8px">Everything the calls and tickets say about one issue: what's affected, what worked, how the best calls fixed it, and who handles it best. This is the starting point for the service knowledge base.</p></div></div>
+      <div class="pb-head"><label class="flabel" for="pbSel">Issue</label><select id="pbSel"></select></div>
+      <div id="pbBody"></div>
+      <div class="dl-row"><a href="playbook.json" download>Download the full playbook (JSON, all time)</a><a href="#" id="dlView">Download this view's calls (CSV)</a></div>
+    </div>
+    <div class="sumbox findings" id="sumSol"></div>
+  </section>
+
+  <section class="section" id="tickets">
+    <div class="section-head"><div><h2>Desk tickets</h2><p>Tickets in the Revel Customer Service, Warranty and Forms pipelines. Customer Service tickets nobody was assigned to are left out: they are almost all automated mail (payouts, remittances, newsletters). Times are from HubSpot: create to close, and create to the first agent email reply.</p></div></div>
+    <div class="grid g2">
+      <div class="card"><h3>Tickets opened per month</h3><p class="cap" id="capTixTrend"></p><div id="tixTrend"></div><div class="legend" id="tixLegend"></div></div>
+      <div class="card"><h3>How long tickets take to close</h3><p class="cap" id="capTtc"></p><div class="hbars" id="ttcBars"></div>
+        <div class="tbl-wrap" style="margin-top:14px"><table id="pipeStats"></table></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>Open tickets by stage, today</h3><p class="cap" id="capOpen"></p><div class="hbars stacked" id="openStages"></div></div>
+      <div class="card"><h3>Models on warranty tickets</h3><p class="cap" id="capWModels"></p><div class="hbars" id="warrantyModels"></div></div>
+    </div>
+    <div class="sumbox findings" id="sumTix"></div>
+  </section>
+
+  <section class="section" id="people">
+    <div class="section-head"><div><h2>Who's most efficient</h2><p>Tickets: the <b>efficiency score</b> (0 to 100) ranks owners with 10+ closed tickets on four things, equally weighted: close speed against the typical time for the same pipeline and issue, median time to first reply, first-contact resolution, and tickets closed. Shared inboxes and bots are listed but not ranked. Calls: everyone with 20+ service calls.</p></div></div>
+    <div class="card"><h3>Tickets by owner</h3><p class="cap" id="capOwners"></p><div class="tbl-wrap"><table id="ownerTable" class="wrap-head"></table></div></div>
+    <div class="card" style="margin-top:16px"><h3>Service calls by person</h3><p class="cap" id="capAgents"></p><div class="tbl-wrap"><table id="agentTable" class="wrap-head"></table></div></div>
+    <div class="card" style="margin-top:16px"><h3>Best person for each issue</h3><p class="cap">On calls: highest share fixed or next step booked (8+ calls on that issue). On tickets: fastest median close (5+ closed tickets on that issue).</p><div class="tbl-wrap"><table id="bestPerson" class="wrap-head"></table></div></div>
+    <div class="sumbox findings" id="sumPeople"></div>
+  </section>
+
+  <section class="section" id="calllog">
+    <div class="section-head"><div><h2>Call log</h2><p>Every service call in the current filters. Click a row for the AI's summary, the customer's description and the rep's fix.</p></div></div>
+    <div class="card">
+      <div class="log-tools"><input type="search" id="search" placeholder="Search summaries, fixes, models…" aria-label="Search the call log"><span id="logCount" class="note" style="margin:0"></span></div>
+      <div class="tbl-wrap"><table class="log" id="logTable"></table></div>
+      <div class="pager"><span id="pageInfo"></span><button type="button" id="prevPg">Previous</button><button type="button" id="nextPg">Next</button></div>
+    </div>
+  </section>
+
+  <section class="section" id="ticketlog">
+    <div class="section-head"><div><h2>Ticket log</h2><p>Every ticket in the current filters. Ticket subjects and emails aren't published here (they hold customer details); open a ticket in HubSpot to read it.</p></div></div>
+    <div class="card">
+      <div class="log-tools"><input type="search" id="tsearch" placeholder="Search issues, models, owners, stages…" aria-label="Search the ticket log"><span id="tlogCount" class="note" style="margin:0"></span></div>
+      <div class="tbl-wrap"><table class="log" id="tlogTable"></table></div>
+      <div class="pager"><span id="tpageInfo"></span><button type="button" id="tprevPg">Previous</button><button type="button" id="tnextPg">Next</button></div>
+    </div>
+  </section>
+
+  <section class="foot">
+    <b>How to read this</b>
+    <ul>
+      <li>Calls: every Aircall call on the Revel line that the call analysis marked as after-sales (post-purchase) service, with a transcript. Voicemails and calls where the customer barely spoke are left out. Outbound calls include delivery bookings and calls to couriers, installers and technicians.</li>
+      <li>Issues, outcomes, approaches and mood are read from the transcript with keyword rules (in <code>_pipelines/revel-service-insights/service.py</code>), so treat them as directional and compare groups rather than reading single calls. The call log shows the evidence for each call.</li>
+      <li>Mood was checked against the AI's satisfaction rating on the few hundred service calls that have one: 50% of calls rated dissatisfied read as upset at some point vs 16 to 20% of satisfied ones, and of callers who opened upset, 42% of the very satisfied ended positive vs 10% of the dissatisfied. Polite customers who are quietly unhappy can still read as neutral.</li>
+      <li>Tickets: owner-assigned Customer Service tickets plus every Warranty and Forms ticket. The issue comes from the subject, claim form and first email; tickets with only a name as the subject stay "Other / unclear". HubSpot's own Category and Resolution fields are empty, so they can't be used.</li>
+      <li>First-contact resolution is HubSpot's flag for a ticket closed after one agent message. Time to first reply counts email replies only.</li>
+      <li>Weeks run Monday to Sunday. Times are Brisbane time. Calls refresh nightly; tickets refresh nightly once a HubSpot token is set up (see the pipeline README), otherwise they show the date above.</li>
+    </ul>
+    <b>Toward the service brain</b>
+    <ul>
+      <li>The playbook download holds, for each issue: the products, models and parts involved, which approaches worked, example fixes in the reps' own words, how customers describe the problem, and who resolves it best. It is rebuilt with the data every night.</li>
+      <li>The next step up in accuracy is to run the AI call analysis on service calls too (today it screens them out), asking for the fault, the root cause, the steps taken, whether it was fixed, and mood at start and end.</li>
+    </ul>
+  </section>
+</main>
+</div>
+
+<div id="tip" role="tooltip"></div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  const D = window.REVEL_SERVICE;
+  const $ = (id) => document.getElementById(id);
+  if (!D || !D.calls) { $("main").innerHTML = '<p class="empty">The service data did not load.</p>'; return; }
+
+  // ---------- reference data ----------
+  const AGENTS = D.agents, OWNERS = D.owners, CATS = D.productCategories;
+  const ISSUES = D.issues, SOLS = D.solutions, OUT = D.outcomes;
+  const OUT_KEYS = ["R", "F", "H", "U"];
+  const OUT_SHORT = { R: "Fixed or answered", F: "Next step booked", H: "Handed over", U: "No clear resolution" };
+  const OUT_VAR = { R: "--oc-r", F: "--oc-f", H: "--oc-h", U: "--oc-u" };
+  const MOOD = { "-1": "Upset", "0": "Neutral", "1": "Positive" };
+  const MOOD_VAR = { "-1": "--div-n2", "0": "--div-0", "1": "--div-p2" };
+  const PIPE = { C: "Customer Service", W: "Warranty", F: "Forms" };
+  const PIPE_VAR = { C: "--pl-c", W: "--pl-w", F: "--pl-f" };
+  const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const HS_URL = "https://app.hubspot.com/contacts/144270372/record/0-5/";
+  const SHARED = /support|assistant|developer|unassigned/i;
+
+  // One person can be "Valerie Bernandino" in Aircall and "Valerie Kaith Bernandino" in HubSpot: match on first + last name.
+  const pkey = (n) => { const w = String(n || "").toLowerCase().replace(/[^a-z ]/g, " ").split(/\s+/).filter(Boolean); return w.length ? w[0] + " " + w[w.length - 1] : ""; };
+  const PEOPLE = new Map();
+  AGENTS.forEach((n) => { if (n !== "Unassigned") PEOPLE.set(pkey(n), n); });
+  OWNERS.forEach((n) => { if (n !== "Unassigned" && !PEOPLE.has(pkey(n))) PEOPLE.set(pkey(n), n.trim()); });
+  const agentKey = AGENTS.map(pkey), ownerKey = OWNERS.map(pkey);
+
+  const calls = D.calls;
+  const tickets = D.tickets.filter((t) => t.iss !== D.adminIssue);
+  const notices = D.tickets.length - tickets.length;
+  calls.forEach((c) => { c.mo_ = c.d.slice(0, 7); c.pk = agentKey[c.a]; });
+  tickets.forEach((t) => { t.mo_ = t.d.slice(0, 7); t.pk = ownerKey[t.ow]; });
+
+  // ---------- dates ----------
+  function toDate(s) { return new Date(s + "T00:00:00Z"); }
+  function iso(d) { return d.toISOString().slice(0, 10); }
+  function addDays(s, n) { const d = toDate(s); d.setUTCDate(d.getUTCDate() + n); return iso(d); }
+  function mondayOf(s) { const d = toDate(s); const wd = (d.getUTCDay() + 6) % 7; d.setUTCDate(d.getUTCDate() - wd); return iso(d); }
+  function fmtDay(s, withYear) { const d = toDate(s); return d.getUTCDate() + " " + MONTHS[d.getUTCMonth()] + (withYear === false ? "" : " " + d.getUTCFullYear()); }
+  function fmtMonth(m) { return MONTHS[+m.slice(5, 7) - 1] + " " + m.slice(0, 4); }
+  function monthEnd(m) { return iso(new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7), 0))); }
+  function prevMonth(m) { return iso(new Date(Date.UTC(+m.slice(0, 4), +m.slice(5, 7) - 2, 1))).slice(0, 7); }
+
+  const allDays = calls.map((c) => c.d).concat(tickets.map((t) => t.d)).sort();
+  const firstDay = calls[0].d < tickets.reduce((a, t) => (t.d < a ? t.d : a), "9999") ? calls[0].d : tickets.reduce((a, t) => (t.d < a ? t.d : a), "9999");
+  const lastDay = allDays[allDays.length - 1];
+  const monthsList = [...new Set(calls.map((c) => c.mo_).concat(tickets.filter((t) => t.d >= calls[0].d).map((t) => t.mo_)))].sort().reverse();
+  const weeksList = [...new Set(calls.map((c) => mondayOf(c.d)))].sort().reverse();
+
+  // ---------- state (mirrored in the URL hash so a filtered view can be shared) ----------
+  const lastCall = calls[calls.length - 1].d;
+  const DEFAULTS = { p: "all", m: monthsList[0], w: weeksList[0], day: lastCall, from: addDays(lastCall, -29), to: lastCall, pp: "", iss: "", cat: "", dir: "", pl: "", fk: "", fv: "", q: "", tq: "", pb: "" };
+  const S = Object.assign({ pg: 0, tpg: 0 }, DEFAULTS);
+  try {
+    const h = new URLSearchParams(location.hash.slice(1));
+    for (const k of Object.keys(DEFAULTS)) if (h.has(k)) S[k] = h.get(k);
+  } catch (e) { /* ignore a malformed hash */ }
+  if (!monthsList.includes(S.m)) S.m = DEFAULTS.m;
+  if (!weeksList.includes(S.w)) S.w = DEFAULTS.w;
+  if (!["all", "month", "week", "day", "range"].includes(S.p)) S.p = "all";
+  if (S.pp && !PEOPLE.has(S.pp)) S.pp = "";
+  if (S.iss && !ISSUES.includes(S.iss)) S.iss = "";
+  if (S.cat && !CATS.includes(S.cat)) S.cat = "";
+  function saveHash() {
+    try {
+      const h = new URLSearchParams();
+      for (const k of Object.keys(DEFAULTS)) if (String(S[k]) !== String(DEFAULTS[k])) h.set(k, S[k]);
+      history.replaceState(null, "", h.toString() ? "#" + h.toString() : location.pathname + location.search);
+    } catch (e) { /* history API can be blocked in sandboxes */ }
+  }
+
+  function periodRange(prior) {
+    let from, to;
+    if (S.p === "month") { const m = prior ? prevMonth(S.m) : S.m; from = m + "-01"; to = monthEnd(m); }
+    else if (S.p === "week") { from = prior ? addDays(S.w, -7) : S.w; to = addDays(from, 6); }
+    else if (S.p === "day") { from = to = prior ? addDays(S.day, -1) : S.day; }
+    else if (S.p === "range") {
+      from = S.from <= S.to ? S.from : S.to; to = S.from <= S.to ? S.to : S.from;
+      if (prior) { const len = Math.round((toDate(to) - toDate(from)) / 864e5) + 1; to = addDays(from, -1); from = addDays(to, -(len - 1)); }
+    } else { if (prior) return null; from = "0000"; to = "9999"; }
+    return [from, to];
+  }
+  function callIn(c, o) {
+    o = o || {};
+    const r = o.range || periodRange(false);
+    if (!o.anyDate && (c.d < r[0] || c.d > r[1])) return false;
+    if (!o.anyPerson && S.pp && c.pk !== S.pp) return false;
+    if (!o.anyIssue && S.iss && c.iss !== S.iss) return false;
+    if (S.cat && !c.cat.includes(S.cat)) return false;
+    if (S.dir && c.dir !== S.dir) return false;
+    return true;
+  }
+  function ticketIn(t, o) {
+    o = o || {};
+    const r = o.range || periodRange(false);
+    if (!o.anyDate && (t.d < r[0] || t.d > r[1])) return false;
+    if (!o.anyPerson && S.pp && t.pk !== S.pp) return false;
+    if (!o.anyIssue && S.iss && t.iss !== S.iss) return false;
+    if (S.cat && !t.cat.includes(S.cat)) return false;
+    if (!o.anyPipe && S.pl && t.p !== S.pl) return false;
+    return true;
+  }
+  const callSlice = (o) => calls.filter((c) => callIn(c, o));
+  const ticketSlice = (o) => tickets.filter((t) => ticketIn(t, o));
+
+  // ---------- helpers ----------
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (ch) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]));
+  const fmtN = (n) => n.toLocaleString("en-AU");
+  function pct(x, digits) {
+    if (x == null || !isFinite(x)) return "–";
+    const v = x * 100;
+    const d = digits != null ? digits : (v > 0 && v < 10 ? 1 : 0);
+    return v.toFixed(d) + "%";
+  }
+  const share = (n, d) => (d ? n / d : null);
+  const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  function count(list, fn) { const m = new Map(); list.forEach((x) => { const ks = fn(x); (Array.isArray(ks) ? ks : [ks]).forEach((k) => { if (k == null || k === "") return; m.set(k, (m.get(k) || 0) + 1); }); }); return m; }
+  function med(arr) { const a = arr.filter((v) => v != null && isFinite(v)).sort((x, y) => x - y); if (!a.length) return null; const m = Math.floor(a.length / 2); return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2; }
+  function dur(hours) {
+    if (hours == null) return "–";
+    if (hours < 1) return Math.round(hours * 60) + " min";
+    if (hours < 24) return hours.toFixed(hours < 10 ? 1 : 0) + " h";
+    const d = hours / 24; return d.toFixed(d < 10 ? 1 : 0) + " days";
+  }
+  const mins = (sec) => (sec == null ? "–" : sec < 60 ? Math.round(sec) + " s" : (sec / 60).toFixed(sec < 600 ? 1 : 0) + " min");
+  function luminance(hex) {
+    const m = hex.replace("#", "").match(/.{2}/g); if (!m) return 0;
+    const [r, g, b] = m.map((x) => { const v = parseInt(x, 16) / 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  }
+  const fixed = (c) => c.res === "R";
+  const handled = (c) => c.res === "R" || c.res === "F";
+  const cust = (c) => !c.sup; // mood is about customers: calls to the 3PL, couriers and installers are left out of it
+  function callMetrics(list) {
+    const moodList = list.filter(cust);
+    const upset = moodList.filter((c) => c.mo < 0);
+    return {
+      n: list.length,
+      handled: share(list.filter(handled).length, list.length),
+      fixed: share(list.filter(fixed).length, list.length),
+      handed: share(list.filter((c) => c.res === "H").length, list.length),
+      unclear: share(list.filter((c) => c.res === "U").length, list.length),
+      upset: upset.length,
+      openUpset: share(upset.length, moodList.length),
+      wonOver: share(upset.filter((c) => c.mc > 0).length, upset.length),
+      calmed: share(upset.filter((c) => c.mc >= 0).length, upset.length),
+      endUpset: share(moodList.filter((c) => c.mc < 0).length, moodList.length),
+      endPos: share(moodList.filter((c) => c.mc > 0).length, moodList.length),
+      aht: list.length ? list.reduce((a, c) => a + c.dur, 0) / list.length : null,
+      tts: med(list.map((c) => c.ts)),
+    };
+  }
+  function ticketMetrics(list) {
+    const closed = list.filter((t) => !t.o && t.ttc != null);
+    const rated = list.filter((t) => t.ot != null && !t.o);
+    return {
+      n: list.length,
+      closed: closed.length,
+      open: list.filter((t) => t.o).length,
+      ttc: med(closed.map((t) => t.ttc)),
+      tfr: med(list.map((t) => t.tfr)),
+      oneTouch: share(rated.filter((t) => t.ot === 1).length, rated.length),
+      notes: closed.length ? closed.reduce((a, t) => a + t.nn, 0) / closed.length : null,
+      within3: share(closed.filter((t) => t.ttc <= 72).length, closed.length),
+    };
+  }
+
+  // ---------- tooltip ----------
+  const tip = $("tip");
+  function showTip(el, x, y) {
+    const raw = el.getAttribute("data-tip"); if (!raw) return;
+    let t; try { t = JSON.parse(raw); } catch (e) { return; }
+    tip.textContent = "";
+    const head = document.createElement("div"); head.className = "t-head"; head.textContent = t.h; tip.appendChild(head);
+    (t.r || []).forEach((row) => {
+      const r = document.createElement("div"); r.className = "t-row";
+      const l = document.createElement("span");
+      if (row.c) { const k = document.createElement("span"); k.className = "t-key"; k.style.background = row.c; l.appendChild(k); }
+      l.appendChild(document.createTextNode(row.l));
+      const v = document.createElement("b"); v.textContent = row.v;
+      r.appendChild(l); r.appendChild(v); tip.appendChild(r);
+    });
+    if (t.s) { const s = document.createElement("div"); s.className = "t-sub"; s.textContent = t.s; tip.appendChild(s); }
+    tip.classList.add("on");
+    const pad = 14, w = tip.offsetWidth, h = tip.offsetHeight;
+    let left = x + pad, top = y + pad;
+    if (left + w > window.innerWidth - 8) left = x - w - pad;
+    if (top + h > window.innerHeight - 8) top = y - h - pad;
+    tip.style.left = Math.max(8, left) + "px"; tip.style.top = Math.max(8, top) + "px";
+  }
+  function hideTip() { tip.classList.remove("on"); }
+  document.addEventListener("pointermove", (e) => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); });
+  document.addEventListener("focusin", (e) => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.bottom); } });
+  document.addEventListener("focusout", hideTip);
+  document.addEventListener("scroll", hideTip, { passive: true });
+  const tipAttr = (o) => esc(JSON.stringify(o));
+
+  // ---------- drill-down focus (scopes the logs only) ----------
+  // Each focus key applies to the call log ("c"), the ticket log ("t") or both ("b").
+  const FOCUS_ON = { ciss: "c", res: "c", resIss: "c", mv: "c", sol: "c", solIss: "c", agent: "c", cmon: "c", tiss: "t", stage: "t", ttcb: "t", owner: "t", wm: "t", tmon: "t", cmp: "b" };
+  const TTC_BUCKETS = [["Same day", 0, 24], ["1 to 3 days", 24, 72], ["3 to 7 days", 72, 168], ["1 to 2 weeks", 168, 336], ["2 to 4 weeks", 336, 672], ["Over 4 weeks", 672, 1e9]];
+  function focusCall(c) {
+    if (!S.fk || FOCUS_ON[S.fk] === "t") return true;
+    const v = S.fv;
+    switch (S.fk) {
+      case "ciss": return c.iss === v;
+      case "res": return c.res === v;
+      case "resIss": { const [r, i] = v.split("|"); return c.res === r && c.iss === i; }
+      case "mv": { const [a, b] = v.split(":"); return !c.sup && c.mo === +a && c.mc === +b; }
+      case "sol": return c.sol.includes(v);
+      case "solIss": { const [s, i] = v.split("|"); return c.sol.includes(s) && c.iss === i; }
+      case "agent": return c.pk === v;
+      case "cmon": { const [m, r] = v.split("|"); return c.mo_ === m && (!r || c.res === r); }
+      case "cmp": return c.cmp.includes(v);
+      default: return true;
+    }
+  }
+  function focusTicket(t) {
+    if (!S.fk || FOCUS_ON[S.fk] === "c") return true;
+    const v = S.fv;
+    switch (S.fk) {
+      case "tiss": return t.iss === v;
+      case "stage": { const [p, st] = v.split("|"); return t.o && t.p === p && t.st === st; }
+      case "ttcb": { const b = TTC_BUCKETS.find((x) => x[0] === v); return !t.o && t.ttc != null && b && t.ttc >= b[1] && t.ttc < b[2]; }
+      case "owner": return t.pk === v;
+      case "wm": return t.p === "W" && t.mdl.includes(v);
+      case "tmon": { const [m, p] = v.split("|"); return t.mo_ === m && (!p || t.p === p); }
+      case "cmp": return t.cmp.includes(v);
+      default: return true;
+    }
+  }
+  function focusLabel() {
+    const v = S.fv;
+    switch (S.fk) {
+      case "ciss": return "Calls about " + v;
+      case "tiss": return "Tickets about " + v;
+      case "res": return "Calls: " + OUT_SHORT[v];
+      case "resIss": { const [r, i] = v.split("|"); return i + " · " + OUT_SHORT[r]; }
+      case "mv": { const [a, b] = v.split(":"); return "Mood " + MOOD[a] + " → " + MOOD[b]; }
+      case "sol": return "Rep approach: " + v;
+      case "solIss": { const [s, i] = v.split("|"); return i + " · " + s; }
+      case "agent": case "owner": return (S.fk === "agent" ? "Calls: " : "Tickets: ") + (PEOPLE.get(v) || v);
+      case "cmon": { const [m, r] = v.split("|"); return "Calls in " + fmtMonth(m) + (r ? " · " + OUT_SHORT[r] : ""); }
+      case "tmon": { const [m, p] = v.split("|"); return "Tickets opened in " + fmtMonth(m) + (p ? " · " + PIPE[p] : ""); }
+      case "stage": { const [p, st] = v.split("|"); return "Open " + PIPE[p] + " tickets · " + st; }
+      case "ttcb": return "Closed in " + v.toLowerCase();
+      case "wm": return "Warranty tickets · " + v;
+      case "cmp": return "Mentions " + v;
+      default: return "";
+    }
+  }
+  function setFocus(k, v) {
+    if (S.fk === k && S.fv === v) { S.fk = ""; S.fv = ""; } else { S.fk = k; S.fv = v; }
+    S.pg = 0; S.tpg = 0; render();
+  }
+  document.addEventListener("click", (e) => {
+    const el = e.target.closest && e.target.closest("[data-fk]");
+    if (el) setFocus(el.getAttribute("data-fk"), el.getAttribute("data-fv"));
+  });
+  document.addEventListener("keydown", (e) => {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches("[data-fk]")) { e.preventDefault(); e.target.click(); }
+  });
+  const isSel = (k, v) => S.fk === k && S.fv === v;
+  const focusAttrs = (k, v) => `data-fk="${esc(k)}" data-fv="${esc(v)}" tabindex="0" role="button" aria-pressed="${isSel(k, v)}"`;
+
+  // ---------- filter controls ----------
+  function bindSeg(el, key) {
+    el.addEventListener("click", (e) => {
+      const b = e.target.closest("button"); if (!b) return;
+      S[key] = b.dataset.v; S.pg = 0; S.tpg = 0; render();
+    });
+  }
+  function syncSeg(el, val) { el.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.v === val))); }
+  $("catSeg").innerHTML = ['<button type="button" data-v="">All</button>'].concat(CATS.map((c) => `<button type="button" data-v="${esc(c)}">${esc(c)}</button>`)).join("");
+  bindSeg($("periodSeg"), "p"); bindSeg($("catSeg"), "cat"); bindSeg($("dirSeg"), "dir"); bindSeg($("pipeSeg"), "pl");
+
+  function renderPeriodPick() {
+    const el = $("periodPick");
+    if (S.p === "month") {
+      el.innerHTML = `<select id="pMonth" aria-label="Month">${monthsList.map((m) => `<option value="${m}"${m === S.m ? " selected" : ""}>${fmtMonth(m)}</option>`).join("")}</select>`;
+      $("pMonth").onchange = (e) => { S.m = e.target.value; S.pg = 0; S.tpg = 0; render(); };
+    } else if (S.p === "week") {
+      el.innerHTML = `<select id="pWeek" aria-label="Week">${weeksList.map((w) => `<option value="${w}"${w === S.w ? " selected" : ""}>Week of ${fmtDay(w)}</option>`).join("")}</select>`;
+      $("pWeek").onchange = (e) => { S.w = e.target.value; S.pg = 0; S.tpg = 0; render(); };
+    } else if (S.p === "day") {
+      el.innerHTML = `<input type="date" id="pDay" aria-label="Day" min="${firstDay}" max="${lastDay}" value="${S.day}">`;
+      $("pDay").onchange = (e) => { if (e.target.value) { S.day = e.target.value; S.pg = 0; S.tpg = 0; render(); } };
+    } else if (S.p === "range") {
+      el.innerHTML = `<input type="date" id="pFrom" aria-label="From" min="${firstDay}" max="${lastDay}" value="${S.from}"> <span class="note" style="margin:0">to</span> <input type="date" id="pTo" aria-label="To" min="${firstDay}" max="${lastDay}" value="${S.to}">`;
+      $("pFrom").onchange = (e) => { if (e.target.value) { S.from = e.target.value; render(); } };
+      $("pTo").onchange = (e) => { if (e.target.value) { S.to = e.target.value; render(); } };
+    } else el.innerHTML = "";
+  }
+  function renderSelects() {
+    const cc = count(callSlice({ anyPerson: true }), (c) => c.pk), tc = count(ticketSlice({ anyPerson: true }), (t) => t.pk);
+    const keys = [...PEOPLE.keys()].filter((k) => cc.get(k) || tc.get(k) || k === S.pp)
+      .sort((a, b) => ((cc.get(b) || 0) + (tc.get(b) || 0)) - ((cc.get(a) || 0) + (tc.get(a) || 0)));
+    $("personSel").innerHTML = `<option value="">Everyone</option>` + keys.map((k) => `<option value="${esc(k)}"${k === S.pp ? " selected" : ""}>${esc(PEOPLE.get(k))} (${fmtN(cc.get(k) || 0)} calls · ${fmtN(tc.get(k) || 0)} tickets)</option>`).join("");
+    const ic = count(callSlice({ anyIssue: true }), (c) => c.iss), it = count(ticketSlice({ anyIssue: true }), (t) => t.iss);
+    $("issueSel").innerHTML = `<option value="">All issues</option>` + ISSUES.map((i) => `<option value="${esc(i)}"${i === S.iss ? " selected" : ""}>${esc(i)} (${fmtN((ic.get(i) || 0) + (it.get(i) || 0))})</option>`).join("");
+  }
+  $("personSel").onchange = (e) => { S.pp = e.target.value; S.pg = 0; S.tpg = 0; render(); };
+  $("issueSel").onchange = (e) => { S.iss = e.target.value; if (S.iss) S.pb = S.iss; S.pg = 0; S.tpg = 0; render(); };
+  $("resetBtn").onclick = () => { Object.assign(S, DEFAULTS, { pg: 0, tpg: 0 }); $("search").value = ""; $("tsearch").value = ""; render(); };
+  $("focusClear").onclick = () => { S.fk = ""; S.fv = ""; render(); };
+  $("search").oninput = (e) => { S.q = e.target.value; S.pg = 0; renderCallLog(callSlice()); saveHash(); };
+  $("tsearch").oninput = (e) => { S.tq = e.target.value; S.tpg = 0; renderTicketLog(ticketSlice()); saveHash(); };
+  $("prevPg").onclick = () => { S.pg = Math.max(0, S.pg - 1); renderCallLog(callSlice()); };
+  $("nextPg").onclick = () => { S.pg += 1; renderCallLog(callSlice()); };
+  $("tprevPg").onclick = () => { S.tpg = Math.max(0, S.tpg - 1); renderTicketLog(ticketSlice()); };
+  $("tnextPg").onclick = () => { S.tpg += 1; renderTicketLog(ticketSlice()); };
+  $("pbSel").onchange = (e) => { S.pb = e.target.value; renderPlaybook(callSlice({ anyIssue: true }), ticketSlice({ anyIssue: true })); saveHash(); };
+
+  // theme toggle: wins over the OS setting both ways
+  const themeBtn = $("themeBtn");
+  function currentTheme() { const t = document.documentElement.getAttribute("data-theme"); return t || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"); }
+  function syncThemeBtn() { themeBtn.textContent = currentTheme() === "dark" ? "Light mode" : "Dark mode"; }
+  try { const saved = localStorage.getItem("revel-service-theme"); if (saved) document.documentElement.setAttribute("data-theme", saved); } catch (e) { /* storage blocked */ }
+  syncThemeBtn();
+  themeBtn.onclick = () => {
+    const next = currentTheme() === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("revel-service-theme", next); } catch (e) { /* storage blocked */ }
+    syncThemeBtn(); render();
+  };
+
+  // ---------- shared renderers ----------
+  function periodText() {
+    if (S.p === "month") return fmtMonth(S.m);
+    if (S.p === "week") return "week of " + fmtDay(S.w);
+    if (S.p === "day") return fmtDay(S.day);
+    if (S.p === "range") { const r = periodRange(false); return fmtDay(r[0]) + " to " + fmtDay(r[1]); }
+    return "all time";
+  }
+  function priorText() { return { month: "vs " + fmtMonth(prevMonth(S.m)), week: "vs prior week", day: "vs prior day", range: "vs prior period" }[S.p] || ""; }
+  function deltaHtml(cur, prev, upIs) {
+    if (cur == null || prev == null) return "";
+    const diff = (cur - prev) * 100;
+    if (Math.abs(diff) < 0.5) return `<span class="delta flat">● level ${priorText()}</span>`;
+    const up = diff > 0;
+    const cls = upIs === "neutral" ? "flat" : (up ? (upIs === "good" ? "up-good" : "up-bad") : (upIs === "good" ? "down-bad" : "down-good"));
+    return `<span class="delta ${cls}">${up ? "▲" : "▼"} ${Math.abs(diff).toFixed(0)} pts</span> <span>${priorText()}</span>`;
+  }
+  function hbars(el, items, total, opts) {
+    opts = opts || {};
+    if (!total || !items.length) { el.innerHTML = '<div class="empty">Nothing in this selection</div>'; return; }
+    const max = Math.max(...items.map((i) => i.n));
+    el.innerHTML = items.map((i) => {
+      const p = i.n / total;
+      const rows = [{ l: opts.unit || "Count", v: fmtN(i.n) }, { l: opts.shareLabel || "Share", v: pct(p) }].concat(i.extra || []);
+      const tipObj = { h: i.label, r: rows, s: i.fk ? "Click to see these in the log" : "" };
+      const fa = i.fk ? focusAttrs(i.fk, i.fv) : "";
+      return `<div class="hbar${i.fk && isSel(i.fk, i.fv) ? " sel" : ""}" ${fa} data-tip="${tipAttr(tipObj)}">
+        <div class="lab">${esc(i.label)}</div>
+        <div class="track"><div class="fill" style="width:${(i.n / max) * 100}%${i.color ? ";background:" + i.color : ""}"></div></div>
+        <div class="val"><b>${opts.valFn ? opts.valFn(i) : pct(p)}</b> · ${fmtN(i.n)}</div></div>`;
+    }).join("");
+  }
+  function stackSegments(parts, total, opts) {
+    opts = opts || {};
+    return parts.filter((p) => p.n > 0).map((p) => {
+      const w = (p.n / total) * 100;
+      const dark = luminance(p.color) > 0.45;
+      const label = opts.labels !== false && w >= (opts.minLabel || 9) ? `<span>${pct(p.n / total, 0)}</span>` : "";
+      const tipObj = { h: (opts.title ? opts.title + " · " : "") + p.label, r: [{ l: "Calls", v: fmtN(p.n) }, { l: "Share", v: pct(p.n / total) }], s: p.fk ? "Click to see these calls in the log" : "" };
+      const fa = p.fk ? focusAttrs(p.fk, p.fv) : "";
+      return `<div class="s${dark ? " dark-text" : ""}" style="flex:${p.n} 1 0;background:${p.color};${p.fk && isSel(p.fk, p.fv) ? "outline:2px solid var(--ink);outline-offset:-2px;" : ""}" ${fa} data-tip="${tipAttr(tipObj)}">${label}</div>`;
+    }).join("");
+  }
+  function legend(el, items) { el.innerHTML = items.map((i) => `<span><i style="background:${i.color}"></i>${esc(i.label)}</span>`).join(""); }
+  function findings(el, title, items) {
+    const list = items.filter(Boolean);
+    el.innerHTML = list.length ? `<h4>${esc(title)}</h4><ul>${list.map((x) => `<li>${x}</li>`).join("")}</ul>` : "";
+    el.style.display = list.length ? "" : "none";
+  }
+  const B = (s) => `<b>${esc(s)}</b>`;
+
+  // Monthly stacked columns. series: [{key,label,color}], rows: [{m, vals:{key:n}}]
+  function columns(el, rows, series, fkFn) {
+    if (!rows.length) { el.innerHTML = '<div class="empty">Nothing in this selection</div>'; return; }
+    const W = Math.max(320, el.clientWidth || 560), H = 190, padL = 34, padB = 22, padT = 8;
+    const max = Math.max(1, ...rows.map((r) => series.reduce((a, s) => a + (r.vals[s.key] || 0), 0)));
+    const step = niceStep(max), top = Math.ceil(max / step) * step;
+    const bw = (W - padL) / rows.length, gap = Math.min(6, bw * 0.25);
+    const y = (v) => padT + (H - padT - padB) * (1 - v / top);
+    let svg = "";
+    for (let v = 0; v <= top; v += step) svg += `<line class="${v ? "grid-line" : "base-line"}" x1="${padL}" x2="${W}" y1="${y(v)}" y2="${y(v)}"/><text x="${padL - 6}" y="${y(v) + 4}" text-anchor="end">${fmtN(v)}</text>`;
+    rows.forEach((r, i) => {
+      let acc = 0;
+      const x = padL + i * bw + gap / 2;
+      series.forEach((s) => {
+        const n = r.vals[s.key] || 0; if (!n) return;
+        const y0 = y(acc), y1 = y(acc + n); acc += n;
+        const tipObj = { h: fmtMonth(r.m) + " · " + s.label, r: [{ l: "Count", v: fmtN(n) }, { l: "Share of month", v: pct(n / series.reduce((a, q) => a + (r.vals[q.key] || 0), 0)) }], s: "Click to see these in the log" };
+        const fk = fkFn(r.m, s.key);
+        svg += `<rect class="col" x="${x}" y="${y1}" width="${Math.max(1, bw - gap)}" height="${Math.max(0, y0 - y1)}" fill="${s.color}" ${focusAttrs(fk[0], fk[1])} data-tip="${tipAttr(tipObj)}"/>`;
+      });
+      const every = rows.length > 14 ? 3 : rows.length > 8 ? 2 : 1;
+      if (i % every === 0) svg += `<text x="${x + (bw - gap) / 2}" y="${H - 6}" text-anchor="middle">${MONTHS[+r.m.slice(5, 7) - 1]}${r.m.slice(5, 7) === "01" || i === 0 ? " " + r.m.slice(2, 4) : ""}</text>`;
+    });
+    el.innerHTML = `<svg class="cols-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly columns">${svg}</svg>`;
+  }
+  function niceStep(max) { const raw = max / 4, p = Math.pow(10, Math.floor(Math.log10(raw))); const n = raw / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * p; }
+
+  // ---------- KPIs ----------
+  function renderKPIs(cl, tl) {
+    const m = callMetrics(cl), tm = ticketMetrics(tl);
+    const pr = periodRange(true);
+    const pm = pr ? callMetrics(callSlice({ range: pr })) : null;
+    const ptm = pr ? ticketMetrics(ticketSlice({ range: pr })) : null;
+    const inb = cl.filter((c) => c.dir === "I").length;
+    const openNow = ticketSlice({ anyDate: true }).filter((t) => t.o).length;
+    const tiles = [
+      { l: "Service calls", v: fmtN(m.n), f: `${fmtN(inb)} inbound · ${fmtN(m.n - inb)} outbound` },
+      { l: "Fixed or next step booked", v: pct(m.handled), f: pm ? deltaHtml(m.handled, pm.handled, "good") : `${pct(m.fixed)} fixed or answered on the call` },
+      { l: "Upset callers won over", v: pct(m.wonOver), f: pm ? deltaHtml(m.wonOver, pm.wonOver, "good") : `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset` },
+      { l: "Desk tickets opened", v: fmtN(tm.n), f: `${fmtN(openNow)} open today` },
+      { l: "Median time to close", v: dur(tm.ttc), f: ptm && tm.ttc != null && ptm.ttc != null ? `${dur(ptm.ttc)} ${priorText()}` : `${pct(tm.within3)} closed within 3 days` },
+      { l: "First-contact resolution", v: pct(tm.oneTouch), f: pm && ptm ? deltaHtml(tm.oneTouch, ptm.oneTouch, "good") : `first reply in ${dur(tm.tfr)} (median)` },
+    ];
+    $("kpis").innerHTML = tiles.map((t) => `<div class="kpi"><div class="k-label">${t.l}</div><div class="k-value">${t.v}</div><div class="k-foot">${t.f}</div></div>`).join("");
+    const ticketsPart = tm.n ? `${fmtN(tm.n)} Desk tickets were opened and ${pct(share(tm.closed, tm.n))} are closed, with a median of ${B(dur(tm.ttc))} to close.` : "No Desk tickets in this selection.";
+    findings($("sumTop"), "Summary for " + periodText(), [
+      m.n ? `${fmtN(m.n)} service calls: ${B(pct(m.handled))} ended fixed or with a next step booked, ${pct(m.fixed)} were fixed or answered on the call, ${pct(m.handed)} were handed to someone else and ${pct(m.unclear)} had no clear resolution.` : "No service calls in this selection.",
+      m.upset ? `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset; ${B(pct(m.wonOver))} of them ended positive and ${pct(m.calmed)} ended no longer upset.` : "",
+      ticketsPart,
+    ]);
+  }
+
+  // ---------- issues ----------
+  function renderIssues(cl, tl) {
+    const ci = count(cl, (c) => c.iss), ti = count(tl, (t) => t.iss);
+    const handledBy = (iss) => { const l = cl.filter((c) => c.iss === iss); return share(l.filter(handled).length, l.length); };
+    hbars($("callIssues"), ISSUES.map((i) => ({ label: i, n: ci.get(i) || 0, fk: "ciss", fv: i, extra: [{ l: "Fixed or next step booked", v: pct(handledBy(i)) }] })).filter((i) => i.n).sort((a, b) => b.n - a.n), cl.length, { unit: "Calls", shareLabel: "Share of calls" });
+    $("capCallIss").textContent = `One main issue per call · ${fmtN(cl.length)} calls`;
+    const closedMed = (iss) => dur(med(tl.filter((t) => t.iss === iss && !t.o).map((t) => t.ttc)));
+    hbars($("tixIssues"), ISSUES.map((i) => ({ label: i, n: ti.get(i) || 0, fk: "tiss", fv: i, extra: [{ l: "Median time to close", v: closedMed(i) }] })).filter((i) => i.n).sort((a, b) => b.n - a.n), tl.length, { unit: "Tickets", shareLabel: "Share of tickets" });
+    $("capTixIss").textContent = `One main issue per ticket · ${fmtN(tl.length)} tickets`;
+
+    // issue x product (calls + tickets), ignores the product filter
+    const both = callSlice({}).concat([]); // product filter already applied in cl; rebuild without it
+    const saveCat = S.cat; S.cat = "";
+    const allC = callSlice(), allT = ticketSlice(); S.cat = saveCat;
+    const items = allC.concat(allT);
+    const totals = CATS.map((cat) => items.filter((x) => x.cat.includes(cat)).length);
+    const rowsIss = ISSUES.filter((i) => i !== "Other / unclear").map((i) => ({ i, n: CATS.map((cat) => items.filter((x) => x.iss === i && x.cat.includes(cat)).length) }))
+      .filter((r) => r.n.some(Boolean)).sort((a, b) => b.n.reduce((x, y) => x + y, 0) - a.n.reduce((x, y) => x + y, 0)).slice(0, 12);
+    const seq = ["--seq-1", "--seq-2", "--seq-3", "--seq-4", "--seq-5"].map(cssVar);
+    const cell = (n, tot) => { const p = share(n, tot); if (p == null) return `<td class="h">–</td>`; const k = Math.min(4, Math.floor((p || 0) / 0.06)); const bg = seq[k]; return `<td class="h" style="background:${bg};color:${luminance(bg) > 0.3 ? "#141714" : "#fff"}">${pct(p, 0)}</td>`; };
+    $("issueProduct").innerHTML = `<thead><tr><th>Issue</th>${CATS.map((c, k) => `<th class="c">${esc(c)}<br><span style="font-weight:400;text-transform:none">${fmtN(totals[k])}</span></th>`).join("")}</tr></thead><tbody>${rowsIss.map((r) => `<tr><td>${esc(r.i)}</td>${r.n.map((n, k) => cell(n, totals[k])).join("")}</tr>`).join("")}</tbody>`;
+    void both;
+
+    const cmp = count(cl.concat(tl), (x) => x.cmp);
+    const cItems = D.components.map((k) => ({ label: k, n: cmp.get(k) || 0, fk: "cmp", fv: k })).filter((i) => i.n).sort((a, b) => b.n - a.n).slice(0, 14);
+    hbars($("components"), cItems, cl.length + tl.length, { unit: "Calls and tickets", shareLabel: "Share of calls and tickets" });
+    $("capCmp").textContent = "Share of calls (customer's words) and tickets that mention each part. One can mention several.";
+
+    // findings
+    const pr = periodRange(true);
+    const topC = [...ci.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3), topT = [...ti.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const faults = ["Ice bath chiller & cooling", "Sauna heater & temperature", "Electrical, power & tripping", "Controls, app & Wi-Fi", "Leaks, timber, doors & glass", "Lights, sound & accessories", "Cleaning, water care & maintenance", "Faulty unit / warranty (general)", "Damaged, missing or wrong items"];
+    const faultShareC = share(cl.filter((c) => faults.includes(c.iss)).length, cl.length), faultShareT = share(tl.filter((t) => faults.includes(t.iss)).length, tl.length);
+    let rising = "";
+    if (pr) {
+      const prev = callSlice({ range: pr }).concat(ticketSlice({ range: pr })), now = cl.concat(tl);
+      const pc = count(prev, (x) => x.iss), nc = count(now, (x) => x.iss);
+      const moves = ISSUES.map((i) => ({ i, d: share(nc.get(i) || 0, now.length) - share(pc.get(i) || 0, prev.length || 1), n: nc.get(i) || 0 })).filter((x) => x.n >= 5).sort((a, b) => b.d - a.d);
+      if (moves.length && moves[0].d > 0.01) rising = `Rising ${priorText()}: ${B(moves[0].i)} (${moves[0].d > 0 ? "+" : ""}${(moves[0].d * 100).toFixed(0)} pts of contacts)${moves[1] && moves[1].d > 0.01 ? `, then ${esc(moves[1].i)}` : ""}.`;
+    }
+    const topCmp = cItems.slice(0, 3).map((x) => x.label.toLowerCase());
+    findings($("sumIssues"), "What this shows", [
+      topC.length ? `On calls the top issues are ${topC.map(([k, n]) => `${B(k)} (${pct(n / cl.length)})`).join(", ")}.` : "",
+      topT.length ? `On tickets: ${topT.map(([k, n]) => `${B(k)} (${pct(n / tl.length)})`).join(", ")}.` : "",
+      cl.length || tl.length ? `Product faults (heaters, chillers, power, controls, leaks, lights and general faults) are ${pct(faultShareC)} of calls and ${pct(faultShareT)} of tickets; the rest is delivery, installation, payments and admin.` : "",
+      topCmp.length ? `The parts customers mention most: ${topCmp.join(", ")}.` : "",
+      rising,
+    ]);
+  }
+
+  // ---------- resolution ----------
+  function renderResolution(cl) {
+    const rc = count(cl, (c) => c.res);
+    const parts = OUT_KEYS.map((k) => ({ key: k, label: OUT_SHORT[k], n: rc.get(k) || 0, color: cssVar(OUT_VAR[k]), fk: "res", fv: k }));
+    $("resStack").innerHTML = cl.length ? stackSegments(parts, cl.length, { minLabel: 6 }) : '<div class="empty" style="width:100%;padding:4px">No calls</div>';
+    legend($("resLegend"), parts);
+    $("capRes").textContent = cl.length ? `${fmtN(cl.length)} service calls` : "";
+    const months = [...new Set(cl.map((c) => c.mo_))].sort();
+    columns($("resTrend"), months.map((m) => ({ m, vals: Object.fromEntries(OUT_KEYS.map((k) => [k, cl.filter((c) => c.mo_ === m && c.res === k).length])) })),
+      OUT_KEYS.map((k) => ({ key: k, label: OUT_SHORT[k], color: cssVar(OUT_VAR[k]) })), (m, k) => ["cmon", m + "|" + k]);
+
+    const byIss = ISSUES.map((i) => ({ i, l: cl.filter((c) => c.iss === i) })).filter((x) => x.l.length >= 5).sort((a, b) => b.l.length - a.l.length);
+    $("resByIssue").innerHTML = byIss.length ? byIss.map(({ i, l }) => {
+      const c2 = count(l, (c) => c.res);
+      const p2 = OUT_KEYS.map((k) => ({ label: OUT_SHORT[k], n: c2.get(k) || 0, color: cssVar(OUT_VAR[k]), fk: "resIss", fv: k + "|" + i }));
+      return `<div class="srow${S.iss === i ? " me" : ""}"><div class="lab" title="${esc(i)}">${esc(i)}<small>${fmtN(l.length)}</small></div><div class="stack">${stackSegments(p2, l.length, { title: i, minLabel: 12 })}</div><div class="end"><b>${pct(share(l.filter(handled).length, l.length))}</b></div></div>`;
+    }).join("") : '<div class="empty">Not enough calls in this selection</div>';
+
+    const m = callMetrics(cl);
+    const ranked = byIss.filter((x) => x.l.length >= 15 && x.i !== "Other / unclear").map((x) => ({ i: x.i, h: share(x.l.filter(handled).length, x.l.length), f: share(x.l.filter(fixed).length, x.l.length), u: share(x.l.filter((c) => c.res === "U" || c.res === "H").length, x.l.length), n: x.l.length }));
+    const best = ranked.slice().sort((a, b) => b.h - a.h)[0], worst = ranked.slice().sort((a, b) => a.h - b.h)[0];
+    const bestFix = ranked.slice().sort((a, b) => b.f - a.f)[0];
+    const inb = callMetrics(cl.filter((c) => c.dir === "I")), outb = callMetrics(cl.filter((c) => c.dir === "O"));
+    findings($("sumRes"), "What this shows", [
+      m.n ? `${B(pct(m.handled))} of service calls ended fixed or with a next step booked. Most of that is a booked next step (${pct(m.handled - m.fixed)}), not a fix on the spot (${pct(m.fixed)}): most after-sales problems need a part, a technician, a delivery or an email to finish.` : "",
+      best && worst && best.i !== worst.i ? `Best handled: ${B(best.i)} (${pct(best.h)} fixed or booked). Weakest: ${B(worst.i)} (${pct(worst.h)}), where ${pct(worst.u)} of calls were handed over or ended with no clear resolution.` : "",
+      bestFix ? `Most often fixed on the call itself: ${B(bestFix.i)} (${pct(bestFix.f)}), the best candidate for self-service guides and the knowledge base.` : "",
+      inb.n && outb.n ? `Inbound calls: ${pct(inb.handled)} fixed or booked and ${pct(inb.handed)} handed over. Outbound: ${pct(outb.handled)} and ${pct(outb.handed)}.` : "",
+      m.n ? `${pct(m.handed)} of calls were handed to someone else. Each handover is a second contact for the customer; the issues where it happens most are where the front line needs more technical knowledge.` : "",
+    ]);
+  }
+
+  // ---------- mood ----------
+  function renderMood(all) {
+    const cl = all.filter(cust);
+    const keys = [-1, 0, 1];
+    const n = cl.length;
+    const div = keys.map((k) => cssVar(MOOD_VAR[k]));
+    let html = `<thead><tr><th>Start ↓ · End →</th>${keys.map((k) => `<th class="c">${MOOD[k]}</th>`).join("")}<th class="num">Calls</th></tr></thead><tbody>`;
+    keys.forEach((a) => {
+      const row = cl.filter((c) => c.mo === a);
+      html += `<tr><td><span class="dot" style="background:${cssVar(MOOD_VAR[a])}"></span>${MOOD[a]} at the start</td>` + keys.map((b, j) => {
+        const k = row.filter((c) => c.mc === b).length, p = share(k, row.length);
+        const tint = Math.round(18 + 72 * (p || 0));
+        const bg = k ? `color-mix(in srgb, ${div[j]} ${tint}%, transparent)` : "transparent";
+        return `<td class="h" style="background:${bg};color:var(--ink);cursor:${k ? "pointer" : "default"}" ${k ? focusAttrs("mv", a + ":" + b) : ""} data-tip="${tipAttr({ h: MOOD[a] + " → " + MOOD[b], r: [{ l: "Calls", v: fmtN(k) }, { l: "Share of this row", v: pct(p) }], s: "Click to see these calls" })}">${k ? pct(p, 0) : "–"}</td>`;
+      }).join("") + `<td class="num">${fmtN(row.length)}</td></tr>`;
+    });
+    $("moodGrid").innerHTML = html + "</tbody>";
+    const m = callMetrics(cl);
+    $("capMood").textContent = n ? `${fmtN(n)} calls with customers (${fmtN(all.length - n)} calls to couriers, the 3PL and installers left out) · rows add to 100%` : "";
+    legend($("moodLegend"), keys.map((k) => ({ label: MOOD[k], color: cssVar(MOOD_VAR[k]) })));
+
+    const rows = ISSUES.map((i) => { const l = cl.filter((c) => c.iss === i), up = l.filter((c) => c.mo < 0); return { i, n: l.length, up: up.length, open: share(up.length, l.length), won: share(up.filter((c) => c.mc > 0).length, up.length), still: share(up.filter((c) => c.mc < 0).length, up.length), endUp: share(l.filter((c) => c.mc < 0).length, l.length) }; })
+      .filter((r) => r.up >= 5).sort((a, b) => b.open - a.open);
+    const solid = rows.filter((r) => r.up >= 15 && r.i !== "Other / unclear");
+    $("moodByIssue").innerHTML = rows.length ? `<thead><tr><th>Issue</th><th class="num">Calls</th><th class="num">Opened upset</th><th class="num">Won over</th><th class="num">Still upset at the end</th></tr></thead><tbody>${rows.map((r) => `<tr${S.iss === r.i ? ' class="me"' : ""}><td>${esc(r.i)}</td><td class="num">${fmtN(r.n)}</td><td class="num">${pct(r.open)}</td><td class="num">${pct(r.won)}<span class="mini" style="width:${Math.round((r.won || 0) * 60)}px;background:${cssVar("--div-p2")}"></span></td><td class="num">${pct(r.still)}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">Not enough upset callers in this selection</td></tr></tbody>';
+
+    // what the won-over calls did differently
+    const up = cl.filter((c) => c.mo < 0), won = up.filter((c) => c.mc > 0), lost = up.filter((c) => c.mc <= 0);
+    const lift = SOLS.map((s) => ({ s, w: share(won.filter((c) => c.sol.includes(s)).length, won.length), l: share(lost.filter((c) => c.sol.includes(s)).length, lost.length) })).filter((x) => x.w != null && x.l != null).sort((a, b) => (b.w - b.l) - (a.w - a.l));
+    const angriest = solid[0], bestWon = solid.slice().sort((a, b) => b.won - a.won)[0], worstWon = solid.slice().sort((a, b) => a.won - b.won)[0];
+    findings($("sumMood"), "What this shows", [
+      m.n ? `${pct(m.openUpset)} of callers opened upset. Of those, ${B(pct(m.wonOver))} ended positive and ${pct(m.calmed)} ended no longer upset. Across all calls, ${pct(m.endPos)} ended positive and ${pct(m.endUpset)} ended upset.` : "",
+      angriest ? `Callers are most often upset at the start about ${B(angriest.i)} (${pct(angriest.open)} of those calls).` : "",
+      bestWon && worstWon && bestWon.i !== worstWon.i ? `Upset callers are won over most on ${B(bestWon.i)} (${pct(bestWon.won)}) and least on ${B(worstWon.i)} (${pct(worstWon.won)}).` : "",
+      won.length >= 5 && lift.length && lift[0].w - lift[0].l > 0.03 ? `When an upset caller was won over, the rep more often ${B(lift[0].s.toLowerCase())} (${pct(lift[0].w)} of won-over calls vs ${pct(lift[0].l)} of the rest)${lift[1] && lift[1].w - lift[1].l > 0.03 ? ` or ${esc(lift[1].s.toLowerCase())} (${pct(lift[1].w)} vs ${pct(lift[1].l)})` : ""}.` : "",
+    ]);
+  }
+
+  // ---------- solutions ----------
+  function solStats(list) {
+    const ml = list.filter(cust), up = ml.filter((c) => c.mo < 0);
+    return { n: list.length, fixed: share(list.filter(fixed).length, list.length), handled: share(list.filter(handled).length, list.length), won: share(up.filter((c) => c.mc > 0).length, up.length), upN: up.length, tts: med(list.map((c) => c.ts)), endPos: share(ml.filter((c) => c.mc > 0).length, ml.length) };
+  }
+  function renderSolutions(cl) {
+    const base = solStats(cl);
+    const rows = SOLS.map((s) => ({ s, ...solStats(cl.filter((c) => c.sol.includes(s))) })).filter((r) => r.n);
+    const none = solStats(cl.filter((c) => !c.sol.length));
+    const diffCls = (v, b) => (v == null || b == null || Math.abs(v - b) < 0.03 ? "" : v > b ? "color:var(--good-text);font-weight:600" : "color:var(--bad-text)");
+    $("solTable").innerHTML = rows.length ? `<thead><tr><th>Approach</th><th class="num">Calls</th><th class="num">Customer ended positive</th><th class="num">Upset won over</th><th class="num">Fixed on the call</th><th class="num">Time to a solution</th></tr></thead><tbody>${rows.sort((a, b) => b.n - a.n).map((r) => `<tr class="row" ${focusAttrs("sol", r.s)}><td>${esc(r.s)}</td><td class="num">${fmtN(r.n)} <span style="color:var(--muted)">(${pct(r.n / cl.length, 0)})</span></td><td class="num" style="${diffCls(r.endPos, base.endPos)}">${pct(r.endPos)}</td><td class="num" style="${r.upN >= 5 ? diffCls(r.won, base.won) : ""}">${r.upN >= 5 ? pct(r.won) : "–"}</td><td class="num">${pct(r.fixed)}</td><td class="num">${mins(r.tts)}</td></tr>`).join("")}
+      <tr class="team"><td>No approach detected</td><td class="num">${fmtN(none.n)}</td><td class="num">${pct(none.endPos)}</td><td class="num">${none.upN >= 5 ? pct(none.won) : "–"}</td><td class="num">${pct(none.fixed)}</td><td class="num">–</td></tr>
+      <tr class="team"><td>All service calls</td><td class="num">${fmtN(base.n)}</td><td class="num">${pct(base.endPos)}</td><td class="num">${pct(base.won)}</td><td class="num">${pct(base.fixed)}</td><td class="num">${mins(base.tts)}</td></tr></tbody>` : '<tbody><tr><td class="empty">No calls</td></tr></tbody>';
+    $("capSol").textContent = "Judged by how the customer sounded at the end, so booking-type approaches don't score themselves. Green beats the average for these filters by 3+ points, red trails it. Fixed on the call is lower for approaches that need a follow-up by definition.";
+
+    const best = ISSUES.map((i) => {
+      const l = cl.filter((c) => c.iss === i); if (l.length < 20 || i === "Other / unclear") return null;
+      const lc = l.filter(cust), avg = share(lc.filter((c) => c.mc > 0).length, lc.length);
+      const opts = SOLS.map((s) => { const u = lc.filter((c) => c.sol.includes(s)); return { s, n: u.length, h: share(u.filter((c) => c.mc > 0).length, u.length) }; }).filter((o) => o.n >= 15).sort((a, b) => b.h - a.h || b.n - a.n);
+      return opts.length && opts[0].h > avg ? { i, n: l.length, avg, o: opts[0] } : null;
+    }).filter(Boolean).sort((a, b) => b.n - a.n);
+    $("bestFix").innerHTML = best.length ? `<thead><tr><th>Issue</th><th>Best approach</th><th class="num">Ended positive</th><th class="num">Issue average</th></tr></thead><tbody>${best.map((b) => `<tr class="row" ${focusAttrs("solIss", b.o.s + "|" + b.i)}><td class="wrapcell">${esc(b.i)} <span style="color:var(--muted)">${fmtN(b.n)}</span></td><td class="wrapcell">${esc(b.o.s)} <span style="color:var(--muted)">${fmtN(b.o.n)} calls</span></td><td class="num"><b>${pct(b.o.h)}</b></td><td class="num">${pct(b.avg)}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">Not enough calls in this selection</td></tr></tbody>';
+
+    const ranked = rows.filter((r) => r.n >= 30);
+    const topPos = ranked.slice().sort((a, b) => b.endPos - a.endPos)[0], topWon = ranked.filter((r) => r.upN >= 15).sort((a, b) => b.won - a.won)[0];
+    const handedRow = rows.find((r) => r.s === "Passed to a colleague"), troubleshoot = rows.find((r) => r.s === "Troubleshot on the call");
+    findings($("sumSol"), "What this shows", [
+      topPos ? `Customers most often ended positive when the rep ${B(topPos.s.toLowerCase())} (${pct(topPos.endPos)} vs ${pct(base.endPos)} overall).` : "",
+      best.length ? `Best approach by issue: ${best.slice(0, 3).map((b) => `${esc(b.i)}: ${B(b.o.s.toLowerCase())} (${pct(b.o.h)} ended positive vs ${pct(b.avg)})`).join("; ")}.` : "",
+      topWon && topWon.won > base.won ? `For upset callers, ${B(topWon.s.toLowerCase())} won them over most often (${pct(topWon.won)} vs ${pct(base.won)}).` : "",
+      troubleshoot ? `Reps troubleshot on the call in only ${pct(troubleshoot.n / cl.length)} of service calls. Turning the steps that work into scripts and guides is the quickest way to lift fixes on the call.` : "",
+      handedRow ? `${pct(handedRow.n / cl.length)} of calls passed the customer to a colleague, and those ended fixed or booked ${pct(handedRow.handled)} of the time.` : "",
+      `Median time to a first solution or next step: ${B(mins(base.tts))} into the call.`,
+    ]);
+  }
+
+  // ---------- playbook ----------
+  function renderPlaybook(cl, tl) {
+    const counts = count(cl.concat(tl), (x) => x.iss);
+    const opts = ISSUES.filter((i) => counts.get(i)).sort((a, b) => counts.get(b) - counts.get(a));
+    if (!opts.includes(S.pb)) S.pb = S.iss && opts.includes(S.iss) ? S.iss : opts[0] || "";
+    $("pbSel").innerHTML = opts.map((i) => `<option value="${esc(i)}"${i === S.pb ? " selected" : ""}>${esc(i)} (${fmtN(counts.get(i))})</option>`).join("");
+    const issue = S.pb;
+    if (!issue) { $("pbBody").innerHTML = '<div class="empty">Nothing in this selection</div>'; return; }
+    const c = cl.filter((x) => x.iss === issue), t = tl.filter((x) => x.iss === issue);
+    const st = solStats(c), tm = ticketMetrics(t);
+    const top = (m, k) => [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, k);
+    const prods = top(count(c.concat(t), (x) => x.cat), 3), mdl = top(count(c.concat(t), (x) => x.mdl), 5), cmp = top(count(c.concat(t), (x) => x.cmp), 5);
+    const sols = SOLS.map((s) => ({ s, ...solStats(c.filter((x) => x.sol.includes(s))) })).filter((r) => r.n >= 5).sort((a, b) => b.endPos - a.endPos || b.n - a.n);
+    const fixes = [], seen = new Set();
+    c.slice().sort((a, b) => (a.res === "R" ? 0 : 1) - (b.res === "R" ? 0 : 1) || b.mc - a.mc || b.fix.length - a.fix.length).forEach((x) => { if (fixes.length < 5 && x.fix && !x.sup && (x.res === "R" || x.res === "F") && x.mc >= 0 && !seen.has(x.fix)) { seen.add(x.fix); fixes.push(x); } });
+    const voices = [...new Map(c.filter((x) => x.cq && !x.sup).map((x) => [x.cq, x])).values()].slice(-4);
+    const people = [...count(c, (x) => x.pk).entries()].filter(([k, n]) => n >= 8 && PEOPLE.has(k)).map(([k, n]) => { const l = c.filter((x) => x.pk === k); return { k, n, h: share(l.filter(handled).length, n) }; }).sort((a, b) => b.h - a.h || b.n - a.n).slice(0, 3);
+    const owners = [...count(t.filter((x) => !x.o), (x) => x.pk).entries()].filter(([k, n]) => n >= 5 && PEOPLE.has(k) && !SHARED.test(PEOPLE.get(k))).map(([k, n]) => ({ k, n, m: med(t.filter((x) => !x.o && x.pk === k).map((x) => x.ttc)) })).sort((a, b) => a.m - b.m).slice(0, 3);
+    const list = (arr, fn) => arr.length ? `<ul class="pb-list">${arr.map(fn).join("")}</ul>` : '<p class="note" style="margin:0">Not enough data in this selection</p>';
+    $("pbBody").innerHTML = `
+      <div class="pb-stats"><span><b>${fmtN(c.length)}</b> calls</span><span><b>${fmtN(t.length)}</b> tickets</span><span><b>${pct(st.handled)}</b> of calls fixed or booked</span><span><b>${pct(st.fixed)}</b> fixed on the call</span><span><b>${dur(tm.ttc)}</b> median ticket close</span>${st.upN ? `<span><b>${pct(share(st.upN, c.length))}</b> of callers opened upset</span>` : ""}</div>
+      <div class="pb-grid">
+        <div><h4>What's affected</h4>${list([].concat(prods.map(([k, n]) => `${esc(k)} <span class="note">${fmtN(n)}</span>`), mdl.length ? [`Models: ${mdl.map(([k, n]) => `${esc(k)} (${fmtN(n)})`).join(", ")}`] : [], cmp.length ? [`Parts: ${cmp.map(([k, n]) => `${esc(k)} (${fmtN(n)})`).join(", ")}`] : []), (x) => `<li>${x}</li>`)}</div>
+        <div><h4>What worked on the calls</h4>${list(sols.slice(0, 5), (r) => `<li>${esc(r.s)}: <b>${pct(r.endPos)}</b> ended positive${r.upN >= 5 ? `, ${pct(r.won)} of upset callers won over` : ""} <span class="note">${fmtN(r.n)} calls · issue average ${pct(st.endPos)} positive</span></li>`)}</div>
+        <div><h4>How the best calls fixed it</h4>${fixes.length ? fixes.map((x) => `<div class="pb-quote">“${esc(x.fix)}” <span class="note" style="font-style:normal">${esc(AGENTS[x.a])}, ${fmtDay(x.d)}</span></div>`).join("") : '<p class="note" style="margin:0">No example in this selection</p>'}</div>
+        <div><h4>How customers describe it</h4>${voices.length ? voices.map((x) => `<div class="pb-quote">“${esc(x.cq)}”</div>`).join("") : '<p class="note" style="margin:0">No example in this selection</p>'}</div>
+        <div><h4>Who handles it best</h4>${list([].concat(people.map((p) => `Calls: ${esc(PEOPLE.get(p.k) || p.k)}, ${pct(p.h)} fixed or booked <span class="note">${fmtN(p.n)} calls</span>`), owners.map((o) => `Tickets: ${esc(PEOPLE.get(o.k) || o.k)}, closes in ${dur(o.m)} (median) <span class="note">${fmtN(o.n)} closed</span>`)), (x) => `<li>${x}</li>`)}</div>
+      </div>`;
+  }
+  $("dlView").onclick = (e) => {
+    e.preventDefault();
+    const cl = callSlice().filter(focusCall);
+    const head = ["call_id", "date", "time", "person", "direction", "seconds", "issue", "outcome", "approaches", "mood_start", "mood_end", "products", "models", "parts", "summary", "customer_said", "rep_fix"];
+    const q = (v) => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
+    const rows = cl.map((c) => [c.id, c.d, c.h, AGENTS[c.a], c.dir === "I" ? "Inbound" : "Outbound", c.dur, c.iss, OUT_SHORT[c.res], c.sol.join("; "), MOOD[c.mo], MOOD[c.mc], c.cat.join("; "), c.mdl.join("; "), c.cmp.join("; "), c.sum, c.cq, c.fix].map(q).join(","));
+    const blob = new Blob([head.join(",") + "\n" + rows.join("\n")], { type: "text/csv" });
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "revel-service-calls.csv"; document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  };
+
+  // ---------- tickets ----------
+  function renderTickets(tl) {
+    const months = [...new Set(tl.map((t) => t.mo_))].sort().filter((m) => m >= monthsList[monthsList.length - 1]);
+    const pipes = ["C", "W", "F"].filter((p) => tl.some((t) => t.p === p));
+    columns($("tixTrend"), months.map((m) => ({ m, vals: Object.fromEntries(pipes.map((p) => [p, tl.filter((t) => t.mo_ === m && t.p === p).length])) })),
+      pipes.map((p) => ({ key: p, label: PIPE[p], color: cssVar(PIPE_VAR[p]) })), (m, p) => ["tmon", m + "|" + p]);
+    legend($("tixLegend"), pipes.map((p) => ({ label: PIPE[p], color: cssVar(PIPE_VAR[p]) })));
+    const older = tl.length - tl.filter((t) => months.includes(t.mo_)).length;
+    $("capTixTrend").textContent = `${fmtN(tl.length)} tickets${older ? ` (${fmtN(older)} opened before the call data starts, not charted)` : ""}`;
+
+    const closed = tl.filter((t) => !t.o && t.ttc != null);
+    hbars($("ttcBars"), TTC_BUCKETS.map(([label, a, b]) => ({ label, n: closed.filter((t) => t.ttc >= a && t.ttc < b).length, fk: "ttcb", fv: label })), closed.length, { unit: "Tickets", shareLabel: "Share of closed tickets" });
+    $("capTtc").textContent = `${fmtN(closed.length)} closed tickets, by time from creation to close`;
+    $("pipeStats").innerHTML = `<thead><tr><th>Pipeline</th><th class="num">Tickets</th><th class="num">Open</th><th class="num">To close</th><th class="num">First reply</th><th class="num">One-touch</th></tr></thead><tbody>${["C", "W", "F"].map((p) => { const l = tl.filter((t) => t.p === p); if (!l.length) return ""; const m = ticketMetrics(l); return `<tr><td>${PIPE[p]}</td><td class="num">${fmtN(m.n)}</td><td class="num">${fmtN(m.open)}</td><td class="num">${dur(m.ttc)}</td><td class="num">${dur(m.tfr)}</td><td class="num">${pct(m.oneTouch)}</td></tr>`; }).join("")}</tbody>`;
+
+    // open today, ignores the period
+    const openAll = ticketSlice({ anyDate: true }).filter((t) => t.o);
+    const now = toDate(lastDay);
+    const stageItems = [];
+    ["C", "W", "F"].forEach((p) => { const sc = count(openAll.filter((t) => t.p === p), (t) => t.st); [...sc.entries()].forEach(([st, n]) => { const l = openAll.filter((t) => t.p === p && t.st === st); const age = med(l.map((t) => (now - toDate(t.d)) / 864e5)); stageItems.push({ label: PIPE[p] + " · " + st, n, fk: "stage", fv: p + "|" + st, color: cssVar(PIPE_VAR[p]), extra: [{ l: "Median age", v: age == null ? "–" : Math.round(age) + " days" }] }); }); });
+    hbars($("openStages"), stageItems.sort((a, b) => b.n - a.n), openAll.length, { unit: "Open tickets", shareLabel: "Share of open tickets" });
+    const ages = openAll.map((t) => (now - toDate(t.d)) / 864e5);
+    $("capOpen").textContent = openAll.length ? `${fmtN(openAll.length)} open tickets (all dates) · median age ${Math.round(med(ages))} days · ${fmtN(ages.filter((a) => a > 30).length)} older than 30 days` : "No open tickets";
+
+    const w = tl.filter((t) => t.p === "W");
+    const wm = count(w, (t) => t.mdl);
+    hbars($("warrantyModels"), [...wm.entries()].map(([k, n]) => ({ label: k, n, fk: "wm", fv: k })).sort((a, b) => b.n - a.n).slice(0, 12), w.length, { unit: "Warranty tickets", shareLabel: "Share of warranty tickets" });
+    $("capWModels").textContent = `${fmtN(w.length)} warranty tickets; ${pct(share(w.filter((t) => !t.mdl.length).length, w.length))} don't name a model`;
+
+    const tm = ticketMetrics(tl), cs = ticketMetrics(tl.filter((t) => t.p === "C")), wa = ticketMetrics(w);
+    const topStage = stageItems.slice().sort((a, b) => b.n - a.n)[0];
+    const unclear = share(tl.filter((t) => t.iss === "Other / unclear").length, tl.length);
+    findings($("sumTix"), "What this shows", [
+      tm.n ? `${fmtN(tm.n)} tickets; median ${B(dur(tm.ttc))} to close and ${dur(tm.tfr)} to the first email reply. ${pct(tm.within3)} close within 3 days.` : "",
+      cs.n && wa.n ? `Warranty tickets take much longer: ${B(dur(wa.ttc))} median to close vs ${dur(cs.ttc)} for Customer Service, because they wait on technicians, parts and the factory.` : "",
+      topStage ? `Biggest open queue today: ${B(topStage.label)} (${fmtN(topStage.n)} tickets).` : "",
+      tm.n ? `${pct(tm.oneTouch)} of closed tickets were resolved with a single agent message (HubSpot's first-contact resolution).` : "",
+      unclear > 0.08 ? `${pct(unclear)} of tickets can't be classified because the subject is just a name or order number and the email is empty. Setting HubSpot's Category and Resolution fields on close would fix this and feed the knowledge base directly.` : "",
+    ]);
+  }
+
+  // ---------- people ----------
+  function rankPct(vals, v, higherBetter) {
+    const a = vals.filter((x) => x != null); if (a.length < 2 || v == null) return null;
+    const below = a.filter((x) => (higherBetter ? x < v : x > v)).length, eq = a.filter((x) => x === v).length - 1;
+    return (below + eq / 2) / (a.length - 1);
+  }
+  // Close time against the typical close time for the same pipeline and issue, so
+  // people who carry slow work (warranty, technicians, factory parts) aren't penalised for it.
+  function speedRatio(tl) {
+    const groups = new Map();
+    tl.forEach((t) => { if (!t.o && t.ttc != null) { const k = t.p + "|" + t.iss; if (!groups.has(k)) groups.set(k, []); groups.get(k).push(t.ttc); } });
+    const typical = new Map([...groups].map(([k, v]) => [k, med(v)]));
+    return (t) => { const m = typical.get(t.p + "|" + t.iss); return m == null || t.ttc == null ? null : Math.max(t.ttc, 0.1) / Math.max(m, 0.1); };
+  }
+  function renderPeople(cl, tl) {
+    // tickets
+    const ratio = speedRatio(tl);
+    const all = [...count(tl, (t) => t.pk).keys()].map((k) => {
+      const l = tl.filter((t) => t.pk === k);
+      return { k, name: PEOPLE.get(k) || "Unassigned", speed: med(l.filter((t) => !t.o).map(ratio)), ...ticketMetrics(l) };
+    });
+    const ranked = all.filter((r) => r.closed >= 10 && !SHARED.test(r.name));
+    ranked.forEach((r) => {
+      const parts = [rankPct(ranked.map((x) => x.speed), r.speed, false), rankPct(ranked.map((x) => x.tfr), r.tfr, false), rankPct(ranked.map((x) => x.oneTouch), r.oneTouch, true), rankPct(ranked.map((x) => x.closed), r.closed, true)].filter((x) => x != null);
+      r.score = parts.length ? Math.round((parts.reduce((a, b) => a + b, 0) / parts.length) * 100) : null;
+    });
+    const shown = all.filter((r) => r.n >= 5 || r.k === S.pp).sort((a, b) => (b.score == null ? -1 : b.score) - (a.score == null ? -1 : a.score) || b.closed - a.closed);
+    const hidden = all.length - shown.length;
+    const speedTxt = (v) => (v == null ? "–" : v.toFixed(v < 10 ? 1 : 0) + "×");
+    $("ownerTable").innerHTML = shown.length ? `<thead><tr><th>Owner</th><th class="num">Efficiency score</th><th class="num">Tickets</th><th class="num">Closed</th><th class="num">Median to close</th><th class="num">Speed vs typical</th><th class="num">Median first reply</th><th class="num">First-contact resolution</th><th class="num">Notes per closed ticket</th><th class="num">Open</th></tr></thead><tbody>${shown.map((r) => `<tr class="row${S.pp === r.k ? " me" : ""}" ${focusAttrs("owner", r.k)}><td>${esc(r.name)}${SHARED.test(r.name) ? '<span class="tag">shared</span>' : ""}</td><td class="num">${r.score == null ? "–" : `<span class="score-bar" style="width:${Math.round(r.score * 0.5)}px"></span><b>${r.score}</b>`}</td><td class="num">${fmtN(r.n)}</td><td class="num">${fmtN(r.closed)}</td><td class="num">${dur(r.ttc)}</td><td class="num" style="${r.speed == null ? "" : r.speed < 0.8 ? "color:var(--good-text);font-weight:600" : r.speed > 1.25 ? "color:var(--bad-text)" : ""}">${speedTxt(r.speed)}</td><td class="num">${dur(r.tfr)}</td><td class="num">${pct(r.oneTouch)}</td><td class="num">${r.notes == null ? "–" : r.notes.toFixed(1)}</td><td class="num">${fmtN(r.open)}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">No tickets in this selection</td></tr></tbody>';
+    $("capOwners").textContent = `${fmtN(tl.length)} tickets · speed vs typical: 1.0× is the median close time for the same pipeline and issue, below 1 is faster · click a row to see that owner's tickets${hidden ? ` · ${hidden} owners with fewer than 5 tickets not shown` : ""}`;
+
+    // calls
+    const ag = [...count(cl, (c) => c.pk).entries()].filter(([k, n]) => PEOPLE.has(k) && n >= 20).map(([k]) => { const l = cl.filter((c) => c.pk === k); return { k, name: PEOPLE.get(k), ...callMetrics(l) }; }).sort((a, b) => b.handled - a.handled || b.n - a.n);
+    $("agentTable").innerHTML = ag.length ? `<thead><tr><th>Person</th><th class="num">Service calls</th><th class="num">Avg call length</th><th class="num">Fixed on the call</th><th class="num">Fixed or booked</th><th class="num">Handed over</th><th class="num">Customer ended positive</th><th class="num">Upset won over</th><th class="num">Time to a solution</th></tr></thead><tbody>${ag.map((r) => `<tr class="row${S.pp === r.k ? " me" : ""}" ${focusAttrs("agent", r.k)}><td>${esc(r.name)}</td><td class="num">${fmtN(r.n)}</td><td class="num">${mins(r.aht)}</td><td class="num">${pct(r.fixed)}</td><td class="num"><b>${pct(r.handled)}</b></td><td class="num">${pct(r.handed)}</td><td class="num">${pct(r.endPos)}</td><td class="num">${r.upset >= 8 ? pct(r.wonOver) : "–"}</td><td class="num">${mins(r.tts)}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">No one with 20+ service calls in this selection</td></tr></tbody>';
+    $("capAgents").textContent = `${fmtN(cl.length)} service calls · people with 20+ calls, sorted by fixed or booked · click a row to see their calls`;
+
+    // best per issue
+    const best = ISSUES.filter((i) => i !== "Other / unclear").map((i) => {
+      const c = cl.filter((x) => x.iss === i), t = tl.filter((x) => x.iss === i && !x.o && x.ttc != null);
+      const bc = [...count(c, (x) => x.pk).entries()].filter(([k, n]) => PEOPLE.has(k) && n >= 8).map(([k, n]) => ({ k, n, h: share(c.filter((x) => x.pk === k && handled(x)).length, n) })).sort((a, b) => b.h - a.h || b.n - a.n)[0];
+      const bt = [...count(t, (x) => x.pk).entries()].filter(([k, n]) => PEOPLE.has(k) && n >= 5 && !SHARED.test(PEOPLE.get(k))).map(([k, n]) => ({ k, n, m: med(t.filter((x) => x.pk === k).map((x) => x.ttc)) })).sort((a, b) => a.m - b.m)[0];
+      return bc || bt ? { i, bc, bt, cAvg: share(c.filter(handled).length, c.length), tAvg: med(t.map((x) => x.ttc)) } : null;
+    }).filter(Boolean);
+    $("bestPerson").innerHTML = best.length ? `<thead><tr><th>Issue</th><th>Best on calls</th><th>Fastest on tickets</th></tr></thead><tbody>${best.map((b) => `<tr><td class="wrapcell">${esc(b.i)}</td><td class="wrapcell">${b.bc ? `${esc(PEOPLE.get(b.bc.k))}: <b>${pct(b.bc.h)}</b> fixed or booked <span class="note">vs ${pct(b.cAvg)} avg · ${b.bc.n} calls</span>` : '<span class="note">–</span>'}</td><td class="wrapcell">${b.bt ? `${esc(PEOPLE.get(b.bt.k))}: <b>${dur(b.bt.m)}</b> <span class="note">vs ${dur(b.tAvg)} avg · ${b.bt.n} closed</span>` : '<span class="note">–</span>'}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">Not enough data in this selection</td></tr></tbody>';
+
+    const topT = ranked.slice().sort((a, b) => (b.score || 0) - (a.score || 0));
+    const quick = ranked.filter((r) => r.closed >= 30 && r.speed != null).sort((a, b) => a.speed - b.speed)[0], vol = ranked.slice().sort((a, b) => b.closed - a.closed)[0];
+    const big = ag.filter((r) => r.n >= 50), topC = big[0], wonC = ag.filter((r) => r.upset >= 20).sort((a, b) => b.wonOver - a.wonOver)[0];
+    const slowest = ranked.filter((r) => r.closed >= 30 && r.speed != null).sort((a, b) => b.speed - a.speed)[0];
+    findings($("sumPeople"), "What this shows", [
+      topT.length ? `Most efficient on tickets: ${B(topT[0].name)} (score ${topT[0].score}: closes in ${dur(topT[0].ttc)} at the median, ${speedTxt(topT[0].speed)} the typical time for the same kind of ticket, first reply ${dur(topT[0].tfr)}, ${pct(topT[0].oneTouch)} first-contact resolution)${topT[1] ? `, then ${esc(topT[1].name)} (${topT[1].score})` : ""}${topT[2] ? ` and ${esc(topT[2].name)} (${topT[2].score})` : ""}.` : "",
+      quick && vol ? `Fastest against the typical time for the same pipeline and issue: ${B(quick.name)} (${speedTxt(quick.speed)}). Highest volume: ${B(vol.name)} (${fmtN(vol.closed)} closed).` : "",
+      slowest && slowest !== quick && slowest.speed > 1.25 ? `${B(slowest.name)} takes ${speedTxt(slowest.speed)} the typical time and has ${fmtN(slowest.open)} tickets open: worth a look at workload before reading it as speed.` : "",
+      topC ? `On calls (50+), ${B(topC.name)} ends the most calls fixed or with a next step booked (${pct(topC.handled)} of ${fmtN(topC.n)}).` : "",
+      wonC ? `Best at turning upset callers around: ${B(wonC.name)} (${pct(wonC.wonOver)} of ${fmtN(wonC.upset)} upset callers won over).` : "",
+    ]);
+  }
+
+  // ---------- logs ----------
+  const PAGE = 25;
+  function renderCallLog(cl) {
+    const q = S.q.trim().toLowerCase();
+    let list = cl.filter(focusCall);
+    if (q) list = list.filter((c) => (c.sum + " " + c.fix + " " + c.cq + " " + c.iss + " " + c.mdl.join(" ") + " " + c.sol.join(" ") + " " + AGENTS[c.a]).toLowerCase().includes(q));
+    list = list.slice().reverse();
+    const pages = Math.max(1, Math.ceil(list.length / PAGE)); S.pg = Math.min(S.pg, pages - 1);
+    const rows = list.slice(S.pg * PAGE, S.pg * PAGE + PAGE);
+    $("logTable").innerHTML = `<thead><tr><th>Date</th><th>Person</th><th>Dir</th><th class="num">Length</th><th>Issue</th><th>Outcome</th><th>Mood</th><th>Approach</th></tr></thead><tbody>${rows.map((c) => `<tr class="row" data-id="${esc(c.id)}"><td>${fmtDay(c.d, false)} ${c.h}</td><td>${esc(AGENTS[c.a])}</td><td>${c.dir === "I" ? "In" : "Out"}</td><td class="num">${mins(c.dur)}</td><td>${esc(c.iss)}</td><td><span class="dot" style="background:${cssVar(OUT_VAR[c.res])}"></span>${OUT_SHORT[c.res]}</td><td>${c.sup ? '<span class="chip">Courier or supplier</span>' : MOOD[c.mo] + " → " + MOOD[c.mc]}</td><td>${c.sol.slice(0, 2).map((s) => `<span class="chip">${esc(s)}</span>`).join("")}${c.sol.length > 2 ? `<span class="chip">+${c.sol.length - 2}</span>` : ""}</td></tr>`).join("")}</tbody>`;
+    $("logCount").textContent = `${fmtN(list.length)} calls`;
+    $("pageInfo").textContent = `Page ${S.pg + 1} of ${pages}`;
+    $("prevPg").disabled = S.pg === 0; $("nextPg").disabled = S.pg >= pages - 1;
+    $("logTable").querySelectorAll("tr.row").forEach((tr) => tr.onclick = () => {
+      const next = tr.nextElementSibling;
+      if (next && next.classList.contains("detail")) { next.remove(); return; }
+      const c = list.find((x) => x.id === tr.dataset.id); if (!c) return;
+      const d = document.createElement("tr"); d.className = "detail";
+      d.innerHTML = `<td colspan="8"><div class="detail-grid">
+        <div><div class="dl">Summary</div><div class="dv">${esc(c.sum) || "–"}</div></div>
+        <div><div class="dl">Products · models · parts</div><div class="dv">${esc([c.cat.join(", "), c.mdl.join(", "), c.cmp.join(", ")].filter(Boolean).join(" · ")) || "–"}</div></div>
+        <div><div class="dl">Customer said</div><div class="dv quote">${esc(c.cq) || "–"}</div></div>
+        <div><div class="dl">Rep's fix or next step</div><div class="dv quote">${esc(c.fix) || "–"}</div></div>
+        <div><div class="dl">All approaches</div><div class="dv">${c.sol.map(esc).join(", ") || "None detected"}</div></div>
+        <div><div class="dl">Also raised</div><div class="dv">${c.iss2.map(esc).join(", ") || "–"}</div></div>
+      </div></td>`;
+      tr.after(d);
+    });
+  }
+  function renderTicketLog(tl) {
+    const q = S.tq.trim().toLowerCase();
+    let list = tl.filter(focusTicket);
+    if (q) list = list.filter((t) => (t.iss + " " + t.st + " " + PIPE[t.p] + " " + OWNERS[t.ow] + " " + t.mdl.join(" ") + " " + t.cmp.join(" ") + " " + t.cat.join(" ")).toLowerCase().includes(q));
+    list = list.slice().reverse();
+    const pages = Math.max(1, Math.ceil(list.length / PAGE)); S.tpg = Math.min(S.tpg, pages - 1);
+    const rows = list.slice(S.tpg * PAGE, S.tpg * PAGE + PAGE);
+    $("tlogTable").innerHTML = `<thead><tr><th>Opened</th><th>Pipeline</th><th>Owner</th><th>Issue</th><th>Models · parts</th><th>Stage</th><th class="num">To close</th><th class="num">First reply</th><th></th></tr></thead><tbody>${rows.map((t) => `<tr><td>${fmtDay(t.d)}</td><td>${PIPE[t.p]}</td><td>${esc(OWNERS[t.ow])}</td><td>${esc(t.iss)}</td><td>${esc(t.mdl.concat(t.cmp).slice(0, 3).join(", ")) || "–"}</td><td>${t.o ? `<span class="dot" style="background:${cssVar("--oc-h")}"></span>` : ""}${esc(t.st)}</td><td class="num">${t.o ? "open" : dur(t.ttc)}</td><td class="num">${dur(t.tfr)}</td><td><a href="${HS_URL + esc(t.id)}" target="_blank" rel="noopener">HubSpot ↗</a></td></tr>`).join("")}</tbody>`;
+    $("tlogCount").textContent = `${fmtN(list.length)} tickets`;
+    $("tpageInfo").textContent = `Page ${S.tpg + 1} of ${pages}`;
+    $("tprevPg").disabled = S.tpg === 0; $("tnextPg").disabled = S.tpg >= pages - 1;
+  }
+
+  // ---------- render ----------
+  function render() {
+    syncSeg($("periodSeg"), S.p); syncSeg($("catSeg"), S.cat); syncSeg($("dirSeg"), S.dir); syncSeg($("pipeSeg"), S.pl);
+    renderPeriodPick(); renderSelects();
+    const cl = callSlice(), tl = ticketSlice();
+    renderKPIs(cl, tl);
+    renderIssues(cl, tl);
+    renderResolution(cl);
+    renderMood(cl);
+    renderSolutions(cl);
+    renderPlaybook(callSlice({ anyIssue: true }), ticketSlice({ anyIssue: true }));
+    renderTickets(tl);
+    renderPeople(cl, tl);
+    renderCallLog(cl);
+    renderTicketLog(tl);
+    const pill = $("focusPill");
+    if (S.fk) {
+      pill.classList.add("on"); $("focusText").textContent = focusLabel();
+      $("focusLink").setAttribute("href", FOCUS_ON[S.fk] === "t" ? "#ticketlog" : "#calllog");
+    } else pill.classList.remove("on");
+    saveHash();
+  }
+
+  $("asof").textContent = `Calls to ${fmtDay(calls[calls.length - 1].d)} · tickets pulled ${D.ticketsPulled ? fmtDay(D.ticketsPulled.slice(0, 10)) : "–"}${notices ? ` · ${fmtN(notices)} automated emails left out` : ""}`;
+  $("search").value = S.q; $("tsearch").value = S.tq;
+  let resizeTimer;
+  window.addEventListener("resize", () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(render, 200); });
+  render();
+})();
+</script>
+</body>
+</html>

@@ -24,6 +24,7 @@ from collections import Counter
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import discovery
 import pricing
 import taxonomy
 
@@ -185,6 +186,11 @@ def build(rows):
             "gap": taxonomy.themes(row.get("our_perceived_disadvantage"), taxonomy.REVEL_GAP_THEMES),
             "edt": scrub(row.get("our_perceived_advantage"), 110),
             "gpt": scrub(row.get("our_perceived_disadvantage"), 110),
+            "dq": {label: window(text, discovery.TOPIC_RX[label], 120) for label, text in discovery.asked(call_turns).items()},
+            "mh": taxonomy.themes(row.get("must_have_features_ranked"), taxonomy.FEATURE_THEMES),
+            "nh": taxonomy.themes(row.get("nice_to_have_features"), taxonomy.FEATURE_THEMES),
+            "mi": taxonomy.themes(f"{row.get('missing_information_critical', '')}; {row.get('confusion_topic', '')}".strip("; "),
+                                  taxonomy.MISSING_INFO_THEMES),
             "q": scrub(row.get("verbatim_quote_most_revealing"), 200),
             "co": scrub(row.get("coaching_opportunity_specific"), 140),
         })
@@ -197,6 +203,9 @@ def build(rows):
         "callReasons": [label for label, _ in taxonomy.CALL_REASONS] + [taxonomy.OTHER_REASON],
         "requests": taxonomy.REQUEST_LABELS,
         "notClosedReasons": [label for label, _ in taxonomy.NOT_CLOSED_REASONS] + [taxonomy.OTHER_NOT_CLOSED],
+        "discoveryTopics": [{"label": label, "about": about} for label, about, _ in discovery.TOPICS],
+        "featureThemes": [label for label, _ in taxonomy.FEATURE_THEMES],
+        "missingThemes": [label for label, _ in taxonomy.MISSING_INFO_THEMES],
         "edgeThemes": [label for label, _ in taxonomy.REVEL_EDGE_THEMES],
         "gapThemes": [label for label, _ in taxonomy.REVEL_GAP_THEMES],
         "priceClasses": pricing.CLASS_LABELS,

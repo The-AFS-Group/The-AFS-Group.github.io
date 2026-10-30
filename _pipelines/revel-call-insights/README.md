@@ -21,6 +21,7 @@ call, with the AI's analysis fields and the transcript. Only rows with `should_a
 |---|---|
 | `build.py` | Downloads the sheet (or reads `--csv`), derives the dashboard fields, writes `data.js`. |
 | `taxonomy.py` | Keyword rules that fold the AI's free-text notes into fixed buckets: product category, reason for the call, customer requests, and the main reason a sale didn't close. |
+| `discovery.py` | Reads the rep's own lines in the transcript for needs-discovery questions on 12 topics (purpose, space, people, budget, timeframe, decision-makers and so on) and keeps the first question asked per topic as an example. |
 | `pricing.py` | Reads each transcript (`internal:` = Revel staff, `external:` = customer) to find who raised price first: an unprompted rep offer, an offer after customer pressure, pressure with price held, or no discount talk. |
 
 ## How the categories work
@@ -32,6 +33,10 @@ call, with the AI's analysis fields and the transcript. Only rows with `should_a
   marked as post-purchase are "After-sales, payments & order queries".
 - **Customer requests** are matched against the customer's own words in the transcript, plus the
   AI's notes on missing information. A call can have several.
+- **Competitors** come from the AI's `competitors_mentioned` note, with spelling variants folded into one brand
+  name (`COMPETITOR_ALIASES`). Revel's own model names and suppliers are dropped.
+- **Researching asks** reuse the customer requests, plus the AI's must-have / nice-to-have feature notes
+  and its missing-information notes, grouped into themes.
 - **Not closed** covers sales calls (not post-purchase) whose outcome was strong intent,
   moderate interest, low interest, wrong fit or lost to a competitor. The reason comes from
   `outcome_reason`, then `objections_unresolved`, then `barrier_primary`.

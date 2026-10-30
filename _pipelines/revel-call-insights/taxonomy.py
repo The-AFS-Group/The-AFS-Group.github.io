@@ -291,3 +291,115 @@ def not_closed_reason(outcome, outcome_reason, objections, barrier, barrier_type
             if rx.search(text):
                 return label
     return _BARRIER_TYPE_FALLBACK.get((barrier_type or "").strip().lower(), OTHER_NOT_CLOSED)
+
+
+# --- Competitors -----------------------------------------------------------------
+
+# Brand names come from the AI's notes on speech-to-text transcripts, so the same
+# brand turns up spelt several ways. Each pattern folds those into one name.
+COMPETITOR_ALIASES = [
+    ("Alpine Spas", r"^a(?:l)?apine|^alpine|^n[ie]va\b|^copenhagen"),  # Niva/Neva and Copenhagen are Alpine models
+    ("Found Space", r"^f(?:o|ou)und ?[- ]?space|^sound ?space|^ground ?space"),
+    ("Clearlight", r"^clear ?light"),
+    ("Sunlighten", r"^sun ?li(?:gh)?ten|^sunlight$"),
+    ("Kiva Wellness", r"^k(?:i|ei)va|^kevo$"),
+    ("Nook Saunas", r"^nook|^nuuk"),
+    ("SDS", r"^sds\b"),
+    ("Odin Ice Baths", r"^od[ie]n"),
+    ("Nordhaus", r"^nord ?ha?us|^nord house"),
+    ("Nova Saunas", r"^nova(?: saunas?)?$"),
+    ("PlusLife", r"plus ?life|^life ?plus"),
+    ("Rejuvenix", r"^(?:re)?juvenix"),
+    ("Luxo Living", r"^luxo"),
+    ("Vital Plus", r"^vital"),
+    ("Primal Ice", r"^primal"),
+    ("iHealth", r"^i ?health"),
+    ("Heavenly Saunas", r"^heavenly"),
+    ("SunStream", r"^sun ?stream"),
+    ("Vicara", r"^vic(?:a)?ra|^vikara"),
+    ("iCool", r"^i ?cool"),
+    ("Jacuzzi", r"^jacuzzi"),
+    ("Innalight", r"^in(?:na|no|ner) ?light"),
+    ("Alibaba & online marketplaces", r"^alibaba|^temu|^amazon|^ebay|marketplace"),
+    ("Unnamed competitor", r"another (?:company|brand|supplier)|unnamed|competit|other (?:\w+ )?(?:brands?|companies|suppliers|providers|vendors|options|saunas|mobs)|"
+                           r"various|unspecified|^local (?:supplier|company)|^different|^multiple|^comparing|generic|^not |^some other|custom|^(?:brand|company|supplier) in\b"),
+]
+_COMPETITOR_RX = [(name, re.compile(p, re.I)) for name, p in COMPETITOR_ALIASES]
+# Revel itself, its own models and suppliers, and words that aren't brands.
+_NOT_COMPETITORS = re.compile(
+    r"^(?:revel|rebel|aura|eclipse|e?den|aden|eden ?view|luna|lunar|cora|kora|solaris|nordic(?: wave)?|glacier|"
+    r"verta|verda|virta|virtra|loom|aurora|tampere|xenio|harvia|javier|winnings?|gym|fitness|n/?a|none|sauna|saunas|"
+    r"ice bath|infrared vs traditional|steam saunas|cell phone saunas|models?|brands?|options?|others?|other|heaters?|newer|"
+    r"healthy|cedar|stone|orange|masseuse|newbie|barbecue company)$", re.I)
+
+
+def competitors(named):
+    """Canonical competitor names from the AI's competitors_mentioned note.
+
+    The consideration-set note is left out on purpose: it mixes in Revel's own
+    models (Nova is both a Revel model and another brand) and loose descriptions.
+    """
+    found = []
+    for raw in re.split(r"[,;/&]| and | or |\(|\)", named or ""):
+        name = re.sub(r"^(?:a|an|the) ", "", re.sub(r"\s+", " ", raw).strip(" .'\"-").lower())
+        if len(name) < 3 or _NOT_COMPETITORS.match(name) or name.startswith(("revel", "rebel")):
+            continue
+        label = next((n for n, rx in _COMPETITOR_RX if rx.search(name)), None)
+        if label is None:
+            if len(name) > 28 or len(name.split()) > 3 or re.search(r"\d|'|\btypo\b", name):
+                continue  # a description or a garbled fragment, not a brand name
+            label = re.sub(r"\b(\w)", lambda m: m.group(1).upper(), name)
+        if label not in found:
+            found.append(label)
+    return found
+
+
+_MODEL_BRAND_WORDS = re.compile(
+    r"\b(?:alpine|alapine|spas?|found ?space|sound ?space|clear ?light|sunlighten|kiva|wellness|nook|nordhaus|nord house|"
+    r"luxo|living|vicara|odin|sds|pluslife|plus life)\b", re.I)
+
+
+def competitor_models(text):
+    """Short model names from the AI's competitor_models_specific note."""
+    models = []
+    for raw in re.split(r"[,;/]| and ", text or ""):
+        name = _MODEL_BRAND_WORDS.sub("", re.sub(r"\bjavier\b", "Harvia", raw, flags=re.I))
+        name = re.sub(r"\s+", " ", name).strip(" .'\"-")
+        low = name.lower()
+        if (len(name) < 2 or len(name) > 34 or low.startswith(("a ", "an ", "the ")) or "similar to" in low
+                or low in ("sauna", "saunas", "barrel sauna", "ice bath", "baths", "ones", "infrared", "outdoor", "indoor", "hybrid", "traditional")):
+            continue
+        name = name[0].upper() + name[1:]
+        if name not in models:
+            models.append(name)
+    return models
+
+
+# --- Where Revel wins and loses against other brands ----------------------------
+
+REVEL_EDGE_THEMES = [
+    ("Price, sale or discount", _rx(r"pric", r"cheap", r"discount", r"\bsale\b", r"\bdeal", r"value", r"afford", r"special", r"promo", r"cost")),
+    ("In stock or available sooner", _rx(r"availab", r"in stock", r"\bstock", r"sooner", r"faster delivery", r"before christmas", r"ready to ship", r"lead time")),
+    ("Delivery & local warehouses", _rx(r"deliver", r"shipping", r"freight", r"warehouse", r"depot", r"\blocal\b", r"room of choice")),
+    ("Build quality & materials", _rx(r"quality", r"timber", r"cedar", r"\bwood", r"\bbuild\b", r"built", r"durab", r"craftsman", r"solid", r"thick", r"premium")),
+    ("Features & technology", _rx(r"wi-?fi", r"\bapp\b", r"full[- ]spectrum", r"\bemf", r"heater", r"heat", r"chromo", r"control", r"feature", r"hybrid", r"outdoor", r"panel", r"design", r"look", r"size", r"model")),
+    ("Showroom, service & installation", _rx(r"showroom", r"service", r"support", r"install", r"advice", r"australian", r"aussie", r"team", r"knowledge", r"warrant", r"communicat")),
+    ("Payment & finance options", _rx(r"payment", r"financ", r"afterpay", r"\bzip\b", r"deposit", r"instal?ments", r"lay-?by")),
+]
+REVEL_GAP_THEMES = [
+    ("Higher price", _rx(r"pric", r"expensive", r"budget", r"\bdear", r"premium", r"\bcost(?!.*(?:freight|shipping|deliver))", r"afford")),
+    ("Stock & lead times", _rx(r"stock", r"availab", r"sold out", r"lead time", r"\bwait", r"delay", r"pre-?order", r"backorder", r"eta\b")),
+    ("No showroom nearby", _rx(r"showroom", r"see (?:it )?in person", r"display")),
+    ("Freight & delivery cost", _rx(r"freight", r"shipping", r"deliver", r"transport", r"postcode")),
+    ("Electrical & installation needs", _rx(r"electric", r"\bamps?\b", r"\bpower", r"install", r"wiring", r"circuit")),
+    ("Missing features, sizes or options", _rx(r"lack of (?!showroom)", r"limited (?:size|option|model|range|colour|color)", r"no (?:outdoor|wi-?fi|hybrid|larger|smaller|option|bench|glass|light)",
+                                                r"does(?:n't| not) (?:have|offer|come)", r"size options?", r"older model", r"not (?:available|offered) in", r"only (?:comes|available)", r"feature")),
+    ("Materials & build", _rx(r"timber", r"\bwood", r"material", r"quality", r"\bemf", r"\bbuild\b", r"australian", r"made in", r"china")),
+]
+
+
+def themes(text, theme_list):
+    text = text or ""
+    if not text.strip() or text.strip().lower() in ("none", "n/a", "na"):
+        return []
+    return [label for label, rx in theme_list if rx.search(text)]

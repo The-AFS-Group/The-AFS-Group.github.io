@@ -525,6 +525,16 @@ td.wrapcell { white-space: normal; min-width: 180px; }
   const AGENTS = D.agents, OWNERS = D.owners, CATS = D.productCategories;
   const ISSUES = D.issues, SOLS = D.solutions, OUT = D.outcomes;
   const OUT_KEYS = ["R", "F", "H", "U"];
+  // Approach labels as things the rep did, for the written findings.
+  const SOL_VERB = {
+    "Troubleshot on the call": "troubleshot on the call", "Explained how it works": "explained how it works",
+    "Replacement part or unit": "sent a replacement part or unit", "Technician or electrician": "booked a technician or electrician",
+    "Asked for photos or video": "asked for photos or video", "Warranty claim raised": "raised a warranty claim",
+    "Delivery rebooked or chased": "rebooked or chased the delivery", "Refund, credit or return": "arranged a refund, credit or return",
+    "Info or instructions sent": "sent info or instructions", "Callback or follow-up promised": "promised a callback or follow-up",
+    "Passed to a colleague": "passed the customer to a colleague",
+  };
+  const did = (label) => SOL_VERB[label] || label.toLowerCase();
   const OUT_SHORT = { R: "Fixed or answered", F: "Next step booked", H: "Handed over", U: "No clear resolution" };
   const OUT_VAR = { R: "--oc-r", F: "--oc-f", H: "--oc-h", U: "--oc-u" };
   const MOOD = { "-1": "Upset", "0": "Neutral", "1": "Positive" };
@@ -1060,7 +1070,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       m.n ? `${pct(m.openUpset)} of callers opened upset. Of those, ${B(pct(m.wonOver))} ended positive and ${pct(m.calmed)} ended no longer upset. Across all calls, ${pct(m.endPos)} ended positive and ${pct(m.endUpset)} ended upset.` : "",
       angriest ? `Callers are most often upset at the start about ${B(angriest.i)} (${pct(angriest.open)} of those calls).` : "",
       bestWon && worstWon && bestWon.i !== worstWon.i ? `Upset callers are won over most on ${B(bestWon.i)} (${pct(bestWon.won)}) and least on ${B(worstWon.i)} (${pct(worstWon.won)}).` : "",
-      won.length >= 5 && lift.length && lift[0].w - lift[0].l > 0.03 ? `When an upset caller was won over, the rep more often ${B(lift[0].s.toLowerCase())} (${pct(lift[0].w)} of won-over calls vs ${pct(lift[0].l)} of the rest)${lift[1] && lift[1].w - lift[1].l > 0.03 ? ` or ${esc(lift[1].s.toLowerCase())} (${pct(lift[1].w)} vs ${pct(lift[1].l)})` : ""}.` : "",
+      won.length >= 5 && lift.length && lift[0].w - lift[0].l > 0.03 ? `When an upset caller was won over, the rep more often ${B(did(lift[0].s))} (${pct(lift[0].w)} of won-over calls vs ${pct(lift[0].l)} of the rest)${lift[1] && lift[1].w - lift[1].l > 0.03 ? ` or ${esc(did(lift[1].s))} (${pct(lift[1].w)} vs ${pct(lift[1].l)})` : ""}.` : "",
     ]);
   }
 
@@ -1091,9 +1101,9 @@ td.wrapcell { white-space: normal; min-width: 180px; }
     const topPos = ranked.slice().sort((a, b) => b.endPos - a.endPos)[0], topWon = ranked.filter((r) => r.upN >= 15).sort((a, b) => b.won - a.won)[0];
     const handedRow = rows.find((r) => r.s === "Passed to a colleague"), troubleshoot = rows.find((r) => r.s === "Troubleshot on the call");
     findings($("sumSol"), "What this shows", [
-      topPos ? `Customers most often ended positive when the rep ${B(topPos.s.toLowerCase())} (${pct(topPos.endPos)} vs ${pct(base.endPos)} overall).` : "",
+      topPos ? `Customers most often ended positive when the rep ${B(did(topPos.s))} (${pct(topPos.endPos)} vs ${pct(base.endPos)} overall).` : "",
       best.length ? `Best approach by issue: ${best.slice(0, 3).map((b) => `${esc(b.i)}: ${B(b.o.s.toLowerCase())} (${pct(b.o.h)} ended positive vs ${pct(b.avg)})`).join("; ")}.` : "",
-      topWon && topWon.won > base.won ? `For upset callers, ${B(topWon.s.toLowerCase())} won them over most often (${pct(topWon.won)} vs ${pct(base.won)}).` : "",
+      topWon && topWon.won > base.won ? `Upset callers were won over most often when the rep ${B(did(topWon.s))} (${pct(topWon.won)} vs ${pct(base.won)}).` : "",
       troubleshoot ? `Reps troubleshot on the call in only ${pct(troubleshoot.n / cl.length)} of service calls. Turning the steps that work into scripts and guides is the quickest way to lift fixes on the call.` : "",
       handedRow ? `${pct(handedRow.n / cl.length)} of calls passed the customer to a colleague, and those ended fixed or booked ${pct(handedRow.handled)} of the time.` : "",
       `Median time to a first solution or next step: ${B(mins(base.tts))} into the call.`,

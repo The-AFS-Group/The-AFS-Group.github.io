@@ -51,6 +51,18 @@ h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
 .edit-on [data-editable]{cursor:text;outline:1px dashed rgba(242,100,34,.45);outline-offset:2px;border-radius:2px}
 .edit-on [data-editable]:hover{outline-color:#f26422;background:rgba(242,100,34,.07)}
 .edit-on [data-editable]:focus{outline:2px solid #f26422;background:rgba(242,100,34,.10)}
+/* PDF export: every slide becomes one 16:9 page when printing (Save as PDF) */
+#print-deck{display:none}
+@media print{
+  @page{size:1600px 900px;margin:0}
+  html,body{margin:0!important;padding:0!important;overflow:visible!important;height:auto!important}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .screen-only{display:none!important}
+  #print-deck{display:block}
+  #print-deck *{animation:none!important}
+  .print-page{width:1600px;height:900px;position:relative;overflow:hidden;break-after:page;page-break-after:always}
+  .print-page:last-child{break-after:auto;page-break-after:auto}
+}
 </style>
 </head>
 <body>
@@ -123,6 +135,7 @@ const Pkg    = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7
 const Target = p => <I {...p} d={["M12 22a10 10 0 100-20 10 10 0 000 20z","M12 18a6 6 0 100-12 6 6 0 000 12z","M12 14a2 2 0 100-4 2 2 0 000 4z"]} />;
 const TrendUp= p => <I {...p} d={["M23 6l-9.5 9.5-5-5L1 18","M17 6h6v6"]} />;
 const Pencil = p => <I {...p} d={["M12 20h9","M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"]} />;
+const Download = p => <I {...p} d={["M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4","M7 10l5 5 5-5","M12 15V3"]} />;
 const Warn   = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
 
 /* ===================== BRAND ASSETS ===================== */
@@ -288,7 +301,7 @@ const TitleSlide = ({ n, t }) => (
       <h1 className="font-display text-8xl uppercase leading-[0.95] text-white max-w-5xl">Q1 FY27 Results</h1>
       <p className="text-[20px] font-body text-white/70 mt-8 max-w-3xl leading-snug">July to September 2026: financials, sales by channel and strategic initiatives, plus the quarter ahead and October to date.</p>
       <div className="absolute bottom-12 left-24 right-24 flex items-center justify-between">
-        <img src={LOGO} alt="" className="h-8 w-auto brightness-0 invert" />
+        <span />
         <span className="text-[13px] font-heading tracking-[.3em] uppercase text-white/40">Presented 27 October 2026</span>
       </div>
     </div>
@@ -594,6 +607,8 @@ function App() {
   const fileRef = useRef(null);
   const editsRef = useRef(loadEdits());
   const elsRef = useRef([]);
+  const [printing, setPrinting] = useState(false);
+  const printRef = useRef(null);
   const origRef = useRef([]);
 
   const go = useCallback((dir) => {
@@ -691,6 +706,20 @@ function App() {
       window.alert('"Download deck" only works when the deck is opened from a web address (for example the published site). Use "Download edits" instead, and "Load edits" on another copy.');
     }
   };
+  // Save as PDF: render every slide as its own page, apply saved edits, then open the print dialog.
+  const savePdf = () => { setEditMode(false); setPrinting(true); };
+  useLayoutEffect(() => {
+    if (!printing || !printRef.current) return;
+    [...printRef.current.children].forEach((page, i) => {
+      const els = collectEditable(page);
+      const orig = els.map(e => e.innerHTML);
+      (editsRef.current[i] || []).forEach(({ i: j, from, to }) => { if (els[j] && orig[j] === from) els[j].innerHTML = to; });
+    });
+    const done = () => setPrinting(false);
+    window.addEventListener('afterprint', done, { once: true });
+    const timer = setTimeout(() => window.print(), 600);
+    return () => { clearTimeout(timer); window.removeEventListener('afterprint', done); };
+  }, [printing]);
   const tbtn = 'px-3 py-1.5 rounded-md text-[12px] font-heading font-semibold tracking-wide whitespace-nowrap bg-white/10 hover:bg-brand-accent text-white transition-colors';
 
   const Cur = SLIDES[idx];
@@ -698,11 +727,12 @@ function App() {
   return (
     <ThemeCtx.Provider value={th}>
       {editMode && (
-        <div data-noedit className="fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-brand-black/95 text-white rounded-lg px-3 py-2 shadow-xl">
+        <div data-noedit className="screen-only fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-brand-black/95 text-white rounded-lg px-3 py-2 shadow-xl">
           <Pencil size={14} className="text-brand-accent" />
           <span className="text-[12px] font-body mr-1 whitespace-nowrap">Edit mode · click text to edit · {editCount} change{editCount === 1 ? '' : 's'}</span>
           <button className={tbtn} onClick={resetSlide}>Reset slide</button>
           <button className={tbtn} onClick={resetAll}>Reset all</button>
+          <button className={tbtn} onClick={savePdf}>Download PDF</button>
           <button className={tbtn} onClick={downloadDeck}>Download deck</button>
           <button className={tbtn} onClick={downloadEdits}>Download edits</button>
           <button className={tbtn} onClick={() => fileRef.current && fileRef.current.click()}>Load edits</button>
@@ -710,13 +740,22 @@ function App() {
           <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={loadEditsFile} />
         </div>
       )}
-      <div className="w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
+      {printing && (
+        <div id="print-deck" ref={printRef}>
+          {SLIDES.map((S, i) => <div key={i} className="print-page"><S n={i + 1} t={SLIDES.length} /></div>)}
+        </div>
+      )}
+      <div className="screen-only w-screen h-screen flex items-center justify-center" style={{background: th.bodyBg}}>
         <div ref={stageRef} onInput={recordEdits} onKeyDown={onKeyDown} onPaste={onPaste} style={{width: 1600, height: 900, transform: `scale(${zoom})`, transformOrigin: 'center'}} className="relative shadow-2xl">
           <div key={key} className="w-full h-full slide-enter">
             <Cur n={idx + 1} t={SLIDES.length} />
           </div>
         </div>
         <div data-noedit className="fixed bottom-6 right-6 flex items-center gap-2 z-50">
+          <button onClick={savePdf} title="Download as PDF (opens print dialog: choose Save as PDF)"
+            className={`h-10 px-3 rounded-lg border flex items-center gap-2 text-[12px] font-heading font-bold tracking-[.15em] uppercase transition-colors ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+            <Download size={16} />PDF
+          </button>
           <button onClick={() => setEditMode(v => !v)} title="Click-to-edit mode (E)"
             className={`w-10 h-10 rounded-lg border flex items-center justify-center transition-colors ${editMode ? 'bg-brand-accent border-brand-accent text-white' : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
             <Pencil size={18} />

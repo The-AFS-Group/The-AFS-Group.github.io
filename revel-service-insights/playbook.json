@@ -1,0 +1,3475 @@
+{
+ "generated": "2026-10-30 16:40",
+ "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
+ "issues": [
+  {
+   "issue": "Delivery booking & logistics",
+   "calls": 1094,
+   "tickets": 501,
+   "products": [
+    [
+     "Traditional sauna",
+     277
+    ],
+    [
+     "Ice bath & chiller",
+     232
+    ],
+    [
+     "Infrared sauna",
+     149
+    ]
+   ],
+   "models": [
+    [
+     "Nova",
+     34
+    ],
+    [
+     "Aura",
+     29
+    ],
+    [
+     "Luna",
+     28
+    ],
+    [
+     "Glacier",
+     19
+    ],
+    [
+     "Nordic Wave",
+     18
+    ],
+    [
+     "Eclipse",
+     16
+    ]
+   ],
+   "components": [
+    [
+     "Heater",
+     63
+    ],
+    [
+     "Chiller unit",
+     61
+    ],
+    [
+     "Door & glass",
+     57
+    ],
+    [
+     "Lights",
+     30
+    ],
+    [
+     "Timber & seals",
+     28
+    ],
+    [
+     "Hoses & fittings",
+     28
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.203,
+    "F": 0.533,
+    "H": 0.044,
+    "U": 0.22
+   },
+   "upsetCallers": 142,
+   "upsetTurnedAround": 0.845,
+   "solutions": [
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 53,
+     "resolvedOnCall": 0.132,
+     "resolvedOrBooked": 0.774,
+     "upsetTurnedAround": 0.9,
+     "endedPositive": 0.432
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 183,
+     "resolvedOnCall": 0.027,
+     "resolvedOrBooked": 0.94,
+     "upsetTurnedAround": 0.846,
+     "endedPositive": 0.423
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 30,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.867,
+     "upsetTurnedAround": 0.833,
+     "endedPositive": 0.414
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 73,
+     "resolvedOnCall": 0.164,
+     "resolvedOrBooked": 0.781,
+     "upsetTurnedAround": 0.65,
+     "endedPositive": 0.412
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 95,
+     "resolvedOnCall": 0.074,
+     "resolvedOrBooked": 0.453,
+     "upsetTurnedAround": 0.867,
+     "endedPositive": 0.407
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 128,
+     "resolvedOnCall": 0.156,
+     "resolvedOrBooked": 0.797,
+     "upsetTurnedAround": 0.867,
+     "endedPositive": 0.396
+    },
+    {
+     "solution": "Delivery rebooked or chased",
+     "calls": 79,
+     "resolvedOnCall": 0.215,
+     "resolvedOrBooked": 0.848,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.367
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 291,
+     "resolvedOnCall": 0.113,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 0.818,
+     "endedPositive": 0.357
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 93,
+     "resolvedOnCall": 0.258,
+     "resolvedOrBooked": 0.817,
+     "upsetTurnedAround": 0.875,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 15,
+     "resolvedOnCall": 0.067,
+     "resolvedOrBooked": 0.933,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.2
+    }
+   ],
+   "exampleFixes": [
+    "Cool. No worries at all. Awesome. I'll just confirm again what we've got on here. Just make sure you're all good. We don't need any tweaks. So we've got the four person barrel sauna. It's the barrel only, and then we've…",
+    "Yeah. That's what Sam said. Our technician here said it's very possible because he has found that yeah. It just pulls the the fan and the pump will just stop working after a while. If it's in the single mode, but you're…",
+    "Yeah. Okay. So I apologize for any miscommunication there. So the installation for the sauna is just the technician coming to the site to do that. In terms of any electrical requirements that are needed, that would then…",
+    "…when I bought, the laptop before. And, yeah, I can feel the pressure on you as well. So no worries. I'm I'll make sure that I I actually go ahead and then keep an eye on it. Even yesterday, I always keep an eye on it.…",
+    "Awesome. I and, also, I already coordinated the the technician who will gonna install the sauna. I'm just waiting for the respond, and I'll I will advise them to get in touch with you regarding with the timings for the…",
+    "…photo of the driveway across I mean, axe delivery the driver access before confirming delivery. Just want to make sure that everything is going to be okay this time. Is it okay for you to send me the email to send the…"
+   ],
+   "howCustomersDescribeIt": [
+    "Yeah. Okay. That's cool. And in terms of delivery, of costs and and sort of time frames, if I was gonna order one, say, this week, I mean, that's late. Just wondering what the, yeah, what the time…",
+    "Good. Good. Good. I've got a sauna getting delivered this morning. I've just pulled up at home. My wife just stopped out. They rang me about seven minutes ago. I've just rang them back, and they've…",
+    "No. I just wanted to see when it's gonna be delivered.",
+    "yeah. Can we request that it's, a morning delivery? Or is that possible?",
+    "Hey. You've been trying to contact me about a two person service. Jeremy give you a call. Sorry, mate. I've been traveling nonstop for work."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 58,
+     "resolvedOnCall": 0.276,
+     "resolvedOrBooked": 0.931
+    },
+    {
+     "name": "Indigo Carthew",
+     "calls": 92,
+     "resolvedOnCall": 0.109,
+     "resolvedOrBooked": 0.87
+    },
+    {
+     "name": "Gabriel Pinciara",
+     "calls": 23,
+     "resolvedOnCall": 0.348,
+     "resolvedOrBooked": 0.87
+    }
+   ],
+   "ticketMedianDaysToClose": 0.2,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 0.0,
+     "closed": 253
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 0.2,
+     "closed": 62
+    },
+    {
+     "name": "Customer Support",
+     "medianDaysToClose": 0.6,
+     "closed": 7
+    }
+   ]
+  },
+  {
+   "issue": "Assembly & installation",
+   "calls": 553,
+   "tickets": 226,
+   "products": [
+    [
+     "Traditional sauna",
+     296
+    ],
+    [
+     "Infrared sauna",
+     166
+    ],
+    [
+     "Ice bath & chiller",
+     159
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     44
+    ],
+    [
+     "Eden",
+     35
+    ],
+    [
+     "Nordic Wave",
+     29
+    ],
+    [
+     "Nova",
+     23
+    ],
+    [
+     "Edenview",
+     21
+    ],
+    [
+     "Eclipse",
+     21
+    ]
+   ],
+   "components": [
+    [
+     "Heater",
+     111
+    ],
+    [
+     "Door & glass",
+     74
+    ],
+    [
+     "Chiller unit",
+     66
+    ],
+    [
+     "Timber & seals",
+     56
+    ],
+    [
+     "Hoses & fittings",
+     48
+    ],
+    [
+     "Lights",
+     48
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.221,
+    "F": 0.535,
+    "H": 0.067,
+    "U": 0.177
+   },
+   "upsetCallers": 80,
+   "upsetTurnedAround": 0.825,
+   "solutions": [
+    {
+     "solution": "Delivery rebooked or chased",
+     "calls": 5,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.6
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 11,
+     "resolvedOnCall": 0.091,
+     "resolvedOrBooked": 0.727,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.545
+    },
+    {
+     "solution": "Warranty claim raised",
+     "calls": 6,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.667,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.5
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 27,
+     "resolvedOnCall": 0.037,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.481
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 81,
+     "resolvedOnCall": 0.247,
+     "resolvedOrBooked": 0.877,
+     "upsetTurnedAround": 0.842,
+     "endedPositive": 0.432
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 81,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.765,
+     "upsetTurnedAround": 0.556,
+     "endedPositive": 0.385
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 32,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.844,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.375
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 35,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.771,
+     "upsetTurnedAround": 0.857,
+     "endedPositive": 0.371
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 141,
+     "resolvedOnCall": 0.064,
+     "resolvedOrBooked": 0.929,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.367
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 152,
+     "resolvedOnCall": 0.105,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 0.76,
+     "endedPositive": 0.291
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 60,
+     "resolvedOnCall": 0.1,
+     "resolvedOrBooked": 0.35,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.283
+    }
+   ],
+   "exampleFixes": [
+    "It's supposed to be Kurt. It's supposed to be it comes with a manual on the box on it. But and sometimes there's a QR code, but, you know, it sometimes it's actually not working. So what I'm going to do right now is to…",
+    "…we yeah. Oiling, some some of our sauna's being oiled, though we have part of our service when a tech when a technician has been sent out. They all do oiling as well, but for make for further information, I don't have…",
+    "…me? Okay. Thank you. 2913. So this is in ECT. Right? In Canberra? Yeah. Okay. No worries. Yo. We do have our technician from Kit Set who can do the the the install for you. So once you process an order or request for…",
+    "…everything as quickly as I can. But my my challenge, which I'm not getting any real movement on, is getting a tech out there for tomorrow. So because of the notice, it's obviously just I'm trying to, yeah, draw blood…",
+    "Yeah. You can leave it on. Well, you have to leave it on rather. And then when you wanna clean out that internal micron filter, you'll just unscrew that, and it's attached to the filter. So you just pull that out, and…",
+    "…says I've got an email confirmation from Kitset saying it's been booked in with Mark, one of the double a WA technicians who contacts you within two days blah blah blah. So, yeah, it should be it should just be Mark.…"
+   ],
+   "howCustomersDescribeIt": [
+    "…with the clips at the back, but which I so I I was trying to open close what got a a very small bracket and screwed that inside to just to make sure it's secure. So everything is fine from that…",
+    "…that. And then and then I have to ring that Steve guy about the electricity, don't I? And then the installation.",
+    "…She she thought that the other one we had to recover from someone else might have already been put together and then pulled apart, and we didn't really wanna I know that's probably not the case,…",
+    "I Okay. And then what I'm looking at online, just curious. Right? $3.09 9, so it's quite a $4. Is is does does that include there's no installation with that, is there?",
+    "Good, mate. I got some questions on a Arctic solo ice bath. Looking at installation one for my son's son's gym, and I do all that sort of work for him. What he's given me so far is not very much.…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Matthew Taylor",
+     "calls": 52,
+     "resolvedOnCall": 0.192,
+     "resolvedOrBooked": 0.904
+    },
+    {
+     "name": "Anne Melegrito",
+     "calls": 11,
+     "resolvedOnCall": 0.182,
+     "resolvedOrBooked": 0.818
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 59,
+     "resolvedOnCall": 0.22,
+     "resolvedOrBooked": 0.814
+    }
+   ],
+   "ticketMedianDaysToClose": 2.0,
+   "fastestTicketOwners": [
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 0.7,
+     "closed": 69
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 1.0,
+     "closed": 7
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 1.3,
+     "closed": 57
+    }
+   ]
+  },
+  {
+   "issue": "Payments, invoices & finance",
+   "calls": 303,
+   "tickets": 165,
+   "products": [
+    [
+     "Traditional sauna",
+     70
+    ],
+    [
+     "Ice bath & chiller",
+     60
+    ],
+    [
+     "Infrared sauna",
+     38
+    ]
+   ],
+   "models": [
+    [
+     "Luna",
+     13
+    ],
+    [
+     "Solaris",
+     9
+    ],
+    [
+     "Glacier",
+     8
+    ],
+    [
+     "Verta",
+     6
+    ],
+    [
+     "Aura",
+     5
+    ],
+    [
+     "Eden",
+     5
+    ]
+   ],
+   "components": [
+    [
+     "Heater",
+     19
+    ],
+    [
+     "Chiller unit",
+     13
+    ],
+    [
+     "Sauna stones",
+     8
+    ],
+    [
+     "Bench & backrest",
+     7
+    ],
+    [
+     "App, Wi-Fi & remote",
+     7
+    ],
+    [
+     "Timber & seals",
+     6
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.201,
+    "F": 0.624,
+    "H": 0.033,
+    "U": 0.142
+   },
+   "upsetCallers": 41,
+   "upsetTurnedAround": 0.927,
+   "solutions": [
+    {
+     "solution": "Delivery rebooked or chased",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.8
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 58,
+     "resolvedOnCall": 0.207,
+     "resolvedOrBooked": 0.862,
+     "upsetTurnedAround": 0.923,
+     "endedPositive": 0.483
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 21,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.476,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.476
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 7,
+     "resolvedOnCall": 0.286,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.429
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 22,
+     "resolvedOnCall": 0.091,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.364
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 101,
+     "resolvedOnCall": 0.059,
+     "resolvedOrBooked": 0.96,
+     "upsetTurnedAround": 0.917,
+     "endedPositive": 0.356
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 31,
+     "resolvedOnCall": 0.194,
+     "resolvedOrBooked": 0.839,
+     "upsetTurnedAround": 0.875,
+     "endedPositive": 0.355
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 12,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.667,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 6,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.333
+    }
+   ],
+   "exampleFixes": [
+    "You can you can do just, a bank transfer like that. Just make sure that you use the the invoice number as the as the as the reference here so we can we can track it. What was the what was the invoice number that you're…",
+    "…like you won't be hassled being like, hey. Like, pay it now and ship it out. It's in stock, so we will just hold it there. Did you want me to send this this deposit invoice across, or did you want me to or are you…",
+    "…it might be something he will need to talk to you directly and organize himself, the contractor, just to make sure that you got the correct one and you guys talking the same about the same thing. Because when…",
+    "Maybe a holiday is a good thing to just reset and see how you go, but I I'm terribly sorry to hear that.",
+    "…the the refund process. So it's something that, my manager will need to sign off. So, yeah, today is Friday. It should take a few days for him just to to finish the process. And after that, you're gonna receive an…",
+    "4537. That was probably me, to be honest. Let's try that again. So [number], [number]. And then 062027, and then 702. Yeah. Yeah. It's saying there was an issue processing the payment. It's not letting me pull it…"
+   ],
+   "howCustomersDescribeIt": [
+    "…need today to confirm that. So yes. But once I confirm that, yeah, I'll go ahead and pay the the invoice and then sign up with the ZIP for the the remainder.",
+    "Hi. I'm just calling to let you know we've made full payment for our saunas, ice bath and sauna. I was just calling to book in a delivery date with you.",
+    "…actually work professionally. You realize yeah. So the guy and I asked, are are you going to be paid today? Because he says I'm going home. And I said, are you going to be paid? So, yes, I'm…",
+    "…what he was saying was that I you only have to pay a deposit, and then when they're ready, you pay the rest. Is that correct?",
+    "Hello? Hi, mate. May speak to Jonathan? Hi. It's [name]. Jeremy, I'm back. Now I definitely made the payment, and I got a confirmation email as well."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 44,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.932
+    },
+    {
+     "name": "Indigo Carthew",
+     "calls": 43,
+     "resolvedOnCall": 0.326,
+     "resolvedOrBooked": 0.93
+    },
+    {
+     "name": "Alice Ternen",
+     "calls": 14,
+     "resolvedOnCall": 0.286,
+     "resolvedOrBooked": 0.929
+    }
+   ],
+   "ticketMedianDaysToClose": 1.1,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 0.9,
+     "closed": 58
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 1.4,
+     "closed": 30
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 2.8,
+     "closed": 31
+    }
+   ]
+  },
+  {
+   "issue": "Other / unclear",
+   "calls": 47,
+   "tickets": 400,
+   "products": [
+    [
+     "Ice bath & chiller",
+     45
+    ],
+    [
+     "Infrared sauna",
+     21
+    ],
+    [
+     "Traditional sauna",
+     16
+    ]
+   ],
+   "models": [
+    [
+     "Nova",
+     6
+    ],
+    [
+     "Aura",
+     5
+    ],
+    [
+     "Nordic Wave",
+     5
+    ],
+    [
+     "Glacier",
+     3
+    ],
+    [
+     "Eden",
+     2
+    ],
+    [
+     "Freeze",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Hoses & fittings",
+     3
+    ],
+    [
+     "Power cable & plug",
+     1
+    ],
+    [
+     "Pump & flow",
+     1
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.277,
+    "F": 0.34,
+    "H": 0.106,
+    "U": 0.277
+   },
+   "upsetCallers": 3,
+   "upsetTurnedAround": 1.0,
+   "solutions": [
+    {
+     "solution": "Passed to a colleague",
+     "calls": 7,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.286,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.571
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 18,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.667,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.444
+    }
+   ],
+   "exampleFixes": [
+    "I am in the process of arranging a technician to come to site and looking into what else we can do for you. This is purely just a courtesy call because I see that you tried to call us, but I'm just confirming…"
+   ],
+   "howCustomersDescribeIt": [],
+   "bestOnCalls": [
+    {
+     "name": "Alice Ternen",
+     "calls": 11,
+     "resolvedOnCall": 0.364,
+     "resolvedOrBooked": 0.727
+    }
+   ],
+   "ticketMedianDaysToClose": 2.6,
+   "fastestTicketOwners": [
+    {
+     "name": "Unassigned",
+     "medianDaysToClose": 0.1,
+     "closed": 7
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 0.9,
+     "closed": 111
+    },
+    {
+     "name": "Customer Support",
+     "medianDaysToClose": 1.0,
+     "closed": 8
+    }
+   ]
+  },
+  {
+   "issue": "Faulty unit / warranty (general)",
+   "calls": 309,
+   "tickets": 137,
+   "products": [
+    [
+     "Ice bath & chiller",
+     190
+    ],
+    [
+     "Traditional sauna",
+     95
+    ],
+    [
+     "Infrared sauna",
+     56
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     12
+    ],
+    [
+     "Glacier",
+     11
+    ],
+    [
+     "Eclipse",
+     9
+    ],
+    [
+     "Nordic Wave",
+     8
+    ],
+    [
+     "Luna",
+     8
+    ],
+    [
+     "Tampere",
+     7
+    ]
+   ],
+   "components": [
+    [
+     "Chiller unit",
+     81
+    ],
+    [
+     "Lights",
+     57
+    ],
+    [
+     "Pump & flow",
+     46
+    ],
+    [
+     "Filter",
+     39
+    ],
+    [
+     "Heater",
+     39
+    ],
+    [
+     "Timber & seals",
+     33
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.126,
+    "F": 0.625,
+    "H": 0.097,
+    "U": 0.152
+   },
+   "upsetCallers": 99,
+   "upsetTurnedAround": 0.636,
+   "solutions": [
+    {
+     "solution": "Replacement part or unit",
+     "calls": 62,
+     "resolvedOnCall": 0.048,
+     "resolvedOrBooked": 0.855,
+     "upsetTurnedAround": 0.609,
+     "endedPositive": 0.339
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 72,
+     "resolvedOnCall": 0.111,
+     "resolvedOrBooked": 0.847,
+     "upsetTurnedAround": 0.727,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 63,
+     "resolvedOnCall": 0.016,
+     "resolvedOrBooked": 0.873,
+     "upsetTurnedAround": 0.6,
+     "endedPositive": 0.317
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 42,
+     "resolvedOnCall": 0.048,
+     "resolvedOrBooked": 0.738,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.31
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 133,
+     "resolvedOnCall": 0.075,
+     "resolvedOrBooked": 0.707,
+     "upsetTurnedAround": 0.591,
+     "endedPositive": 0.293
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 61,
+     "resolvedOnCall": 0.049,
+     "resolvedOrBooked": 0.41,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.279
+    },
+    {
+     "solution": "Warranty claim raised",
+     "calls": 55,
+     "resolvedOnCall": 0.109,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 0.65,
+     "endedPositive": 0.273
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 62,
+     "resolvedOnCall": 0.032,
+     "resolvedOrBooked": 0.871,
+     "upsetTurnedAround": 0.581,
+     "endedPositive": 0.246
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 42,
+     "resolvedOnCall": 0.095,
+     "resolvedOrBooked": 0.857,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.238
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 18,
+     "resolvedOnCall": 0.111,
+     "resolvedOrBooked": 0.833,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.222
+    }
+   ],
+   "exampleFixes": [
+    "…on a pallet. We just ask if you can keep that pallet because once your chiller comes back from Sydney and is repaired, we'll get that x demo one picked up. It would just need to go back on the pallet for DFE to be able…",
+    "…work week looks like just because, obviously, if it is hard wired, that does that does limit, obviously, the repair option to send it back. So I have put the request in I have put the request in to do it on-site for…",
+    "Definitely repair it because then what we'll do if the customer's electrician has originally saw... Installed it incorrectly, and then Jared fixes it, we'll obviously cover the cost, and then we can choose to unrefer…",
+    "…also photos and videos help us give a really good idea if it's something that's just minor and that can be repaired without getting a technician out. So we just like to distinguish between the two only because for…",
+    "Okay. And it's for a Rebel Glacier Solo Seeder Ice Bath along with the Rebel Glacier replacement filter and also Rebel chiller with 0.8 horsepower. Alrighty. What I'll do right now, sir, is I'll be endorsing your…",
+    "…have a way to get it get out of the element correctly. So, again, Javier have already rejected it as a warranty claim from their side. So, yeah, like, un unfortunately, we wouldn't be able to cover it under…"
+   ],
+   "howCustomersDescribeIt": [
+    "…it and get out, it goes to e two, like, error code and just won't work. I have to reset it, and it doesn't work for a while.",
+    "you said I don't need to replace them. It should just be they can come out and fix it and get it going probably. Is that are you saying a warranty isn't get a new one?",
+    "…got a Revel Nordic Wave two person hybrid sauna. I ordered it in May, and my electrician it just stopped working. Suddenly, my electrician has just come around. He has conducted all the testing.…",
+    "…It was all dry. And come home, it's been on for three or four days now, but the ozone's not working. So the basically, what happens is that I've got it set for one minute, because I can…",
+    "So the barrel form at the back, the heating the elements are not working. So I've just had electrician take the whole thing apart and check it, and it's the element component."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Gemma Johnston",
+     "calls": 47,
+     "resolvedOnCall": 0.213,
+     "resolvedOrBooked": 0.872
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 39,
+     "resolvedOnCall": 0.103,
+     "resolvedOrBooked": 0.846
+    },
+    {
+     "name": "Gabriel Pinciara",
+     "calls": 12,
+     "resolvedOnCall": 0.083,
+     "resolvedOrBooked": 0.833
+    }
+   ],
+   "ticketMedianDaysToClose": 7.0,
+   "fastestTicketOwners": [
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 6.5,
+     "closed": 46
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 7.0,
+     "closed": 37
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 12.6,
+     "closed": 28
+    }
+   ]
+  },
+  {
+   "issue": "Ice bath chiller & cooling",
+   "calls": 145,
+   "tickets": 210,
+   "products": [
+    [
+     "Ice bath & chiller",
+     333
+    ],
+    [
+     "Traditional sauna",
+     19
+    ],
+    [
+     "Infrared sauna",
+     5
+    ]
+   ],
+   "models": [
+    [
+     "Glacier",
+     26
+    ],
+    [
+     "Arctic",
+     7
+    ],
+    [
+     "Freeze",
+     3
+    ],
+    [
+     "Eden",
+     2
+    ],
+    [
+     "Aura",
+     1
+    ],
+    [
+     "Nordic Wave",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Chiller unit",
+     297
+    ],
+    [
+     "Pump & flow",
+     118
+    ],
+    [
+     "Filter",
+     88
+    ],
+    [
+     "Hoses & fittings",
+     61
+    ],
+    [
+     "Compressor",
+     20
+    ],
+    [
+     "Cover & lid",
+     16
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.214,
+    "F": 0.455,
+    "H": 0.069,
+    "U": 0.262
+   },
+   "upsetCallers": 31,
+   "upsetTurnedAround": 0.839,
+   "solutions": [
+    {
+     "solution": "Refund, credit or return",
+     "calls": 5,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.6,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 18,
+     "resolvedOnCall": 0.278,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 20,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.25
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 24,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 0.792,
+     "upsetTurnedAround": 0.833,
+     "endedPositive": 0.25
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 20,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.25
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 21,
+     "resolvedOnCall": 0.19,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.238
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 20,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.2
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 23,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.478,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.13
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 56,
+     "resolvedOnCall": 0.161,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 0.692,
+     "endedPositive": 0.127
+    }
+   ],
+   "exampleFixes": [
+    "it's a good and a bad thing. But in terms of it being a good thing, when it beeps, you can press and hold the f button. That'll actually present an error code, and that gives us a great starting point to work with. I'm…",
+    "Okay. This is something definitely for the customer service team. They they are the technicians. They will be able to assist you with that, but they finish four. So you can call back 08:00 in the morning tomorrow, or I…",
+    "…your chiller is all good. The boys ran it overnight, and everything seems to be working as it should. He did replace the screen and just popped a new wheel or two on there because one of them were a bit seized. But…",
+    "…it down every now and again because you'll need to, like, flush it out, give your ice bath a good clean, replace the water, replace the filters. And if you're gonna replace the filters, clean the inner filter and…",
+    "…and engineers and stuff now. So it might not be the best option to do something like that. Or if you do, make sure you've got a drainage in there. It looks like they obviously didn't have a drainage in there.",
+    "…you know, there's Australian based, whether it's, like, Matt or it's one of his team and then, yeah, actual technicians as such as well. So"
+   ],
+   "howCustomersDescribeIt": [
+    "the bath for bigger size. I've already got the chiller and the pump and filter and all that.",
+    "saying just the tub itself without any of the plumbing, the pumps, the chillers, everything is $4,000?",
+    "…Sam in regards to the ice bath that I purchased from you guys. He was gonna get so pretty much the chiller that was was sent was obviously not the one that I sort of rethought that I was was…",
+    "Very well. I am just I need to speak to someone just in regards to installation of the chiller pump lines into the ice bath duo. So who would I talk to for that?",
+    "…it's been put, then that's exactly what's happened, and that will that will actually break the chiller. It will it will cause the pump it will cause the pump to freak out, and then they just…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Indigo Carthew",
+     "calls": 17,
+     "resolvedOnCall": 0.176,
+     "resolvedOrBooked": 0.765
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 31,
+     "resolvedOnCall": 0.194,
+     "resolvedOrBooked": 0.742
+    },
+    {
+     "name": "Alice Ternen",
+     "calls": 25,
+     "resolvedOnCall": 0.24,
+     "resolvedOrBooked": 0.72
+    }
+   ],
+   "ticketMedianDaysToClose": 8.1,
+   "fastestTicketOwners": [
+    {
+     "name": "Customer Support",
+     "medianDaysToClose": 4.0,
+     "closed": 7
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 6.0,
+     "closed": 58
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 7.4,
+     "closed": 68
+    }
+   ]
+  },
+  {
+   "issue": "Leaks, timber, doors & glass",
+   "calls": 134,
+   "tickets": 219,
+   "products": [
+    [
+     "Traditional sauna",
+     117
+    ],
+    [
+     "Infrared sauna",
+     60
+    ],
+    [
+     "Ice bath & chiller",
+     42
+    ]
+   ],
+   "models": [
+    [
+     "Eclipse",
+     15
+    ],
+    [
+     "Aura",
+     15
+    ],
+    [
+     "Eden",
+     15
+    ],
+    [
+     "Solaris",
+     10
+    ],
+    [
+     "Verta",
+     9
+    ],
+    [
+     "Tampere",
+     8
+    ]
+   ],
+   "components": [
+    [
+     "Door & glass",
+     191
+    ],
+    [
+     "Timber & seals",
+     130
+    ],
+    [
+     "Roof & shingles",
+     50
+    ],
+    [
+     "Bench & backrest",
+     43
+    ],
+    [
+     "Lights",
+     28
+    ],
+    [
+     "Heater",
+     24
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.187,
+    "F": 0.507,
+    "H": 0.097,
+    "U": 0.209
+   },
+   "upsetCallers": 32,
+   "upsetTurnedAround": 0.812,
+   "solutions": [
+    {
+     "solution": "Technician or electrician",
+     "calls": 15,
+     "resolvedOnCall": 0.067,
+     "resolvedOrBooked": 0.733,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 25,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.88,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 28,
+     "resolvedOnCall": 0.214,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 0.769,
+     "endedPositive": 0.393
+    },
+    {
+     "solution": "Warranty claim raised",
+     "calls": 8,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.625,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.375
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 12,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.833,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 12,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.917,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 10,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 0.6,
+     "endedPositive": 0.3
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 19,
+     "resolvedOnCall": 0.053,
+     "resolvedOrBooked": 0.263,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.263
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 47,
+     "resolvedOnCall": 0.128,
+     "resolvedOrBooked": 0.723,
+     "upsetTurnedAround": 0.733,
+     "endedPositive": 0.152
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 7,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 0.333,
+     "endedPositive": 0.143
+    }
+   ],
+   "exampleFixes": [
+    "if you want. Yeah. You can if you want. Just make sure that it's that it's natural and not, like, chemical. If it's too if it's too much chemical based, the the smell will will leach through to the other side. So when…",
+    "…That's all I use in mind. I just put a towel on the seat and a towel on my feet just so there's no because what you can do as well, you know, after a while when it if it does get kind of water stained, you can just…",
+    "…got that without it being mounted, if even if it is mounted, you can you can test it. If you hold if you hold that mechanism in line with it, you will see that that will pop out. The actual the actual latch will…",
+    "…that email address. Okay. Cool. I've got the email here. I'll just check with the warehouse team just to make sure that they have something aside for you. Cool. Alright.",
+    "Okay. No problem. Yeah. I can see here that Gemma did send you the replacement magnet, so that's incorrect. Is that right?",
+    "Could I could I get you to send some photos through for me, if that's alright?"
+   ],
+   "howCustomersDescribeIt": [
+    "…a bit of a problem yesterday. We put this on together, but I had a problem with just adjusting the door, the I've got the hybrid and just adjusting the glass piece. I can't get it to magnetize at…",
+    "…like, the drainage plugs. Mate, I've had to use, like, full plumber's tape to get that from stop leaking, and I've used all three. Is that normal that they don't normally stop it from leaking? Or…",
+    "Hi. I emailed the team about coming in this morning to pick up one of the seal plastic seal strips. And, yeah, I hadn't heard back from the email yet, but but we're on our way. We'll probably be…",
+    "…the box and not being able to refusing to use the dollies down the driveway. The the sauna's got cracks and splits and damaged timber in it. I've turned a blind eye to all that. The you know the…",
+    "The the only thing the only board that is damaged, and I mean, really damaged, is that frame that the glass door opens up on"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 12,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.917
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 26,
+     "resolvedOnCall": 0.192,
+     "resolvedOrBooked": 0.885
+    },
+    {
+     "name": "Alice Ternen",
+     "calls": 26,
+     "resolvedOnCall": 0.192,
+     "resolvedOrBooked": 0.654
+    }
+   ],
+   "ticketMedianDaysToClose": 5.7,
+   "fastestTicketOwners": [
+    {
+     "name": "Customer Support",
+     "medianDaysToClose": 3.0,
+     "closed": 8
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 5.1,
+     "closed": 14
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 5.8,
+     "closed": 52
+    }
+   ]
+  },
+  {
+   "issue": "Electrical, power & tripping",
+   "calls": 246,
+   "tickets": 101,
+   "products": [
+    [
+     "Traditional sauna",
+     157
+    ],
+    [
+     "Infrared sauna",
+     58
+    ],
+    [
+     "Ice bath & chiller",
+     51
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     19
+    ],
+    [
+     "Solaris",
+     8
+    ],
+    [
+     "Eden",
+     8
+    ],
+    [
+     "Nordic Wave",
+     7
+    ],
+    [
+     "Nova",
+     6
+    ],
+    [
+     "Glacier",
+     6
+    ]
+   ],
+   "components": [
+    [
+     "Heater",
+     90
+    ],
+    [
+     "Power cable & plug",
+     54
+    ],
+    [
+     "Control panel / controller",
+     41
+    ],
+    [
+     "RCD, breaker & fuse",
+     40
+    ],
+    [
+     "Lights",
+     29
+    ],
+    [
+     "Temp sensor / thermostat",
+     18
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.244,
+    "F": 0.492,
+    "H": 0.073,
+    "U": 0.191
+   },
+   "upsetCallers": 27,
+   "upsetTurnedAround": 0.963,
+   "solutions": [
+    {
+     "solution": "Warranty claim raised",
+     "calls": 7,
+     "resolvedOnCall": 0.286,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.571
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 9,
+     "resolvedOnCall": 0.111,
+     "resolvedOrBooked": 0.889,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.444
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 34,
+     "resolvedOnCall": 0.353,
+     "resolvedOrBooked": 0.853,
+     "upsetTurnedAround": 0.833,
+     "endedPositive": 0.382
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 24,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.375
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 33,
+     "resolvedOnCall": 0.182,
+     "resolvedOrBooked": 0.727,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.344
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 63,
+     "resolvedOnCall": 0.095,
+     "resolvedOrBooked": 0.905,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 28,
+     "resolvedOnCall": 0.036,
+     "resolvedOrBooked": 0.286,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.296
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 68,
+     "resolvedOnCall": 0.206,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 0.833,
+     "endedPositive": 0.284
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 15,
+     "resolvedOnCall": 0.067,
+     "resolvedOrBooked": 0.933,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.133
+    }
+   ],
+   "exampleFixes": [
+    "For this one, install I think this one was already been booked to the technician. Let's see here. The technician was already installed it. Right? Okay. Gotcha. Let me refresh. Yeah. This was installed, like, two days…",
+    "…that that they're gonna send you two of those. I'll probably be able to get a sparky out there quicker than a tech at the moment given how everything's going. So I think that's probably gonna be the best option. So…",
+    "…you and get it get it done. They did say, like, that obviously comes with a plug on it. So it is actually in the manual too that if there's any alteration to the power source, it is it is void. But either way, I'm…",
+    "…there's, like, clear, you know, water damage, then, yeah, we wouldn't cover that under warranty. Yeah. We'd replace the part, I suppose, depending what it is. But but then you've got the electrical. It's because…",
+    "…as far as my knowledge goes that it is a 10 amp ball socket, but I can triple check that for the duo just to make sure that it isn't any higher. But is that the only piece of information that you need for your…",
+    "…With that, is that just the Wi Fi component that doesn't work now, or is it like you can't even turn it on and off?"
+   ],
+   "howCustomersDescribeIt": [
+    "…you've got your l one, your Same as well. P and the n as well. So one of them so in the actual wiring diagram, it looks like you can choose between three. You can choose between two thirty volt…",
+    "Hi. It's [name] from Mon Electrical here. How are going?",
+    "…Exactly. So but can you use can you use normal normal electric, electrical, cord and just put 32 amps on on either side or the or the at the junction box.",
+    "…So do you and it said something about if we contacted you guys, and you guys told us maybe any electricians that you work with down here or that are licensed to you, could we, like, pay to have…",
+    "15 amp extension cord. Awesome. So not one with, like, a surge protector, just straight up. If it's a two meter one fifteen amp, I can attach it to the end and attach it to an outlet by itself. Sick.…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Indigo Carthew",
+     "calls": 38,
+     "resolvedOnCall": 0.263,
+     "resolvedOrBooked": 0.842
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 35,
+     "resolvedOnCall": 0.286,
+     "resolvedOrBooked": 0.829
+    },
+    {
+     "name": "Lachlan Wilson",
+     "calls": 11,
+     "resolvedOnCall": 0.545,
+     "resolvedOrBooked": 0.818
+    }
+   ],
+   "ticketMedianDaysToClose": 3.9,
+   "fastestTicketOwners": [
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 2.7,
+     "closed": 27
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 3.7,
+     "closed": 21
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 19.9,
+     "closed": 25
+    }
+   ]
+  },
+  {
+   "issue": "Sauna heater & temperature",
+   "calls": 172,
+   "tickets": 156,
+   "products": [
+    [
+     "Traditional sauna",
+     274
+    ],
+    [
+     "Infrared sauna",
+     48
+    ],
+    [
+     "Ice bath & chiller",
+     35
+    ]
+   ],
+   "models": [
+    [
+     "Nordic Wave",
+     15
+    ],
+    [
+     "Solaris",
+     15
+    ],
+    [
+     "Glacier",
+     10
+    ],
+    [
+     "Edenview",
+     10
+    ],
+    [
+     "Tampere",
+     10
+    ],
+    [
+     "Verta",
+     7
+    ]
+   ],
+   "components": [
+    [
+     "Heater",
+     241
+    ],
+    [
+     "Sauna stones",
+     81
+    ],
+    [
+     "Heating elements",
+     76
+    ],
+    [
+     "Temp sensor / thermostat",
+     63
+    ],
+    [
+     "Lights",
+     47
+    ],
+    [
+     "Control panel / controller",
+     28
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.186,
+    "F": 0.523,
+    "H": 0.076,
+    "U": 0.215
+   },
+   "upsetCallers": 30,
+   "upsetTurnedAround": 0.833,
+   "solutions": [
+    {
+     "solution": "Refund, credit or return",
+     "calls": 10,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.6
+    },
+    {
+     "solution": "Warranty claim raised",
+     "calls": 12,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.583
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 9,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.444
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 24,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.833,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.417
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 34,
+     "resolvedOnCall": 0.206,
+     "resolvedOrBooked": 0.794,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.406
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 25,
+     "resolvedOnCall": 0.04,
+     "resolvedOrBooked": 0.44,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.36
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 39,
+     "resolvedOnCall": 0.077,
+     "resolvedOrBooked": 0.897,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.359
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 14,
+     "resolvedOnCall": 0.214,
+     "resolvedOrBooked": 0.786,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.286
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 23,
+     "resolvedOnCall": 0.087,
+     "resolvedOrBooked": 0.696,
+     "upsetTurnedAround": 0.714,
+     "endedPositive": 0.261
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 56,
+     "resolvedOnCall": 0.089,
+     "resolvedOrBooked": 0.679,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.232
+    }
+   ],
+   "exampleFixes": [
+    "…in our Gold Coast warehouse too, that wouldn't take long. We we could probably get something to come out and swap it over anyway just to see if that that fixes it. And if it doesn't, well, then maybe we look at we look…",
+    "…doesn't look like we've actually fulfilled it. So oh, Jesus. Look. If if we overcompensate, at least that'll make sure that you've got the right connection. So if we so the the biggest option they would have to choose…",
+    "…gonna cut out. And if that gets exceeded by like, so we'll work that way off a thermostat, and then it will turn on and off like a fridge or an oven to maintain that temperature. But then if you get it far too hot in…",
+    "…quote for you just based off of what we what we discussed because you are correct. It was the unit is still under warranty. So I'll remove the the cost price of that that heater and then just yeah. We'll just charge…",
+    "Oh, I might need to pop you through to our support team to give you some guidance on some of the tech questions. Just give me one moment. Let me see if someone's free. Sorry. Just give me a second. Brilliant. It's so…",
+    "…And then from there, failing that, if you don't notice any difference, would be looking at performing a reset on the heater, which we can then talk you through. So sometimes it can just be a simple little thing…"
+   ],
+   "howCustomersDescribeIt": [
+    "Yeah. That's right. It it seems to be on the the light is on on the dial, but it's and you can even you can even hear us, like, a bit of a sound, but there's no it's not heating at all.",
+    "it's on. It's on. It's just not like, there's no heat coming through or out of the heater at all. So there's a light on. So the sparky sort of set up, so I presume it's all it's all hooked up.…",
+    "…rocks, but not a whole box. So I'm not sure what to do there because you can still see some of the elements through the rocks, but I don't think that that's unusual. So so, basically, the the Harvey…",
+    "Hey there. Yeah. I'm just ringing about the Rebel temporary. Yeah. Does that one can you, like, upgrade that to get a WiFi heater?",
+    "…I was just wondering if you can help. We've got outside traditional barrel sauna. The heating element's not working. Do you know where the reset button is on it?"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 12,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 1.0
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 27,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.889
+    },
+    {
+     "name": "Raich Cannu",
+     "calls": 11,
+     "resolvedOnCall": 0.273,
+     "resolvedOrBooked": 0.727
+    }
+   ],
+   "ticketMedianDaysToClose": 3.8,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 2.8,
+     "closed": 45
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 3.1,
+     "closed": 7
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 5.8,
+     "closed": 43
+    }
+   ]
+  },
+  {
+   "issue": "Delivery delay & tracking",
+   "calls": 221,
+   "tickets": 94,
+   "products": [
+    [
+     "Ice bath & chiller",
+     50
+    ],
+    [
+     "Traditional sauna",
+     48
+    ],
+    [
+     "Infrared sauna",
+     38
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     10
+    ],
+    [
+     "Nordic Wave",
+     6
+    ],
+    [
+     "Nova",
+     5
+    ],
+    [
+     "Eden",
+     5
+    ],
+    [
+     "Kora",
+     4
+    ],
+    [
+     "Luna",
+     4
+    ]
+   ],
+   "components": [
+    [
+     "Bench & backrest",
+     15
+    ],
+    [
+     "Heater",
+     15
+    ],
+    [
+     "Chiller unit",
+     13
+    ],
+    [
+     "Door & glass",
+     11
+    ],
+    [
+     "Pump & flow",
+     9
+    ],
+    [
+     "Hoses & fittings",
+     9
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.226,
+    "F": 0.52,
+    "H": 0.05,
+    "U": 0.204
+   },
+   "upsetCallers": 59,
+   "upsetTurnedAround": 0.814,
+   "solutions": [
+    {
+     "solution": "Delivery rebooked or chased",
+     "calls": 45,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.822,
+     "upsetTurnedAround": 0.867,
+     "endedPositive": 0.5
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 27,
+     "resolvedOnCall": 0.185,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 0.625,
+     "endedPositive": 0.385
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 8,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.375
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 31,
+     "resolvedOnCall": 0.129,
+     "resolvedOrBooked": 0.581,
+     "upsetTurnedAround": 0.714,
+     "endedPositive": 0.355
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 38,
+     "resolvedOnCall": 0.053,
+     "resolvedOrBooked": 0.947,
+     "upsetTurnedAround": 0.778,
+     "endedPositive": 0.351
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 13,
+     "resolvedOnCall": 0.231,
+     "resolvedOrBooked": 0.769,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.308
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 16,
+     "resolvedOnCall": 0.188,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.25
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 60,
+     "resolvedOnCall": 0.133,
+     "resolvedOrBooked": 0.85,
+     "upsetTurnedAround": 0.737,
+     "endedPositive": 0.186
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 14,
+     "resolvedOnCall": 0.214,
+     "resolvedOrBooked": 0.786,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.143
+    }
+   ],
+   "exampleFixes": [
+    "Oh, that's okay. Sorry. Do you have a minute? Okay. I just wanted to let you know that we heard back from kit technician who came out yesterday afternoon, and they advised the unit was still leaking. Given it's nearly…",
+    "…going to do right now is to coordinate this with the Rebel team so so that we can sort this out. I'm gonna raise a ticket, and then they'll gonna get in touch with you once they do have the service information about…",
+    "Yeah. That's definitely doable. So when the when the tech gives you a call, just maybe shoot them through a couple of pictures as well. But, yeah, they'll they'll ask you all the questions they need. That's all good.",
+    "…in just a few minutes ago. And my colleague said that you have called earlier. So I already spoke with our technician fitness doctor. I have advised you yesterday, right, that it will be next week, and they have…",
+    "Correct. Yeah. I just wanted to make sure that was correct, before before I submitted everything. So that's that's fine. I thought that was the case, but I'll",
+    "…on it. We're we're looking at all these orders that have been pushed back pretty closely. So, yeah, we wanna make sure they all get delivered quickly."
+   ],
+   "howCustomersDescribeIt": [
+    "delete the tracking was delivered to my address and my like, my phone number.",
+    "Oh, hi. I purchased a sauna from you guys. The order number is 164412. I've been tracking the progress with shop, and apparently, it was delivered two hours ago to my address. I'm working from home…",
+    "…him. We have a cold plunge that's expected to arrive soon, and I'm just wondering if I could get a tracking for it because I just need to make sure someone's on-site when it does get",
+    "…and I've just had a whole journey with cold plunges. We had to cancel the last one because of delays. So, yeah, we're very, very desperate, and I hate nagging and chasing up. But, yeah, I'd…",
+    "Yeah. Because that's why I didn't say anything about my address, but then I did get the consignment notice or whatever where it had my old address. And I was like, oh oh, no. No. No. It's my new I…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Gemma Johnston",
+     "calls": 29,
+     "resolvedOnCall": 0.241,
+     "resolvedOrBooked": 0.931
+    },
+    {
+     "name": "Raich Cannu",
+     "calls": 12,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.833
+    },
+    {
+     "name": "Indigo Carthew",
+     "calls": 21,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.81
+    }
+   ],
+   "ticketMedianDaysToClose": 1.9,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 0.4,
+     "closed": 32
+    },
+    {
+     "name": "Customer Support",
+     "medianDaysToClose": 2.0,
+     "closed": 6
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 2.4,
+     "closed": 32
+    }
+   ]
+  },
+  {
+   "issue": "Controls, app & Wi-Fi",
+   "calls": 104,
+   "tickets": 162,
+   "products": [
+    [
+     "Traditional sauna",
+     101
+    ],
+    [
+     "Ice bath & chiller",
+     59
+    ],
+    [
+     "Infrared sauna",
+     47
+    ]
+   ],
+   "models": [
+    [
+     "Nova",
+     12
+    ],
+    [
+     "Aura",
+     9
+    ],
+    [
+     "Nordic Wave",
+     7
+    ],
+    [
+     "Glacier",
+     7
+    ],
+    [
+     "Kora",
+     5
+    ],
+    [
+     "Eclipse",
+     3
+    ]
+   ],
+   "components": [
+    [
+     "App, Wi-Fi & remote",
+     128
+    ],
+    [
+     "Control panel / controller",
+     104
+    ],
+    [
+     "Heater",
+     39
+    ],
+    [
+     "Lights",
+     37
+    ],
+    [
+     "Door & glass",
+     22
+    ],
+    [
+     "Chiller unit",
+     19
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.212,
+    "F": 0.596,
+    "H": 0.038,
+    "U": 0.154
+   },
+   "upsetCallers": 20,
+   "upsetTurnedAround": 0.9,
+   "solutions": [
+    {
+     "solution": "Replacement part or unit",
+     "calls": 7,
+     "resolvedOnCall": 0.286,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.714
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 10,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.6,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.5
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 19,
+     "resolvedOnCall": 0.316,
+     "resolvedOrBooked": 0.789,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.368
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 28,
+     "resolvedOnCall": 0.357,
+     "resolvedOrBooked": 0.786,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.357
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 16,
+     "resolvedOnCall": 0.188,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.312
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 30,
+     "resolvedOnCall": 0.133,
+     "resolvedOrBooked": 0.967,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.3
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 40,
+     "resolvedOnCall": 0.15,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.275
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 8,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.125
+    }
+   ],
+   "exampleFixes": [
+    "yeah. Of course. No. We'll definitely make sure it's wrapped up for you well before then. I would love to help you, but I guess, obviously, it's a bit tricky with yourself not at the chiller to sort of run through any…",
+    "Yeah. No. That's fine. I would suggest running it and just leaving it until it starts beeping, and then hold down that s button to get that error code. And, yeah, just keep it running till you get all that information…",
+    "…There's no reason why it shouldn't work. Bluetooth should be all sweet. But, yeah, you can obviously still turn it off and on from that panel. And then, yeah, with the screen, you just gotta hold it for, four to five…",
+    "…sort of sensor. So if you're not using the chiller to heat, you'll probably never come across that. But that's normally what that is is that as you're if you're heating, the output of that is is cold. So it will,…",
+    "…And then pretty much you'll have everything for that screen had on your phone, and you'll be able to just turn it on and off remotely, change the temperature, all of that jazz. Yeah. Awesome. What was your name?…",
+    "yeah. It was just the manual one. Yep. Yep. Let me have a look. Yeah. I'm pretty sure it's meant to it's meant to time out. It's like a safety feature. Oh, no. You"
+   ],
+   "howCustomersDescribeIt": [
+    "Sleek and initiative touch screen display. That's the fourth one, is it?",
+    "Righty o. And what is the on the display at the top, you got the five icons, the Wi Fi one or the WiFi sort of connection icon, the little blue star, the snowflake. There's one on the far right…",
+    "Just sit you on and off here. Yeah. It's just on the the red is just on the WiFi button at the moment.",
+    "…last Tuesday, and it came on Friday. I literally have used it once. And then this morning, on the display, it's beeping and saying e two. So I turned the unit off, and then I took the filter out…",
+    "…Okay. No. That's okay. Alright. So I wanna I just need to ask you a question about the the the control panel. What's it called? The Xenia controller? Yeah. Like that. The cable that uses that…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Indigo Carthew",
+     "calls": 9,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.889
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 15,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 0.867
+    },
+    {
+     "name": "Alice Ternen",
+     "calls": 27,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.852
+    }
+   ],
+   "ticketMedianDaysToClose": 2.4,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 1.5,
+     "closed": 54
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 2.9,
+     "closed": 41
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 3.0,
+     "closed": 28
+    }
+   ]
+  },
+  {
+   "issue": "Cleaning, water care & maintenance",
+   "calls": 111,
+   "tickets": 70,
+   "products": [
+    [
+     "Ice bath & chiller",
+     112
+    ],
+    [
+     "Traditional sauna",
+     24
+    ],
+    [
+     "Infrared sauna",
+     17
+    ]
+   ],
+   "models": [
+    [
+     "Glacier",
+     10
+    ],
+    [
+     "Eclipse",
+     4
+    ],
+    [
+     "Eden",
+     4
+    ],
+    [
+     "Aura",
+     3
+    ],
+    [
+     "Luna",
+     3
+    ],
+    [
+     "Verta",
+     2
+    ]
+   ],
+   "components": [
+    [
+     "Filter",
+     92
+    ],
+    [
+     "Chiller unit",
+     34
+    ],
+    [
+     "Pump & flow",
+     30
+    ],
+    [
+     "Hoses & fittings",
+     28
+    ],
+    [
+     "Timber & seals",
+     19
+    ],
+    [
+     "Ozone / UV",
+     16
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.27,
+    "F": 0.559,
+    "H": 0.063,
+    "U": 0.108
+   },
+   "upsetCallers": 31,
+   "upsetTurnedAround": 0.871,
+   "solutions": [
+    {
+     "solution": "Passed to a colleague",
+     "calls": 12,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.333,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.5
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 32,
+     "resolvedOnCall": 0.031,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.778,
+     "endedPositive": 0.406
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 34,
+     "resolvedOnCall": 0.441,
+     "resolvedOrBooked": 0.941,
+     "upsetTurnedAround": 0.857,
+     "endedPositive": 0.382
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 28,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.357
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 21,
+     "resolvedOnCall": 0.381,
+     "resolvedOrBooked": 0.857,
+     "upsetTurnedAround": 0.889,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 22,
+     "resolvedOnCall": 0.136,
+     "resolvedOrBooked": 0.864,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.318
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 24,
+     "resolvedOnCall": 0.292,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.292
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 14,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.929,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.214
+    }
+   ],
+   "exampleFixes": [
+    "…one of the older models just just because the new ones only came out, like, January. So, I mean, you could send me a photo of something. The flooring on the new one is completely sealed. It's not a vented flooring,…",
+    "…definitely getting a barrel for outdoor is a great option. My only suggestion with a barrel is that you make sure that it is oiled and it is siliconed and it is waterproofed properly, and it will stand the test of…",
+    "…not like they're like this massive compressor unit. So but just see how it goes anyway. I mean, just just make sure that you keep up to date on the maintenance. Because, like, those s y pro models and and the one…",
+    "…running a whole like, losing a whole heap of water, you can definitely do that while you go and clean the clean the filter or get the get the second one that you should have received. But behind where that clear…",
+    "…Yeah. I was just blocking it a bit. Okay. Well, that's great news. And, also, just for future as well to bleed the air out of the internal paper filter. You take that top cap off, and then there's, a plastic cap…",
+    "…There is an internal mesh filter that collects, like, a bit of hair and lint and things like that. So make sure you take that out and clean it as well. And I would recommend flushing it taking your hoses off the…"
+   ],
+   "howCustomersDescribeIt": [
+    "…me a clean out, stuff like that. Now I have no idea what's going on with this thing. I put a new filter in over the weekend. I said I put a new filter over the weekend. And, like, previously, I…",
+    "You know, it's [name]. I just needed to order some filters for I think it's the DuoSpa, I think it is. What is it? What have I got here? Let me have a look. I have the hang on. My computer's…",
+    "I've got a a ice bath here, but the ozone is not working on it. I spoke to him a while ago about it. He sent a message and said it was running normally, but, yeah, now it's actually just the Ozone is…",
+    "it doesn't yeah. That doesn't feel like there's anything in there. Alright. So just blow the or hose out the filter.",
+    "believe all the other filters. So if I just put a new filter, is that the go? I got three other filters."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 21,
+     "resolvedOnCall": 0.238,
+     "resolvedOrBooked": 0.905
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 8,
+     "resolvedOnCall": 0.375,
+     "resolvedOrBooked": 0.875
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 14,
+     "resolvedOnCall": 0.214,
+     "resolvedOrBooked": 0.857
+    }
+   ],
+   "ticketMedianDaysToClose": 3.0,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 1.7,
+     "closed": 21
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 3.5,
+     "closed": 16
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 4.9,
+     "closed": 6
+    }
+   ]
+  },
+  {
+   "issue": "Lights, sound & accessories",
+   "calls": 62,
+   "tickets": 77,
+   "products": [
+    [
+     "Infrared sauna",
+     26
+    ],
+    [
+     "Traditional sauna",
+     26
+    ],
+    [
+     "Ice bath & chiller",
+     25
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     11
+    ],
+    [
+     "Nova",
+     5
+    ],
+    [
+     "Kora",
+     4
+    ],
+    [
+     "Tampere",
+     3
+    ],
+    [
+     "Eclipse",
+     2
+    ],
+    [
+     "Solaris",
+     2
+    ]
+   ],
+   "components": [
+    [
+     "Lights",
+     90
+    ],
+    [
+     "App, Wi-Fi & remote",
+     18
+    ],
+    [
+     "Cover & lid",
+     16
+    ],
+    [
+     "Power cable & plug",
+     12
+    ],
+    [
+     "Heater",
+     10
+    ],
+    [
+     "Hoses & fittings",
+     8
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.113,
+    "F": 0.565,
+    "H": 0.081,
+    "U": 0.242
+   },
+   "upsetCallers": 12,
+   "upsetTurnedAround": 1.0,
+   "solutions": [
+    {
+     "solution": "Asked for photos or video",
+     "calls": 6,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.833,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.5
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 10,
+     "resolvedOnCall": 0.1,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 13,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.385
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 8,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.375,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.375
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 28,
+     "resolvedOnCall": 0.071,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.321
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 8,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.25
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 8,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.75,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.125
+    }
+   ],
+   "exampleFixes": [
+    "…to go. Alright. So when he comes back to me, I'll probably just flick you a text just obviously just to make sure that if you you can't take a call, at least I've got that through to you. And then, yeah, we can we…",
+    "Okay. It's an outdoor sauna. Yeah. Probably the best thing, Vicky, if you can take some photos and text them through to this number, and then I can get the customer service team to have a look at it and see what we can…",
+    "…I do understand that talking to people is definitely much easier. But we do also require the photos just to make sure that the correct parts are ordered with the warehouse, and we do need to confirm part availability…",
+    "…right. So that little piece of timber is actually just connected by three little, like, suction plugs. So what you can do, you can actually just pry pry that off. It just unflicks, and then you can just push it push…",
+    "…have the manual vents, and so I'll get them across, but these are already just open for you. That's gonna make sure that the temperature is maximized and the airflow is perfect. So it's it's good good to go.",
+    "…hours to give it a a proper run through and a good cleanup. So as soon as you get home, if you could just make sure you turn it on, get it up and running before giving me a call."
+   ],
+   "howCustomersDescribeIt": [
+    "…in to help us rebuild our sauna with the back piece and also because our sauna also came with a light that wasn't working. And this is this is all in emails and the photos and emails. And,…",
+    "…reset everything on it as well as far as temperature and everything goes. He went through all the lights on the display with me as I was sitting there. He said then now everything's on where it's…",
+    "…itself with all the the cords and everything, there's a white there's a white plug hole that says light AC, and there seems to be no no cord for that. So I'm just wondering what actually goes in…",
+    "Well, I've been waiting two days for a response by email. My lights don't work at all, and I'm very disappointed in the width of the step because it's too wide for the space, so it becomes unusable.…",
+    "…comes with the heater only covers wiring up the heater. It doesn't have anything to do with the lights. It's it's produced by the manufacturers of the heater. They don't produce the lights. You…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Alice Ternen",
+     "calls": 13,
+     "resolvedOnCall": 0.077,
+     "resolvedOrBooked": 0.923
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 8,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.75
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 13,
+     "resolvedOnCall": 0.077,
+     "resolvedOrBooked": 0.692
+    }
+   ],
+   "ticketMedianDaysToClose": 4.8,
+   "fastestTicketOwners": [
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 3.5,
+     "closed": 14
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 4.2,
+     "closed": 18
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 5.8,
+     "closed": 33
+    }
+   ]
+  },
+  {
+   "issue": "Damaged, missing or wrong items",
+   "calls": 67,
+   "tickets": 57,
+   "products": [
+    [
+     "Traditional sauna",
+     29
+    ],
+    [
+     "Ice bath & chiller",
+     28
+    ],
+    [
+     "Infrared sauna",
+     11
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     3
+    ],
+    [
+     "Aurora",
+     3
+    ],
+    [
+     "Nova",
+     2
+    ],
+    [
+     "Solaris",
+     2
+    ],
+    [
+     "Edenview",
+     2
+    ],
+    [
+     "Verta",
+     2
+    ]
+   ],
+   "components": [
+    [
+     "Door & glass",
+     15
+    ],
+    [
+     "Chiller unit",
+     12
+    ],
+    [
+     "Timber & seals",
+     12
+    ],
+    [
+     "Hoses & fittings",
+     12
+    ],
+    [
+     "Heater",
+     11
+    ],
+    [
+     "Lights",
+     9
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.194,
+    "F": 0.507,
+    "H": 0.119,
+    "U": 0.179
+   },
+   "upsetCallers": 19,
+   "upsetTurnedAround": 0.684,
+   "solutions": [
+    {
+     "solution": "Refund, credit or return",
+     "calls": 6,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.333,
+     "endedPositive": 0.667
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 8,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.875,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.429
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 6,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.667,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.333
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 21,
+     "resolvedOnCall": 0.095,
+     "resolvedOrBooked": 0.762,
+     "upsetTurnedAround": 0.875,
+     "endedPositive": 0.286
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 15,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.467,
+     "upsetTurnedAround": 0.429,
+     "endedPositive": 0.267
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 13,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.769,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.231
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 9,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.222
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 7,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.0
+    }
+   ],
+   "exampleFixes": [
+    "…to confirm that that is the correct part that is has the damage because it's so zoomed in. We just wanna make sure that that is the case. Because looking at where that plug is, I would assume if you're looking…",
+    "okay. Yeah. Because so there does need to be a bridge between fifteen and sixteen, which is noticed in the manual. Yeah. That's what he did.",
+    "Mitch. I'll let Mitch know just to swap that over as soon as",
+    "…out back to you as soon as he's done. Yeah. And that way, we can, yeah, confirm exactly, yes, if you need to get a replacement sent up for the bench. But, of course, I will definitely have him reach out to you. Again,…",
+    "Yep. Alright. Who'd you send the photos through to? That'll probably be his private number, I'd say. On this number here that you've got or just yep. Right. What I'll do, I'll I'll put you directly through to my…",
+    "Let me try to check here. Is there any technician available right now? Or or you're the one who actually avail assembling it?"
+   ],
+   "howCustomersDescribeIt": [
+    "…it I just didn't realize it was a 15 amp plug instead of a 12. But there's just a there's a dent on the unit. I spoke with one of your staff, Corey, today. He's the guy who was, like,…",
+    "…not certain because it's a pretty decent ding in the unit. I just don't know if that would have damaged any other internal components. But I can I think I spoke with someone else from your team?…",
+    "…just put it down because I saw the guys kind of threw it off the truck, and I was concerned about damage, of the unit. Today, we just unboxed the first box, the top one. We opened it, and the…",
+    "…But the problem is that it's the bench that's, like like, got the huge, like, market or, you know, dent, whatever it is. And then confirmed that, yes, it would have been done, like, in the box. The…",
+    "…this, but I just wanted to let you know. I know the conversation I had to we said that panel was damaged, and that was it. Now we've pulled it up. I've assembled it. The glass is actually warped…"
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Alice Ternen",
+     "calls": 16,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.875
+    },
+    {
+     "name": "Gemma Johnston",
+     "calls": 8,
+     "resolvedOnCall": 0.25,
+     "resolvedOrBooked": 0.875
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 8,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.625
+    }
+   ],
+   "ticketMedianDaysToClose": 3.8,
+   "fastestTicketOwners": [
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 0.9,
+     "closed": 21
+    },
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 3.8,
+     "closed": 14
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 6.0,
+     "closed": 11
+    }
+   ]
+  },
+  {
+   "issue": "Returns, refunds & cancellations",
+   "calls": 75,
+   "tickets": 41,
+   "products": [
+    [
+     "Ice bath & chiller",
+     16
+    ],
+    [
+     "Traditional sauna",
+     13
+    ],
+    [
+     "Infrared sauna",
+     10
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     2
+    ],
+    [
+     "Nordic Wave",
+     2
+    ],
+    [
+     "Eclipse",
+     1
+    ],
+    [
+     "Luna",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Chiller unit",
+     5
+    ],
+    [
+     "Lights",
+     3
+    ],
+    [
+     "Speakers",
+     2
+    ],
+    [
+     "Hoses & fittings",
+     2
+    ],
+    [
+     "Filter",
+     2
+    ],
+    [
+     "Door & glass",
+     1
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.28,
+    "F": 0.507,
+    "H": 0.067,
+    "U": 0.147
+   },
+   "upsetCallers": 38,
+   "upsetTurnedAround": 0.711,
+   "solutions": [
+    {
+     "solution": "Explained how it works",
+     "calls": 7,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.571
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 46,
+     "resolvedOnCall": 0.261,
+     "resolvedOrBooked": 0.804,
+     "upsetTurnedAround": 0.708,
+     "endedPositive": 0.444
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 13,
+     "resolvedOnCall": 0.077,
+     "resolvedOrBooked": 0.615,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.308
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 13,
+     "resolvedOnCall": 0.077,
+     "resolvedOrBooked": 0.923,
+     "upsetTurnedAround": 0.333,
+     "endedPositive": 0.231
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 25,
+     "resolvedOnCall": 0.08,
+     "resolvedOrBooked": 0.64,
+     "upsetTurnedAround": 0.647,
+     "endedPositive": 0.2
+    }
+   ],
+   "exampleFixes": [
+    "…to make sure I've got it correct? Mhmm. Amazing. Thank you so much. I'll send that off to accounts now. Just make sure that you allow, obviously, your normal refund processing time. And, you know, the rule is how it…",
+    "…last night that I can get someone on Tuesday. That's okay. But just to let you know, we have two preferred technician, which means they are one they are the best technician that we have. And, Darcy, the one you spoke…",
+    "…would like to let you know once the oiling was actually initiated by the installer, regarding with that, it's supposed to be part of the payment that you made paid. And I believe Corey was advising as well that…",
+    "Awesome. Alright. We'll jump on this one now. We'll, yeah, pass on any updates as soon as they're available. Really sorry that you haven't seen anything yet, mate, but we'll make sure it comes through to you.",
+    "…anything. I'm really, really sorry for that, Jonathan, but I will call the service manager now. We'll make sure that you have something, yeah, processed before the end of the day.",
+    "Yeah. I can definitely process it, but I can the money won't be in your account today, so I just wanna make sure that that's understood. But let me, yeah, let me ring Winnings and find out what's going on because, yeah,…"
+   ],
+   "howCustomersDescribeIt": [
+    "…me yesterday after his meeting. He promised me a call to let me know if he had successfully got a refund processed. I've been waiting for over two weeks now, and he just started to look into it…",
+    "…know if I've been put through the right person or yeah. So I just wanted to sort of, I guess, cancel the one person or and get the get the two person, which is which is yeah. So yeah. Sorry…",
+    "Yeah. Not too bad. Look. I'm I'm trying to get hold of Matt, I believe, to sort out a return and refund for an ice bath that I purchased. Spoke with him last Thursday and was trying to get ahold of…",
+    "…of canceling, and now we're just getting the runaround, and nobody's actually processing the refund. And we're we're a little pissed right now. So we've got a nice bath. We've got a nice bath…",
+    "I've been better, but anyway, how are you? It's okay. So yeah. So I'm just returning your call."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Indigo Carthew",
+     "calls": 9,
+     "resolvedOnCall": 0.111,
+     "resolvedOrBooked": 0.889
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 14,
+     "resolvedOnCall": 0.357,
+     "resolvedOrBooked": 0.857
+    },
+    {
+     "name": "Ricky Ortizo",
+     "calls": 10,
+     "resolvedOnCall": 0.5,
+     "resolvedOrBooked": 0.7
+    }
+   ],
+   "ticketMedianDaysToClose": 3.5,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 1.0,
+     "closed": 12
+    },
+    {
+     "name": "Matthew Taylor",
+     "medianDaysToClose": 2.8,
+     "closed": 11
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 7.2,
+     "closed": 11
+    }
+   ]
+  },
+  {
+   "issue": "Pre-sale & product questions",
+   "calls": 67,
+   "tickets": 45,
+   "products": [
+    [
+     "Traditional sauna",
+     35
+    ],
+    [
+     "Ice bath & chiller",
+     26
+    ],
+    [
+     "Infrared sauna",
+     22
+    ]
+   ],
+   "models": [
+    [
+     "Solaris",
+     6
+    ],
+    [
+     "Aura",
+     5
+    ],
+    [
+     "Tampere",
+     5
+    ],
+    [
+     "Glacier",
+     4
+    ],
+    [
+     "Verta",
+     4
+    ],
+    [
+     "Nova",
+     3
+    ]
+   ],
+   "components": [
+    [
+     "Chiller unit",
+     14
+    ],
+    [
+     "Heater",
+     13
+    ],
+    [
+     "Timber & seals",
+     4
+    ],
+    [
+     "Lights",
+     4
+    ],
+    [
+     "Control panel / controller",
+     4
+    ],
+    [
+     "Filter",
+     4
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.194,
+    "F": 0.657,
+    "H": 0.03,
+    "U": 0.119
+   },
+   "upsetCallers": 14,
+   "upsetTurnedAround": 0.571,
+   "solutions": [
+    {
+     "solution": "Info or instructions sent",
+     "calls": 21,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.952,
+     "upsetTurnedAround": 0.571,
+     "endedPositive": 0.476
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 7,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.0,
+     "endedPositive": 0.429
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 23,
+     "resolvedOnCall": 0.13,
+     "resolvedOrBooked": 0.913,
+     "upsetTurnedAround": 0.5,
+     "endedPositive": 0.261
+    },
+    {
+     "solution": "Explained how it works",
+     "calls": 8,
+     "resolvedOnCall": 0.375,
+     "resolvedOrBooked": 1.0,
+     "upsetTurnedAround": 0.333,
+     "endedPositive": 0.125
+    },
+    {
+     "solution": "Passed to a colleague",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.4,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.0
+    }
+   ],
+   "exampleFixes": [
+    "…that we we discuss potentially, where we go, okay. This we can reinstall that discount code, but we have to make sure that if that's the case, that there are deliverables attached for athletes that use it. And they do…",
+    "Alright. Thank you so much. Just checking to make sure that you have spoken with someone as I promised earlier, but good thing everything is okay. And anything aside from your query that I can help you with?",
+    "Okay. We're beating outside the bush now. Yeah. Please do what you need to do.",
+    "yeah. I'll send some photos through for you. I've got a few photos from the product sheet we did here, but the actual one is at at his house at the moment. So I will send some photos through for that just through text.…",
+    "…saunas, generally, you're you're looking at about 1,200 to build them. And and and we would arrange the technician for you unless you wanted to handle it yourself. If you wanted to build it yourself, you could.…",
+    "…that's pretty good. I'd I probably won't I wouldn't drop my pants that much. Yeah. Yeah. Alright. I'll go take a photo, I'll I'll I'll send it through."
+   ],
+   "howCustomersDescribeIt": [
+    "Yeah, mate. I ended up going getting some cable ones, mate. Just it was just the price difference, to be honest. So yeah. It was it was I wish I could splurge, but just I would have got your other…",
+    "…can't supply us that, it's it's your your fault, obviously. So we'd like that product at the same price.",
+    "…So if we that one's just a bit smaller, and it would mean less adjustments in the laundry. Yep. Do you have you cannot",
+    "…So I thought I'd just quickly, yeah, just quickly give you a buzz and just understand. So the price that you've given me so the the Black Friday sale won't won't be that even though I've got a…",
+    "I'm more interested in the, the Adore one as opposed to the Cedar."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Corey Hucker",
+     "calls": 12,
+     "resolvedOnCall": 0.5,
+     "resolvedOrBooked": 1.0
+    },
+    {
+     "name": "Indigo Carthew",
+     "calls": 20,
+     "resolvedOnCall": 0.1,
+     "resolvedOrBooked": 0.9
+    },
+    {
+     "name": "Mitch Pendon",
+     "calls": 8,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.75
+    }
+   ],
+   "ticketMedianDaysToClose": 0.8,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 0.5,
+     "closed": 7
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 0.6,
+     "closed": 6
+    },
+    {
+     "name": "Reece Stoneman",
+     "medianDaysToClose": 0.6,
+     "closed": 5
+    }
+   ]
+  },
+  {
+   "issue": "Spare & replacement parts",
+   "calls": 31,
+   "tickets": 43,
+   "products": [
+    [
+     "Traditional sauna",
+     18
+    ],
+    [
+     "Ice bath & chiller",
+     17
+    ],
+    [
+     "Infrared sauna",
+     16
+    ]
+   ],
+   "models": [
+    [
+     "Eclipse",
+     4
+    ],
+    [
+     "Solaris",
+     3
+    ],
+    [
+     "Nova",
+     2
+    ],
+    [
+     "Tampere",
+     2
+    ],
+    [
+     "Aura",
+     2
+    ],
+    [
+     "Kora",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Door & glass",
+     8
+    ],
+    [
+     "Timber & seals",
+     8
+    ],
+    [
+     "Heater",
+     8
+    ],
+    [
+     "App, Wi-Fi & remote",
+     6
+    ],
+    [
+     "Chiller unit",
+     5
+    ],
+    [
+     "Filter",
+     5
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.097,
+    "F": 0.774,
+    "H": 0.065,
+    "U": 0.065
+   },
+   "upsetCallers": 6,
+   "upsetTurnedAround": 1.0,
+   "solutions": [
+    {
+     "solution": "Passed to a colleague",
+     "calls": 7,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.429
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.4
+    },
+    {
+     "solution": "Info or instructions sent",
+     "calls": 10,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.9,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.3
+    },
+    {
+     "solution": "Replacement part or unit",
+     "calls": 7,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.714,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.286
+    },
+    {
+     "solution": "Technician or electrician",
+     "calls": 7,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.857,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.286
+    },
+    {
+     "solution": "Callback or follow-up promised",
+     "calls": 11,
+     "resolvedOnCall": 0.091,
+     "resolvedOrBooked": 0.909,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.273
+    }
+   ],
+   "exampleFixes": [
+    "Okay. What I'll what I'll do yeah. No. That's fine. We we do have them, but we we can definitely get that out to you under warranty. That's not a problem. Do you happen to have your hand your order number handy at all?",
+    "…because we want those ozones are really difficult to fix on-site, so we'd have to get that sent off for repair. But I'll have a look at what options we've got to get something to you in the short term as well.",
+    "Just because we'll just need a picture so I can pass it on to the warehouse and then just get a size for the diameter as well just to make sure that we have them in our spare parts in the warehouse.",
+    "should have this we should have the spare part available. Are you able to email the pictures through and I can get our warranty guys to look at it straight away?",
+    "couple of degrees an hour. That's for sure. Are you able to text through a picture of the chiller? Because we're all different types of chillers.",
+    "Okay. What I'll do is I'll have to get I'll get our technician. It's it's an ice bath, obviously. That's what that's the issue that you've got."
+   ],
+   "howCustomersDescribeIt": [
+    "I was just having to get in touch with someone in spare parts.",
+    "So I'm gonna need a replacement hose, and I just thought, look. If I'm going in order, I might as well get some new filters because it didn't come with any spare filters.",
+    "…there. Let's say I can't figure out how to unscrew this thing or whatever. Can you can you get a part ordered anyway? Change that."
+   ],
+   "bestOnCalls": [
+    {
+     "name": "Gemma Johnston",
+     "calls": 12,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.75
+    }
+   ],
+   "ticketMedianDaysToClose": 3.0,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 2.7,
+     "closed": 8
+    },
+    {
+     "name": "Alice Ternen",
+     "medianDaysToClose": 3.2,
+     "closed": 21
+    }
+   ]
+  },
+  {
+   "issue": "Order changes & admin",
+   "calls": 13,
+   "tickets": 25,
+   "products": [
+    [
+     "Traditional sauna",
+     8
+    ],
+    [
+     "Infrared sauna",
+     6
+    ],
+    [
+     "Ice bath & chiller",
+     3
+    ]
+   ],
+   "models": [
+    [
+     "Luna",
+     1
+    ],
+    [
+     "Kora",
+     1
+    ],
+    [
+     "Nova",
+     1
+    ],
+    [
+     "Nordic Wave",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Bench & backrest",
+     2
+    ],
+    [
+     "Timber & seals",
+     1
+    ],
+    [
+     "Heater",
+     1
+    ],
+    [
+     "Sauna stones",
+     1
+    ],
+    [
+     "Chiller unit",
+     1
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.077,
+    "F": 0.462,
+    "H": 0.154,
+    "U": 0.308
+   },
+   "upsetCallers": 4,
+   "upsetTurnedAround": 1.0,
+   "solutions": [
+    {
+     "solution": "Passed to a colleague",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.4,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.2
+    }
+   ],
+   "exampleFixes": [
+    "…I'll I'll confirm everything. I've got your order number here. I'll go speak to customer service, and we'll get a new one sent out."
+   ],
+   "howCustomersDescribeIt": [
+    "Okay. And what do I tell them I'm calling? I give them my name, my order number. What do I give them as reference?",
+    "So there's definitely no one available right now. Yeah. I don't have my order number handy. I bought it, like, a while ago. So",
+    "…I searched, thank you for your purchase. Thank you for your purchase. Nope. That doesn't say order confirmation is order 167092.",
+    "Hi. Yes. You're speaking to [name] here. Yeah. I just wanted to touch base regarding the order of a sauna. So I've already placed an order. Maybe do you need the order number as the reference?",
+    "…the last one that was available, and I'm just wanting to chase that up. Are you able to check the order number and just see what's happening with that? Because after the confirmation, I never heard…"
+   ],
+   "bestOnCalls": [],
+   "ticketMedianDaysToClose": 1.0,
+   "fastestTicketOwners": [
+    {
+     "name": "Gemma Johnston",
+     "medianDaysToClose": 1.9,
+     "closed": 6
+    }
+   ]
+  },
+  {
+   "issue": "Usage & health advice",
+   "calls": 2,
+   "tickets": 8,
+   "products": [
+    [
+     "Infrared sauna",
+     5
+    ],
+    [
+     "Ice bath & chiller",
+     4
+    ],
+    [
+     "Traditional sauna",
+     2
+    ]
+   ],
+   "models": [
+    [
+     "Aura",
+     2
+    ],
+    [
+     "Kora",
+     1
+    ]
+   ],
+   "components": [
+    [
+     "Door & glass",
+     1
+    ],
+    [
+     "Lights",
+     1
+    ],
+    [
+     "Filter",
+     1
+    ],
+    [
+     "Heater",
+     1
+    ]
+   ],
+   "callOutcomes": {
+    "R": 0.5,
+    "F": 0.0,
+    "H": 0.5,
+    "U": 0.0
+   },
+   "upsetCallers": 0,
+   "upsetTurnedAround": null,
+   "solutions": [],
+   "exampleFixes": [],
+   "howCustomersDescribeIt": [],
+   "bestOnCalls": [],
+   "ticketMedianDaysToClose": 1.4,
+   "fastestTicketOwners": []
+  }
+ ]
+}

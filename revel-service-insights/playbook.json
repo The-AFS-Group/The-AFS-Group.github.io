@@ -1,15 +1,15 @@
 {
- "generated": "2026-10-30 16:40",
+ "generated": "2026-11-01 08:53",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1094,
+   "calls": 1096,
    "tickets": 501,
    "products": [
     [
      "Traditional sauna",
-     277
+     278
     ],
     [
      "Ice bath & chiller",
@@ -17,7 +17,7 @@
     ],
     [
      "Infrared sauna",
-     149
+     150
     ]
    ],
    "models": [
@@ -34,12 +34,12 @@
      28
     ],
     [
-     "Glacier",
+     "Nordic Wave",
      19
     ],
     [
-     "Nordic Wave",
-     18
+     "Glacier",
+     19
     ],
     [
      "Eclipse",
@@ -74,12 +74,12 @@
    ],
    "callOutcomes": {
     "R": 0.203,
-    "F": 0.533,
+    "F": 0.534,
     "H": 0.044,
     "U": 0.22
    },
-   "upsetCallers": 142,
-   "upsetTurnedAround": 0.845,
+   "upsetCallers": 143,
+   "upsetTurnedAround": 0.846,
    "solutions": [
     {
      "solution": "Troubleshot on the call",
@@ -91,11 +91,11 @@
     },
     {
      "solution": "Info or instructions sent",
-     "calls": 183,
+     "calls": 184,
      "resolvedOnCall": 0.027,
      "resolvedOrBooked": 0.94,
      "upsetTurnedAround": 0.846,
-     "endedPositive": 0.423
+     "endedPositive": 0.42
     },
     {
      "solution": "Replacement part or unit",
@@ -131,11 +131,11 @@
     },
     {
      "solution": "Delivery rebooked or chased",
-     "calls": 79,
-     "resolvedOnCall": 0.215,
-     "resolvedOrBooked": 0.848,
+     "calls": 80,
+     "resolvedOnCall": 0.212,
+     "resolvedOrBooked": 0.85,
      "upsetTurnedAround": 0.8,
-     "endedPositive": 0.367
+     "endedPositive": 0.361
     },
     {
      "solution": "Callback or follow-up promised",
@@ -218,12 +218,12 @@
   },
   {
    "issue": "Assembly & installation",
-   "calls": 553,
+   "calls": 554,
    "tickets": 226,
    "products": [
     [
      "Traditional sauna",
-     296
+     297
     ],
     [
      "Infrared sauna",
@@ -287,8 +287,8 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.221,
-    "F": 0.535,
+    "R": 0.222,
+    "F": 0.534,
     "H": 0.067,
     "U": 0.177
    },
@@ -975,12 +975,12 @@
   },
   {
    "issue": "Ice bath chiller & cooling",
-   "calls": 145,
+   "calls": 146,
    "tickets": 210,
    "products": [
     [
      "Ice bath & chiller",
-     333
+     334
     ],
     [
      "Traditional sauna",
@@ -994,7 +994,7 @@
    "models": [
     [
      "Glacier",
-     26
+     27
     ],
     [
      "Arctic",
@@ -1020,7 +1020,7 @@
    "components": [
     [
      "Chiller unit",
-     297
+     298
     ],
     [
      "Pump & flow",
@@ -1044,10 +1044,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.214,
-    "F": 0.455,
-    "H": 0.069,
-    "U": 0.262
+    "R": 0.212,
+    "F": 0.459,
+    "H": 0.068,
+    "U": 0.26
    },
    "upsetCallers": 31,
    "upsetTurnedAround": 0.839,
@@ -1118,11 +1118,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 56,
-     "resolvedOnCall": 0.161,
-     "resolvedOrBooked": 0.714,
+     "calls": 57,
+     "resolvedOnCall": 0.158,
+     "resolvedOrBooked": 0.719,
      "upsetTurnedAround": 0.692,
-     "endedPositive": 0.127
+     "endedPositive": 0.125
     }
    ],
    "exampleFixes": [
@@ -1395,7 +1395,7 @@
   },
   {
    "issue": "Electrical, power & tripping",
-   "calls": 246,
+   "calls": 247,
    "tickets": 101,
    "products": [
     [
@@ -1404,7 +1404,7 @@
     ],
     [
      "Infrared sauna",
-     58
+     59
     ],
     [
      "Ice bath & chiller",
@@ -1425,12 +1425,12 @@
      8
     ],
     [
-     "Nordic Wave",
+     "Nova",
      7
     ],
     [
-     "Nova",
-     6
+     "Nordic Wave",
+     7
     ],
     [
      "Glacier",
@@ -1444,7 +1444,7 @@
     ],
     [
      "Power cable & plug",
-     54
+     55
     ],
     [
      "Control panel / controller",
@@ -1464,13 +1464,13 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.244,
-    "F": 0.492,
+    "R": 0.243,
+    "F": 0.49,
     "H": 0.073,
-    "U": 0.191
+    "U": 0.194
    },
-   "upsetCallers": 27,
-   "upsetTurnedAround": 0.963,
+   "upsetCallers": 28,
+   "upsetTurnedAround": 0.964,
    "solutions": [
     {
      "solution": "Warranty claim raised",
@@ -1487,6 +1487,14 @@
      "resolvedOrBooked": 0.889,
      "upsetTurnedAround": 1.0,
      "endedPositive": 0.444
+    },
+    {
+     "solution": "Refund, credit or return",
+     "calls": 5,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.4
     },
     {
      "solution": "Explained how it works",
@@ -2219,12 +2227,12 @@
   },
   {
    "issue": "Cleaning, water care & maintenance",
-   "calls": 111,
+   "calls": 112,
    "tickets": 70,
    "products": [
     [
      "Ice bath & chiller",
-     112
+     113
     ],
     [
      "Traditional sauna",
@@ -2238,7 +2246,7 @@
    "models": [
     [
      "Glacier",
-     10
+     11
     ],
     [
      "Eclipse",
@@ -2288,13 +2296,13 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.27,
-    "F": 0.559,
-    "H": 0.063,
-    "U": 0.108
+    "R": 0.268,
+    "F": 0.554,
+    "H": 0.062,
+    "U": 0.116
    },
-   "upsetCallers": 31,
-   "upsetTurnedAround": 0.871,
+   "upsetCallers": 32,
+   "upsetTurnedAround": 0.875,
    "solutions": [
     {
      "solution": "Passed to a colleague",
@@ -2330,11 +2338,11 @@
     },
     {
      "solution": "Replacement part or unit",
-     "calls": 21,
-     "resolvedOnCall": 0.381,
-     "resolvedOrBooked": 0.857,
-     "upsetTurnedAround": 0.889,
-     "endedPositive": 0.333
+     "calls": 22,
+     "resolvedOnCall": 0.364,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 0.9,
+     "endedPositive": 0.318
     },
     {
      "solution": "Technician or electrician",
@@ -2384,16 +2392,16 @@
      "resolvedOrBooked": 0.905
     },
     {
-     "name": "Matthew Taylor",
-     "calls": 8,
-     "resolvedOnCall": 0.375,
-     "resolvedOrBooked": 0.875
-    },
-    {
      "name": "Gemma Johnston",
      "calls": 14,
      "resolvedOnCall": 0.214,
      "resolvedOrBooked": 0.857
+    },
+    {
+     "name": "Matthew Taylor",
+     "calls": 9,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 0.778
     }
    ],
    "ticketMedianDaysToClose": 3.0,

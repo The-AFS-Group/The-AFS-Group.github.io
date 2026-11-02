@@ -51,7 +51,8 @@ SERVICE_FILTERS = {"ai_classified_post_purchase", "post_purchase_service"}
 SATISFACTION = {"very_satisfied": 2, "satisfied": 1, "neutral": 0, "dissatisfied": -1, "very_dissatisfied": -2}
 
 _GREETING_NAME = re.compile(r"\b((?i:thanks|thank you|cheers|hi|hey|hello|bye|morning|afternoon|sorry|mate)),? ((?!Revel|Rebel)[A-Z][a-z]+)\b")
-_SELF_NAME = re.compile(r"\b((?i:this is|my name is|it'?s|you'?re speaking (?:to|with)|speaking with)) ((?!Revel|Rebel)[A-Z][a-z]+(?: [A-Z][a-z]+)?)")
+_SELF_NAME = re.compile(r"\b((?i:this is|my name is|my name'?s|it'?s|you'?re speaking (?:to|with)|speaking with)) ((?!Revel|Rebel)[A-Z][a-z]+(?: [A-Z][a-z]+)?)")
+_SWEAR = re.compile(r"\b(f)u?ck(?:ing|ed|in)?\b|\b(s)hit\b|\b(c)unt\b", re.I)
 _NAME_SPEAKING = re.compile(r"\b(?!Revel|Rebel)[A-Z][a-z]+(?: [A-Z][a-z]+)? (speaking)\b")
 _ADDRESS = re.compile(r"\b\d{1,5}[a-z]?\s+(?:[A-Z][a-z]+\s+){1,3}(?:Road|Rd|Street|St|Avenue|Ave|Drive|Dr|Court|Ct|Place|Pl|Lane|Ln|Crescent|Cres|"
                       r"Parade|Pde|Highway|Hwy|Way|Close|Terrace|Tce|Boulevard|Grove|Circuit|Cct|Esplanade|Rise|Square)\b[^.?!]{0,60}")
@@ -71,6 +72,7 @@ def scrub(text, limit):
     text = _NAME_SPEAKING.sub(r"[name] \1", text)
     text = _ADDRESS.sub("[address]", text)
     text = re.sub(r"\b(?:SO|PO)\d{6,}", "[order]", text)
+    text = _SWEAR.sub(lambda m: (m.group(1) or m.group(2) or m.group(3)) + "***", text)
     return sales.scrub(text, limit)
 
 
@@ -157,6 +159,24 @@ def fix_line(turns, issue, width=220):
     return scrub(sales.window(best, rx, width), width + 2)
 
 
+def upset_line(turns, width=200):
+    """The customer's most upset line, preferring the end of the call, cut down around the first upset phrase."""
+    total = sum(len(t) for _, t in turns) or 1
+    pos, best, best_score = 0, "", 0
+    for speaker, text in turns:
+        late = pos / total >= 0.5
+        pos += len(text)
+        if speaker != "external" or len(text.split()) < 8 or _IVR.search(text):
+            continue
+        score = service.hits(service.UPSET_SIGNALS, text) * (1.5 if late else 1)
+        if score > best_score:
+            best, best_score = text, score
+    if not best:
+        return ""
+    rx = next(r for r in service.UPSET_SIGNALS if r.search(best))
+    return scrub(sales.window(best, rx, width), width + 2)
+
+
 def headline(row):
     note = (row.get("filter_details") or "").strip()
     if note.startswith("AI:"):
@@ -200,6 +220,14 @@ def build_calls(rows):
         result = service.outcome(seg.get(("internal", "wrap"), ""), seg.get(("external", "wrap"), ""), closing)
         text = f"{head} {customer} {rep}"
         agent = (row.get("agent") or "").strip() or "Unassigned"
+        supplier = bool(_SUPPLIER.search(f"{customer[:600]} {rep[:600]}"))
+        reasons, quote = [], ""
+        if not supplier and (opening < 0 or closing < 0):
+            reasons = service.upset_reasons(customer, seg.get(("external", "close"), ""))
+            # Nothing said outright: let how the call ended speak for it.
+            if reasons == [service.OTHER_UPSET] and result in ("H", "U"):
+                reasons = ["Passed around, no one owns it" if result == "H" else "No clear answer or date"]
+            quote = upset_line(turns)
         calls.append({
             "id": row.get("call_id"),
             "d": when.strftime("%Y-%m-%d"),
@@ -218,7 +246,9 @@ def build_calls(rows):
             "mo": opening,
             "mc": closing,
             "sat": SATISFACTION.get(row.get("customer_satisfaction_apparent")),
-            "sup": 1 if _SUPPLIER.search(f"{customer[:600]} {rep[:600]}") else 0,
+            "sup": 1 if supplier else 0,
+            "ur": reasons,
+            "uq": quote,
             "sum": scrub(head, 200),
             "fix": fix_line(turns, issue),
             "cq": best_line(turns, "external", ISSUE_RX.get(issue, []), 200),
@@ -287,6 +317,8 @@ def playbook(agents, calls, owners, tickets):
             "components": Counter(m for c in cs + ts for m in c["cmp"]).most_common(6),
             "callOutcomes": {k: _rate(sum(c["res"] == k for c in cs), len(cs)) for k in service.OUTCOMES},
             "upsetCallers": len(upset),
+            "whyCallersLeftUpset": Counter(r for c in cust if c["mc"] < 0 for r in c["ur"]).most_common(),
+            "whyTicketsOpenedUpset": Counter(r for t in ts if t.get("mo", 0) < 0 for r in t.get("ur", [])).most_common(),
             "upsetTurnedAround": _rate(sum(c["mc"] >= 0 for c in upset), len(upset)),
             "solutions": sols,
             "exampleFixes": fixes,
@@ -343,6 +375,7 @@ def main():
         "solutions": service.SOLUTION_LABELS,
         "components": service.COMPONENT_LABELS,
         "outcomes": service.OUTCOMES,
+        "upsetReasons": service.UPSET_REASON_LABELS + [service.OTHER_UPSET],
         "productCategories": taxonomy.PRODUCT_CATEGORIES,
         "pipelines": {k: v for k, v in hubspot.PIPELINES.values()},
         "calls": calls,

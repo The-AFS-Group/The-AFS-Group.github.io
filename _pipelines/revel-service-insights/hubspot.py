@@ -145,6 +145,8 @@ def derive(raw, owners, product_categories):
         else:
             issue, more = service.classify_issue(headline, body)
         text = f"{headline} {body}"
+        # The customer's mood in their first message, and why, for tickets they opened.
+        mood = service.mood(f"{subject} {body}", upset_at=2) if issue != service.ADMIN_NOTICE else 0
         closed = _when(p.get("closed_date"))
         stage = p.get("hs_pipeline_stage") or ""
         owner = (owners.get(str(p.get("hubspot_owner_id") or "")) or "Unassigned").strip() or "Unassigned"
@@ -170,6 +172,8 @@ def derive(raw, owners, product_categories):
             "cat": product_categories("", headline, body),
             "mdl": service.models(text),
             "cmp": service.components(text) if issue != service.ADMIN_NOTICE else [],
+            "mo": mood,
+            "ur": service.upset_reasons(f"{subject} {body}") if mood < 0 else [],
         })
     rows.sort(key=lambda r: (r["d"], r["id"]))
     return {"owners": owner_names, "tickets": rows}

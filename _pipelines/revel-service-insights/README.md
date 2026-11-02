@@ -46,6 +46,15 @@ from `../revel-call-insights/`.
   calls that have one: dissatisfied calls read upset at some point 50% of the time vs 16-20% for
   satisfied ones, and opened-upset callers who ended positive were 42% of very satisfied vs 10% of
   dissatisfied. Calls to the 3PL, couriers and installers are flagged (`sup`) and left out of mood.
+- **Why upset.** Calls that ended upset (and tickets whose first email reads upset) are matched against
+  nine reasons: waiting too long, chasing a call back, still faulty or a repeat problem, can't use it or
+  losing money, installer or delivery let them down, cost or refund dispute, passed around, no clear
+  answer or date, and disappointed with the product. Up to two per call; on calls the last third counts
+  double. When nothing is said outright, a call that was handed over or ended with no clear resolution
+  takes that as its reason. Each upset call keeps one scrubbed quote (`uq`), the customer's line with the
+  most upset signals, preferring the second half of the call. Ticket mood needs two upset signals
+  (`upset_at=2`), because "asap" alone is just polite urgency in an email. Casual swearing doesn't count
+  as anger, and quotes have it masked.
 - **Approaches** (rep's lines): troubleshooting, explaining, replacement part, technician, photos,
   warranty claim, delivery, refund, info sent, callback, handover. The dashboard ranks them by how
   often the customer *ended positive*, because booking-type approaches are "next step booked" by

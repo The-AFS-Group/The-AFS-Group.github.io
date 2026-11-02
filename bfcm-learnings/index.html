@@ -169,8 +169,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
         </div>
         <div class="field" id="f-team">
           <label for="team">Team</label>
-          <input type="text" id="team" list="team-list" autocapitalize="words" maxlength="80" placeholder="e.g. Paid Media, Showroom">
-          <datalist id="team-list"></datalist>
+          <select id="team"><option value="">Choose&hellip;</option></select>
           <div class="err"></div>
         </div>
       </div>
@@ -263,7 +262,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
   (CFG.DEPARTMENTS || []).concat(['Other']).forEach(function (d) {
     var o = document.createElement('option'); o.value = d; o.textContent = d; deptSel.appendChild(o);
   });
-  (CFG.TEAMS || []).forEach(function (t) { var o = document.createElement('option'); o.value = t; $('team-list').appendChild(o); });
+  (CFG.TEAMS || []).forEach(function (t) { var o = document.createElement('option'); o.value = t; o.textContent = t; $('team').appendChild(o); });
 
   var brandsEl = $('brands');
   (CFG.BRANDS || []).filter(function (b) { return b !== 'Other'; }).concat(['Other']).forEach(function (b) {
@@ -306,7 +305,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
     $('name').value = me.name || '';
     if (me.department && (CFG.DEPARTMENTS || []).indexOf(me.department) >= 0) deptSel.value = me.department;
     else if (me.department) { deptSel.value = 'Other'; $('dept-other').value = me.department; $('f-dept-other').hidden = false; }
-    $('team').value = me.team || '';
+    if ((CFG.TEAMS || []).indexOf(me.team) >= 0) $('team').value = me.team;
   }
   var draft = load(DRAFT_KEY, null);
   var voiceUsed = false;
@@ -442,7 +441,8 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
   function clearErr(which) {
     if (which === 'learn') { $('learn-err').textContent = ''; document.querySelectorAll('.learning').forEach(function (b) { b.classList.remove('bad'); }); }
   }
-  ['name', 'team', 'dept-other'].forEach(function (id) { $(id).addEventListener('input', function () { setErr('f-' + id, ''); }); });
+  ['name', 'dept-other'].forEach(function (id) { $(id).addEventListener('input', function () { setErr('f-' + id, ''); }); });
+  $('team').addEventListener('change', function () { setErr('f-team', ''); });
   deptSel.addEventListener('change', function () { setErr('f-dept', ''); });
 
   function department() { return deptSel.value === 'Other' ? $('dept-other').value.trim() : deptSel.value; }
@@ -454,7 +454,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
     if (!$('name').value.trim()) fail('f-name', 'Please add your name', $('name'));
     if (!deptSel.value) fail('f-dept', 'Choose your department', deptSel);
     else if (deptSel.value === 'Other' && !$('dept-other').value.trim()) fail('f-dept-other', 'Type your department', $('dept-other'));
-    if (!$('team').value.trim()) fail('f-team', 'Add your team (or your department again)', $('team'));
+    if (!$('team').value) fail('f-team', 'Choose your team', $('team'));
     var any = FIELDS.some(function (k) { return $(k).value.trim(); });
     if (!any) {
       ok = false;

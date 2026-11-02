@@ -4,10 +4,10 @@ window.BFCM_CONFIG = {
   ENDPOINT: '',
   // Must match SUBMIT_TOKEN in the Apps Script project's Script Properties.
   // This token can only add learnings, never read them.
-  TOKEN: '',
+  TOKEN: 'bfcm-7WesRNekhymGg8UgJNaqIg22W3BQovZ_',
 
   // Saved against every response, so the same Sheet can hold next year's event too.
-  // Change both lines for the next event (e.g. 'BFCM 2027', 'Boxing Day 2026').
+  // Change these three lines for the next event (e.g. 'BFCM 2027', 'Boxing Day 2026').
   EVENT: 'BFCM 2026',
   EVENT_LABEL: 'Black Friday / Cyber Monday 2026',
   HEADLINE: 'What did Black Friday and Cyber Monday teach us?',
@@ -45,13 +45,16 @@ window.BFCM_CONFIG = {
     'Force USA'
   ],
 
-  // Optional "which brand does this relate to?" chips. Check the list with Marketing.
+  // Optional "which brand does this relate to?" chips.
+  // "Other" is added automatically, with a box to type the brand name.
   BRANDS: [
     'Gym and Fitness',
     'Revel Saunas',
     'Force USA',
     'WaterRower / Nohrd',
     'NordicTrack + iFIT',
+    'Nike Strength',
+    'Rep Fitness',
     'Whole group'
   ]
 };

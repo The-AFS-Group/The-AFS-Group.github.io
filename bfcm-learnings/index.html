@@ -180,6 +180,9 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
       <h2><span class="n">2</span>Which brand is this about?</h2>
       <p class="lead">Optional. Pick any that apply.</p>
       <div class="chips" id="brands"></div>
+      <div class="field" id="f-brand-other" hidden style="margin-top:12px">
+        <input type="text" id="brand-other" maxlength="60" placeholder="Which brand?" aria-label="Which other brand?">
+      </div>
     </section>
 
     <section class="card" id="learnings">
@@ -263,10 +266,14 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
   (CFG.TEAMS || []).forEach(function (t) { var o = document.createElement('option'); o.value = t; $('team-list').appendChild(o); });
 
   var brandsEl = $('brands');
-  (CFG.BRANDS || []).forEach(function (b) {
+  (CFG.BRANDS || []).filter(function (b) { return b !== 'Other'; }).concat(['Other']).forEach(function (b) {
     var c = document.createElement('button');
     c.type = 'button'; c.className = 'chip'; c.textContent = b; c.dataset.brand = b; c.setAttribute('aria-pressed', 'false');
-    c.addEventListener('click', function () { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); saveDraft(); });
+    c.addEventListener('click', function () {
+      c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true');
+      syncBrandOther(b === 'Other');
+      saveDraft();
+    });
     brandsEl.appendChild(c);
   });
   function selectedBrands() {
@@ -274,7 +281,19 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
   }
   function setBrands(list) {
     brandsEl.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', list.indexOf(c.dataset.brand) >= 0 ? 'true' : 'false'); });
+    syncBrandOther(false);
   }
+  function syncBrandOther(focus) {
+    var on = selectedBrands().indexOf('Other') >= 0;
+    $('f-brand-other').hidden = !on;
+    if (on && focus) $('brand-other').focus();
+  }
+  // "Other" is sent as "Other: <name>" when a name is typed. Commas would split it into two brands in the Sheet.
+  function brandsForRecord() {
+    var other = $('brand-other').value.replace(/,/g, ' /').replace(/\s+/g, ' ').trim();
+    return selectedBrands().map(function (b) { return b === 'Other' && other ? 'Other: ' + other : b; });
+  }
+  $('brand-other').addEventListener('input', function () { saveDraft(); });
 
   deptSel.addEventListener('change', function () {
     $('f-dept-other').hidden = deptSel.value !== 'Other';
@@ -293,11 +312,12 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
   var voiceUsed = false;
   if (draft) {
     FIELDS.forEach(function (k) { $(k).value = draft[k] || ''; });
+    $('brand-other').value = draft.brandOther || '';
     setBrands(draft.brands || []);
     voiceUsed = !!draft.voiceUsed;
   }
   function saveDraft() {
-    var d = { brands: selectedBrands(), voiceUsed: voiceUsed };
+    var d = { brands: selectedBrands(), brandOther: $('brand-other').value, voiceUsed: voiceUsed };
     FIELDS.forEach(function (k) { d[k] = $(k).value; });
     save(DRAFT_KEY, d);
   }
@@ -464,7 +484,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
       name: $('name').value.trim(),
       department: department(),
       team: $('team').value.trim(),
-      brands: selectedBrands(),
+      brands: brandsForRecord(),
       worked: $('worked').value.trim(),
       didntWork: $('didntWork').value.trim(),
       nextTime: $('nextTime').value.trim(),
@@ -474,6 +494,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--navy); }
     enqueue(rec);
     // Clear the answers now the record is safely queued.
     FIELDS.forEach(function (k) { $(k).value = ''; autoGrow($(k)); });
+    $('brand-other').value = '';
     setBrands([]);
     voiceUsed = false;
     drop(DRAFT_KEY);

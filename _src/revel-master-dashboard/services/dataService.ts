@@ -1,5 +1,5 @@
 
-import { BrandData, BrandBudget, BrandInstagram, DayData, DayBudget, InstagramPost, ProductPerformance, ProductTrend, ProductInsightsData, CategoryInsights, SubCategoryInsight, SubCategoryProduct, BhagData, PeriodStats } from "../types";
+import { BrandData, BrandBudget, BrandInstagram, DayData, DayBudget, InstagramPost, ProductPerformance, ProductTrend, ProductInsightsData, CategoryInsights, SubCategoryInsight, SubCategoryProduct, BhagData, PeriodStats, RevelPerformanceFeed, LeadDay, PerfProduct, AdCreative } from "../types";
 import { parseCSV } from "../utils/helpers";
 
 console.log("🔄 FORCE UPDATE: Data Service Loaded (Revel Edition - Smart Headers - Universal Posts - BHAG v2)");
@@ -19,7 +19,10 @@ const URLS = {
   },
   SALES: {
     ets: "https://docs.google.com/spreadsheets/d/e/2PACX-1vRPpWKad4OJFAb7-SYb9-yz8sj1q8UpbcSoYTVwLUWvaqPsEMUunpZTlfiDdiLkqlRm3g9Y0_Zqxkqt/pub?gid=88121376&single=true&output=csv"
-  }
+  },
+  // Daily JSON behind the Revel Performance Dashboard (Meta, Google, GA4, HubSpot, Shopify).
+  // Rebuilt every morning; served with Access-Control-Allow-Origin: *.
+  PERF: "https://revel-perf-dashboard.pages.dev/revel-performance-data.json"
 };
 
 const safeFetch = async (url: string, options?: RequestInit, timeoutMs = 60000): Promise<string> => {
@@ -288,7 +291,7 @@ const parseMainData = (csvText: string, brandType: string): { data: DayData[], b
   return { data, budgetData, quarterData, quarterBudgetData, allData, allBudgetData, periodStats: { currentPeriod, priorPeriod } };
 };
 
-const parseIgData = (csvText: string, brandType: string): InstagramPost[] => {
+const parseIgData = (csvText: string, brandType: string, days = 30, limit: number | null = 5): InstagramPost[] => {
   if (!csvText || csvText.trim() === "") return [];
 
   const rawRows = parseCSVRaw(csvText);
@@ -319,7 +322,7 @@ const parseIgData = (csvText: string, brandType: string): InstagramPost[] => {
   const posts: InstagramPost[] = [];
   const now = new Date();
   const cutoffDate = new Date();
-  cutoffDate.setDate(now.getDate() - 30);
+  cutoffDate.setDate(now.getDate() - days);
 
   dataRows.forEach(rowArr => {
     const getVal = (key: string) => {
@@ -342,8 +345,8 @@ const parseIgData = (csvText: string, brandType: string): InstagramPost[] => {
 
     if (dateStr) {
         const cleanDateStr = dateStr.trim();
-        // Try direct parse
-        const directDate = new Date(cleanDateStr);
+        // Try direct parse ("2026-10-08 15:26:31" needs the T for Safari)
+        const directDate = new Date(/^\d{4}-\d{2}-\d{2} \d/.test(cleanDateStr) ? cleanDateStr.replace(" ", "T") : cleanDateStr);
         if (!isNaN(directDate.getTime())) {
             rowDate = directDate;
         } else {
@@ -386,10 +389,12 @@ const parseIgData = (csvText: string, brandType: string): InstagramPost[] => {
          shares: parseInt(cleanNumber(getVal("Shares"))) || 0,
          totalInteractions: parseInt(cleanNumber(getVal("Total Interactions"))) || 0,
          views: parseInt(cleanNumber(getVal("Views"))) || parseInt(cleanNumber(getVal("Impressions"))) || 0,
+         publishedAt: rowDate.toISOString(),
     });
   });
 
-  return posts.sort((a, b) => b.totalInteractions - a.totalInteractions).slice(0, 5);
+  const sorted = posts.sort((a, b) => b.totalInteractions - a.totalInteractions);
+  return limit === null ? sorted : sorted.slice(0, limit);
 };
 
 // --- PRODUCT INSIGHTS PARSERS ---
@@ -1315,3 +1320,134 @@ export const fetchProductInsightsData = async (forceRefresh = false): Promise<Pr
         return { performance: [], trends: [] };
     }
 }
+
+// --- BFCM ---
+
+/**
+ * The REVEL DATA tab (same sheet as Sales Health), every row including today's partial
+ * row and the future budget-only rows. Skips the 15-minute cache so the BFCM view can
+ * poll it for the live day. Google's publish-to-web copy itself refreshes every ~5 minutes.
+ */
+export const fetchRevelDailyData = async (): Promise<{ allData: DayData[]; allBudgetData: DayBudget[]; fetchedAt: number }> => {
+  const sep = URLS.REVEL.main.includes("?") ? "&" : "?";
+  const csv = await safeFetch(`${URLS.REVEL.main}${sep}_ts=${Date.now()}`, { cache: "no-store", priority: "high" } as RequestInit);
+  const parsed = parseMainData(csv, "REVEL");
+  const result = { allData: parsed.allData, allBudgetData: parsed.allBudgetData, fetchedAt: Date.now() };
+  if (parsed.allData.length > 0) setCachedData("bfcm_daily_data", result);
+  return result;
+};
+
+/** Every Instagram post from the REVEL IG FEED tab published in the last `days` days. */
+export const fetchRecentInstagramPosts = async (days = 7, forceRefresh = false): Promise<InstagramPost[]> => {
+  const cacheKey = `instagram_recent_${days}`;
+  if (!forceRefresh && !isCacheStale(cacheKey)) {
+    const cached = getCachedData<InstagramPost[]>(cacheKey);
+    if (cached) return cached;
+  }
+  const csv = await safeFetch(URLS.REVEL.ig);
+  const posts = parseIgData(csv, "REVEL", days, null);
+  setCachedData(cacheKey, posts);
+  return posts;
+};
+
+const num = (v: any): number => {
+  const n = typeof v === "number" ? v : parseFloat(v);
+  return isFinite(n) ? n : 0;
+};
+
+const toPerfProducts = (rows: any): PerfProduct[] =>
+  Array.isArray(rows)
+    ? rows.map((r: any) => ({
+        handle: String(r.handle || ""),
+        title: String(r.title || r.handle || "Unknown product"),
+        sessions: num(r.sessions),
+        atc: num(r.atc),
+        orders: num(r.orders),
+        revenue: num(r.revenue),
+        cvr: num(r.cvr),
+      }))
+    : [];
+
+/**
+ * Pulls the pieces of the Revel performance feed the BFCM view needs and drops the rest
+ * (the file is ~3 MB): HubSpot list growth (leads), Shopify product sales for 7d / 30d,
+ * Meta ad creative for 7d and the organic Instagram posts.
+ */
+export const fetchRevelPerformanceFeed = async (forceRefresh = false): Promise<RevelPerformanceFeed | null> => {
+  const cacheKey = "revel_perf_feed";
+  if (!forceRefresh && !isCacheStale(cacheKey)) {
+    const cached = getCachedData<RevelPerformanceFeed>(cacheKey);
+    if (cached) return cached;
+  }
+
+  const text = await safeFetch(`${URLS.PERF}?_ts=${Date.now()}`, { cache: "no-store" } as RequestInit);
+  if (!text) return getCachedData<RevelPerformanceFeed>(cacheKey);
+
+  try {
+    const d = JSON.parse(text);
+
+    // Leads: daily net change in the HubSpot master list
+    const list = d?.hubspot?.["30d"]?.list || d?.hubspot?.["7d"]?.list || d?.hubspot?.yesterday?.list || {};
+    const history: { date: string; size: number }[] = (Array.isArray(list.history) ? list.history : [])
+      .map((h: any) => ({ date: String(h.date || "").slice(0, 10), size: num(h.size) }))
+      .filter((h: { date: string; size: number }) => /^\d{4}-\d{2}-\d{2}$/.test(h.date) && h.size > 0)
+      .sort((a: { date: string }, b: { date: string }) => a.date.localeCompare(b.date));
+    const leads: LeadDay[] = history.map((h, i) => ({
+      date: h.date,
+      listSize: h.size,
+      newLeads: i === 0 ? 0 : h.size - history[i - 1].size,
+    })).slice(1);
+
+    const creative: AdCreative[] = (Array.isArray(d?.meta?.["7d"]?.creative) ? d.meta["7d"].creative : []).map((c: any) => ({
+      adId: String(c.adId || ""),
+      adName: String(c.adName || ""),
+      campaign: String(c.campaign || ""),
+      body: String(c.body || c.title || ""),
+      thumbnailUrl: String(c.thumbnailUrl || c.imageUrl || ""),
+      previewLink: String(c.previewLink || ""),
+      spend: num(c.spend),
+      impressions: num(c.impressions),
+      clicks: num(c.clicks),
+      outboundClicks: num(c.outboundClicks),
+      ctr: num(c.ctr),
+      purchases: num(c.purchases),
+      addToCart: num(c.addToCart),
+      engagements: num(c.engagements),
+    }));
+
+    const igPosts: InstagramPost[] = (Array.isArray(d?.organic?.ig?.posts) ? d.organic.ig.posts : []).map((p: any) => {
+      const likes = num(p.likes);
+      const comments = num(p.comments);
+      // "2026-10-30T21:18:28+0000": add the colon to the offset so every browser parses it
+      const ts = p.timestamp ? new Date(String(p.timestamp).replace(/([+-]\d{2})(\d{2})$/, "$1:$2")) : null;
+      return {
+        thumbnailUrl: String(p.thumbnail || p.thumbnailUrl || ""),
+        permalink: String(p.permalink || ""),
+        caption: String(p.caption || ""),
+        totalInteractions: likes + comments,
+        views: 0,
+        likes,
+        comments,
+        shares: 0,
+        reach: 0,
+        publishedAt: ts && !isNaN(ts.getTime()) ? ts.toISOString() : undefined,
+      };
+    });
+
+    const result: RevelPerformanceFeed = {
+      generatedAt: String(d?.generated_at || ""),
+      leadListName: String(list.name || "HubSpot list"),
+      leads,
+      products7d: toPerfProducts(d?.products?.["7d"]),
+      products30d: toPerfProducts(d?.products?.["30d"]),
+      productsThrough: String(d?.sales?.["7d"]?.dataThrough || ""),
+      adCreative7d: creative,
+      igPosts,
+    };
+    setCachedData(cacheKey, result);
+    return result;
+  } catch (error) {
+    console.error("💥 Revel performance feed parse error:", error);
+    return getCachedData<RevelPerformanceFeed>(cacheKey);
+  }
+};

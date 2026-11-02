@@ -132,6 +132,52 @@ export interface InstagramPost {
   comments: number;
   shares: number;
   reach: number;
+  publishedAt?: string; // ISO timestamp, when the source has one
+}
+
+// BFCM Types (fed by the Revel performance feed, revel-performance-data.json)
+export interface LeadDay {
+  date: string; // YYYY-MM-DD
+  listSize: number;
+  newLeads: number; // net change in the HubSpot list vs the previous snapshot
+}
+
+export interface PerfProduct {
+  handle: string;
+  title: string;
+  sessions: number;
+  atc: number;
+  orders: number;
+  revenue: number;
+  cvr: number;
+}
+
+export interface AdCreative {
+  adId: string;
+  adName: string;
+  campaign: string;
+  body: string;
+  thumbnailUrl: string;
+  previewLink: string;
+  spend: number;
+  impressions: number;
+  clicks: number;
+  outboundClicks: number;
+  ctr: number;
+  purchases: number;
+  addToCart: number;
+  engagements: number;
+}
+
+export interface RevelPerformanceFeed {
+  generatedAt: string;
+  leadListName: string;
+  leads: LeadDay[];
+  products7d: PerfProduct[];
+  products30d: PerfProduct[];
+  productsThrough: string;
+  adCreative7d: AdCreative[];
+  igPosts: InstagramPost[];
 }
 
 export interface PeriodStats {

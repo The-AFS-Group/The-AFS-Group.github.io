@@ -1,0 +1,57 @@
+// Edit this file after deploying the Apps Script (see README.md).
+window.BFCM_CONFIG = {
+  // Apps Script web app URL (ends in /exec). Leave blank to test without sending.
+  ENDPOINT: '',
+  // Must match SUBMIT_TOKEN in the Apps Script project's Script Properties.
+  // This token can only add learnings, never read them.
+  TOKEN: '',
+
+  // Saved against every response, so the same Sheet can hold next year's event too.
+  // Change both lines for the next event (e.g. 'BFCM 2027', 'Boxing Day 2026').
+  EVENT: 'BFCM 2026',
+  EVENT_LABEL: 'Black Friday / Cyber Monday 2026',
+  HEADLINE: 'What did Black Friday and Cyber Monday teach us?',
+
+  // Shown as a dropdown. "Other" is added automatically.
+  DEPARTMENTS: [
+    'Marketing',
+    'Ecommerce',
+    'Sales',
+    'Retail & Showrooms',
+    'Commercial',
+    'Wholesale',
+    'Customer Service',
+    'Warehouse & Logistics',
+    'Buying & Product',
+    'Finance',
+    'IT & Systems',
+    'Leadership'
+  ],
+
+  // Suggestions only. Staff can type any team name.
+  TEAMS: [
+    'Paid Media & Search',
+    'Organic Social',
+    'Email, SMS & Retention',
+    'Creative & Content',
+    'Website',
+    'Showroom',
+    'Phone & Chat Sales',
+    'Service Desk',
+    'Dispatch',
+    'Inventory & Planning',
+    'Gym and Fitness',
+    'Revel Saunas',
+    'Force USA'
+  ],
+
+  // Optional "which brand does this relate to?" chips. Check the list with Marketing.
+  BRANDS: [
+    'Gym and Fitness',
+    'Revel Saunas',
+    'Force USA',
+    'WaterRower / Nohrd',
+    'NordicTrack + iFIT',
+    'Whole group'
+  ]
+};

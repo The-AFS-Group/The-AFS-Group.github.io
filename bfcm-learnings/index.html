@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2A44">
+<title>BFCM Learnings</title>
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0E2A44;
+  --navy-2: #1B3B5C;
+  --offwhite: #EDEAE3;
+  --orange: #F26422;
+  --orange-soft: #FDEEE4;
+  --grey: #424242;
+  --dark: #232323;
+  --muted: #6F6A61;
+  --line: #D9D4CA;
+  --white: #FFFFFF;
+  --error: #B3261E;
+  --good: #1E6B47;
+  --head: 'Archivo', Tahoma, sans-serif;
+  --body: 'Lato', Tahoma, sans-serif;
+  --radius: 14px;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--offwhite); color: var(--dark); font-family: var(--body); font-size: 17px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+h1, h2, h3 { font-family: var(--head); color: var(--navy); margin: 0; }
+button, input, select, textarea { font: inherit; color: inherit; }
+.wrap { max-width: 760px; margin: 0 auto; padding: 0 16px; }
+
+/* top bar + hero */
+.topbar { background: var(--white); border-bottom: 1px solid var(--line); }
+.topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+.topbar img { height: 30px; display: block; }
+.topbar .tag { font-family: var(--head); font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--navy); }
+.hero { position: relative; background: var(--navy); color: var(--white); padding: 36px 0 34px; overflow: hidden; }
+.hero::after { content: ""; position: absolute; right: -50px; bottom: -60px; width: 200px; height: 200px; background: var(--orange); opacity: .14; clip-path: polygon(100% 0, 0 100%, 100% 100%); }
+.hero .wrap { position: relative; z-index: 1; }
+.eyebrow { font-family: var(--head); text-transform: uppercase; letter-spacing: .14em; font-size: 12px; font-weight: 700; color: var(--orange); margin: 0 0 10px; }
+.hero h1 { color: var(--white); font-size: clamp(26px, 6vw, 36px); line-height: 1.15; font-weight: 800; margin: 0 0 10px; }
+.hero p { margin: 0; color: #CDD6E0; max-width: 58ch; }
+
+/* cards */
+main.wrap { padding-top: 22px; padding-bottom: 60px; }
+.card { background: var(--white); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 20px; margin: 0 0 16px; box-shadow: 0 1px 3px rgba(14,42,68,.05); }
+.card h2 { font-size: 19px; display: flex; align-items: center; gap: 10px; margin: 0 0 4px; }
+.card h2 .n { width: 26px; height: 26px; border-radius: 7px; background: var(--navy); color: var(--white); font-size: 14px; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.card .lead { color: var(--muted); font-size: 15px; margin: 0 0 16px; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field > label, .lbl { font-weight: 700; font-size: 15px; color: var(--navy); }
+input[type=text], select, textarea {
+  width: 100%; border: 2px solid var(--line); border-radius: 10px; background: var(--white); padding: 11px 13px; font-size: 17px; outline: none; transition: border-color .15s;
+}
+select { appearance: none; -webkit-appearance: none; padding-right: 40px; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9' viewBox='0 0 14 9'%3E%3Cpath d='M1 1l6 6 6-6' fill='none' stroke='%230E2A44' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center; }
+input:focus, select:focus, textarea:focus { border-color: var(--navy); }
+.field.bad input, .field.bad select, .learning.bad textarea { border-color: var(--error); }
+.err { color: var(--error); font-weight: 700; font-size: 14px; min-height: 0; }
+.err:empty { display: none; }
+
+/* brand chips */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { border: 2px solid var(--line); background: var(--white); border-radius: 999px; padding: 8px 14px; font-size: 15px; font-weight: 700; color: var(--navy); cursor: pointer; }
+.chip[aria-pressed="true"] { background: var(--navy); border-color: var(--navy); color: var(--white); }
+.chip:focus-visible, .mic:focus-visible, .btn:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; }
+
+/* learnings */
+.learning { padding: 16px 0; border-top: 1px solid var(--line); }
+.learning:first-of-type { border-top: 0; padding-top: 4px; }
+.learning .head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.learning .q { font-family: var(--head); font-weight: 700; font-size: 17px; color: var(--navy); display: block; }
+.learning .hint { display: block; color: var(--muted); font-size: 14px; line-height: 1.4; margin-top: 2px; }
+.learning textarea { min-height: 112px; resize: vertical; line-height: 1.45; }
+.learning.listening textarea { border-color: var(--orange); }
+.mic {
+  flex: none; display: inline-flex; align-items: center; gap: 7px; border: 2px solid var(--navy); background: var(--white); color: var(--navy);
+  border-radius: 999px; padding: 7px 14px 7px 11px; font-weight: 700; font-size: 15px; cursor: pointer; white-space: nowrap; min-height: 42px;
+}
+.mic svg { width: 18px; height: 18px; }
+.mic:hover { background: #F4F2EE; }
+.listening .mic { background: var(--orange); border-color: var(--orange); color: var(--white); }
+.listening .mic .dot { display: inline-block; }
+.mic .dot { display: none; width: 9px; height: 9px; border-radius: 50%; background: var(--white); animation: pulse 1.1s ease-in-out infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.7); } }
+.voice-note { margin-top: 8px; font-size: 14px; border-radius: 10px; padding: 9px 12px; background: var(--orange-soft); color: #8A3A0E; }
+.voice-note:empty { display: none; }
+
+.actions { display: flex; flex-direction: column; align-items: stretch; gap: 10px; margin-top: 6px; }
+.btn { height: 56px; border: 0; border-radius: 12px; background: var(--navy); color: var(--white); font-family: var(--head); font-weight: 700; font-size: 18px; cursor: pointer; padding: 0 28px; }
+.btn:hover { background: var(--navy-2); }
+.btn.ghost { background: transparent; color: var(--navy); border: 2px solid var(--navy); }
+.btn.ghost:hover { background: #F4F2EE; }
+.fine { font-size: 13.5px; color: var(--muted); text-align: center; margin: 0; }
+.form-err { color: var(--error); font-weight: 700; text-align: center; font-size: 15px; }
+.form-err:empty { display: none; }
+
+/* thanks */
+#done { display: none; }
+#done.show { display: block; }
+.thanks { text-align: center; padding: 34px 22px; }
+.thanks .tick { width: 76px; height: 76px; border-radius: 50%; background: var(--navy); display: grid; place-items: center; margin: 0 auto 16px; }
+.thanks .tick svg { width: 38px; height: 38px; stroke: var(--white); }
+.thanks h2 { font-size: 26px; justify-content: center; }
+.thanks p { color: var(--grey); margin: 8px auto 0; max-width: 46ch; }
+.status { display: inline-flex; align-items: center; gap: 8px; margin-top: 14px; font-weight: 700; font-size: 15px; padding: 7px 14px; border-radius: 999px; background: #F4F2EE; color: var(--grey); }
+.status.ok { background: #E7F1EA; color: var(--good); }
+.status.warn { background: var(--orange-soft); color: #8A3A0E; }
+.thanks .actions { max-width: 360px; margin: 22px auto 0; }
+
+#setup-chip, #queue-chip { position: fixed; bottom: 10px; font-size: 13px; padding: 5px 11px; border-radius: 12px; display: none; z-index: 5; }
+#setup-chip { left: 10px; background: var(--error); color: var(--white); }
+#queue-chip { right: 10px; background: rgba(255,255,255,.92); color: var(--grey); border: 1px solid var(--line); }
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: 1fr; }
+  .card { padding: 18px 16px; }
+  .learning .head { flex-direction: column; align-items: stretch; }
+  .mic { align-self: flex-start; }
+  .topbar .tag { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .mic .dot { animation: none; } }
+</style>
+</head>
+<body>
+
+<div class="topbar"><div class="wrap">
+  <img src="assets/afs-group.png" alt="The AFS Group">
+  <span class="tag">Staff learnings</span>
+</div></div>
+
+<header class="hero"><div class="wrap">
+  <p class="eyebrow" id="eyebrow">Post-event learnings</p>
+  <h1 id="headline">What did the sale teach us?</h1>
+  <p>Two minutes, typed or spoken. Every answer lands in one place so we can build it into how we run the next one.</p>
+</div></header>
+
+<main class="wrap">
+  <form id="form" novalidate autocomplete="off">
+    <section class="card">
+      <h2><span class="n">1</span>About you</h2>
+      <p class="lead">We'll remember these on this device for next time.</p>
+      <div class="grid">
+        <div class="field full" id="f-name">
+          <label for="name">Your name</label>
+          <input type="text" id="name" autocapitalize="words" maxlength="80">
+          <div class="err"></div>
+        </div>
+        <div class="field" id="f-dept">
+          <label for="dept">Department</label>
+          <select id="dept"><option value="">Choose&hellip;</option></select>
+          <div class="err"></div>
+          <div class="field" id="f-dept-other" hidden>
+            <input type="text" id="dept-other" autocapitalize="words" maxlength="80" placeholder="Which department?" aria-label="Which department?">
+            <div class="err"></div>
+          </div>
+        </div>
+        <div class="field" id="f-team">
+          <label for="team">Team</label>
+          <input type="text" id="team" list="team-list" autocapitalize="words" maxlength="80" placeholder="e.g. Paid Media, Showroom">
+          <datalist id="team-list"></datalist>
+          <div class="err"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span class="n">2</span>Which brand is this about?</h2>
+      <p class="lead">Optional. Pick any that apply.</p>
+      <div class="chips" id="brands"></div>
+    </section>
+
+    <section class="card" id="learnings">
+      <h2><span class="n">3</span>Your learnings</h2>
+      <p class="lead">Answer one, two or all three. Tap <b>Speak</b> to talk instead of typing, then tidy up the text if you need to.</p>
+
+      <div class="learning" data-key="worked">
+        <div class="head">
+          <label for="worked"><span class="q">What worked?</span><span class="hint">Keep doing: anything that went well, saved time or sold.</span></label>
+          <button type="button" class="mic" aria-controls="worked"></button>
+        </div>
+        <textarea id="worked" maxlength="6000"></textarea>
+        <div class="voice-note" role="status"></div>
+      </div>
+
+      <div class="learning" data-key="didntWork">
+        <div class="head">
+          <label for="didntWork"><span class="q">What didn't work?</span><span class="hint">Fix: what broke, slowed you down or frustrated customers.</span></label>
+          <button type="button" class="mic" aria-controls="didntWork"></button>
+        </div>
+        <textarea id="didntWork" maxlength="6000"></textarea>
+        <div class="voice-note" role="status"></div>
+      </div>
+
+      <div class="learning" data-key="nextTime">
+        <div class="head">
+          <label for="nextTime"><span class="q">What should we do differently next time?</span><span class="hint">Try: ideas, changes, things to start earlier.</span></label>
+          <button type="button" class="mic" aria-controls="nextTime"></button>
+        </div>
+        <textarea id="nextTime" maxlength="6000"></textarea>
+        <div class="voice-note" role="status"></div>
+      </div>
+      <div class="err" id="learn-err"></div>
+    </section>
+
+    <div class="actions">
+      <div class="form-err" id="form-err"></div>
+      <button type="submit" class="btn" id="submit">Send my learnings</button>
+      <p class="fine">Leadership sees your name with your answers. The summary talks about departments, not people.</p>
+    </div>
+  </form>
+
+  <section id="done" class="card thanks" aria-live="polite">
+    <div class="tick"><svg viewBox="0 0 24 24" fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
+    <h2 id="done-h">Thanks!</h2>
+    <p>Your learnings are in. Thought of something else? Add it as a new one. There's no limit.</p>
+    <div class="status" id="done-status">Sending&hellip;</div>
+    <div class="actions">
+      <button type="button" class="btn" id="another">Add another learning</button>
+    </div>
+  </section>
+</main>
+
+<div id="setup-chip">Setup needed: no endpoint in config.js, so responses are only saved on this device</div>
+<div id="queue-chip"></div>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.BFCM_CONFIG || {};
+  var EVENT = CFG.EVENT || 'Event';
+  var QUEUE_KEY = 'bfcm-queue-v1', ME_KEY = 'bfcm-me-v1', DRAFT_KEY = 'bfcm-draft-v1';
+  var FIELDS = ['worked', 'didntWork', 'nextTime'];
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* ---------- storage (can be blocked in private windows) ---------- */
+  function load(k, fallback) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  function drop(k) { try { localStorage.removeItem(k); } catch (e) {} }
+
+  /* ---------- page setup ---------- */
+  $('eyebrow').textContent = (CFG.EVENT_LABEL || EVENT) + ' · Learnings';
+  if (CFG.HEADLINE) $('headline').textContent = CFG.HEADLINE;
+  document.title = (CFG.EVENT || 'Event') + ' Learnings';
+
+  var deptSel = $('dept');
+  (CFG.DEPARTMENTS || []).concat(['Other']).forEach(function (d) {
+    var o = document.createElement('option'); o.value = d; o.textContent = d; deptSel.appendChild(o);
+  });
+  (CFG.TEAMS || []).forEach(function (t) { var o = document.createElement('option'); o.value = t; $('team-list').appendChild(o); });
+
+  var brandsEl = $('brands');
+  (CFG.BRANDS || []).forEach(function (b) {
+    var c = document.createElement('button');
+    c.type = 'button'; c.className = 'chip'; c.textContent = b; c.dataset.brand = b; c.setAttribute('aria-pressed', 'false');
+    c.addEventListener('click', function () { c.setAttribute('aria-pressed', c.getAttribute('aria-pressed') === 'true' ? 'false' : 'true'); saveDraft(); });
+    brandsEl.appendChild(c);
+  });
+  function selectedBrands() {
+    return Array.prototype.map.call(brandsEl.querySelectorAll('[aria-pressed="true"]'), function (c) { return c.dataset.brand; });
+  }
+  function setBrands(list) {
+    brandsEl.querySelectorAll('.chip').forEach(function (c) { c.setAttribute('aria-pressed', list.indexOf(c.dataset.brand) >= 0 ? 'true' : 'false'); });
+  }
+
+  deptSel.addEventListener('change', function () {
+    $('f-dept-other').hidden = deptSel.value !== 'Other';
+    if (deptSel.value === 'Other') $('dept-other').focus();
+  });
+
+  /* ---------- remember me + draft ---------- */
+  var me = load(ME_KEY, null);
+  if (me) {
+    $('name').value = me.name || '';
+    if (me.department && (CFG.DEPARTMENTS || []).indexOf(me.department) >= 0) deptSel.value = me.department;
+    else if (me.department) { deptSel.value = 'Other'; $('dept-other').value = me.department; $('f-dept-other').hidden = false; }
+    $('team').value = me.team || '';
+  }
+  var draft = load(DRAFT_KEY, null);
+  var voiceUsed = false;
+  if (draft) {
+    FIELDS.forEach(function (k) { $(k).value = draft[k] || ''; });
+    setBrands(draft.brands || []);
+    voiceUsed = !!draft.voiceUsed;
+  }
+  function saveDraft() {
+    var d = { brands: selectedBrands(), voiceUsed: voiceUsed };
+    FIELDS.forEach(function (k) { d[k] = $(k).value; });
+    save(DRAFT_KEY, d);
+  }
+
+  function autoGrow(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.min(Math.max(ta.scrollHeight + 4, 112), 520) + 'px';
+  }
+  FIELDS.forEach(function (k) {
+    var ta = $(k);
+    autoGrow(ta);
+    ta.addEventListener('input', function () {
+      // Typing while listening hands the box back to the keyboard, keeping what's on screen.
+      if (dict && dict.ta === ta) stopDictation(true);
+      autoGrow(ta); saveDraft(); clearErr('learn');
+    });
+  });
+
+  /* ---------- voice typing (Web Speech API) ---------- */
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  // Android Chrome repeats words in continuous mode, so there we listen one phrase at a time and restart.
+  var CONTINUOUS = !/Android/i.test(navigator.userAgent);
+  var MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4M8 22h8"/></svg>';
+  var dict = null;
+
+  function blockOf(el) { return el.closest('.learning'); }
+  function setMic(block, on) {
+    block.classList.toggle('listening', on);
+    var b = block.querySelector('.mic');
+    b.innerHTML = on ? '<span class="dot"></span>Listening&hellip; tap to stop' : MIC_SVG + 'Speak';
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', on ? 'Stop voice typing' : 'Speak your answer');
+  }
+  function note(block, msg) { block.querySelector('.voice-note').textContent = msg || ''; }
+
+  document.querySelectorAll('.learning').forEach(function (block) {
+    setMic(block, false);
+    block.querySelector('.mic').addEventListener('click', function () {
+      if (dict && dict.block === block) { stopDictation(); return; }
+      startDictation(block);
+    });
+  });
+
+  function startsSentence(text) { var t = text.replace(/\s+$/, ''); return !t || /[.!?]$/.test(t); }
+  function joinText(base, add) {
+    add = String(add || '').replace(/^\s+/, '');
+    if (!add) return base;
+    if (startsSentence(base)) add = add.charAt(0).toUpperCase() + add.slice(1);
+    if (!base || /\s$/.test(base)) return base + add;
+    return base + ' ' + add;
+  }
+
+  function startDictation(block) {
+    if (!SR) {
+      note(block, 'Voice typing isn’t available in this browser. Tap the box and use the microphone key on your keyboard, or open this page in Chrome, Edge or Safari.');
+      return;
+    }
+    if (dict) stopDictation();
+    note(block, '');
+    var ta = block.querySelector('textarea');
+    var d = { block: block, ta: ta, committed: ta.value, segment: '', keepGoing: true, idleEnds: 0, rec: null };
+    dict = d;
+    setMic(block, true);
+    listen(d);
+  }
+
+  function listen(d) {
+    var rec = new SR();
+    rec.lang = 'en-AU';
+    rec.interimResults = true;
+    rec.continuous = CONTINUOUS;
+    d.rec = rec; d.segment = '';
+    rec.onresult = function (e) {
+      var fin = '', interim = '';
+      for (var i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) fin += e.results[i][0].transcript; else interim += e.results[i][0].transcript;
+      }
+      d.segment = fin;
+      d.idleEnds = 0;
+      if (dict === d) { d.ta.value = joinText(d.committed, fin + interim); autoGrow(d.ta); }
+    };
+    rec.onerror = function (e) {
+      var msg = {
+        'not-allowed': 'Microphone access is blocked. Allow the microphone for this site in your browser settings, or type instead.',
+        'service-not-allowed': 'Voice typing is turned off in this browser. Type instead, or use the microphone key on your keyboard.',
+        'audio-capture': 'No microphone found. Plug one in or type instead.',
+        'network': 'Voice typing needs an internet connection. Type instead for now.'
+      }[e.error];
+      if (msg) { d.keepGoing = false; note(d.block, msg); }
+    };
+    rec.onend = function () {
+      if (d.segment.trim()) { d.committed = joinText(d.committed, d.segment); voiceUsed = true; } else { d.idleEnds++; }
+      d.segment = '';
+      if (!d.typed && (dict === d || !dict || dict.ta !== d.ta)) { d.ta.value = d.committed; autoGrow(d.ta); }
+      saveDraft();
+      // Browsers end recognition after a pause; keep listening until the person taps stop.
+      if (dict === d && d.keepGoing && d.idleEnds < 4) {
+        try { listen(d); return; } catch (x) {}
+      }
+      if (dict === d) { dict = null; setMic(d.block, false); }
+    };
+    try { rec.start(); }
+    catch (x) { d.keepGoing = false; dict = null; setMic(d.block, false); note(d.block, 'Couldn’t start voice typing. Try again, or type instead.'); }
+  }
+
+  function stopDictation(typed) {
+    var d = dict;
+    if (!d) return;
+    dict = null;
+    d.keepGoing = false;
+    if (typed) { d.typed = true; if (d.ta.value !== d.committed) voiceUsed = true; }
+    setMic(d.block, false);
+    try { d.rec.stop(); } catch (x) {}
+  }
+
+  /* ---------- validation ---------- */
+  function setErr(fid, msg) {
+    var f = $(fid);
+    f.classList.toggle('bad', !!msg);
+    var e = f.querySelector('.err'); if (e) e.textContent = msg || '';
+  }
+  function clearErr(which) {
+    if (which === 'learn') { $('learn-err').textContent = ''; document.querySelectorAll('.learning').forEach(function (b) { b.classList.remove('bad'); }); }
+  }
+  ['name', 'team', 'dept-other'].forEach(function (id) { $(id).addEventListener('input', function () { setErr('f-' + id, ''); }); });
+  deptSel.addEventListener('change', function () { setErr('f-dept', ''); });
+
+  function department() { return deptSel.value === 'Other' ? $('dept-other').value.trim() : deptSel.value; }
+
+  function validate() {
+    var ok = true, first = null;
+    function fail(fid, msg, el) { setErr(fid, msg); ok = false; first = first || el; }
+    setErr('f-name', ''); setErr('f-dept', ''); setErr('f-team', ''); setErr('f-dept-other', '');
+    if (!$('name').value.trim()) fail('f-name', 'Please add your name', $('name'));
+    if (!deptSel.value) fail('f-dept', 'Choose your department', deptSel);
+    else if (deptSel.value === 'Other' && !$('dept-other').value.trim()) fail('f-dept-other', 'Type your department', $('dept-other'));
+    if (!$('team').value.trim()) fail('f-team', 'Add your team (or your department again)', $('team'));
+    var any = FIELDS.some(function (k) { return $(k).value.trim(); });
+    if (!any) {
+      ok = false;
+      $('learn-err').textContent = 'Add at least one learning: type it or tap Speak.';
+      document.querySelectorAll('.learning').forEach(function (b) { b.classList.add('bad'); });
+      first = first || $('worked');
+    }
+    if (first) first.focus();
+    return ok;
+  }
+
+  /* ---------- submit ---------- */
+  function uuid() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+    return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+  }
+
+  $('form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    stopDictation();
+    $('form-err').textContent = '';
+    if (!validate()) { $('form-err').textContent = 'A couple of things need fixing above.'; return; }
+    var rec = {
+      id: uuid(),
+      event: EVENT,
+      clientTime: new Date().toISOString(),
+      name: $('name').value.trim(),
+      department: department(),
+      team: $('team').value.trim(),
+      brands: selectedBrands(),
+      worked: $('worked').value.trim(),
+      didntWork: $('didntWork').value.trim(),
+      nextTime: $('nextTime').value.trim(),
+      voiceUsed: voiceUsed
+    };
+    save(ME_KEY, { name: rec.name, department: rec.department, team: rec.team });
+    enqueue(rec);
+    // Clear the answers now the record is safely queued.
+    FIELDS.forEach(function (k) { $(k).value = ''; autoGrow($(k)); });
+    setBrands([]);
+    voiceUsed = false;
+    drop(DRAFT_KEY);
+
+    $('done-h').textContent = 'Thanks, ' + rec.name.split(' ')[0] + '!';
+    status('', 'Sending…');
+    $('form').style.display = 'none';
+    $('done').classList.add('show');
+    window.scrollTo(0, 0);
+    flush().then(function () { report(rec.id); });
+  });
+
+  function status(kind, text) { var s = $('done-status'); s.className = 'status' + (kind ? ' ' + kind : ''); s.textContent = text; }
+  function report(id) {
+    var queued = readQueue().some(function (r) { return r.id === id; });
+    var rejected = load(QUEUE_KEY + '-rejected', []).filter(function (x) { return x.rec && x.rec.id === id; })[0];
+    if (rejected) status('warn', 'That one didn’t save (' + rejected.error + '). Please try again.');
+    else if (!CFG.ENDPOINT) status('warn', 'Test mode: saved on this device only');
+    else if (queued) status('warn', 'Couldn’t send yet. It’s saved on this device and will send next time this page is open.');
+    else status('ok', '✓ Saved to the team’s learnings');
+  }
+
+  $('another').addEventListener('click', function () {
+    $('done').classList.remove('show');
+    $('form').style.display = '';
+    window.scrollTo(0, $('learnings').offsetTop - 12);
+    $('worked').focus({ preventScroll: true });
+  });
+
+  /* ---------- queue: saved locally first, retried until the Sheet confirms ---------- */
+  function readQueue() { return load(QUEUE_KEY, []); }
+  function writeQueue(q) { save(QUEUE_KEY, q); chip(q.length); }
+  function enqueue(rec) { var q = readQueue(); q.push(rec); writeQueue(q); }
+  function chip(n) {
+    $('queue-chip').style.display = n && CFG.ENDPOINT ? 'block' : 'none';
+    $('queue-chip').textContent = n + ' waiting to send';
+    $('setup-chip').style.display = CFG.ENDPOINT ? 'none' : 'block';
+  }
+
+  var sending = null;
+  function flush() {
+    if (sending) return sending;
+    if (!CFG.ENDPOINT || !readQueue().length) { chip(readQueue().length); return Promise.resolve(); }
+    sending = new Promise(function (resolve) {
+      (function next() {
+        var q = readQueue();
+        if (!q.length) { chip(0); return resolve(); }
+        var rec = q[0];
+        fetch(CFG.ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ token: CFG.TOKEN, record: rec })
+        })
+        .then(function (r) { return r.json(); })
+        .then(function (j) {
+          if (j && j.ok) {
+            writeQueue(readQueue().filter(function (x) { return x.id !== rec.id; }));
+            next();
+          } else if (j && j.permanent) {
+            // Rejected for good (bad data or token). Park it so it can't block the queue.
+            save(QUEUE_KEY + '-rejected', load(QUEUE_KEY + '-rejected', []).concat([{ rec: rec, error: j.error }]));
+            writeQueue(readQueue().filter(function (x) { return x.id !== rec.id; }));
+            next();
+          } else { chip(readQueue().length); resolve(); }
+        })
+        .catch(function () { chip(readQueue().length); resolve(); });
+      })();
+    }).then(function () { sending = null; });
+    return sending;
+  }
+  window.addEventListener('online', flush);
+  setInterval(flush, 30000);
+  chip(readQueue().length);
+  flush();
+})();
+</script>
+</body>
+</html>

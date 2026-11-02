@@ -281,6 +281,7 @@ def outcome(rep_close, cust_close, closing_mood):
 
 # --- Customer mood ---------------------------------------------------------------
 # Unhappy customers on these calls are usually polite: they rarely say "frustrated",
+# and casual swearing ("bloody", "shit") is everyday Australian, not anger, so it doesn't count.
 # they say "ASAP", "since April", "I can't even use it", "if I don't hear back". So
 # frustration counts urgency, history, loss and escalation phrases fully; words
 # that only describe a fault count a third. Everyday acknowledgements ("perfect",
@@ -296,8 +297,8 @@ _FRUSTRATED = _rx(
     r"\b(?:second|third|fourth|another|multiple|several) (?:time|times|call|email)", r"\bkeeps? (?:happening|tripping|turning off|cutting out|breaking|leaking)",
     r"\basap\b", r"\burgent", r"\blosing (?:clients|customers|money|business)", r"\bcan'?t (?:even )?use (?:it|the|half)", r"\bwouldn'?t have bought",
     r"\bshouldn'?t (?:have to|be paying|need to)", r"\bnot what (?:i|we) (?:paid|ordered|bought)", r"\bnot good enough", r"\bi'?m done\b",
-    r"\bif i don'?t hear", r"\bwhen can i expect", r"\bbeen better\b", r"\bcomplain", r"\bdisgrace", r"\brubbish\b", r"\bbloody\b",
-    r"\bpissed\b", r"\bshit\b", r"\bcrap\b", r"\bhassle\b", r"\bpaid (?:a lot|so much|good money|over)", r"\bmoney back", r"\brefund\b",
+    r"\bif i don'?t hear", r"\bwhen can i expect", r"\bbeen better\b", r"\bcomplain", r"\bdisgrace", r"\brubbish\b",
+    r"\bpissed off\b", r"\bhassle\b", r"\bpaid (?:a lot|so much|good money|over)", r"\bmoney back", r"\brefund\b",
     r"\bcancel", r"\bchargeback", r"\bconsumer affairs|\bfair trading|\baccc\b|\blawyer|\bsolicitor", r"\bfinal demand")
 _PROBLEM = _rx(
     r"\bnot working", r"\bstopped working", r"\bdoesn'?t (?:seem to )?work", r"\bbroken\b", r"\bfaulty", r"\bleak", r"\bdamaged?\b", r"\bproblem",
@@ -319,11 +320,71 @@ def mood_weights(text):
     return pos, neg
 
 
-def mood(text):
-    """-1 upset, 0 neutral, 1 positive."""
+def mood(text, upset_at=1):
+    """-1 upset, 0 neutral, 1 positive. Emails use upset_at=2: "asap" alone is just polite urgency there."""
     pos, neg = mood_weights(text)
-    if neg >= 1 and neg > pos:
+    if neg >= upset_at and neg > pos:
         return -1
     if pos >= 1.25 and pos >= 2 * neg:
         return 1
     return 0
+
+
+# --- Why a customer is upset --------------------------------------------------------
+# Read from the customer's own words (a call's transcript lines, or a ticket's first
+# email). A call can have several; the closing third counts double because that's
+# what they were still upset about when they hung up.
+
+UPSET_REASONS = [
+    ("Waiting too long", _rx(
+        r"\b(?:weeks|months) (?:now|ago|of|and)", r"\bfor (?:weeks|months|ages)\b", r"\b(?:two|three|four|five|six|\d+) (?:weeks|months)\b",
+        r"\bsince (?:january|february|march|april|may|june|july|august|september|october|november|december|last (?:week|month)|christmas)",
+        r"\bstill waiting", r"\bbeen waiting", r"\bdelay", r"\bback ?order", r"\btaking (?:so|too) long", r"\bhow (?:much )?long",
+        r"\bstill (?:hasn'?t|haven'?t|not) (?:arrived|come|been|got|received)", r"\bwhen (?:is|will) (?:it|this|that|my)")),
+    ("Chasing us, no call back", _rx(
+        r"\bnobody (?:has|'s|got|ever|called|rang|came)", r"\bno one (?:has|'s|got|ever|called|rang|came)", r"\bhaven'?t heard",
+        r"\bnever (?:heard|got|received|called)", r"\bchasing", r"\b(?:second|third|fourth|another|multiple|several|few) (?:time|times|call|calls|email|emails)",
+        r"\bpromised\b", r"\bno (?:response|reply|answer|call ?back)", r"\b(?:called|rang|emailed) (?:you )?(?:guys )?(?:before|last week|yesterday|several|multiple|a few)",
+        r"\bkeep (?:calling|ringing|emailing|chasing)", r"\bfollow(?:ed|ing)? up (?:again|on (?:my|the) (?:email|call))", r"\bif i don'?t hear", r"\bwhen can i expect")),
+    ("Still faulty or a repeat problem", _rx(
+        r"\bstill (?:not working|doesn'?t work|won'?t|isn'?t|broken|leaking|tripping|the same|not heating|not cooling)", r"\bagain\b",
+        r"\bkeeps? (?:happening|tripping|turning off|cutting out|breaking|leaking|beeping|stopping)", r"\bsame (?:problem|issue|thing|fault)",
+        r"\b(?:second|another|new) (?:one|unit|replacement|part) (?:is|has|also|was)", r"\bstopped working", r"\bnot working", r"\bfaulty", r"\bbroken\b",
+        r"\b(?:isn'?t|aren'?t|not) (?:working|turning on|switching on|heating|cooling)")),
+    ("Can't use it, losing time or money", _rx(
+        r"\bcan'?t (?:even )?use (?:it|the|half|my)", r"\blosing (?:clients|customers|money|business|time)", r"\bunusable\b", r"\bout of action",
+        r"\bhaven'?t (?:been able to )?use(?:d)? (?:it|the)", r"\bpaid (?:a lot|so much|good money|over|thousands)", r"\bwaste of (?:money|time)",
+        r"\btake (?:more )?time off work", r"\bour (?:business|clients|customers|members|gym|clinic|studio)")),
+    ("Installer or delivery let them down", _rx(
+        r"\b(?:installer|technician|tech|electrician|driver|courier|delivery|they|he) (?:didn'?t|did not|never) (?:show|turn up|come|arrive|call)",
+        r"\bcancel(?:l)?ed (?:the|my|our)? ?(?:install|delivery|booking|appointment)", r"\bno[- ]show", r"\brefused to", r"\bmissed (?:the|my|our) (?:delivery|appointment|install)",
+        r"\bresched(?:uled|uling)? (?:again|twice|three)", r"\b(?:arrived|delivered) (?:damaged|broken|wrong)", r"\bdamaged (?:in|on|during) (?:delivery|transit)",
+        r"\bwrong (?:item|part|unit|model)")),
+    ("Cost, refund or charge dispute", _rx(
+        r"\brefund", r"\bmoney back", r"\bshouldn'?t (?:have to|be paying|need to) pay", r"\b(?:extra|additional|shipping|freight|restocking|change ?over|call[- ]out) (?:fee|cost|charge)",
+        r"\bcharged? (?:me|us|for)", r"\bwhy (?:am i|are we|should i) (?:paying|being charged)", r"\bcompensat", r"\bchargeback", r"\bcredit (?:note|back)",
+        r"\bpay for (?:the|it|that|shipping|freight|postage)")),
+    ("Passed around, no one owns it", _rx(
+        r"\btransfer(?:red)?\b", r"\bsomeone else\b", r"\b(?:speak|talk) to (?:someone|a manager|your manager|the manager|someone senior)",
+        r"\bescalat", r"\bmanager\b", r"\b(?:you|you guys) talk to them", r"\bpassed (?:around|on|from)", r"\bevery time i (?:call|ring)",
+        r"\b(?:different|another) person", r"\bexplain (?:it )?(?:all )?again", r"\breexplain|re-explain")),
+    ("No clear answer or date", _rx(
+        r"\bnot sure (?:when|what|if|why)", r"\bno (?:idea|date|eta|answer|timeframe)", r"\bwhen (?:would|will|can) (?:i|we) (?:know|expect|hear|get)",
+        r"\bjust (?:need|want) (?:a|an) (?:solution|answer|date)", r"\bcan you (?:find out|give me a date|tell me when)", r"\bwhat(?:'s| is) (?:happening|going on)",
+        r"\bany update", r"\bwhere (?:is|are) (?:it|we|my|things) (?:at|up to)")),
+    ("Disappointed with the product", _rx(
+        r"\bwouldn'?t have bought", r"\bnot what (?:i|we) (?:paid|ordered|bought|expected)", r"\bdisappoint", r"\bpoor quality", r"\bcheap(?:ly)? (?:made|quality)",
+        r"\bexpected (?:better|more)", r"\bisn'?t really a sauna", r"\bfalse advertis", r"\bmisled|\bmisleading", r"\bnot fit for purpose")),
+]
+UPSET_REASON_LABELS = [label for label, _ in UPSET_REASONS]
+OTHER_UPSET = "Not stated"
+
+
+def upset_reasons(text, closing=""):
+    """Up to two reasons, strongest first. Closing words count double."""
+    scored = sorted(((hits(rxs, text) + hits(rxs, closing), -i, label) for i, (label, rxs) in enumerate(UPSET_REASONS)), reverse=True)
+    found = [label for s, _, label in scored if s >= 1][:2]
+    return found or [OTHER_UPSET]
+
+
+UPSET_SIGNALS = _FRUSTRATED + [rx for _, rxs in UPSET_REASONS for rx in rxs]

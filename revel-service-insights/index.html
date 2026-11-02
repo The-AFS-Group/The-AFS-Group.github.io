@@ -331,6 +331,11 @@ tr.team td { color: var(--ink-2); font-style: italic; }
 .dl-row { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 13px; }
 .subnote { color: var(--muted); font-size: 12px; margin: -8px 0 12px; }
 td.wrapcell { white-space: normal; min-width: 180px; }
+.up-quote { border-left: 3px solid var(--div-n2); padding: 4px 0 4px 10px; margin: 0 0 12px; }
+.up-quote q { display: block; font-style: italic; font-size: 13px; color: var(--ink); quotes: "\201C" "\201D"; }
+.up-quote .meta { color: var(--muted); font-size: 12px; margin-top: 3px; }
+.up-quote .chip { font-size: 11px; }
+.findings h4 + ul + h4 { margin-top: 12px; }
 </style>
 </head>
 <body>
@@ -425,7 +430,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
   </section>
 
   <section class="section" id="mood">
-    <div class="section-head"><div><h2>Customer sentiment turnaround</h2><p>The customer's mood at the start of the call (first third) against the end (last third), read from their own words. Unhappy customers here are usually polite, so <b>upset</b> picks up urgency, repeat contact and loss ("ASAP", "since April", "I can't even use it") as well as frustration words. <b>Won over</b> means a call that opened upset and closed positive.</p></div></div>
+    <div class="section-head"><div><h2>Customer sentiment turnaround</h2><p>The customer's mood at the start of the call (first third) against the end (last third), read from their own words. Unhappy customers here are usually polite, so <b>upset</b> picks up urgency, repeat contact and loss ("ASAP", "since April", "I can't even use it") as well as frustration words. <b>Won over</b> means a call that opened upset and closed positive. Calls that still ended upset, and Desk tickets whose first email was upset, are read for <b>why</b>: up to two reasons each, from the customer's own words.</p></div></div>
     <div class="grid g2">
       <div class="card">
         <h3>Mood at the start vs the end</h3><p class="cap" id="capMood"></p>
@@ -433,6 +438,23 @@ td.wrapcell { white-space: normal; min-width: 180px; }
         <div class="legend" id="moodLegend" style="margin-top:14px"></div>
       </div>
       <div class="card"><h3>Turnaround by issue</h3><p class="cap">Issues with 5+ callers who opened upset</p><div class="tbl-wrap"><table id="moodByIssue" class="wrap-head"></table></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Why customers left the call still upset</h3><p class="cap" id="capWhyUp"></p>
+        <div class="hbars" id="whyUpset"></div>
+        <h3 style="font-size:13.5px;margin-top:20px">How those calls ended</h3><p class="cap" style="margin-bottom:6px">What was in place when the customer hung up still upset</p>
+        <div class="stack" id="whyUpRes" style="height:26px"></div><div class="legend" id="whyUpResLegend"></div>
+      </div>
+      <div class="card"><h3>In their words</h3><p class="cap" id="capUpQuotes"></p><div id="upQuotes"></div></div>
+    </div>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card">
+        <h3>Desk tickets that opened upset</h3><p class="cap" id="capTixUp"></p>
+        <div class="hbars" id="tixUpReasons"></div>
+        <div class="tbl-wrap" style="margin-top:14px"><table id="tixUpCompare"></table></div>
+      </div>
+      <div class="card"><h3>Where customers end up upset, by issue</h3><p class="cap">Calls that ended upset and tickets that opened upset, with the main reason. Issues with 5+ either way.</p><div class="tbl-wrap"><table id="upByIssue" class="wrap-head"></table></div></div>
     </div>
     <div class="sumbox findings" id="sumMood"></div>
   </section>
@@ -463,6 +485,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       <div class="card"><h3>Open tickets by stage, today</h3><p class="cap" id="capOpen"></p><div class="hbars stacked" id="openStages"></div></div>
       <div class="card"><h3>Models on warranty tickets</h3><p class="cap" id="capWModels"></p><div class="hbars" id="warrantyModels"></div></div>
     </div>
+    <div class="card" style="margin-top:16px"><h3>Ticket resolution by issue</h3><p class="cap" id="capTixByIss"></p><div class="tbl-wrap"><table id="tixByIssue" class="wrap-head"></table></div></div>
     <div class="sumbox findings" id="sumTix"></div>
   </section>
 
@@ -486,7 +509,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
   <section class="section" id="ticketlog">
     <div class="section-head"><div><h2>Ticket log</h2><p>Every ticket in the current filters. Ticket subjects and emails aren't published here (they hold customer details); open a ticket in HubSpot to read it.</p></div></div>
     <div class="card">
-      <div class="log-tools"><input type="search" id="tsearch" placeholder="Search issues, models, owners, stages…" aria-label="Search the ticket log"><span id="tlogCount" class="note" style="margin:0"></span></div>
+      <div class="log-tools"><input type="search" id="tsearch" placeholder="Search issues, models, owners, stages, upset…" aria-label="Search the ticket log"><span id="tlogCount" class="note" style="margin:0"></span></div>
       <div class="tbl-wrap"><table class="log" id="tlogTable"></table></div>
       <div class="pager"><span id="tpageInfo"></span><button type="button" id="tprevPg">Previous</button><button type="button" id="tnextPg">Next</button></div>
     </div>
@@ -497,6 +520,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
     <ul>
       <li>Calls: every Aircall call on the Revel line that the call analysis marked as after-sales (post-purchase) service, with a transcript. Voicemails and calls where the customer barely spoke are left out. Outbound calls include delivery bookings and calls to couriers, installers and technicians.</li>
       <li>Issues, outcomes, approaches and mood are read from the transcript with keyword rules (in <code>_pipelines/revel-service-insights/service.py</code>), so treat them as directional and compare groups rather than reading single calls. The call log shows the evidence for each call.</li>
+      <li>Why a customer was upset is matched against nine reasons (waiting too long, chasing a call back, still faulty, can't use it, installer or delivery let them down, cost or refund, passed around, no clear answer, disappointed with the product). On calls the last third counts double; when nothing is said outright, a call that was handed over or left without a resolution takes that as its reason. Ticket reasons come from the first email only, so a ticket that turned sour later isn't counted. Quotes are trimmed and scrubbed of names, contact details and swearing.</li>
       <li>Mood was checked against the AI's satisfaction rating on the few hundred service calls that have one: 50% of calls rated dissatisfied read as upset at some point vs 16 to 20% of satisfied ones, and of callers who opened upset, 42% of the very satisfied ended positive vs 10% of the dissatisfied. Polite customers who are quietly unhappy can still read as neutral.</li>
       <li>Tickets: owner-assigned Customer Service tickets plus every Warranty and Forms ticket. The issue comes from the subject, claim form and first email; tickets with only a name as the subject stay "Other / unclear". HubSpot's own Category and Resolution fields are empty, so they can't be used.</li>
       <li>First-contact resolution is HubSpot's flag for a ticket closed after one agent message. Time to first reply counts email replies only.</li>
@@ -689,6 +713,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       oneTouch: share(rated.filter((t) => t.ot === 1).length, rated.length),
       notes: closed.length ? closed.reduce((a, t) => a + t.nn, 0) / closed.length : null,
       within3: share(closed.filter((t) => t.ttc <= 72).length, closed.length),
+      upset: share(list.filter((t) => t.mo < 0).length, list.length),
     };
   }
 
@@ -724,7 +749,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
 
   // ---------- drill-down focus (scopes the logs only) ----------
   // Each focus key applies to the call log ("c"), the ticket log ("t") or both ("b").
-  const FOCUS_ON = { ciss: "c", res: "c", resIss: "c", mv: "c", sol: "c", solIss: "c", agent: "c", cmon: "c", tiss: "t", stage: "t", ttcb: "t", owner: "t", wm: "t", tmon: "t", cmp: "b" };
+  const FOCUS_ON = { ciss: "c", res: "c", resIss: "c", mv: "c", sol: "c", solIss: "c", agent: "c", cmon: "c", tiss: "t", stage: "t", ttcb: "t", owner: "t", wm: "t", tmon: "t", cmp: "b", ur: "c", tur: "t" };
   const TTC_BUCKETS = [["Same day", 0, 24], ["1 to 3 days", 24, 72], ["3 to 7 days", 72, 168], ["1 to 2 weeks", 168, 336], ["2 to 4 weeks", 336, 672], ["Over 4 weeks", 672, 1e9]];
   function focusCall(c) {
     if (!S.fk || FOCUS_ON[S.fk] === "t") return true;
@@ -739,6 +764,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       case "agent": return c.pk === v;
       case "cmon": { const [m, r] = v.split("|"); return c.mo_ === m && (!r || c.res === r); }
       case "cmp": return c.cmp.includes(v);
+      case "ur": return c.mc < 0 && !c.sup && (v === "*" || (c.ur || []).includes(v));
       default: return true;
     }
   }
@@ -753,6 +779,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       case "wm": return t.p === "W" && t.mdl.includes(v);
       case "tmon": { const [m, p] = v.split("|"); return t.mo_ === m && (!p || t.p === p); }
       case "cmp": return t.cmp.includes(v);
+      case "tur": return t.mo < 0 && (v === "*" || (t.ur || []).includes(v));
       default: return true;
     }
   }
@@ -773,6 +800,8 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       case "ttcb": return "Closed in " + v.toLowerCase();
       case "wm": return "Warranty tickets · " + v;
       case "cmp": return "Mentions " + v;
+      case "ur": return "Calls that ended upset" + (v === "*" ? "" : " · " + v);
+      case "tur": return "Tickets that opened upset" + (v === "*" ? "" : " · " + v);
       default: return "";
     }
   }
@@ -901,6 +930,13 @@ td.wrapcell { white-space: normal; min-width: 180px; }
     el.style.display = list.length ? "" : "none";
   }
   const B = (s) => `<b>${esc(s)}</b>`;
+  // Several titled lists in one summary box (e.g. Desk tickets, then calls).
+  function findingsGroups(el, groups) {
+    const gs = groups.map((g) => ({ t: g.title, items: g.items.filter(Boolean) })).filter((g) => g.items.length);
+    el.innerHTML = gs.map((g) => `<h4>${esc(g.t)}</h4><ul>${g.items.map((x) => `<li>${x}</li>`).join("")}</ul>`).join("");
+    el.style.display = gs.length ? "" : "none";
+  }
+  const topReasons = (list, k) => [...count(list, (x) => x.ur || []).entries()].filter(([r]) => r !== "Not stated").sort((a, b) => b[1] - a[1]).slice(0, k);
 
   // Monthly stacked columns. series: [{key,label,color}], rows: [{m, vals:{key:n}}]
   function columns(el, rows, series, fkFn) {
@@ -938,19 +974,34 @@ td.wrapcell { white-space: normal; min-width: 180px; }
     const inb = cl.filter((c) => c.dir === "I").length;
     const openNow = ticketSlice({ anyDate: true }).filter((t) => t.o).length;
     const tiles = [
-      { l: "Service calls", v: fmtN(m.n), f: `${fmtN(inb)} inbound · ${fmtN(m.n - inb)} outbound` },
-      { l: "Fixed or next step booked", v: pct(m.handled), f: pm ? deltaHtml(m.handled, pm.handled, "good") : `${pct(m.fixed)} fixed or answered on the call` },
-      { l: "Upset callers won over", v: pct(m.wonOver), f: pm ? deltaHtml(m.wonOver, pm.wonOver, "good") : `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset` },
       { l: "Desk tickets opened", v: fmtN(tm.n), f: `${fmtN(openNow)} open today` },
       { l: "Median time to close", v: dur(tm.ttc), f: ptm && tm.ttc != null && ptm.ttc != null ? `${dur(ptm.ttc)} ${priorText()}` : `${pct(tm.within3)} closed within 3 days` },
       { l: "First-contact resolution", v: pct(tm.oneTouch), f: pm && ptm ? deltaHtml(tm.oneTouch, ptm.oneTouch, "good") : `first reply in ${dur(tm.tfr)} (median)` },
+      { l: "Service calls", v: fmtN(m.n), f: `${fmtN(inb)} inbound · ${fmtN(m.n - inb)} outbound` },
+      { l: "Fixed or next step booked", v: pct(m.handled), f: pm ? deltaHtml(m.handled, pm.handled, "good") : `${pct(m.fixed)} fixed or answered on the call` },
+      { l: "Upset callers won over", v: pct(m.wonOver), f: pm ? deltaHtml(m.wonOver, pm.wonOver, "good") : `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset` },
     ];
     $("kpis").innerHTML = tiles.map((t) => `<div class="kpi"><div class="k-label">${t.l}</div><div class="k-value">${t.v}</div><div class="k-foot">${t.f}</div></div>`).join("");
-    const ticketsPart = tm.n ? `${fmtN(tm.n)} Desk tickets were opened and ${pct(share(tm.closed, tm.n))} are closed, with a median of ${B(dur(tm.ttc))} to close.` : "No Desk tickets in this selection.";
-    findings($("sumTop"), "Summary for " + periodText(), [
-      m.n ? `${fmtN(m.n)} service calls: ${B(pct(m.handled))} ended fixed or with a next step booked, ${pct(m.fixed)} were fixed or answered on the call, ${pct(m.handed)} were handed to someone else and ${pct(m.unclear)} had no clear resolution.` : "No service calls in this selection.",
-      m.upset ? `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset; ${B(pct(m.wonOver))} of them ended positive and ${pct(m.calmed)} ended no longer upset.` : "",
-      ticketsPart,
+    // Desk leads: it carries most of the service work.
+    const ti = [...count(tl, (t) => t.iss).entries()].filter(([k]) => k !== "Other / unclear").sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const cs = ticketMetrics(tl.filter((t) => t.p === "C")), wa = ticketMetrics(tl.filter((t) => t.p === "W"));
+    const openAll = ticketSlice({ anyDate: true }).filter((t) => t.o), stale = openAll.filter((t) => (toDate(lastDay) - toDate(t.d)) / 864e5 > 30).length;
+    const tUp = tl.filter((t) => t.mo < 0), tUpR = topReasons(tUp, 2);
+    const cl2 = cl.filter(cust), endUp = cl2.filter((c) => c.mc < 0), cUpR = topReasons(endUp, 3);
+    const ci = [...count(cl, (c) => c.iss).entries()].sort((a, b) => b[1] - a[1]).slice(0, 2);
+    findingsGroups($("sumTop"), [
+      { title: "Desk tickets · " + periodText(), items: tm.n ? [
+        `${fmtN(tm.n)} tickets opened; ${pct(share(tm.closed, tm.n))} are closed, with a median of ${B(dur(tm.ttc))} to close and ${dur(tm.tfr)} to the first reply. ${pct(tm.oneTouch)} were solved with a single message.`,
+        cs.n && wa.n ? `Customer Service closes in ${B(dur(cs.ttc))} (median) across ${fmtN(cs.n)} tickets; Warranty takes ${B(dur(wa.ttc))} across ${fmtN(wa.n)}, waiting on technicians, parts and the factory.` : "",
+        ti.length ? `Top ticket issues: ${ti.map(([k, n]) => `${B(k)} (${pct(n / tm.n)})`).join(", ")}.` : "",
+        tUp.length ? `${pct(tm.upset)} of tickets opened with an upset customer${tUpR.length ? `, mostly over ${tUpR.map(([r]) => B(r.toLowerCase())).join(" and ")}` : ""}.` : "",
+        openAll.length ? `${fmtN(openAll.length)} tickets are open today and ${fmtN(stale)} of them are more than 30 days old.` : "",
+      ] : ["No Desk tickets in this selection."] },
+      { title: "Calls", items: m.n ? [
+        `${fmtN(m.n)} service calls${ci.length ? `, mostly ${ci.map(([k]) => esc(k.toLowerCase())).join(" and ")}` : ""}: ${B(pct(m.handled))} ended fixed or with a next step booked, ${pct(m.fixed)} fixed on the call, ${pct(m.handed)} handed over and ${pct(m.unclear)} with no clear resolution.`,
+        m.upset ? `${fmtN(m.upset)} callers (${pct(m.openUpset)}) opened upset; ${B(pct(m.wonOver))} of them ended positive.` : "",
+        endUp.length ? `${fmtN(endUp.length)} calls (${pct(share(endUp.length, cl2.length))}) ended with the customer still upset${cUpR.length ? `, mainly because of ${cUpR.map(([r, n]) => `${B(r.toLowerCase())} (${fmtN(n)})`).join(", ")}` : ""}.` : "",
+      ] : ["No service calls in this selection."] },
     ]);
   }
 
@@ -1062,6 +1113,40 @@ td.wrapcell { white-space: normal; min-width: 180px; }
     const solid = rows.filter((r) => r.up >= 15 && r.i !== "Other / unclear");
     $("moodByIssue").innerHTML = rows.length ? `<thead><tr><th>Issue</th><th class="num">Calls</th><th class="num">Opened upset</th><th class="num">Won over</th><th class="num">Still upset at the end</th></tr></thead><tbody>${rows.map((r) => `<tr${S.iss === r.i ? ' class="me"' : ""}><td>${esc(r.i)}</td><td class="num">${fmtN(r.n)}</td><td class="num">${pct(r.open)}</td><td class="num">${pct(r.won)}<span class="mini" style="width:${Math.round((r.won || 0) * 60)}px;background:${cssVar("--div-p2")}"></span></td><td class="num">${pct(r.still)}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">Not enough upset callers in this selection</td></tr></tbody>';
 
+    // why calls ended upset
+    const endUp = cl.filter((c) => c.mc < 0);
+    const REASONS = D.upsetReasons;
+    const rc = count(endUp, (c) => c.ur || []);
+    hbars($("whyUpset"), REASONS.map((r) => ({ label: r, n: rc.get(r) || 0, fk: "ur", fv: r, color: r === "Not stated" ? cssVar("--axis") : cssVar("--div-n2") })).filter((i) => i.n).sort((a, b) => (a.label === "Not stated") - (b.label === "Not stated") || b.n - a.n), endUp.length, { unit: "Calls", shareLabel: "Share of calls that ended upset" });
+    $("capWhyUp").textContent = endUp.length ? `${fmtN(endUp.length)} calls (${pct(share(endUp.length, n))}) ended with the customer still upset · up to two reasons each · click a bar to see those calls` : "";
+    const erc = count(endUp, (c) => c.res);
+    const eparts = OUT_KEYS.map((k) => ({ label: OUT_SHORT[k], n: erc.get(k) || 0, color: cssVar(OUT_VAR[k]) }));
+    $("whyUpRes").innerHTML = endUp.length ? stackSegments(eparts, endUp.length, { minLabel: 8, title: "Ended upset" }) : '<div class="empty" style="width:100%;padding:4px">No calls</div>';
+    legend($("whyUpResLegend"), eparts);
+
+    // their words: the latest calls that ended upset, with a quote
+    const quotes = endUp.filter((c) => c.uq).slice(-6).reverse();
+    $("upQuotes").innerHTML = quotes.length ? quotes.map((c) => `<div class="up-quote"><q>${esc(c.uq)}</q><div class="meta">${(c.ur || []).map((r) => `<span class="chip">${esc(r)}</span>`).join("")} ${esc(c.iss)} · ${esc(AGENTS[c.a])} · ${fmtDay(c.d)} · ${OUT_SHORT[c.res]}</div></div>`).join("") + `<a href="#calllog" ${focusAttrs("ur", "*")}>See all ${fmtN(endUp.length)} calls that ended upset ↓</a>` : '<div class="empty">No calls ended upset in this selection</div>';
+    $("capUpQuotes").textContent = quotes.length ? "The most recent calls that ended with the customer upset, trimmed to the line that shows it" : "";
+
+    // tickets that opened upset
+    const tl = ticketSlice(), tUp = tl.filter((t) => t.mo < 0);
+    const trc = count(tUp, (t) => t.ur || []);
+    hbars($("tixUpReasons"), REASONS.map((r) => ({ label: r, n: trc.get(r) || 0, fk: "tur", fv: r, color: r === "Not stated" ? cssVar("--axis") : cssVar("--div-n2") })).filter((i) => i.n).sort((a, b) => (a.label === "Not stated") - (b.label === "Not stated") || b.n - a.n), tUp.length, { unit: "Tickets", shareLabel: "Share of upset tickets" });
+    $("capTixUp").textContent = tl.length ? `${fmtN(tUp.length)} of ${fmtN(tl.length)} tickets (${pct(share(tUp.length, tl.length))}) opened with an upset first email · click a bar to see them` : "";
+    const um = ticketMetrics(tUp), om = ticketMetrics(tl.filter((t) => !(t.mo < 0)));
+    $("tixUpCompare").innerHTML = tUp.length ? `<thead><tr><th></th><th class="num">Tickets</th><th class="num">Median to close</th><th class="num">First reply</th><th class="num">Still open</th><th class="num">Notes per ticket</th></tr></thead><tbody>
+      <tr class="row" ${focusAttrs("tur", "*")}><td>Opened upset</td><td class="num">${fmtN(um.n)}</td><td class="num">${dur(um.ttc)}</td><td class="num">${dur(um.tfr)}</td><td class="num">${pct(share(um.open, um.n))}</td><td class="num">${um.notes == null ? "–" : um.notes.toFixed(1)}</td></tr>
+      <tr class="team"><td>Everything else</td><td class="num">${fmtN(om.n)}</td><td class="num">${dur(om.ttc)}</td><td class="num">${dur(om.tfr)}</td><td class="num">${pct(share(om.open, om.n))}</td><td class="num">${om.notes == null ? "–" : om.notes.toFixed(1)}</td></tr></tbody>` : "";
+
+    // where customers end up upset, by issue
+    const ub = ISSUES.map((i) => {
+      const c = endUp.filter((x) => x.iss === i), callsAll = cl.filter((x) => x.iss === i), t = tUp.filter((x) => x.iss === i), tAll = tl.filter((x) => x.iss === i);
+      const top = topReasons(c.concat(t), 1)[0];
+      return { i, c: c.length, cShare: share(c.length, callsAll.length), t: t.length, tShare: share(t.length, tAll.length), top: top ? top[0] : "" };
+    }).filter((r) => r.c + r.t >= 5 && r.i !== "Other / unclear").sort((a, b) => (b.c + b.t) - (a.c + a.t));
+    $("upByIssue").innerHTML = ub.length ? `<thead><tr><th>Issue</th><th class="num">Calls ended upset</th><th class="num">Tickets opened upset</th><th>Main reason</th></tr></thead><tbody>${ub.map((r) => `<tr${S.iss === r.i ? ' class="me"' : ""}><td class="wrapcell">${esc(r.i)}</td><td class="num">${fmtN(r.c)} <span style="color:var(--muted)">${r.cShare == null ? "" : "(" + pct(r.cShare, 0) + ")"}</span></td><td class="num">${fmtN(r.t)} <span style="color:var(--muted)">${r.tShare == null ? "" : "(" + pct(r.tShare, 0) + ")"}</span></td><td class="wrapcell">${esc(r.top) || "–"}</td></tr>`).join("")}</tbody>` : '<tbody><tr><td class="empty">Not enough upset customers in this selection</td></tr></tbody>';
+
     // what the won-over calls did differently
     const up = cl.filter((c) => c.mo < 0), won = up.filter((c) => c.mc > 0), lost = up.filter((c) => c.mc <= 0);
     const lift = SOLS.map((s) => ({ s, w: share(won.filter((c) => c.sol.includes(s)).length, won.length), l: share(lost.filter((c) => c.sol.includes(s)).length, lost.length) })).filter((x) => x.w != null && x.l != null).sort((a, b) => (b.w - b.l) - (a.w - a.l));
@@ -1072,6 +1157,16 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       bestWon && worstWon && bestWon.i !== worstWon.i ? `Upset callers are won over most on ${B(bestWon.i)} (${pct(bestWon.won)}) and least on ${B(worstWon.i)} (${pct(worstWon.won)}).` : "",
       won.length >= 5 && lift.length && lift[0].w - lift[0].l > 0.03 ? `When an upset caller was won over, the rep more often ${B(did(lift[0].s))} (${pct(lift[0].w)} of won-over calls vs ${pct(lift[0].l)} of the rest)${lift[1] && lift[1].w - lift[1].l > 0.03 ? ` or ${esc(did(lift[1].s))} (${pct(lift[1].w)} vs ${pct(lift[1].l)})` : ""}.` : "",
     ]);
+    const cR = topReasons(endUp, 3), tR = topReasons(tUp, 3), stated = share(endUp.filter((c) => !(c.ur || []).includes("Not stated")).length, endUp.length);
+    const booked = share(endUp.filter((c) => c.res === "F").length, endUp.length);
+    const worstIss = ub.filter((r) => r.c >= 5).sort((a, b) => b.cShare - a.cShare)[0];
+    const sumEl = $("sumMood");
+    sumEl.insertAdjacentHTML("beforeend", endUp.length || tUp.length ? `<h4 style="margin-top:12px">Why customers stay upset</h4><ul>${[
+      endUp.length ? `${fmtN(endUp.length)} calls ended with the customer still upset. The reasons, where they said one (${pct(stated)} of calls): ${cR.map(([r, k]) => `${B(r.toLowerCase())} (${fmtN(k)})`).join(", ")}.` : "",
+      endUp.length && booked != null ? `${pct(booked)} of those calls already had a next step booked when the customer hung up: the plan wasn't the problem, the wait and the history were. Giving a firm date and owning the follow-up is the lever.` : "",
+      worstIss ? `Calls about ${B(worstIss.i)} end upset most often (${pct(worstIss.cShare)} of them), mainly over ${esc((worstIss.top || "").toLowerCase())}.` : "",
+      tUp.length ? `On the Desk, ${pct(share(tUp.length, tl.length))} of tickets opened upset, mostly over ${tR.map(([r]) => B(r.toLowerCase())).join(", ")}. They take ${B(dur(um.ttc))} to close at the median vs ${dur(om.ttc)} for the rest.` : "",
+    ].filter(Boolean).map((x) => `<li>${x}</li>`).join("")}</ul>` : "");
   }
 
   // ---------- solutions ----------
@@ -1188,6 +1283,18 @@ td.wrapcell { white-space: normal; min-width: 180px; }
       tm.n ? `${pct(tm.oneTouch)} of closed tickets were resolved with a single agent message (HubSpot's first-contact resolution).` : "",
       unclear > 0.08 ? `${pct(unclear)} of tickets can't be classified because the subject is just a name or order number and the email is empty. Setting HubSpot's Category and Resolution fields on close would fix this and feed the knowledge base directly.` : "",
     ]);
+
+    // resolution by issue on the Desk
+    const byIss = ISSUES.map((i) => ({ i, ...ticketMetrics(tl.filter((t) => t.iss === i)) })).filter((r) => r.n >= 5).sort((a, b) => b.n - a.n);
+    $("tixByIssue").innerHTML = byIss.length ? `<thead><tr><th>Issue</th><th class="num">Tickets</th><th class="num">Still open</th><th class="num">Median to close</th><th class="num">Median first reply</th><th class="num">First-contact resolution</th><th class="num">Notes per closed ticket</th><th class="num">Opened upset</th></tr></thead><tbody>${byIss.map((r) => `<tr class="row${S.iss === r.i ? " me" : ""}" ${focusAttrs("tiss", r.i)}><td class="wrapcell">${esc(r.i)}</td><td class="num">${fmtN(r.n)}</td><td class="num">${fmtN(r.open)}</td><td class="num" style="${r.ttc != null && tm.ttc != null && r.ttc > tm.ttc * 2 ? "color:var(--bad-text)" : r.ttc != null && tm.ttc != null && r.ttc < tm.ttc / 2 ? "color:var(--good-text)" : ""}">${dur(r.ttc)}</td><td class="num">${dur(r.tfr)}</td><td class="num">${pct(r.oneTouch)}</td><td class="num">${r.notes == null ? "–" : r.notes.toFixed(1)}</td><td class="num">${pct(r.upset)}</td></tr>`).join("")}
+      <tr class="team"><td>All tickets</td><td class="num">${fmtN(tm.n)}</td><td class="num">${fmtN(tm.open)}</td><td class="num">${dur(tm.ttc)}</td><td class="num">${dur(tm.tfr)}</td><td class="num">${pct(tm.oneTouch)}</td><td class="num">${tm.notes == null ? "–" : tm.notes.toFixed(1)}</td><td class="num">${pct(tm.upset)}</td></tr></tbody>` : '<tbody><tr><td class="empty">Not enough tickets in this selection</td></tr></tbody>';
+    $("capTixByIss").textContent = `Issues with 5+ tickets · red is more than twice the overall median close time, green less than half · click a row to see those tickets`;
+    const slowest = byIss.filter((r) => r.closed >= 10 && r.i !== "Other / unclear").sort((a, b) => b.ttc - a.ttc)[0], quickest = byIss.filter((r) => r.closed >= 10 && r.i !== "Other / unclear").sort((a, b) => a.ttc - b.ttc)[0];
+    const mostOpen = byIss.filter((r) => r.i !== "Other / unclear").sort((a, b) => b.open - a.open)[0];
+    $("sumTix").insertAdjacentHTML("beforeend", slowest && quickest ? `<h4 style="margin-top:12px">By issue</h4><ul>
+      <li>Slowest to close: ${B(slowest.i)} (${dur(slowest.ttc)} median, ${fmtN(slowest.closed)} closed). Quickest: ${B(quickest.i)} (${dur(quickest.ttc)}).</li>
+      ${mostOpen && mostOpen.open ? `<li>Most tickets still open: ${B(mostOpen.i)} (${fmtN(mostOpen.open)} open).</li>` : ""}
+    </ul>` : "");
   }
 
   // ---------- people ----------
@@ -1254,7 +1361,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
   function renderCallLog(cl) {
     const q = S.q.trim().toLowerCase();
     let list = cl.filter(focusCall);
-    if (q) list = list.filter((c) => (c.sum + " " + c.fix + " " + c.cq + " " + c.iss + " " + c.mdl.join(" ") + " " + c.sol.join(" ") + " " + AGENTS[c.a]).toLowerCase().includes(q));
+    if (q) list = list.filter((c) => (c.sum + " " + c.fix + " " + c.cq + " " + (c.uq || "") + " " + (c.ur || []).join(" ") + " " + c.iss + " " + c.mdl.join(" ") + " " + c.sol.join(" ") + " " + AGENTS[c.a]).toLowerCase().includes(q));
     list = list.slice().reverse();
     const pages = Math.max(1, Math.ceil(list.length / PAGE)); S.pg = Math.min(S.pg, pages - 1);
     const rows = list.slice(S.pg * PAGE, S.pg * PAGE + PAGE);
@@ -1274,6 +1381,7 @@ td.wrapcell { white-space: normal; min-width: 180px; }
         <div><div class="dl">Rep's fix or next step</div><div class="dv quote">${esc(c.fix) || "–"}</div></div>
         <div><div class="dl">All approaches</div><div class="dv">${c.sol.map(esc).join(", ") || "None detected"}</div></div>
         <div><div class="dl">Also raised</div><div class="dv">${c.iss2.map(esc).join(", ") || "–"}</div></div>
+        ${(c.ur || []).length ? `<div><div class="dl">Why the customer was upset</div><div class="dv">${c.ur.map(esc).join(", ")}</div></div><div><div class="dl">In their words</div><div class="dv quote">${esc(c.uq) || "–"}</div></div>` : ""}
       </div></td>`;
       tr.after(d);
     });
@@ -1281,11 +1389,11 @@ td.wrapcell { white-space: normal; min-width: 180px; }
   function renderTicketLog(tl) {
     const q = S.tq.trim().toLowerCase();
     let list = tl.filter(focusTicket);
-    if (q) list = list.filter((t) => (t.iss + " " + t.st + " " + PIPE[t.p] + " " + OWNERS[t.ow] + " " + t.mdl.join(" ") + " " + t.cmp.join(" ") + " " + t.cat.join(" ")).toLowerCase().includes(q));
+    if (q) list = list.filter((t) => (t.iss + " " + t.st + " " + PIPE[t.p] + " " + OWNERS[t.ow] + " " + t.mdl.join(" ") + " " + t.cmp.join(" ") + " " + t.cat.join(" ") + " " + (t.mo < 0 ? "upset " + (t.ur || []).join(" ") : "")).toLowerCase().includes(q));
     list = list.slice().reverse();
     const pages = Math.max(1, Math.ceil(list.length / PAGE)); S.tpg = Math.min(S.tpg, pages - 1);
     const rows = list.slice(S.tpg * PAGE, S.tpg * PAGE + PAGE);
-    $("tlogTable").innerHTML = `<thead><tr><th>Opened</th><th>Pipeline</th><th>Owner</th><th>Issue</th><th>Models · parts</th><th>Stage</th><th class="num">To close</th><th class="num">First reply</th><th></th></tr></thead><tbody>${rows.map((t) => `<tr><td>${fmtDay(t.d)}</td><td>${PIPE[t.p]}</td><td>${esc(OWNERS[t.ow])}</td><td>${esc(t.iss)}</td><td>${esc(t.mdl.concat(t.cmp).slice(0, 3).join(", ")) || "–"}</td><td>${t.o ? `<span class="dot" style="background:${cssVar("--oc-h")}"></span>` : ""}${esc(t.st)}</td><td class="num">${t.o ? "open" : dur(t.ttc)}</td><td class="num">${dur(t.tfr)}</td><td><a href="${HS_URL + esc(t.id)}" target="_blank" rel="noopener">HubSpot ↗</a></td></tr>`).join("")}</tbody>`;
+    $("tlogTable").innerHTML = `<thead><tr><th>Opened</th><th>Pipeline</th><th>Owner</th><th>Issue</th><th>Models · parts</th><th>Stage</th><th class="num">To close</th><th class="num">First reply</th><th></th></tr></thead><tbody>${rows.map((t) => `<tr><td>${fmtDay(t.d)}</td><td>${PIPE[t.p]}</td><td>${esc(OWNERS[t.ow])}</td><td>${esc(t.iss)}${t.mo < 0 ? ` <span class="chip" title="${esc((t.ur || []).join(", "))}">Upset · ${esc((t.ur || [])[0] || "")}</span>` : ""}</td><td>${esc(t.mdl.concat(t.cmp).slice(0, 3).join(", ")) || "–"}</td><td>${t.o ? `<span class="dot" style="background:${cssVar("--oc-h")}"></span>` : ""}${esc(t.st)}</td><td class="num">${t.o ? "open" : dur(t.ttc)}</td><td class="num">${dur(t.tfr)}</td><td><a href="${HS_URL + esc(t.id)}" target="_blank" rel="noopener">HubSpot ↗</a></td></tr>`).join("")}</tbody>`;
     $("tlogCount").textContent = `${fmtN(list.length)} tickets`;
     $("tpageInfo").textContent = `Page ${S.tpg + 1} of ${pages}`;
     $("tprevPg").disabled = S.tpg === 0; $("tnextPg").disabled = S.tpg >= pages - 1;

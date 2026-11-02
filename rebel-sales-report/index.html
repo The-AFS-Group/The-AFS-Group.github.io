@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Rebel Sales Report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --navy:#0E2A44; --navy2:#173a5c; --orange:#F26422; --off:#EDEAE3; --ink:#232323; --grey:#424242;
+  --mut:#6b6f73; --line:#d9d5cb; --panel:#ffffff; --panel2:#f6f4ef; --hover:#f1efe8;
+  --green:#1b7a3d; --greenbg:#e4f3e8; --red:#b42318; --redbg:#fbe9e7; --amber:#8a5a00; --amberbg:#fbf0d4; --grey-bg:#ecebe6;
+  --c-nike:#0E2A44; --c-stepr:#2A9D8F; --c-force:#F26422; --c-revel:#7A9A6B; --c-centr:#C9A227; --c-un:#9aa0a6;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--off);color:var(--ink);font:14px/1.45 'Lato',Tahoma,sans-serif}
+h1,h2,h3,.hd{font-family:'Archivo',Tahoma,sans-serif;letter-spacing:.01em}
+button,select,input{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+header{background:var(--navy);color:#fff;border-bottom:4px solid var(--orange);position:sticky;top:0;z-index:20}
+.hbar{max-width:1500px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.title{font-family:'Archivo';font-weight:700;font-size:18px;margin-right:auto}
+.title small{display:block;font:400 12px 'Lato';opacity:.75;margin-top:1px}
+.btn{background:transparent;border:1px solid rgba(255,255,255,.45);color:#fff;border-radius:6px;padding:7px 12px;cursor:pointer;font-weight:700;font-size:13px}
+.btn:hover{background:rgba(255,255,255,.12)}
+.btn.primary{background:var(--orange);border-color:var(--orange)}
+.btn.primary:hover{background:#d9561a}
+.btn.dark{border-color:var(--line);color:var(--navy);background:#fff}
+.btn.dark:hover{background:var(--hover)}
+.wk{display:flex;align-items:center;gap:8px;font-size:13px}
+.wk select{background:#fff;color:var(--navy);border:0;border-radius:6px;padding:7px 10px;font-weight:700}
+nav.tabs{max-width:1500px;margin:0 auto;padding:0 20px;display:flex;gap:2px;overflow-x:auto}
+nav.tabs button{background:transparent;border:0;color:#cfd8e2;padding:10px 14px;cursor:pointer;font-family:'Archivo';font-weight:600;font-size:14px;border-bottom:3px solid transparent;white-space:nowrap}
+nav.tabs button:hover{color:#fff}
+nav.tabs button.on{color:#fff;border-bottom-color:var(--orange)}
+nav.tabs .dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:7px}
+main{max-width:1500px;margin:0 auto;padding:18px 20px 60px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.panel h2{margin:0 0 2px;font-size:16px;color:var(--navy)}
+.panel .sub{color:var(--mut);font-size:12.5px;margin-bottom:10px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:16px}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.tile .l{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+.tile .v{font-family:'Archivo';font-weight:700;font-size:24px;color:var(--navy);margin:2px 0}
+.tile .d{font-size:12px;color:var(--mut)}
+.up{color:var(--green);font-weight:700}.down{color:var(--red);font-weight:700}
+.brands{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin-bottom:16px}
+.bcard{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:14px 16px;cursor:pointer;border-top:5px solid var(--c);text-align:left;width:100%}
+.bcard:hover{box-shadow:0 2px 10px rgba(14,42,68,.12)}
+.bcard h3{margin:0 0 8px;font-size:16px;color:var(--navy);display:flex;justify-content:space-between;align-items:baseline}
+.bcard h3 span{font:700 11px 'Lato';color:var(--mut)}
+.bcard dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 12px}
+.bcard dt{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.bcard dd{margin:0;font-family:'Archivo';font-weight:600;font-size:16px;color:var(--ink)}
+.bcard .foot{margin-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--mut)}
+.attn{background:var(--amberbg);color:var(--amber);border-radius:99px;padding:2px 9px;font-weight:700}
+.attn.ok{background:var(--greenbg);color:var(--green)}
+.ctl{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.ctl input[type=search]{border:1px solid var(--line);border-radius:6px;padding:7px 10px;min-width:220px;background:#fff}
+.ctl select{border:1px solid var(--line);border-radius:6px;padding:7px 8px;background:#fff}
+.ctl label{display:flex;gap:6px;align-items:center;font-size:13px;color:var(--grey)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:4px 11px;font-size:12.5px;cursor:pointer;font-weight:700;color:var(--grey)}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.tw{overflow:auto;border:1px solid var(--line);border-radius:8px;max-height:72vh}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:7px 10px;border-bottom:1px solid #ebe8df;white-space:nowrap;text-align:right}
+th{position:sticky;top:0;background:var(--panel2);z-index:2;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--grey);cursor:pointer;user-select:none;border-bottom:2px solid var(--line)}
+th:hover{color:var(--navy)}
+th.sorted{color:var(--navy)}
+td.l,th.l{text-align:left}
+td.name{white-space:normal;min-width:240px;max-width:340px}
+td.name b{font-weight:700;color:var(--navy)}
+td.name small{display:block;color:var(--mut);font-size:11.5px}
+tbody tr:hover td{background:var(--hover)}
+tr.inactive td{color:#9a9a96}
+tr.inactive td.name b{color:#8a8f94}
+tr.grp td{background:#e6e2d7;font-weight:700;color:var(--navy);text-align:left;position:sticky;top:33px}
+tr.tot td{background:var(--panel2);font-weight:700;border-top:2px solid var(--line);position:sticky;bottom:0}
+.neg{color:var(--red)}
+.flag{display:inline-block;border-radius:4px;padding:1px 6px;font-size:11px;font-weight:700;margin:0 3px 2px 0}
+.f-red{background:var(--redbg);color:var(--red)}
+.f-amber{background:var(--amberbg);color:var(--amber)}
+.f-grey{background:var(--grey-bg);color:var(--grey)}
+.f-blue{background:#e1ebf5;color:var(--navy)}
+.bar{display:inline-block;height:6px;border-radius:3px;background:var(--navy);vertical-align:middle;margin-right:6px}
+.drop{border:2px dashed #b9b3a4;border-radius:14px;background:#fff;text-align:center;padding:64px 20px;margin:30px auto;max-width:720px}
+.drop h2{font-size:24px;color:var(--navy);margin:0 0 8px}
+.drop p{color:var(--mut);margin:4px 0}
+#overlay{position:fixed;inset:0;background:rgba(14,42,68,.88);color:#fff;display:none;align-items:center;justify-content:center;font:700 26px 'Archivo';z-index:100;text-align:center}
+#overlay.on{display:flex}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--navy);color:#fff;border-radius:8px;padding:10px 16px;max-width:90vw;font-size:13px;display:none;z-index:90;box-shadow:0 4px 18px rgba(0,0,0,.25)}
+#toast.on{display:block}
+#toast.warn{background:var(--red)}
+.weekstrip{display:flex;gap:3px;flex-wrap:wrap;margin:8px 0}
+.weekstrip span{width:30px;text-align:center;font-size:11px;border-radius:4px;padding:3px 0;font-weight:700;background:var(--grey-bg);color:#9a9a96;border:1px dashed #c8c4b8}
+.weekstrip span.have{background:var(--navy);color:#fff;border:1px solid var(--navy)}
+.weekstrip span.fill{background:#cfd9e4;color:var(--navy);border:1px solid #cfd9e4}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--grey);margin-bottom:6px}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+svg text{font-family:'Lato',Tahoma,sans-serif}
+dialog{border:1px solid var(--line);border-radius:12px;padding:0;max-width:560px;width:92vw}
+dialog::backdrop{background:rgba(14,42,68,.5)}
+dialog .in{padding:18px 20px}
+dialog h2{margin:0 0 4px;color:var(--navy)}
+.mrow{display:grid;grid-template-columns:1fr 170px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid #ece9df}
+.mrow select{padding:6px;border:1px solid var(--line);border-radius:6px}
+.note{background:var(--amberbg);color:var(--amber);border-radius:8px;padding:9px 12px;margin-bottom:14px;font-size:13px}
+.muted{color:var(--mut)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr));gap:16px}
+@media (max-width:640px){main{padding:12px 12px 50px}.hbar{padding:10px 12px}.tile .v{font-size:20px}}
+</style>
+</head>
+<body>
+<div id="overlay">Drop your Rebel report files here<br><span style="font:400 15px Lato;opacity:.8">.zip, .xls or a saved history backup (.json)</span></div>
+<div id="toast"></div>
+
+<header>
+  <div class="hbar">
+    <div class="title">Rebel Sales Report<small id="sub">Weekly Best Sellers, our brands only</small></div>
+    <div class="wk" id="wkbox" hidden><label for="wksel">Week</label><select id="wksel"></select></div>
+    <button class="btn primary" id="addbtn">Add files</button>
+    <input type="file" id="file" multiple accept=".zip,.xls,.htm,.html,.mht,.json" hidden>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main id="main"></main>
+
+<dialog id="mapdlg"><div class="in">
+  <h2>Brand mapping</h2>
+  <p class="muted" style="margin-top:0">How Rebel's "Brand" value is grouped into your brands. Changes apply to all stored weeks.</p>
+  <div id="maprows"></div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px">
+    <button class="btn dark" id="mapreset">Reset to defaults</button>
+    <button class="btn dark" id="mapclose">Done</button>
+  </div>
+</div></dialog>
+
+<script>
+"use strict";
+/* ============================ constants ============================ */
+const BRANDS = ['Nike','Stepr','Force USA','Revel','Centr / Hyrox'];
+const COLORS = {'Nike':'var(--c-nike)','Stepr':'var(--c-stepr)','Force USA':'var(--c-force)','Revel':'var(--c-revel)','Centr / Hyrox':'var(--c-centr)','Unassigned':'var(--c-un)'};
+const DEFAULT_MAP = {'NIKE':'Nike','STEPR':'Stepr','FORCE USA':'Force USA','FORCE':'Force USA','REVEL':'Revel','HYROX':'Centr / Hyrox','CENTR':'Centr / Hyrox'};
+const MAP_TARGETS = [...BRANDS,'Unassigned','Hide'];
+
+/* header label -> field. Order matters (first match wins). */
+const FIELD_RULES = [
+  [/^Landed Cost/i,'landed'],[/^Original Retail Price/i,'origRetail'],[/^Retail Price/i,'retail'],[/^Availability/i,'avail'],
+  [/^Sales Bun - Rank/i,'salesRank'],[/^GP \$ - Rank/i,'gpRank'],[/^Sales Net \$ WTD/i,'sales'],
+  [/^Sales Bun Net WTD <1>/i,'u1'],[/^Sales Bun Net WTD <2>/i,'u2'],[/^Sales Bun Net WTD <3>/i,'u3'],[/^Sales Bun Net WTD <4>/i,'u4'],
+  [/^Sales Bun Net WTD/i,'units'],[/^Average Weeks Sales/i,'avgWk'],[/^Weeks Cover/i,'cover'],[/^Sell Thru WTD/i,'sellWtd'],[/^Sell Thru YTD/i,'sellYtd'],
+  [/^GP \$ WTD/i,'gp'],[/^GP % WTD/i,'gpPct'],[/^GP % TY vs LY/i,'gpVsLy'],[/^SOH Bun/i,'soh'],[/^SOH \$/i,'sohVal'],
+  [/^Open PO BUn/i,'po'],[/^Open PO/i,'poVal'],[/^Sales Bun Net YTD/i,'ytdUnits'],[/^Sales Net YTD/i,'ytdSales'],[/^Stock Turn/i,'turn'],[/^GMROI/i,'gmroi']
+];
+const DIM_FIELDS = ['company','dept','bu','cat','subcat','merch','vendorCode','vendor','brandRaw','vendorMat','article','name','color','season','seasonYear','procRule'];
+
+/* ============================ storage (IndexedDB, in-memory fallback) ============================ */
+const Store = (() => {
+  let db = null; const mem = {weeks:{}, settings:{}};
+  const open = () => new Promise(res => {
+    try {
+      const rq = indexedDB.open('afs-rebel-sales', 1);
+      rq.onupgradeneeded = () => { rq.result.createObjectStore('weeks'); rq.result.createObjectStore('settings'); };
+      rq.onsuccess = () => { db = rq.result; res(true); };
+      rq.onerror = () => res(false);
+    } catch(e){ res(false); }
+  });
+  const tx = (store, mode, fn) => new Promise((res, rej) => { const t = db.transaction(store, mode); const r = fn(t.objectStore(store)); t.oncomplete = () => res(r && r.result); t.onerror = () => rej(t.error); });
+  return {
+    persistent(){ return !!db; },
+    init: open,
+    async allWeeks(){ if(!db) return Object.values(mem.weeks); return tx('weeks','readonly',s=>s.getAll()); },
+    async putWeek(w){ if(!db){ mem.weeks[w.key]=w; return; } await tx('weeks','readwrite',s=>s.put(w,w.key)); },
+    async delWeek(k){ if(!db){ delete mem.weeks[k]; return; } await tx('weeks','readwrite',s=>s.delete(k)); },
+    async clearWeeks(){ if(!db){ mem.weeks={}; return; } await tx('weeks','readwrite',s=>s.clear()); },
+    async getSetting(k){ if(!db) return mem.settings[k]; return tx('settings','readonly',s=>s.get(k)); },
+    async putSetting(k,v){ if(!db){ mem.settings[k]=v; return; } await tx('settings','readwrite',s=>s.put(v,k)); }
+  };
+})();
+
+/* ============================ file reading ============================ */
+const latin1 = u8 => { let s=''; for(let i=0;i<u8.length;i+=8192) s += String.fromCharCode.apply(null,u8.subarray(i,i+8192)); return s; };
+
+async function inflateRaw(u8){
+  const ds = new DecompressionStream('deflate-raw');
+  const stream = new Blob([u8]).stream().pipeThrough(ds);
+  return new Uint8Array(await new Response(stream).arrayBuffer());
+}
+/* Minimal ZIP reader (stored + deflate) using the central directory. */
+async function unzip(buf){
+  const u8 = new Uint8Array(buf), dv = new DataView(buf);
+  let eocd = -1;
+  for(let i=u8.length-22;i>=Math.max(0,u8.length-66000);i--){ if(dv.getUint32(i,true)===0x06054b50){ eocd=i; break; } }
+  if(eocd<0) throw new Error('Not a valid ZIP file');
+  const n = dv.getUint16(eocd+10,true); let p = dv.getUint32(eocd+16,true); const out=[];
+  for(let k=0;k<n;k++){
+    if(dv.getUint32(p,true)!==0x02014b50) break;
+    const method=dv.getUint16(p+10,true), csize=dv.getUint32(p+20,true), nlen=dv.getUint16(p+28,true), xlen=dv.getUint16(p+30,true), clen=dv.getUint16(p+32,true), off=dv.getUint32(p+42,true);
+    const name = new TextDecoder().decode(u8.subarray(p+46,p+46+nlen));
+    p += 46+nlen+xlen+clen;
+    if(name.endsWith('/')) continue;
+    const lnlen=dv.getUint16(off+26,true), lxlen=dv.getUint16(off+28,true), start=off+30+lnlen+lxlen;
+    const raw = u8.subarray(start,start+csize);
+    out.push({name, data: method===0 ? raw : await inflateRaw(raw)});
+  }
+  return out;
+}
+/* Extract the HTML body of an MHTML / plain HTML export. */
+function extractHtml(u8){
+  const text = latin1(u8);
+  if(!/^MIME-Version/i.test(text.slice(0,200))) return new TextDecoder('utf-8').decode(u8);
+  const m = /Content-Type:\s*text\/html[^\r\n]*\r?\n(?:[A-Za-z-]+:[^\r\n]*\r?\n)*?\r?\n/i.exec(text);
+  if(!m) throw new Error('No HTML part found in file');
+  const hdr = text.slice(Math.max(0,m.index-300), m.index+m[0].length);
+  const encM = /Content-Transfer-Encoding:\s*([\w-]+)/i.exec(text.slice(m.index-200, m.index+m[0].length)) || /Content-Transfer-Encoding:\s*([\w-]+)/i.exec(hdr);
+  const enc = (encM?encM[1]:'').toLowerCase();
+  let bodyStart = m.index+m[0].length, end = text.indexOf('\n--NEXTMIME', bodyStart);
+  if(end<0){ const b=/boundary="?([^"\r\n;]+)/i.exec(text); end = b? text.indexOf('\n--'+b[1], bodyStart) : text.length; if(end<0) end=text.length; }
+  let body = text.slice(bodyStart,end), bytes;
+  if(enc==='quoted-printable'){
+    body = body.replace(/=\r?\n/g,'');
+    const arr=[]; for(let i=0;i<body.length;i++){ const c=body[i]; if(c==='='&&/^[0-9A-Fa-f]{2}$/.test(body.substr(i+1,2))){ arr.push(parseInt(body.substr(i+1,2),16)); i+=2; } else arr.push(body.charCodeAt(i)&255); }
+    bytes = new Uint8Array(arr);
+  } else if(enc==='base64'){ bytes = Uint8Array.from(atob(body.replace(/\s+/g,'')), c=>c.charCodeAt(0)); }
+  else bytes = Uint8Array.from(body, c=>c.charCodeAt(0)&255);
+  return new TextDecoder('utf-8').decode(bytes);
+}
+const num = s => { if(s==null) return null; s=String(s).replace(/[,\s$%]/g,''); if(s===''||s==='#') return null; const v=parseFloat(s); return isNaN(v)?null:v; };
+const clean = s => (s||'').replace(/\s+/g,' ').trim();
+
+/* Parse one report -> week snapshot */
+function parseReport(html, fileName){
+  const doc = new DOMParser().parseFromString(html,'text/html');
+  doc.querySelectorAll('br').forEach(b=>b.replaceWith(' '));
+  const rows = [...doc.querySelectorAll('tr')].map(tr => [...tr.children].filter(c=>/^t[dh]$/i.test(c.tagName)).map(c=>clean(c.textContent)));
+  const hi = rows.findIndex(r => r.some(c=>/^Landed Cost/i.test(c)));
+  if(hi<0) throw new Error('This doesn\'t look like a Rebel Best Sellers report (no "Landed Cost" header)');
+  const labels = rows[hi];
+  const wm = labels.map(l=>/WTD\s+(?:<\d>\s*)?(\d+)\.(\d{4})/i.exec(l)).find(Boolean);
+  if(!wm) throw new Error('Could not find the week number in the column headings');
+  const week=+wm[1], fy=+wm[2];
+  const upd = rows.findIndex(r=>/Last Data Update/i.test(r[0]||''));
+  const fieldAt = {}; const lagKeys = {};
+  labels.forEach((l,i)=>{ if(!l) return; for(const [re,f] of FIELD_RULES) if(re.test(l)){ fieldAt[f]=i; const m=/(\d+)\.(\d{4})/.exec(l); if(m && /^u[1-4]$/.test(f)) lagKeys[f]=+m[2]*100+ +m[1]; break; } });
+  const dataRows = rows.slice(hi+1).filter(r=>r.length>=40 && r[0] && !/^Company code/i.test(r[0]));
+  if(!dataRows.length) throw new Error('No product rows found');
+  const items = dataRows.map(r=>{
+    const off = r.length - labels.length;
+    const o = {}; DIM_FIELDS.forEach((f,i)=>o[f]=r[i]||'');
+    for(const f in fieldAt){ const v = r[fieldAt[f]+off]; o[f] = num(v); }
+    return o;
+  });
+  return { key: fy*100+week, fy, week, lagKeys, fileName, loadedAt: Date.now(), dataUpdate: upd>=0? (rows[upd+2]&&rows[upd+2][0])||'' : '', rows: items };
+}
+
+/* ============================ state ============================ */
+const S = { weeks:{}, map:{...DEFAULT_MAP}, sel:null, tab:'overview', sort:{key:'sales',dir:-1}, search:'', group:'none', filter:null, hideInactive:false, metric:'sales' };
+
+function resolveBrands(){
+  for(const w of Object.values(S.weeks)){
+    const byMat = {};
+    const pass1 = r => {
+      const raw = (r.brandRaw||'').toUpperCase().trim();
+      if(/CENTR|HYROX/i.test(r.name) && !S.map[raw]) return 'Centr / Hyrox';
+      const m = S.map[raw];
+      return m || null;
+    };
+    w.rows.forEach(r=>{ r.brand = pass1(r); if(r.brand && r.brand!=='Hide' && r.brand!=='Unassigned' && r.vendorMat) byMat[r.vendorMat]=r.brand; });
+    w.rows.forEach(r=>{
+      if(r.brand) return;
+      const raw=(r.brandRaw||'').trim();
+      if(!raw || raw==='#'){ r.brand = byMat[r.vendorMat] || 'Unassigned'; r.inferred = !!byMat[r.vendorMat]; }
+      else r.brand = 'Hide';
+    });
+    const seen={}; w.rows.forEach(r=>{ const k=r.article; seen[k]=(seen[k]||0)+1; });
+    w.rows.forEach(r=>{ r.dup = seen[r.article]>1; });
+  }
+}
+const weekKeys = () => Object.keys(S.weeks).map(Number).sort((a,b)=>a-b);
+const curWeek = () => S.weeks[S.sel];
+const wlabel = k => 'W'+(k%100);
+const visibleRows = (w, brand) => w.rows.filter(r => brand ? r.brand===brand : (r.brand!=='Hide'));
+const sum = (rows,f) => rows.reduce((a,r)=>a+(r[f]||0),0);
+
+/* ============================ formatting ============================ */
+const esc = s => String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const money = n => n==null?'–':(n<0?'-':'')+'$'+Math.abs(Math.round(n)).toLocaleString('en-AU');
+const money2 = n => n==null?'–':(n<0?'-':'')+'$'+Math.abs(n).toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2});
+const int = n => n==null?'–':Math.round(n).toLocaleString('en-AU');
+const pct = (n,d=1) => n==null?'–':n.toFixed(d)+'%';
+const dec = (n,d=1) => n==null?'–':n.toFixed(d);
+function delta(cur, prev, fmt){
+  if(prev==null||cur==null) return '<span class="muted">no prior week</span>';
+  const d = cur-prev; if(Math.abs(d)<0.5) return '<span class="muted">■ flat vs last wk</span>';
+  const p = prev!==0? ' ('+(d>0?'+':'')+Math.round(d/Math.abs(prev)*100)+'%)' : '';
+  return `<span class="${d>0?'up':'down'}">${d>0?'▲':'▼'} ${fmt(Math.abs(d))}${p}</span> <span class="muted">vs last wk</span>`;
+}
+
+/* ============================ flags ============================ */
+function flagsOf(r){
+  const f=[]; const active = r.sales||r.units||r.ytdUnits||r.soh||r.po||r.ytdSales;
+  if(!active){ f.push(['nodata','No activity','grey']); }
+  if(r.units<0) f.push(['neg','Returns this wk','red']);
+  if(r.gp<0 && r.sales>0) f.push(['neg','Negative GP','red']);
+  if((r.soh||0)<=0 && r.ytdUnits>0) f.push(['oos','Out of stock','red']);
+  else if(r.avgWk>0 && r.cover!=null && r.cover<4 && r.soh>0) f.push(['low','Low cover','red']);
+  if(r.soh>0 && !(r.ytdUnits>0)) f.push(['stale','Stock, no sales YTD','amber']);
+  else if(r.avgWk>0 && r.cover>=26) f.push(['over','Overstock','amber']);
+  if(r.dup) f.push(['dup','Duplicate listing','blue']);
+  if(r.inferred) f.push(['inf','Brand inferred','blue']);
+  return f;
+}
+const ATTN = new Set(['neg','oos','low','stale','over']);
+const attnCount = rows => rows.filter(r=>flagsOf(r).some(f=>ATTN.has(f[0]))).length;
+const FLAG_LABEL = {oos:'Out of stock',low:'Low cover',over:'Overstock',stale:'Stock, no sales YTD',neg:'Returns / neg GP',nodata:'No activity',dup:'Duplicate listing'};
+
+/* ============================ aggregation across weeks ============================ */
+function aggWeek(w, brand){
+  const rows = visibleRows(w, brand);
+  return { sales:sum(rows,'sales'), units:sum(rows,'units'), gp:sum(rows,'gp'), soh:sum(rows,'soh'), sohVal:sum(rows,'sohVal'), po:sum(rows,'po'), poVal:sum(rows,'poVal'), ytdSales:sum(rows,'ytdSales'), ytdUnits:sum(rows,'ytdUnits') };
+}
+/* weekly series for a set of brands. Units are back-filled from lag columns for weeks with no file. */
+function series(brands, metric){
+  const keys = weekKeys(); if(!keys.length) return [];
+  const have = new Set(keys); const fill = {};
+  if(metric==='units'){
+    for(const w of Object.values(S.weeks)){
+      ['u1','u2','u3','u4'].forEach(f=>{ const k=w.lagKeys[f]; if(!k||have.has(k)) return; fill[k]=fill[k]||{};
+        brands.forEach(b=>{ if(fill[k][b]!=null && fill[k].__from>w.key) return; fill[k][b]=sum(visibleRows(w,b),f); }); fill[k].__from=Math.min(fill[k].__from||1e9,w.key); });
+    }
+  }
+  const all = [...new Set([...keys, ...Object.keys(fill).map(Number)])].sort((a,b)=>a-b);
+  const lo=all[0], hi=all[all.length-1], out=[];
+  for(let k=lo;k<=hi;k++){ if(k%100<1||k%100>53) { continue; } out.push(k); }
+  const pick = {sales:'sales',units:'units',sohVal:'sohVal',gp:'gp'}[metric];
+  return out.map(k=>{
+    const vals={}; let type='missing';
+    if(S.weeks[k]){ type='file'; brands.forEach(b=>vals[b]=aggWeek(S.weeks[k],b)[pick]); }
+    else if(fill[k]){ type='fill'; brands.forEach(b=>vals[b]=fill[k][b]||0); }
+    return {key:k,type,vals};
+  });
+}
+
+/* ============================ charts (inline SVG) ============================ */
+function weeklyChart(brands, metric){
+  const ser = series(brands, metric); if(!ser.length) return '';
+  const W=Math.max(760, ser.length*46+70), H=230, L=56, B=30, T=14, R=10;
+  const tot = ser.map(s=>brands.reduce((a,b)=>a+(s.vals[b]||0),0));
+  const maxV = Math.max(1,...tot), ticks=[0,.5,1].map(f=>f*maxV);
+  const nice = v => metric==='units'? int(v) : (v>=1e6? '$'+(v/1e6).toFixed(1)+'M' : v>=1e3? '$'+Math.round(v/1e3)+'k' : '$'+Math.round(v));
+  const fmtv = metric==='units'? int : money;
+  const bw = (W-L-R)/ser.length, inner=Math.min(34,bw*.7);
+  let g=`<svg viewBox="0 0 ${W} ${H}" width="100%" style="min-width:560px;max-width:${W}px" role="img" aria-label="Weekly ${metric}">`;
+  ticks.forEach(t=>{ const y=T+(H-T-B)*(1-t/maxV); g+=`<line x1="${L}" x2="${W-R}" y1="${y}" y2="${y}" stroke="#e4e1d7"/><text x="${L-6}" y="${y+4}" text-anchor="end" font-size="11" fill="#6b6f73">${metric==='units'?int(t):nice(t)}</text>`; });
+  ser.forEach((s,i)=>{
+    const x=L+i*bw+(bw-inner)/2; let y0=H-B;
+    if(s.type==='missing'){ g+=`<text x="${x+inner/2}" y="${H-B-6}" text-anchor="middle" font-size="10" fill="#9a9a96">no file</text>`; }
+    else brands.forEach(b=>{
+      const v=s.vals[b]||0; const h=Math.abs(v)/maxV*(H-T-B); if(!h) return; y0-=h;
+      g+=`<rect x="${x}" y="${y0}" width="${inner}" height="${h}" rx="2" fill="${COLORS[b]}" ${s.type==='fill'?'opacity=".45"':''}><title>${wlabel(s.key)} · ${esc(b)}: ${fmtv(v)}${s.type==='fill'?' (from later report)':''}</title></rect>`;
+    });
+    const total=brands.reduce((a,b)=>a+(s.vals[b]||0),0);
+    if(s.type!=='missing' && ser.length<=16) g+=`<text x="${x+inner/2}" y="${y0-4}" text-anchor="middle" font-size="10.5" font-weight="700" fill="#232323">${metric==='units'?int(total):nice(total)}</text>`;
+    g+=`<text x="${x+inner/2}" y="${H-10}" text-anchor="middle" font-size="11" fill="${S.sel===s.key?'#F26422':'#424242'}" font-weight="${S.sel===s.key?700:400}">${wlabel(s.key)}</text>`;
+  });
+  return g+'</svg>';
+}
+function legend(brands){ return `<div class="legend">${brands.map(b=>`<span><i style="background:${COLORS[b]}"></i>${esc(b)}</span>`).join('')}</div>`; }
+function spark(r){
+  const v=[r.u4,r.u3,r.u2,r.u1,r.units].map(x=>x||0); const mx=Math.max(1,...v.map(Math.abs)), w=7, gap=2, H=20;
+  return `<svg width="${5*(w+gap)}" height="${H}" role="img" aria-label="Last 5 weeks units"><title>Units, oldest to latest: ${v.join(', ')}</title>${v.map((x,i)=>{const h=Math.max(x?2:1,Math.abs(x)/mx*H);return `<rect x="${i*(w+gap)}" y="${H-h}" width="${w}" height="${h}" rx="1" fill="${x<0?'#b42318':i===4?'#0E2A44':'#9fb0c2'}"/>`}).join('')}</svg>`;
+}
+
+/* ============================ view builders ============================ */
+function tiles(rows, w){
+  const s=sum(rows,'sales'), u=sum(rows,'units'), gp=sum(rows,'gp');
+  const prev = S.weeks[S.sel-1] || null; let pS=null;
+  if(prev){ const ids=new Set(rows.map(r=>r.brand)); pS = sum(prev.rows.filter(r=>ids.has(r.brand)&&r.brand!=='Hide'),'sales'); }
+  const u1=sum(rows,'u1');
+  return `<div class="tiles">
+   <div class="tile"><div class="l">Net sales, week ${w.week}</div><div class="v num">${money(s)}</div><div class="d">${delta(s,pS,money)}</div></div>
+   <div class="tile"><div class="l">Units, week ${w.week}</div><div class="v num">${int(u)}</div><div class="d">${delta(u,u1,int)}</div></div>
+   <div class="tile"><div class="l">Sales year to date</div><div class="v num">${money(sum(rows,'ytdSales'))}</div><div class="d num">${int(sum(rows,'ytdUnits'))} units</div></div>
+   <div class="tile"><div class="l">Gross profit, week</div><div class="v num">${money(gp)}</div><div class="d num">${s? pct(gp/s*100):'–'} GP</div></div>
+   <div class="tile"><div class="l">Stock on hand</div><div class="v num">${money(sum(rows,'sohVal'))}</div><div class="d num">${int(sum(rows,'soh'))} units</div></div>
+   <div class="tile"><div class="l">Open POs</div><div class="v num">${money(sum(rows,'poVal'))}</div><div class="d num">${int(sum(rows,'po'))} units</div></div>
+  </div>`;
+}
+function chartPanel(brands, title){
+  const mets={sales:'Net sales $',units:'Units',gp:'Gross profit $',sohVal:'Stock on hand $'};
+  const nWeeks=weekKeys().length;
+  return `<div class="panel"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:baseline">
+    <div><h2>${title}</h2><div class="sub">${nWeeks} weekly file${nWeeks===1?'':'s'} loaded${S.metric==='units'?'. Lighter bars are weeks filled in from the 5-week history inside a later report.':'. Drop in earlier weeks to build the year to date picture.'}</div></div>
+    <div class="ctl"><select id="metric" aria-label="Chart metric">${Object.entries(mets).map(([k,v])=>`<option value="${k}" ${S.metric===k?'selected':''}>${v}</option>`).join('')}</select></div></div>
+    ${brands.length>1?legend(brands):''}<div style="overflow-x:auto">${weeklyChart(brands,S.metric)}</div></div>`;
+}
+function overview(w){
+  const rows = visibleRows(w);
+  const shown = [...BRANDS, ...(rows.some(r=>r.brand==='Unassigned')?['Unassigned']:[])];
+  const cards = shown.map(b=>{
+    const br=visibleRows(w,b), a=aggWeek(w,b), n=attnCount(br);
+    if(!br.length) return `<div class="bcard" style="--c:${COLORS[b]};cursor:default"><h3>${esc(b)}<span>not in this report</span></h3><p class="muted">No rows for this brand in week ${w.week}.</p></div>`;
+    return `<button class="bcard" style="--c:${COLORS[b]}" data-tab="${esc(b)}"><h3>${esc(b)}<span>${br.length} items</span></h3>
+     <dl><div><dt>Sales wk</dt><dd class="num">${money(a.sales)}</dd></div><div><dt>Units wk</dt><dd class="num">${int(a.units)}</dd></div>
+     <div><dt>Sales YTD</dt><dd class="num">${money(a.ytdSales)}</dd></div><div><dt>GP %</dt><dd class="num">${a.sales? pct(a.gp/a.sales*100):'–'}</dd></div>
+     <div><dt>Stock on hand</dt><dd class="num">${money(a.sohVal)}</dd></div><div><dt>Open POs</dt><dd class="num">${money(a.poVal)}</dd></div></dl>
+     <div class="foot"><span class="num">${int(a.soh)} units on hand</span><span class="attn ${n?'':'ok'}">${n? n+' to review':'all clear'}</span></div></button>`;
+  }).join('');
+  const hidden = w.rows.filter(r=>r.brand==='Hide');
+  return tiles(rows,w) + `<div class="brands">${cards}</div>` + chartPanel(BRANDS.filter(b=>weekKeys().length&&true),'Weekly trend by brand') +
+    (hidden.length? `<div class="note">${hidden.length} row${hidden.length>1?'s':''} in this report belong to other brands (${[...new Set(hidden.map(r=>r.brandRaw))].map(esc).join(', ')}) and are hidden. <a href="#" id="openmap">Review brand mapping</a></div>`:'');
+}
+
+const COLS = [
+  {k:'name',l:'Product',cls:'l',get:r=>r.name,sort:'str'},
+  {k:'trend',l:'5 wk units',get:r=>r.units,nosort:true},
+  {k:'units',l:'Units wk',get:r=>r.units,f:int},
+  {k:'sales',l:'Sales wk',get:r=>r.sales,f:money},
+  {k:'ytdUnits',l:'Units YTD',get:r=>r.ytdUnits,f:int},
+  {k:'ytdSales',l:'Sales YTD',get:r=>r.ytdSales,f:money},
+  {k:'gp',l:'GP $',get:r=>r.gp,f:money},
+  {k:'gpPct',l:'GP %',get:r=>r.gpPct,f:pct},
+  {k:'soh',l:'SOH units',get:r=>r.soh,f:int},
+  {k:'sohVal',l:'SOH $',get:r=>r.sohVal,f:money},
+  {k:'po',l:'Open PO',get:r=>r.po,f:int},
+  {k:'cover',l:'Wks cover',get:r=>r.cover,f:v=>dec(v,1)},
+  {k:'sellYtd',l:'Sell-thru YTD',get:r=>r.sellYtd,f:pct},
+  {k:'retail',l:'Retail',get:r=>r.retail,f:money2},
+  {k:'landed',l:'Landed cost',get:r=>r.landed,f:money2},
+  {k:'flags',l:'Flags',cls:'l',nosort:true}
+];
+const isActive = r => !!(r.sales||r.units||r.ytdUnits||r.soh||r.po||r.ytdSales);
+
+function brandView(w, brand){
+  let rows = visibleRows(w, brand);
+  const counts = {}; rows.forEach(r=>flagsOf(r).forEach(f=>{ if(f[0]!=='inf') counts[f[0]]=(counts[f[0]]||0)+1; }));
+  let list = rows.filter(r=>{
+    if(S.hideInactive && !isActive(r)) return false;
+    if(S.filter && !flagsOf(r).some(f=>f[0]===S.filter)) return false;
+    if(S.search){ const q=S.search.toLowerCase(); if(!(r.name+' '+r.vendorMat+' '+r.article+' '+r.subcat).toLowerCase().includes(q)) return false; }
+    return true;
+  });
+  const col = COLS.find(c=>c.k===S.sort.key)||COLS[3];
+  const cmp = (a,b)=>{ const x=col.get(a), y=col.get(b); if(col.sort==='str') return S.sort.dir*String(x).localeCompare(String(y)); if(x==null&&y==null) return 0; if(x==null) return 1; if(y==null) return -1; return S.sort.dir*(x-y); };
+  const grpKey = S.group==='sub'? 'subcat' : S.group==='merch'? 'merch' : null;
+  const groups = {}; list.forEach(r=>{ const g=grpKey? (r[grpKey]||'–') : ''; (groups[g]=groups[g]||[]).push(r); });
+  const gNames = Object.keys(groups).sort((a,b)=> grpKey? sum(groups[b],'sales')-sum(groups[a],'sales')||a.localeCompare(b) : 0);
+  const maxSales = Math.max(1,...list.map(r=>Math.abs(r.sales||0)));
+  const rowHtml = r=>{
+    const fl=flagsOf(r).map(f=>`<span class="flag f-${f[2]}">${f[1]}</span>`).join('');
+    return `<tr class="${isActive(r)?'':'inactive'}"><td class="name l"><b>${esc(r.name)}</b><small>${esc(r.vendorMat)} · ${esc(r.article)}${r.dept==='#'?' · dept not set':''}${grpKey?'':' · '+esc(r.subcat)}</small></td>
+     <td>${spark(r)}</td>
+     ${COLS.slice(2,-1).map(c=>{const v=c.get(r); return `<td class="num ${v<0?'neg':''}">${c.f(v)}</td>`}).join('')}
+     <td class="l">${fl}</td></tr>`;
+  };
+  const totRow = rs => { const s=sum(rs,'sales'); return `<tr class="tot"><td class="l">Total (${rs.length})</td><td></td><td class="num">${int(sum(rs,'units'))}</td><td class="num">${money(s)}</td><td class="num">${int(sum(rs,'ytdUnits'))}</td><td class="num">${money(sum(rs,'ytdSales'))}</td><td class="num">${money(sum(rs,'gp'))}</td><td class="num">${s?pct(sum(rs,'gp')/s*100):'–'}</td><td class="num">${int(sum(rs,'soh'))}</td><td class="num">${money(sum(rs,'sohVal'))}</td><td class="num">${int(sum(rs,'po'))}</td><td></td><td></td><td></td><td></td><td></td></tr>`; };
+  const head = COLS.map(c=>`<th class="${c.cls||''} ${S.sort.key===c.k?'sorted':''}" ${c.nosort?'':`data-sort="${c.k}"`}>${c.l}${S.sort.key===c.k?(S.sort.dir>0?' ▲':' ▼'):''}</th>`).join('');
+  let body='';
+  gNames.forEach(g=>{ const rs=groups[g].sort(cmp); if(grpKey) body+=`<tr class="grp"><td colspan="${COLS.length}">${esc(g)} <span class="muted" style="font-weight:400">· ${rs.length} items · ${money(sum(rs,'sales'))} this week · ${money(sum(rs,'ytdSales'))} YTD</span></td></tr>`; body+=rs.map(rowHtml).join(''); });
+  if(!list.length) body=`<tr><td colspan="${COLS.length}" class="l muted" style="padding:20px">No products match these filters.</td></tr>`;
+  const chips = ['oos','low','over','stale','neg','nodata','dup'].filter(k=>counts[k]).map(k=>`<button class="chip ${S.filter===k?'on':''}" data-flag="${k}">${FLAG_LABEL[k]} · ${counts[k]}</button>`).join('');
+  return tiles(rows,w) + chartPanel([brand],`${esc(brand)}: weekly trend`) +
+   `<div class="panel"><h2>${esc(brand)} products, week ${w.week}</h2><div class="sub">Click a column heading to sort. Greyed rows have no sales, stock or open POs.</div>
+    <div class="ctl"><input type="search" id="search" placeholder="Search product, code or category" value="${esc(S.search)}" aria-label="Search">
+     <select id="group" aria-label="Group by"><option value="none" ${S.group==='none'?'selected':''}>No grouping</option><option value="sub" ${S.group==='sub'?'selected':''}>Group by sub category</option><option value="merch" ${S.group==='merch'?'selected':''}>Group by merchandise category</option></select>
+     <label><input type="checkbox" id="hideinact" ${S.hideInactive?'checked':''}> Hide items with no activity</label>
+     <button class="btn dark" id="csv">Export CSV</button></div>
+    <div class="chips" style="margin-bottom:10px">${chips}${S.filter?`<button class="chip" data-flag="">Clear filter ✕</button>`:''}</div>
+    <div class="tw"><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody><tfoot>${list.length?totRow(list):''}</tfoot></table></div></div>`;
+}
+
+function dataView(){
+  const keys=weekKeys(); const w=curWeek(); const fy=w.fy; const mine=keys.filter(k=>Math.floor(k/100)===fy);
+  const maxWk=w.week; let strip='';
+  const fillWeeks=new Set(); Object.values(S.weeks).forEach(x=>Object.values(x.lagKeys).forEach(k=>fillWeeks.add(k)));
+  for(let i=1;i<=maxWk;i++){ const k=fy*100+i; strip+=`<span class="${S.weeks[k]?'have':fillWeeks.has(k)?'fill':''}" title="${S.weeks[k]?'File loaded':fillWeeks.has(k)?'Units only (from a later report)':'Missing'}">${i}</span>`; }
+  const missing=[]; for(let i=1;i<=maxWk;i++) if(!S.weeks[fy*100+i]) missing.push(i);
+  const uptoSel = mine.filter(k=>k<=S.sel);
+  const recon = [...BRANDS, 'Unassigned'].map(b=>{
+    const rep=aggWeek(w,b).ytdSales; const loaded=uptoSel.reduce((a,k)=>a+aggWeek(S.weeks[k],b).sales,0);
+    if(!visibleRows(w,b).length) return ''; return `<tr><td class="l">${esc(b)}</td><td class="num">${money(rep)}</td><td class="num">${money(loaded)}</td><td class="num ${Math.abs(rep-loaded)>1?'neg':''}">${money(rep-loaded)}</td></tr>`;
+  }).join('');
+  const list = keys.slice().reverse().map(k=>{ const x=S.weeks[k], a=aggWeek(x); return `<tr><td class="l"><b>Week ${x.week}</b> · FY${x.fy}</td><td class="l muted">${esc(x.fileName)}</td><td class="num">${x.rows.length}</td><td class="num">${money(a.sales)}</td><td class="l muted">${new Date(x.loadedAt).toLocaleString('en-AU',{dateStyle:'medium',timeStyle:'short'})}</td><td><button class="chip" data-del="${k}">Remove</button></td></tr>`; }).join('');
+  return `<div class="panel"><h2>Year to date coverage, FY${fy}</h2><div class="sub">Dark = weekly file loaded. Light blue = only units known (taken from a later report's 5-week history). Dashed = missing.</div>
+   <div class="weekstrip">${strip}</div>
+   ${missing.length? `<p class="muted" style="margin:6px 0 0">Missing weekly files: ${missing.map(m=>'W'+m).join(', ')}. Add them to complete the weekly charts.</p>`:'<p class="up" style="margin:6px 0 0">Every week up to W'+maxWk+' is loaded.</p>'}</div>
+   <div class="panel"><h2>Does the history add up?</h2><div class="sub">Rebel's own YTD figure for week ${w.week} compared with the sum of the weekly files you've loaded. A gap means weeks are missing (or Rebel adjusted past weeks).</div>
+    <div class="tw"><table><thead><tr><th class="l">Brand</th><th>Rebel YTD sales</th><th>Sum of loaded weeks</th><th>Gap</th></tr></thead><tbody>${recon}</tbody></table></div></div>
+   <div class="panel"><h2>Loaded weeks</h2><div class="sub">${Store.persistent()?'Stored in this browser only. Nothing is uploaded anywhere.':'Browser storage unavailable: data will be lost when you close this tab. Use Back up history.'}</div>
+    <div class="tw"><table><thead><tr><th class="l">Week</th><th class="l">File</th><th>Rows</th><th>Net sales (our brands)</th><th class="l">Loaded</th><th></th></tr></thead><tbody>${list}</tbody></table></div>
+    <div class="ctl" style="margin-top:12px"><button class="btn dark" id="backup">Back up history (.json)</button><button class="btn dark" id="clearall">Clear all history</button><button class="btn dark" id="openmap2">Brand mapping…</button></div>
+    <p class="muted" style="font-size:12px;margin:6px 0 0">Tip: a backup can be dropped back onto this page, including in another browser, to restore everything.</p></div>`;
+}
+
+/* ============================ render ============================ */
+function renderTabs(){
+  const w=curWeek(); const tabs=[['overview','Overview',null]];
+  BRANDS.forEach(b=>tabs.push([b,b,COLORS[b]]));
+  if(w && w.rows.some(r=>r.brand==='Unassigned')) tabs.push(['Unassigned','Unassigned',COLORS.Unassigned]);
+  tabs.push(['data','Data & weeks',null]);
+  document.getElementById('tabs').innerHTML = w? tabs.map(([k,l,c])=>`<button class="${S.tab===k?'on':''}" data-tab="${esc(k)}">${c?`<span class="dot" style="background:${c}"></span>`:''}${esc(l)}</button>`).join('') : '';
+}
+function render(){
+  const main=document.getElementById('main'); const keys=weekKeys();
+  document.getElementById('wkbox').hidden = !keys.length;
+  if(!keys.length){
+    renderTabs();
+    main.innerHTML=`<div class="drop"><h2>Drop this week's Rebel report here</h2><p>The .zip straight from the supplier works, or the .xls inside it. You can drop several weeks at once.</p><p class="muted">Only Nike, Stepr, Force USA, Revel and Centr / Hyrox are shown. Your data stays in this browser.</p><p style="margin-top:20px"><button class="btn primary" onclick="document.getElementById('file').click()">Choose files</button></p></div>`;
+    return;
+  }
+  if(!S.weeks[S.sel]) S.sel = keys[keys.length-1];
+  const sel=document.getElementById('wksel');
+  sel.innerHTML = keys.slice().reverse().map(k=>`<option value="${k}" ${k===S.sel?'selected':''}>Week ${k%100}, FY${Math.floor(k/100)}</option>`).join('');
+  const w=curWeek();
+  document.getElementById('sub').textContent = `Week ${w.week} FY${w.fy} · ${keys.length} week${keys.length>1?'s':''} loaded${w.dataUpdate?' · Rebel data stamp '+w.dataUpdate:''}`;
+  if(S.tab!=='overview'&&S.tab!=='data'&&![...BRANDS,'Unassigned'].includes(S.tab)) S.tab='overview';
+  renderTabs();
+  main.innerHTML = S.tab==='overview'? overview(w) : S.tab==='data'? dataView() : brandView(w,S.tab);
+  bind();
+}
+function bind(){
+  const $=id=>document.getElementById(id);
+  document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{ S.tab=b.dataset.tab; S.filter=null; render(); window.scrollTo(0,0); });
+  document.querySelectorAll('[data-sort]').forEach(h=>h.onclick=()=>{ const k=h.dataset.sort; S.sort = S.sort.key===k? {key:k,dir:-S.sort.dir} : {key:k,dir:k==='name'?1:-1}; render(); });
+  document.querySelectorAll('[data-flag]').forEach(b=>b.onclick=()=>{ S.filter = b.dataset.flag===S.filter? null : (b.dataset.flag||null); render(); });
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{ const k=+b.dataset.del; if(!confirm('Remove week '+(k%100)+' from stored history?')) return; await Store.delWeek(k); delete S.weeks[k]; render(); });
+  const m=$('metric'); if(m) m.onchange=()=>{ S.metric=m.value; render(); };
+  const se=$('search'); if(se){ se.oninput=()=>{ S.search=se.value; const pos=se.selectionStart; render(); const n=$('search'); n.focus(); n.setSelectionRange(pos,pos); }; }
+  const g=$('group'); if(g) g.onchange=()=>{ S.group=g.value; render(); };
+  const hi=$('hideinact'); if(hi) hi.onchange=()=>{ S.hideInactive=hi.checked; render(); };
+  const c=$('csv'); if(c) c.onclick=exportCsv;
+  ['openmap','openmap2'].forEach(id=>{ const e=$(id); if(e) e.onclick=ev=>{ ev.preventDefault(); openMap(); }; });
+  const bk=$('backup'); if(bk) bk.onclick=backup;
+  const ca=$('clearall'); if(ca) ca.onclick=async()=>{ if(!confirm('Delete ALL stored weeks? This cannot be undone (download a backup first).')) return; await Store.clearWeeks(); S.weeks={}; render(); };
+}
+
+/* ============================ export / backup ============================ */
+function download(name, text, type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([text],{type})); a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+function exportCsv(){
+  const w=curWeek(); const rows=visibleRows(w,S.tab);
+  const cols=[['Brand','brand'],['Product','name'],['Vendor mat no','vendorMat'],['Article','article'],['Sub category','subcat'],['Units wk','units'],['Sales wk','sales'],['Units YTD','ytdUnits'],['Sales YTD','ytdSales'],['GP $','gp'],['GP %','gpPct'],['SOH units','soh'],['SOH $','sohVal'],['Open PO units','po'],['Open PO $','poVal'],['Weeks cover','cover'],['Sell-thru YTD %','sellYtd'],['Retail','retail'],['Landed cost','landed']];
+  const q=v=>{ v=v==null?'':String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; };
+  download(`rebel-${S.tab.replace(/\W+/g,'-').toLowerCase()}-wk${w.week}-fy${w.fy}.csv`, [cols.map(c=>c[0]).join(','),...rows.map(r=>cols.map(c=>q(r[c[1]])).join(','))].join('\n'), 'text/csv');
+}
+function backup(){ download('rebel-sales-history-'+new Date().toISOString().slice(0,10)+'.json', JSON.stringify({type:'afs-rebel-history',v:1,weeks:Object.values(S.weeks).map(w=>({...w,rows:w.rows.map(({brand,inferred,dup,...r})=>r)}))}), 'application/json'); }
+
+/* ============================ brand mapping dialog ============================ */
+function openMap(){
+  const raws = new Set(Object.keys(DEFAULT_MAP)); Object.values(S.weeks).forEach(w=>w.rows.forEach(r=>{ if(r.brandRaw && r.brandRaw!=='#') raws.add(r.brandRaw.toUpperCase()); }));
+  document.getElementById('maprows').innerHTML=[...raws].sort().map(r=>`<div class="mrow"><div><b>${esc(r)}</b></div><select data-raw="${esc(r)}">${MAP_TARGETS.map(t=>`<option ${((S.map[r]||'Hide')===t)?'selected':''}>${t}</option>`).join('')}<option value="__none" ${S.map[r]?'':'selected'} hidden>Hide</option></select></div>`).join('');
+  document.querySelectorAll('#maprows select').forEach(s=>s.onchange=async()=>{ S.map[s.dataset.raw]=s.value; await Store.putSetting('brandMap',S.map); resolveBrands(); render(); });
+  document.getElementById('mapdlg').showModal();
+}
+document.getElementById('mapclose').onclick=()=>document.getElementById('mapdlg').close();
+document.getElementById('mapreset').onclick=async()=>{ S.map={...DEFAULT_MAP}; await Store.putSetting('brandMap',S.map); resolveBrands(); render(); openMap(); };
+
+/* ============================ ingest ============================ */
+let toastT; function toast(msg, warn){ const t=document.getElementById('toast'); t.textContent=msg; t.className='on'+(warn?' warn':''); clearTimeout(toastT); toastT=setTimeout(()=>t.className='',warn?9000:5000); }
+async function ingest(files){
+  const msgs=[], errs=[]; let last=null;
+  for(const f of files){
+    try{
+      const buf = await f.arrayBuffer(); const u8=new Uint8Array(buf);
+      let blobs;
+      if(u8[0]===0x50&&u8[1]===0x4B) blobs = (await unzip(buf)).filter(e=>/\.(xls|htm|html|mht|json)$/i.test(e.name)).map(e=>({name:e.name.split('/').pop(),data:e.data}));
+      else blobs=[{name:f.name,data:u8}];
+      if(!blobs.length) throw new Error('No report files found inside the ZIP');
+      for(const b of blobs){
+        if(/\.json$/i.test(b.name)){
+          const j=JSON.parse(new TextDecoder().decode(b.data)); if(j.type!=='afs-rebel-history') throw new Error('Not a history backup');
+          for(const w of j.weeks){ await Store.putWeek(w); S.weeks[w.key]=w; last=w.key; } msgs.push(`Restored ${j.weeks.length} weeks from backup`); continue;
+        }
+        const w=parseReport(extractHtml(b.data), b.name); const existed=!!S.weeks[w.key];
+        await Store.putWeek(w); S.weeks[w.key]=w; last=w.key;
+        msgs.push(`Week ${w.week} FY${w.fy}: ${w.rows.length} rows${existed?' (replaced the earlier copy)':''}`);
+      }
+    }catch(e){ errs.push(`${f.name}: ${e.message}`); }
+  }
+  resolveBrands();
+  if(last!=null) S.sel = Math.max(...weekKeys());
+  render();
+  const un = Object.values(S.weeks).some(w=>w.rows.some(r=>r.brand==='Hide'));
+  if(errs.length) toast(errs.join(' | '), true); else if(msgs.length) toast(msgs.join(' · ')+(un?' · Some rows from other brands are hidden':''));
+}
+
+/* ============================ events ============================ */
+const fileIn=document.getElementById('file');
+document.getElementById('addbtn').onclick=()=>fileIn.click();
+fileIn.onchange=()=>{ if(fileIn.files.length) ingest([...fileIn.files]); fileIn.value=''; };
+document.getElementById('wksel').onchange=e=>{ S.sel=+e.target.value; render(); };
+let dragN=0; const ov=document.getElementById('overlay');
+addEventListener('dragenter',e=>{ e.preventDefault(); dragN++; ov.classList.add('on'); });
+addEventListener('dragleave',e=>{ dragN=Math.max(0,dragN-1); if(!dragN) ov.classList.remove('on'); });
+addEventListener('dragover',e=>e.preventDefault());
+addEventListener('drop',e=>{ e.preventDefault(); dragN=0; ov.classList.remove('on'); if(e.dataTransfer&&e.dataTransfer.files.length) ingest([...e.dataTransfer.files]); });
+
+(async()=>{
+  await Store.init();
+  const saved = await Store.getSetting('brandMap'); if(saved) S.map={...DEFAULT_MAP,...saved};
+  for(const w of await Store.allWeeks()) S.weeks[w.key]=w;
+  resolveBrands();
+  const keys=weekKeys(); S.sel = keys.length? keys[keys.length-1] : null;
+  render();
+})();
+</script>
+</body>
+</html>

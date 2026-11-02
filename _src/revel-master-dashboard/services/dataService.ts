@@ -25,6 +25,14 @@ const URLS = {
   PERF: "https://revel-perf-dashboard.pages.dev/revel-performance-data.json"
 };
 
+// Daily website-sessions targets set on the dashboard while column I ("TARGET WEBSITE SESSIONS")
+// of the REVEL DATA sheet still holds the old figure. Each entry only replaces that old figure,
+// so as soon as someone edits the column in the sheet, the sheet wins again.
+// Nov 2026: target lowered from 9,835 to 6,500 sessions/day (requested 2 Nov 2026).
+const TARGET_SESSIONS_OVERRIDES: Record<string, { sheetValue: number; target: number }> = {
+  "2026-11": { sheetValue: 9835, target: 6500 },
+};
+
 const safeFetch = async (url: string, options?: RequestInit, timeoutMs = 60000): Promise<string> => {
   try {
     const controller = new AbortController();
@@ -192,7 +200,7 @@ const parseMainData = (csvText: string, brandType: string): { data: DayData[], b
         const grossMarginFulfilled = parseFloat(cleanNumber(dataCells[5])) || 0;
         const grossProfitFulfilledBudget = parseFloat(cleanNumber(dataCells[6])) || 0;
         const sessions = parseInt(cleanNumber(dataCells[7])) || 0;
-        const targetSessions = parseInt(cleanNumber(dataCells[8])) || 0;
+        const sheetTargetSessions = parseInt(cleanNumber(dataCells[8])) || 0;
         const abandonedCarts = parseInt(cleanNumber(dataCells[9])) || 0;
         const adSpend = parseFloat(cleanNumber(dataCells[10])) || 0;
         const inboundSalesCalls = parseInt(cleanNumber(dataCells[11])) || 0;
@@ -202,6 +210,8 @@ const parseMainData = (csvText: string, brandType: string): { data: DayData[], b
         const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         const formattedDate = `${monthNames[rowDate.getMonth()]} ${rowDate.getDate()}`;
         const fullDateStr = `${rowDate.getFullYear()}-${String(rowDate.getMonth() + 1).padStart(2, '0')}-${String(rowDate.getDate()).padStart(2, '0')}`;
+        const sessionsOverride = TARGET_SESSIONS_OVERRIDES[fullDateStr.slice(0, 7)];
+        const targetSessions = sessionsOverride && sheetTargetSessions === sessionsOverride.sheetValue ? sessionsOverride.target : sheetTargetSessions;
 
         allBudgetData.push({
           fullDate: fullDateStr,

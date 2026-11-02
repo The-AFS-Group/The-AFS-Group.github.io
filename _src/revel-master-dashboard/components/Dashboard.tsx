@@ -78,19 +78,6 @@ const Dashboard: React.FC = () => {
           </button>
 
           <button
-            onClick={() => { setActiveView('bfcm'); setIsSidebarOpen(false); }}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
-              activeView === 'bfcm'
-                ? 'bg-white/10 text-white shadow-sm border border-white/5'
-                : 'text-gray-400 hover:bg-white/5 hover:text-white'
-            } ${isCollapsed ? 'justify-center' : ''}`}
-            title={isCollapsed ? "BFCM" : ""}
-          >
-            <Flame size={20} className="shrink-0" />
-            {!isCollapsed && <span>BFCM</span>}
-          </button>
-
-          <button
             onClick={() => { setActiveView('opsp'); setIsSidebarOpen(false); }}
             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
               activeView === 'opsp'
@@ -140,6 +127,19 @@ const Dashboard: React.FC = () => {
           >
             <Phone size={20} className="shrink-0" />
             {!isCollapsed && <span>Call Insights</span>}
+          </button>
+
+          <button
+            onClick={() => { setActiveView('bfcm'); setIsSidebarOpen(false); }}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 font-medium group ${
+              activeView === 'bfcm'
+                ? 'bg-white/10 text-white shadow-sm border border-white/5'
+                : 'text-gray-400 hover:bg-white/5 hover:text-white'
+            } ${isCollapsed ? 'justify-center' : ''}`}
+            title={isCollapsed ? "BFCM" : ""}
+          >
+            <Flame size={20} className="shrink-0" />
+            {!isCollapsed && <span>BFCM</span>}
           </button>
         </nav>
       </aside>

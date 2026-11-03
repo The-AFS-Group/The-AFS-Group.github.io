@@ -894,103 +894,59 @@ const defaultQuarterIndex = (): number => {
     return 0;
 };
 
-// Showroom walk-in tracker for the quarter goal. Target = last 3 months' actuals
-// (the baseline) lifted by `uplift` for intentionality. Reads a committed JSON
-// refreshed from the HubSpot Walkins log + NetSuite check (see note in the JSON).
-interface WalkInData {
-    asOf: string; quarter: string; periodStart: string; periodEnd: string; uplift: number;
-    baseline: { label: string; visitors: number; known: number; unknown: number; verifiedSales: number; verifiedOrders: number };
-    actual: { visitors: number | null; known: number | null; unknown: number | null; verifiedSales: number | null; verifiedOrders: number | null };
-    monthly: { label: string; visitors: number | null }[];
-    note: string;
+// Showroom walk-in tracker for the quarter. Live from the Lead Conversion Funnel
+// API (HubSpot hs_lead_type = "Walk-In", deduplicated within 24h). Quarter-to-date
+// via cutoff_date = start of the current quarter. Refreshes every 10 minutes.
+const LEAD_FUNNEL_URL = 'https://web-production-faef3.up.railway.app/api/lead-funnel';
+const WALKIN_LEAD_TYPE = 'Walk-In';
+const WALKIN_REFRESH_MS = 10 * 60 * 1000;
+interface LeadFunnelData {
+    total_leads: number; active_deals: number; disqualified: number; conversion_overall: number; as_of: string;
 }
 const WalkInTile: React.FC = () => {
-    const [d, setD] = useState<WalkInData | null>(null);
+    const q = QUARTERS[defaultQuarterIndex()];
+    const cutoff = q ? quarterStartDate(q) : new Date();
+    const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-${String(cutoff.getDate()).padStart(2, '0')}`;
+    const [d, setD] = useState<LeadFunnelData | null>(null);
+    const [failed, setFailed] = useState(false);
     useEffect(() => {
-        fetch(`${import.meta.env.BASE_URL}walkin-tracker.json?cb=${Date.now()}`)
-            .then((r) => (r.ok ? r.json() : null))
-            .then((j) => j && setD(j))
-            .catch(() => {});
-    }, []);
-    if (!d) return null;
-    const up = 1 + d.uplift;
-    const tgt = {
-        visitors: Math.round(d.baseline.visitors * up),
-        known: Math.round(d.baseline.known * up),
-        unknown: Math.round(d.baseline.unknown * up),
-        sales: Math.round(d.baseline.verifiedSales * up),
-        orders: Math.round(d.baseline.verifiedOrders * up),
-    };
-    const start = new Date(d.periodStart).getTime();
-    const end = new Date(d.periodEnd).getTime();
-    const asOf = new Date(d.asOf).getTime();
-    const elapsed = Math.max(0, Math.min(100, ((asOf - start) / (end - start)) * 100));
-    const pct = (v: number, t: number) => Math.max(0, Math.min(100, (v / t) * 100));
-    const a = d.actual;
-    const total = a.visitors ?? 0;
-    const onPace = pct(total, tgt.visitors) >= elapsed;
-    const knownPct = a.known != null && a.visitors ? (a.known / a.visitors) * 100 : null;
-    const monthTarget = Math.round(tgt.visitors / 3);
-    const Row: React.FC<{ label: string; actual: number | null; target: number; fmt?: (n: number) => string; color: string }> = ({ label, actual, target, fmt = (n) => `${n}`, color }) => (
-        <div>
-            <div className="flex justify-between text-xs mb-1">
-                <span className="text-gray-600 font-medium">{label}</span>
-                <span><span className="font-bold text-gray-900">{actual != null ? fmt(actual) : '—'}</span><span className="text-gray-400 font-semibold"> / {fmt(target)}</span></span>
-            </div>
-            <div className="relative h-2.5 bg-gray-100 rounded-full">
-                <div className="h-full rounded-full" style={{ width: `${actual != null ? pct(actual, target) : 0}%`, backgroundColor: color }} />
-                <div className="absolute -top-1 -bottom-1 w-0.5 bg-gray-700" style={{ left: `${elapsed}%` }} title={`Pace: ${elapsed.toFixed(0)}% of the quarter elapsed`} />
-            </div>
+        let alive = true;
+        const load = () =>
+            fetch(`${LEAD_FUNNEL_URL}?lead_type=${encodeURIComponent(WALKIN_LEAD_TYPE)}&cutoff_date=${cutoffStr}`)
+                .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+                .then((j) => { if (alive) { setD(j); setFailed(false); } })
+                .catch(() => { if (alive) setFailed(true); });
+        load();
+        const id = setInterval(load, WALKIN_REFRESH_MS);
+        return () => { alive = false; clearInterval(id); };
+    }, [cutoffStr]);
+
+    const Stat: React.FC<{ label: string; value: string; color: string }> = ({ label, value, color }) => (
+        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <div className="text-xs text-gray-500 font-medium mb-1">{label}</div>
+            <div className="text-2xl font-bold" style={{ color }}>{value}</div>
         </div>
     );
-    const money = (n: number) => `$${n.toLocaleString()}`;
+    const asOfDate = d ? new Date(d.as_of) : null;
+    const asOfOk = asOfDate && !isNaN(asOfDate.getTime());
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-            <div className="flex justify-between items-start gap-4 mb-5">
-                <div>
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg"><Users size={16} /></div>
-                        <h3 className="font-bold text-gray-900">Showroom Walk-ins · {d.quarter}</h3>
-                    </div>
-                    <p className="text-xs text-gray-500 ml-9">
-                        Target <span className="font-bold text-green-600">{tgt.visitors} visitors · {money(tgt.sales)} verified sales</span>
-                        <span className="mx-1">•</span> last 3 months +{Math.round(d.uplift * 100)}%
-                    </p>
-                    <SourceNote text={`Source: HubSpot Walkins log + NetSuite check · as of ${fmtShortDate(new Date(d.asOf))} · duplicates & staff/test entries excluded`} className="ml-9 mt-0.5" />
+            <div className="flex items-center gap-2 mb-1">
+                <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg"><Users size={16} /></div>
+                <h3 className="font-bold text-gray-900">Showroom Walk-ins{q ? ` · ${q.label ?? ''}` : ''}</h3>
+            </div>
+            <SourceNote text={`Source: HubSpot Walk-In leads (live) · since ${fmtShortDate(cutoff)}${asOfOk ? ` · as of ${fmtShortDate(asOfDate as Date)}` : ''} · duplicate submissions within 24h counted once`} className="ml-9 mt-0.5 mb-5" />
+            {d ? (
+                <div className="grid grid-cols-2 gap-3">
+                    <Stat label="Walk-in leads" value={`${d.total_leads}`} color={GAF_COLORS.darkGrey} />
+                    <Stat label="Active deals" value={`${d.active_deals}`} color={GAF_COLORS.blue} />
+                    <Stat label="Disqualified" value={`${d.disqualified}`} color={GAF_COLORS.orange} />
+                    <Stat label="Conversion (closed won)" value={`${(d.conversion_overall * 100).toFixed(1)}%`} color={GAF_COLORS.green} />
                 </div>
-                <div className="text-right shrink-0">
-                    <div className="text-2xl font-bold text-gray-900">{total}</div>
-                    <div className="text-xs text-gray-500 font-medium mb-1">Visitors this quarter</div>
-                    <div className={`text-xs font-bold ${onPace ? 'text-green-600' : 'text-red-500'}`}>{onPace ? 'On pace' : 'Behind pace'}</div>
-                </div>
-            </div>
-            <div className="space-y-4">
-                <Row label="Total visitors" actual={a.visitors} target={tgt.visitors} color={GAF_COLORS.darkGrey} />
-                <Row label="Known visitors (left details)" actual={a.known} target={tgt.known} color={GAF_COLORS.green} />
-                <Row label="Unknown visitors" actual={a.unknown} target={tgt.unknown} color={GAF_COLORS.blue} />
-                <Row label="Verified walk-in sales" actual={a.verifiedSales} target={tgt.sales} fmt={money} color={GAF_COLORS.orange} />
-                <Row label="Verified orders" actual={a.verifiedOrders} target={tgt.orders} color={GAF_COLORS.orange} />
-            </div>
-            <div className="text-[11px] text-gray-500 mt-3">
-                Baseline ({d.baseline.label}): {d.baseline.visitors} visitors, {d.baseline.known} known, {money(d.baseline.verifiedSales)} verified
-                <span className="mx-1">•</span> dark marker = pace ({elapsed.toFixed(0)}% of quarter)
-                {knownPct != null && <> <span className="mx-1">•</span> {knownPct.toFixed(0)}% left details</>}
-            </div>
-            <div className="flex-1 min-h-[140px] mt-4">
-                <ResponsiveContainer width="100%" height="100%">
-                    <RechartsBarChart data={d.monthly} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
-                        <XAxis dataKey="label" tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
-                        <YAxis tick={{ fontSize: 11 }} stroke="#9ca3af" axisLine={false} tickLine={false} />
-                        <Tooltip formatter={(v: number) => [v, 'Visitors']} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }} />
-                        <ReferenceLine y={monthTarget} stroke={GAF_COLORS.green} strokeDasharray="3 3">
-                            <Label value={`Target ~${monthTarget}/mo`} position="insideTopRight" fill={GAF_COLORS.green} fontSize={10} />
-                        </ReferenceLine>
-                        <Bar dataKey="visitors" fill={GAF_COLORS.blue} radius={[4, 4, 0, 0]} barSize={28} />
-                    </RechartsBarChart>
-                </ResponsiveContainer>
-            </div>
-            <p className="text-[10px] text-gray-400 mt-3">{d.note}</p>
+            ) : (
+                <div className="text-sm text-gray-500 py-8 text-center">{failed ? 'Walk-in data unavailable — will retry automatically.' : 'Loading walk-in data…'}</div>
+            )}
+            {d && failed && <p className="text-[10px] text-red-400 mt-3">Refresh failed — showing last loaded data.</p>}
         </div>
     );
 };

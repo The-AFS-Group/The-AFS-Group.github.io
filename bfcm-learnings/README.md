@@ -18,7 +18,7 @@ Responses land in a Google Sheet, like the showroom check-in form.
 
 ## What staff see
 
-1. **About you:** name, department (dropdown, plus Other) and team (AFS Group, Revel or GAF). Remembered on their device for next time.
+1. **About you:** name, department (dropdown, plus Other) and team (GAF, Revel or AFS Group). Remembered on their device for next time.
 2. **Which brand is this about?** Optional chips, including Other with a box to type the brand.
 3. **Your learnings:** three boxes, with at least one required:
    - What worked? (keep doing)

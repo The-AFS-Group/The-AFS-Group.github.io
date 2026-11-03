@@ -28,11 +28,11 @@ window.BFCM_CONFIG = {
     'Leadership'
   ],
 
-  // Shown as a dropdown.
+  // Shown as a dropdown, in this order. No "Other" option.
   TEAMS: [
-    'AFS Group',
+    'GAF',
     'Revel',
-    'GAF'
+    'AFS Group'
   ],
 
   // Optional "which brand does this relate to?" chips.

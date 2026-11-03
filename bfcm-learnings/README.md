@@ -12,13 +12,13 @@ Responses land in a Google Sheet, like the showroom check-in form.
 
 | File | What it is |
 |---|---|
-| `config.js` | The only file to edit after setup: endpoint, token, event name, departments, team suggestions, brands |
+| `config.js` | The only file to edit after setup: endpoint, token, event name, departments, teams, brands |
 | `apps-script/Code.gs` | Google Apps Script that stores responses and calls Claude for the summary |
 | `demo-data.js` | Made-up responses for `?demo`. Safe to delete. |
 
 ## What staff see
 
-1. **About you:** name, department (dropdown, plus Other) and team (free text with suggestions). Remembered on their device for next time.
+1. **About you:** name, department (dropdown, plus Other) and team (GAF, Revel or AFS Group). Remembered on their device for next time.
 2. **Which brand is this about?** Optional chips, including Other with a box to type the brand.
 3. **Your learnings:** three boxes, with at least one required:
    - What worked? (keep doing)

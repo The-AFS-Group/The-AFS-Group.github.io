@@ -28,21 +28,11 @@ window.BFCM_CONFIG = {
     'Leadership'
   ],
 
-  // Suggestions only. Staff can type any team name.
+  // Shown as a dropdown, in this order. No "Other" option.
   TEAMS: [
-    'Paid Media & Search',
-    'Organic Social',
-    'Email, SMS & Retention',
-    'Creative & Content',
-    'Website',
-    'Showroom',
-    'Phone & Chat Sales',
-    'Service Desk',
-    'Dispatch',
-    'Inventory & Planning',
-    'Gym and Fitness',
-    'Revel Saunas',
-    'Force USA'
+    'GAF',
+    'Revel',
+    'AFS Group'
   ],
 
   // Optional "which brand does this relate to?" chips.

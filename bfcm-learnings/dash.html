@@ -267,7 +267,11 @@ mark { background: #FFE6A8; color: inherit; border-radius: 2px; }
 </div>
 <div class="toast" id="toast"></div>
 
-<script src="config.js"></script>
+<script>
+  // Always load the current config.js. GitHub Pages lets browsers keep files for 10 minutes,
+  // which can pair a fresh page with an old config (e.g. an old team list).
+  document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');
+</script>
 <script>
 (function () {
   'use strict';

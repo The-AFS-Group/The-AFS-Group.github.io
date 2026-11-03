@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-02 10:15",
+ "generated": "2026-11-03 11:52",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1096,
+   "calls": 1099,
    "tickets": 502,
    "products": [
     [
      "Traditional sauna",
-     279
+     281
     ],
     [
      "Ice bath & chiller",
@@ -42,14 +42,14 @@
      19
     ],
     [
-     "Eclipse",
+     "Eden",
      16
     ]
    ],
    "components": [
     [
      "Heater",
-     63
+     64
     ],
     [
      "Chiller unit",
@@ -73,10 +73,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.203,
-    "F": 0.534,
+    "R": 0.204,
+    "F": 0.533,
     "H": 0.044,
-    "U": 0.22
+    "U": 0.219
    },
    "upsetCallers": 129,
    "whyCallersLeftUpset": [
@@ -143,11 +143,11 @@
    "solutions": [
     {
      "solution": "Replacement part or unit",
-     "calls": 30,
-     "resolvedOnCall": 0.167,
-     "resolvedOrBooked": 0.867,
+     "calls": 31,
+     "resolvedOnCall": 0.161,
+     "resolvedOrBooked": 0.871,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.448
+     "endedPositive": 0.467
     },
     {
      "solution": "Troubleshot on the call",
@@ -199,11 +199,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 291,
-     "resolvedOnCall": 0.113,
+     "calls": 292,
+     "resolvedOnCall": 0.116,
      "resolvedOrBooked": 0.818,
      "upsetTurnedAround": 0.885,
-     "endedPositive": 0.36
+     "endedPositive": 0.359
     },
     {
      "solution": "Technician or electrician",
@@ -240,9 +240,9 @@
    "bestOnCalls": [
     {
      "name": "Corey Hucker",
-     "calls": 58,
-     "resolvedOnCall": 0.276,
-     "resolvedOrBooked": 0.931
+     "calls": 59,
+     "resolvedOnCall": 0.271,
+     "resolvedOrBooked": 0.932
     },
     {
      "name": "Indigo Carthew",
@@ -278,12 +278,12 @@
   },
   {
    "issue": "Assembly & installation",
-   "calls": 554,
+   "calls": 556,
    "tickets": 226,
    "products": [
     [
      "Traditional sauna",
-     297
+     298
     ],
     [
      "Infrared sauna",
@@ -301,7 +301,7 @@
     ],
     [
      "Eden",
-     35
+     36
     ],
     [
      "Nordic Wave",
@@ -347,10 +347,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.224,
+    "R": 0.225,
     "F": 0.534,
     "H": 0.067,
-    "U": 0.175
+    "U": 0.174
    },
    "upsetCallers": 77,
    "whyCallersLeftUpset": [
@@ -530,9 +530,9 @@
    "bestOnCalls": [
     {
      "name": "Matthew Taylor",
-     "calls": 52,
-     "resolvedOnCall": 0.192,
-     "resolvedOrBooked": 0.904
+     "calls": 53,
+     "resolvedOnCall": 0.189,
+     "resolvedOrBooked": 0.906
     },
     {
      "name": "Anne Melegrito",
@@ -568,7 +568,7 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 303,
+   "calls": 304,
    "tickets": 165,
    "products": [
     [
@@ -577,7 +577,7 @@
     ],
     [
      "Ice bath & chiller",
-     60
+     61
     ],
     [
      "Infrared sauna",
@@ -617,7 +617,7 @@
     ],
     [
      "Chiller unit",
-     13
+     14
     ],
     [
      "Sauna stones",
@@ -637,10 +637,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.205,
-    "F": 0.624,
+    "R": 0.207,
+    "F": 0.622,
     "H": 0.033,
-    "U": 0.139
+    "U": 0.138
    },
    "upsetCallers": 38,
    "whyCallersLeftUpset": [
@@ -814,12 +814,12 @@
   },
   {
    "issue": "Faulty unit / warranty (general)",
-   "calls": 309,
+   "calls": 312,
    "tickets": 139,
    "products": [
     [
      "Ice bath & chiller",
-     192
+     195
     ],
     [
      "Traditional sauna",
@@ -832,12 +832,12 @@
    ],
    "models": [
     [
-     "Aura",
+     "Glacier",
      12
     ],
     [
-     "Glacier",
-     11
+     "Aura",
+     12
     ],
     [
      "Eclipse",
@@ -859,7 +859,7 @@
    "components": [
     [
      "Chiller unit",
-     83
+     84
     ],
     [
      "Lights",
@@ -883,10 +883,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.126,
+    "R": 0.125,
     "F": 0.625,
-    "H": 0.097,
-    "U": 0.152
+    "H": 0.096,
+    "U": 0.154
    },
    "upsetCallers": 95,
    "whyCallersLeftUpset": [
@@ -965,11 +965,11 @@
    "solutions": [
     {
      "solution": "Replacement part or unit",
-     "calls": 62,
+     "calls": 63,
      "resolvedOnCall": 0.048,
-     "resolvedOrBooked": 0.855,
+     "resolvedOrBooked": 0.857,
      "upsetTurnedAround": 0.619,
-     "endedPositive": 0.339
+     "endedPositive": 0.349
     },
     {
      "solution": "Troubleshot on the call",
@@ -997,11 +997,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 133,
-     "resolvedOnCall": 0.075,
-     "resolvedOrBooked": 0.707,
+     "calls": 135,
+     "resolvedOnCall": 0.074,
+     "resolvedOrBooked": 0.704,
      "upsetTurnedAround": 0.581,
-     "endedPositive": 0.293
+     "endedPositive": 0.296
     },
     {
      "solution": "Passed to a colleague",
@@ -1068,9 +1068,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 39,
-     "resolvedOnCall": 0.103,
-     "resolvedOrBooked": 0.846
+     "calls": 40,
+     "resolvedOnCall": 0.1,
+     "resolvedOrBooked": 0.85
     },
     {
      "name": "Gabriel Pinciara",
@@ -2295,7 +2295,7 @@
   },
   {
    "issue": "Delivery delay & tracking",
-   "calls": 221,
+   "calls": 222,
    "tickets": 94,
    "products": [
     [
@@ -2364,12 +2364,12 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.226,
-    "F": 0.52,
+    "R": 0.225,
+    "F": 0.523,
     "H": 0.05,
-    "U": 0.204
+    "U": 0.203
    },
-   "upsetCallers": 56,
+   "upsetCallers": 57,
    "whyCallersLeftUpset": [
     [
      "Waiting too long",
@@ -2422,15 +2422,15 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.804,
+   "upsetTurnedAround": 0.807,
    "solutions": [
     {
      "solution": "Delivery rebooked or chased",
-     "calls": 45,
-     "resolvedOnCall": 0.222,
-     "resolvedOrBooked": 0.822,
-     "upsetTurnedAround": 0.867,
-     "endedPositive": 0.5
+     "calls": 46,
+     "resolvedOnCall": 0.217,
+     "resolvedOrBooked": 0.826,
+     "upsetTurnedAround": 0.875,
+     "endedPositive": 0.487
     },
     {
      "solution": "Explained how it works",
@@ -2458,11 +2458,11 @@
     },
     {
      "solution": "Info or instructions sent",
-     "calls": 38,
-     "resolvedOnCall": 0.053,
-     "resolvedOrBooked": 0.947,
-     "upsetTurnedAround": 0.778,
-     "endedPositive": 0.351
+     "calls": 39,
+     "resolvedOnCall": 0.051,
+     "resolvedOrBooked": 0.949,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.342
     },
     {
      "solution": "Technician or electrician",
@@ -2482,11 +2482,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 60,
-     "resolvedOnCall": 0.133,
-     "resolvedOrBooked": 0.85,
-     "upsetTurnedAround": 0.722,
-     "endedPositive": 0.186
+     "calls": 61,
+     "resolvedOnCall": 0.131,
+     "resolvedOrBooked": 0.852,
+     "upsetTurnedAround": 0.737,
+     "endedPositive": 0.183
     },
     {
      "solution": "Troubleshot on the call",
@@ -3013,7 +3013,7 @@
   },
   {
    "issue": "Lights, sound & accessories",
-   "calls": 62,
+   "calls": 63,
    "tickets": 79,
    "products": [
     [
@@ -3058,11 +3058,11 @@
    "components": [
     [
      "Lights",
-     92
+     93
     ],
     [
      "App, Wi-Fi & remote",
-     18
+     19
     ],
     [
      "Cover & lid",
@@ -3077,15 +3077,15 @@
      10
     ],
     [
-     "Hoses & fittings",
+     "Control panel / controller",
      8
     ]
    ],
    "callOutcomes": {
-    "R": 0.129,
-    "F": 0.565,
-    "H": 0.081,
-    "U": 0.226
+    "R": 0.127,
+    "F": 0.571,
+    "H": 0.079,
+    "U": 0.222
    },
    "upsetCallers": 11,
    "whyCallersLeftUpset": [
@@ -3143,11 +3143,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 28,
-     "resolvedOnCall": 0.071,
-     "resolvedOrBooked": 0.714,
+     "calls": 29,
+     "resolvedOnCall": 0.069,
+     "resolvedOrBooked": 0.724,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.321
+     "endedPositive": 0.345
     },
     {
      "solution": "Replacement part or unit",
@@ -3190,9 +3190,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 8,
-     "resolvedOnCall": 0.375,
-     "resolvedOrBooked": 0.875
+     "calls": 9,
+     "resolvedOnCall": 0.333,
+     "resolvedOrBooked": 0.889
     },
     {
      "name": "Gemma Johnston",

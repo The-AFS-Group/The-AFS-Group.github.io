@@ -1,7 +1,7 @@
 // Edit this file after deploying the Apps Script (see README.md).
 window.BFCM_CONFIG = {
   // Apps Script web app URL (ends in /exec). Leave blank to test without sending.
-  ENDPOINT: '',
+  ENDPOINT: 'https://script.google.com/macros/s/AKfycby9-J3nIM4fNwfpeJW6-QS1TpQ9yad256_44ykzYhVtpATJTLNDHXig4CQDYT1QVAKDVA/exec',
   // Must match SUBMIT_TOKEN in the Apps Script project's Script Properties.
   // This token can only add learnings, never read them.
   TOKEN: 'bfcm-7WesRNekhymGg8UgJNaqIg22W3BQovZ_',

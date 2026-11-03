@@ -894,16 +894,15 @@ const defaultQuarterIndex = (): number => {
     return 0;
 };
 
-// Showroom walk-in tracker for the quarter. Live from the Lead Conversion Funnel
-// API (HubSpot hs_lead_type = "Walk-In", deduplicated within 24h). Quarter-to-date
-// via cutoff_date = start of the current quarter. Refreshes every 10 minutes.
+// Lead funnel tiles for the quarter (Showroom walk-ins, Home Gym Designer leads). Live
+// from the Lead Conversion Funnel API (HubSpot hs_lead_type, deduplicated within 24h).
+// Quarter-to-date via cutoff_date = start of the current quarter. Refreshes every 10 minutes.
 const LEAD_FUNNEL_URL = 'https://web-production-faef3.up.railway.app/api/lead-funnel';
-const WALKIN_LEAD_TYPE = 'Walk-In';
 const WALKIN_REFRESH_MS = 10 * 60 * 1000;
 interface LeadFunnelData {
     total_leads: number; active_deals: number; disqualified: number; conversion_overall: number; as_of: string;
 }
-const WalkInTile: React.FC = () => {
+const LeadFunnelTile: React.FC<{ title: string; leadType: string; leadsLabel: string; icon: React.ReactNode; iconClass: string }> = ({ title, leadType, leadsLabel, icon, iconClass }) => {
     const q = QUARTERS[defaultQuarterIndex()];
     const cutoff = q ? quarterStartDate(q) : new Date();
     const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth() + 1).padStart(2, '0')}-${String(cutoff.getDate()).padStart(2, '0')}`;
@@ -912,14 +911,14 @@ const WalkInTile: React.FC = () => {
     useEffect(() => {
         let alive = true;
         const load = () =>
-            fetch(`${LEAD_FUNNEL_URL}?lead_type=${encodeURIComponent(WALKIN_LEAD_TYPE)}&cutoff_date=${cutoffStr}`)
+            fetch(`${LEAD_FUNNEL_URL}?lead_type=${encodeURIComponent(leadType)}&cutoff_date=${cutoffStr}`)
                 .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
                 .then((j) => { if (alive) { setD(j); setFailed(false); } })
                 .catch(() => { if (alive) setFailed(true); });
         load();
         const id = setInterval(load, WALKIN_REFRESH_MS);
         return () => { alive = false; clearInterval(id); };
-    }, [cutoffStr]);
+    }, [cutoffStr, leadType]);
 
     const Stat: React.FC<{ label: string; value: string; color: string }> = ({ label, value, color }) => (
         <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
@@ -932,24 +931,31 @@ const WalkInTile: React.FC = () => {
     return (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
             <div className="flex items-center gap-2 mb-1">
-                <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg"><Users size={16} /></div>
-                <h3 className="font-bold text-gray-900">Showroom Walk-ins{q ? ` · ${q.label ?? ''}` : ''}</h3>
+                <div className={`p-1.5 rounded-lg ${iconClass}`}>{icon}</div>
+                <h3 className="font-bold text-gray-900">{title}{q ? ` · ${q.label ?? ''}` : ''}</h3>
             </div>
-            <SourceNote text={`Source: HubSpot Walk-In leads (live) · since ${fmtShortDate(cutoff)}${asOfOk ? ` · as of ${fmtShortDate(asOfDate as Date)}` : ''} · duplicate submissions within 24h counted once`} className="ml-9 mt-0.5 mb-5" />
+            <SourceNote text={`Source: HubSpot ${leadType} leads (live) · since ${fmtShortDate(cutoff)}${asOfOk ? ` · as of ${fmtShortDate(asOfDate as Date)}` : ''} · duplicate submissions within 24h counted once`} className="ml-9 mt-0.5 mb-5" />
             {d ? (
                 <div className="grid grid-cols-2 gap-3">
-                    <Stat label="Walk-in leads" value={`${d.total_leads}`} color={GAF_COLORS.darkGrey} />
+                    <Stat label={leadsLabel} value={`${d.total_leads}`} color={GAF_COLORS.darkGrey} />
                     <Stat label="Active deals" value={`${d.active_deals}`} color={GAF_COLORS.blue} />
                     <Stat label="Disqualified" value={`${d.disqualified}`} color={GAF_COLORS.orange} />
                     <Stat label="Conversion (closed won)" value={`${(d.conversion_overall * 100).toFixed(1)}%`} color={GAF_COLORS.green} />
                 </div>
             ) : (
-                <div className="text-sm text-gray-500 py-8 text-center">{failed ? 'Walk-in data unavailable — will retry automatically.' : 'Loading walk-in data…'}</div>
+                <div className="text-sm text-gray-500 py-8 text-center">{failed ? `${title} data unavailable — will retry automatically.` : `Loading ${title.toLowerCase()} data…`}</div>
             )}
             {d && failed && <p className="text-[10px] text-red-400 mt-3">Refresh failed — showing last loaded data.</p>}
         </div>
     );
 };
+
+const WalkInTile: React.FC = () => (
+    <LeadFunnelTile title="Showroom Walk-ins" leadType="Walk-In" leadsLabel="Walk-in leads" icon={<Users size={16} />} iconClass="bg-purple-100 text-purple-700" />
+);
+const HomeGymDesignerLeadsTile: React.FC = () => (
+    <LeadFunnelTile title="Home Gym Designer Leads" leadType="Home Gym Designer - GAF" leadsLabel="Designer leads" icon={<PencilRuler size={16} />} iconClass="bg-orange-100 text-orange-700" />
+);
 
 export default function OPSPDashboard() {
     const deadStock = useDeadStockData();
@@ -1864,6 +1870,7 @@ export default function OPSPDashboard() {
                         )}
 
                         <WalkInTile />
+                        <HomeGymDesignerLeadsTile />
 
                         {/* Dead stock — tracked as a trend from Q2 FY27 onward, after Q1's
                             "Reduce GC Dead Stock" Critical Number (frozen in opsp-finals.json,

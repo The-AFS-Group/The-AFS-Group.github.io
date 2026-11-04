@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-03 11:52",
+ "generated": "2026-11-04 10:15",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1099,
+   "calls": 1100,
    "tickets": 502,
    "products": [
     [
      "Traditional sauna",
-     281
+     282
     ],
     [
      "Ice bath & chiller",
@@ -17,7 +17,7 @@
     ],
     [
      "Infrared sauna",
-     150
+     151
     ]
    ],
    "models": [
@@ -73,7 +73,7 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.204,
+    "R": 0.205,
     "F": 0.533,
     "H": 0.044,
     "U": 0.219
@@ -199,11 +199,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 292,
-     "resolvedOnCall": 0.116,
-     "resolvedOrBooked": 0.818,
+     "calls": 293,
+     "resolvedOnCall": 0.119,
+     "resolvedOrBooked": 0.819,
      "upsetTurnedAround": 0.885,
-     "endedPositive": 0.359
+     "endedPositive": 0.358
     },
     {
      "solution": "Technician or electrician",
@@ -278,7 +278,7 @@
   },
   {
    "issue": "Assembly & installation",
-   "calls": 556,
+   "calls": 557,
    "tickets": 226,
    "products": [
     [
@@ -339,7 +339,7 @@
     ],
     [
      "Hoses & fittings",
-     48
+     49
     ],
     [
      "Lights",
@@ -347,9 +347,9 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.225,
-    "F": 0.534,
-    "H": 0.067,
+    "R": 0.224,
+    "F": 0.535,
+    "H": 0.066,
     "U": 0.174
    },
    "upsetCallers": 77,
@@ -505,11 +505,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 152,
+     "calls": 153,
      "resolvedOnCall": 0.105,
-     "resolvedOrBooked": 0.75,
+     "resolvedOrBooked": 0.752,
      "upsetTurnedAround": 0.76,
-     "endedPositive": 0.298
+     "endedPositive": 0.296
     }
    ],
    "exampleFixes": [
@@ -568,7 +568,7 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 304,
+   "calls": 305,
    "tickets": 165,
    "products": [
     [
@@ -638,9 +638,9 @@
    ],
    "callOutcomes": {
     "R": 0.207,
-    "F": 0.622,
+    "F": 0.62,
     "H": 0.033,
-    "U": 0.138
+    "U": 0.141
    },
    "upsetCallers": 38,
    "whyCallersLeftUpset": [
@@ -787,10 +787,10 @@
      "resolvedOrBooked": 0.932
     },
     {
-     "name": "Alice Ternen",
-     "calls": 14,
-     "resolvedOnCall": 0.286,
-     "resolvedOrBooked": 0.929
+     "name": "Lachlan Wilson",
+     "calls": 8,
+     "resolvedOnCall": 0.375,
+     "resolvedOrBooked": 0.875
     }
    ],
    "ticketMedianDaysToClose": 1.1,
@@ -814,12 +814,12 @@
   },
   {
    "issue": "Faulty unit / warranty (general)",
-   "calls": 312,
+   "calls": 313,
    "tickets": 139,
    "products": [
     [
      "Ice bath & chiller",
-     195
+     196
     ],
     [
      "Traditional sauna",
@@ -884,9 +884,9 @@
    ],
    "callOutcomes": {
     "R": 0.125,
-    "F": 0.625,
+    "F": 0.626,
     "H": 0.096,
-    "U": 0.154
+    "U": 0.153
    },
    "upsetCallers": 95,
    "whyCallersLeftUpset": [
@@ -973,11 +973,11 @@
     },
     {
      "solution": "Troubleshot on the call",
-     "calls": 72,
-     "resolvedOnCall": 0.111,
-     "resolvedOrBooked": 0.847,
+     "calls": 73,
+     "resolvedOnCall": 0.11,
+     "resolvedOrBooked": 0.849,
      "upsetTurnedAround": 0.714,
-     "endedPositive": 0.333
+     "endedPositive": 0.342
     },
     {
      "solution": "Info or instructions sent",
@@ -997,19 +997,19 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 135,
+     "calls": 136,
      "resolvedOnCall": 0.074,
-     "resolvedOrBooked": 0.704,
+     "resolvedOrBooked": 0.706,
      "upsetTurnedAround": 0.581,
-     "endedPositive": 0.296
+     "endedPositive": 0.301
     },
     {
      "solution": "Passed to a colleague",
-     "calls": 61,
-     "resolvedOnCall": 0.049,
-     "resolvedOrBooked": 0.41,
+     "calls": 62,
+     "resolvedOnCall": 0.048,
+     "resolvedOrBooked": 0.419,
      "upsetTurnedAround": 0.519,
-     "endedPositive": 0.279
+     "endedPositive": 0.29
     },
     {
      "solution": "Warranty claim raised",
@@ -1068,9 +1068,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 40,
-     "resolvedOnCall": 0.1,
-     "resolvedOrBooked": 0.85
+     "calls": 41,
+     "resolvedOnCall": 0.098,
+     "resolvedOrBooked": 0.854
     },
     {
      "name": "Gabriel Pinciara",
@@ -1493,12 +1493,12 @@
   },
   {
    "issue": "Leaks, timber, doors & glass",
-   "calls": 134,
+   "calls": 135,
    "tickets": 220,
    "products": [
     [
      "Traditional sauna",
-     117
+     118
     ],
     [
      "Infrared sauna",
@@ -1506,7 +1506,7 @@
     ],
     [
      "Ice bath & chiller",
-     42
+     43
     ]
    ],
    "models": [
@@ -1538,7 +1538,7 @@
    "components": [
     [
      "Door & glass",
-     191
+     192
     ],
     [
      "Timber & seals",
@@ -1558,14 +1558,14 @@
     ],
     [
      "Heater",
-     24
+     25
     ]
    ],
    "callOutcomes": {
-    "R": 0.194,
-    "F": 0.507,
-    "H": 0.097,
-    "U": 0.201
+    "R": 0.193,
+    "F": 0.511,
+    "H": 0.096,
+    "U": 0.2
    },
    "upsetCallers": 29,
    "whyCallersLeftUpset": [
@@ -1632,11 +1632,11 @@
    "solutions": [
     {
      "solution": "Explained how it works",
-     "calls": 28,
-     "resolvedOnCall": 0.214,
-     "resolvedOrBooked": 0.75,
+     "calls": 29,
+     "resolvedOnCall": 0.207,
+     "resolvedOrBooked": 0.759,
      "upsetTurnedAround": 0.818,
-     "endedPositive": 0.429
+     "endedPositive": 0.414
     },
     {
      "solution": "Technician or electrician",
@@ -1741,9 +1741,9 @@
     },
     {
      "name": "Alice Ternen",
-     "calls": 26,
-     "resolvedOnCall": 0.192,
-     "resolvedOrBooked": 0.654
+     "calls": 27,
+     "resolvedOnCall": 0.185,
+     "resolvedOrBooked": 0.667
     }
    ],
    "ticketMedianDaysToClose": 5.8,
@@ -2295,7 +2295,7 @@
   },
   {
    "issue": "Delivery delay & tracking",
-   "calls": 222,
+   "calls": 223,
    "tickets": 94,
    "products": [
     [
@@ -2304,7 +2304,7 @@
     ],
     [
      "Traditional sauna",
-     48
+     49
     ],
     [
      "Infrared sauna",
@@ -2364,10 +2364,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.225,
-    "F": 0.523,
-    "H": 0.05,
-    "U": 0.203
+    "R": 0.224,
+    "F": 0.525,
+    "H": 0.049,
+    "U": 0.202
    },
    "upsetCallers": 57,
    "whyCallersLeftUpset": [
@@ -2458,11 +2458,11 @@
     },
     {
      "solution": "Info or instructions sent",
-     "calls": 39,
-     "resolvedOnCall": 0.051,
-     "resolvedOrBooked": 0.949,
+     "calls": 40,
+     "resolvedOnCall": 0.05,
+     "resolvedOrBooked": 0.95,
      "upsetTurnedAround": 0.8,
-     "endedPositive": 0.342
+     "endedPositive": 0.333
     },
     {
      "solution": "Technician or electrician",
@@ -2479,6 +2479,14 @@
      "resolvedOrBooked": 0.875,
      "upsetTurnedAround": 0.667,
      "endedPositive": 0.25
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 5,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.8,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.2
     },
     {
      "solution": "Callback or follow-up promised",
@@ -3013,16 +3021,16 @@
   },
   {
    "issue": "Lights, sound & accessories",
-   "calls": 63,
+   "calls": 64,
    "tickets": 79,
    "products": [
     [
      "Infrared sauna",
-     26
+     27
     ],
     [
      "Traditional sauna",
-     26
+     27
     ],
     [
      "Ice bath & chiller",
@@ -3058,7 +3066,7 @@
    "components": [
     [
      "Lights",
-     93
+     94
     ],
     [
      "App, Wi-Fi & remote",
@@ -3074,7 +3082,7 @@
     ],
     [
      "Heater",
-     10
+     11
     ],
     [
      "Control panel / controller",
@@ -3082,10 +3090,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.127,
-    "F": 0.571,
-    "H": 0.079,
-    "U": 0.222
+    "R": 0.141,
+    "F": 0.562,
+    "H": 0.078,
+    "U": 0.219
    },
    "upsetCallers": 11,
    "whyCallersLeftUpset": [
@@ -3108,14 +3116,6 @@
      "resolvedOrBooked": 0.833,
      "upsetTurnedAround": 1.0,
      "endedPositive": 0.5
-    },
-    {
-     "solution": "Explained how it works",
-     "calls": 10,
-     "resolvedOnCall": 0.1,
-     "resolvedOrBooked": 0.8,
-     "upsetTurnedAround": 1.0,
-     "endedPositive": 0.4
     },
     {
      "solution": "Technician or electrician",
@@ -3142,6 +3142,14 @@
      "endedPositive": 0.375
     },
     {
+     "solution": "Explained how it works",
+     "calls": 11,
+     "resolvedOnCall": 0.182,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.364
+    },
+    {
      "solution": "Callback or follow-up promised",
      "calls": 29,
      "resolvedOnCall": 0.069,
@@ -3159,20 +3167,20 @@
     },
     {
      "solution": "Troubleshot on the call",
-     "calls": 8,
-     "resolvedOnCall": 0.0,
-     "resolvedOrBooked": 0.75,
+     "calls": 9,
+     "resolvedOnCall": 0.111,
+     "resolvedOrBooked": 0.778,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.125
+     "endedPositive": 0.111
     }
    ],
    "exampleFixes": [
     "…to go. Alright. So when he comes back to me, I'll probably just flick you a text just obviously just to make sure that if you you can't take a call, at least I've got that through to you. And then, yeah, we can we…",
+    "So in order to turn that off, you do have to turn it off fully at the touch panel. So you need to turn the touch panel off and then make sure the panel's completely black.",
     "Okay. It's an outdoor sauna. Yeah. Probably the best thing, Vicky, if you can take some photos and text them through to this number, and then I can get the customer service team to have a look at it and see what we can…",
     "…I do understand that talking to people is definitely much easier. But we do also require the photos just to make sure that the correct parts are ordered with the warehouse, and we do need to confirm part availability…",
     "…right. So that little piece of timber is actually just connected by three little, like, suction plugs. So what you can do, you can actually just pry pry that off. It just unflicks, and then you can just push it push…",
-    "…have the manual vents, and so I'll get them across, but these are already just open for you. That's gonna make sure that the temperature is maximized and the airflow is perfect. So it's it's good good to go.",
-    "…hours to give it a a proper run through and a good cleanup. So as soon as you get home, if you could just make sure you turn it on, get it up and running before giving me a call."
+    "…have the manual vents, and so I'll get them across, but these are already just open for you. That's gonna make sure that the temperature is maximized and the airflow is perfect. So it's it's good good to go."
    ],
    "howCustomersDescribeIt": [
     "…in to help us rebuild our sauna with the back piece and also because our sauna also came with a light that wasn't working. And this is this is all in emails and the photos and emails. And,…",
@@ -3184,9 +3192,9 @@
    "bestOnCalls": [
     {
      "name": "Alice Ternen",
-     "calls": 13,
-     "resolvedOnCall": 0.077,
-     "resolvedOrBooked": 0.923
+     "calls": 14,
+     "resolvedOnCall": 0.143,
+     "resolvedOrBooked": 0.929
     },
     {
      "name": "Matthew Taylor",

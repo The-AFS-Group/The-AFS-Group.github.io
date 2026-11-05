@@ -56,6 +56,68 @@ const safeFetch = async (url: string, options?: RequestInit, timeoutMs = 60000):
   }
 };
 
+/**
+ * Google's publish-to-web CSVs answer either in about a second or after 50-90 seconds, at random
+ * (measured 5 Nov 2026: 0.9s, 90s+, 89.9s, 75s, 67s, 51s for the same URL a few seconds apart).
+ * A single request with a 60s timeout therefore often comes back empty. Instead, race staggered
+ * copies of the request: start one, add another every `staggerMs` while nothing has answered,
+ * and take the first complete response (the rest are aborted). If every copy fails, return "".
+ */
+const hedgedFetch = (
+  url: string,
+  options: RequestInit = {},
+  {
+    attempts = 5,
+    staggerMs = 6000,
+    timeoutMs = 150000,
+    isValid = (text: string) => text.trim().length > 0,
+  }: { attempts?: number; staggerMs?: number; timeoutMs?: number; isValid?: (text: string) => boolean } = {}
+): Promise<string> =>
+  new Promise<string>((resolve) => {
+    const controllers: AbortController[] = [];
+    const timers: ReturnType<typeof setTimeout>[] = [];
+    let settled = false;
+    let started = 0;
+    let failed = 0;
+
+    const finish = (text: string) => {
+      if (settled) return;
+      settled = true;
+      timers.forEach(clearTimeout);
+      controllers.forEach((c) => c.abort());
+      if (!text) console.warn(`⏳ No usable response from ${url} after ${started} attempts.`);
+      resolve(text);
+    };
+
+    const launch = () => {
+      if (settled || started >= attempts) return;
+      started++;
+      const controller = new AbortController();
+      controllers.push(controller);
+      const sep = url.includes("?") ? "&" : "?";
+      // A unique URL per copy, so the browser can't fold the copies into one request
+      fetch(`${url}${sep}_ts=${Date.now()}-${started}`, { ...options, cache: "no-store", signal: controller.signal })
+        .then((r) => (r.ok ? r.text() : Promise.reject(new Error(`HTTP ${r.status}`))))
+        .then((text) => {
+          if (!isValid(text)) throw new Error("unusable response");
+          finish(text);
+        })
+        .catch(() => {
+          if (settled) return;
+          failed++;
+          if (failed >= attempts) finish("");
+          else if (failed === started) launch(); // everything in flight has failed: don't wait for the stagger
+        });
+    };
+
+    launch();
+    for (let i = 1; i < attempts; i++) timers.push(setTimeout(launch, staggerMs * i));
+    timers.push(setTimeout(() => finish(""), timeoutMs));
+  });
+
+// The REVEL DATA tab starts with its header row; anything else (an HTML error page) is a failure
+const looksLikeRevelData = (text: string) => /^\s*"?DATE"?,/i.test(text);
+
 // Robust CSV Parser that handles quoted fields, newlines, and mixed delimiters correctly
 const parseCSVRaw = (text: string): string[][] => {
   const rows: string[][] = [];
@@ -1218,7 +1280,7 @@ export const fetchDashboardData = async (forceRefresh = false): Promise<{
   try {
     // 1. Fetch main sales data first with high priority
     const [revelMainCsv, etsCsv] = await Promise.all([
-      safeFetch(URLS.REVEL.main, { priority: 'high' } as RequestInit),
+      hedgedFetch(URLS.REVEL.main, { priority: 'high' } as RequestInit, { isValid: looksLikeRevelData }),
       safeFetch(URLS.SALES.ets)
     ]);
 
@@ -1339,8 +1401,7 @@ export const fetchProductInsightsData = async (forceRefresh = false): Promise<Pr
  * poll it for the live day. Google's publish-to-web copy itself refreshes every ~5 minutes.
  */
 export const fetchRevelDailyData = async (): Promise<{ allData: DayData[]; allBudgetData: DayBudget[]; fetchedAt: number }> => {
-  const sep = URLS.REVEL.main.includes("?") ? "&" : "?";
-  const csv = await safeFetch(`${URLS.REVEL.main}${sep}_ts=${Date.now()}`, { cache: "no-store", priority: "high" } as RequestInit);
+  const csv = await hedgedFetch(URLS.REVEL.main, { priority: "high" } as RequestInit, { isValid: looksLikeRevelData });
   const parsed = parseMainData(csv, "REVEL");
   const result = { allData: parsed.allData, allBudgetData: parsed.allBudgetData, fetchedAt: Date.now() };
   if (parsed.allData.length > 0) setCachedData("bfcm_daily_data", result);

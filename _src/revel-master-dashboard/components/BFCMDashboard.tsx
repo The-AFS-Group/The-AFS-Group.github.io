@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   ReferenceLine, ReferenceArea, Cell, Legend,
@@ -6,7 +6,7 @@ import {
 import {
   Flame, Calendar, Info, RefreshCw, Target, TrendingUp, TrendingDown, Percent, Eye, DollarSign,
   Users, PhoneIncoming, Trophy, Video, Heart, MessageCircle, ExternalLink, Megaphone, MousePointerClick,
-  ArrowUp, ArrowDown, Activity, Clock,
+  ArrowUp, ArrowDown, Activity, Clock, AlertTriangle,
 } from "lucide-react";
 import { fetchRevelDailyData, fetchRevelPerformanceFeed, fetchRecentInstagramPosts, getCachedData } from "../services/dataService";
 import { DayData, DayBudget, RevelPerformanceFeed, InstagramPost, AdCreative, PerfProduct } from "../types";
@@ -28,6 +28,9 @@ const TARGET_MARGIN = 45; // matches Sales Health
 const TARGET_DISCOUNT = 10; // matches Sales Health
 
 const LIVE_REFRESH_MS = 5 * 60 * 1000;
+const RETRY_MS = 60 * 1000; // after a failed sync, try again in a minute rather than five
+const STALE_MS = 12 * 60 * 1000; // older than this, the header says the numbers are behind
+const STORAGE_KEY = "revel_bfcm_daily_v1";
 const FEED_REFRESH_MS = 30 * 60 * 1000;
 const MONTH = 10; // November (0-based)
 
@@ -237,15 +240,42 @@ const TrendList: React.FC<{ rows: TrendRow[]; direction: "up" | "down" }> = ({ r
   );
 };
 
+type DailySnapshot = { allData: DayData[]; allBudgetData: DayBudget[]; fetchedAt: number };
+
+// Last good sync, kept in this browser so a reload shows numbers straight away (with their time)
+const readStoredDaily = (): DailySnapshot | null => {
+  try {
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw);
+    return Array.isArray(v?.allData) && v.allData.length > 0 && typeof v.fetchedAt === "number" ? v : null;
+  } catch {
+    return null;
+  }
+};
+const storeDaily = (v: DailySnapshot) => {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(v));
+  } catch {
+    /* private mode or storage full: the in-memory copy still works */
+  }
+};
+
 export default function BFCMDashboard() {
-  const cachedDaily = getCachedData<{ allData: DayData[]; allBudgetData: DayBudget[]; fetchedAt: number }>("bfcm_daily_data");
+  const cachedDaily = getCachedData<DailySnapshot>("bfcm_daily_data");
+  const storedDaily = readStoredDaily();
   const cachedSalesHealth = getCachedData<any>("dashboard_data");
-  const initialDaily = cachedDaily
+  const newest = [cachedDaily, storedDaily].filter(Boolean).sort((a, b) => b!.fetchedAt - a!.fetchedAt)[0] || null;
+  const initialDaily: DailySnapshot | null = newest
     || (cachedSalesHealth?.allData?.REVEL?.length
       ? { allData: cachedSalesHealth.allData.REVEL, allBudgetData: cachedSalesHealth.allBudgetData.REVEL, fetchedAt: 0 }
       : null);
 
-  const [daily, setDaily] = useState<{ allData: DayData[]; allBudgetData: DayBudget[]; fetchedAt: number } | null>(initialDaily);
+  const [daily, setDaily] = useState<DailySnapshot | null>(initialDaily);
+  const [syncFailed, setSyncFailed] = useState(false);
+  const inFlight = useRef(false);
+  const retryTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastSyncAt = useRef<number>(initialDaily?.fetchedAt || 0);
   const [feed, setFeed] = useState<RevelPerformanceFeed | null>(getCachedData<RevelPerformanceFeed>("revel_perf_feed"));
   const [sheetPosts, setSheetPosts] = useState<InstagramPost[]>(getCachedData<InstagramPost[]>("instagram_recent_7") || []);
   const [isUpdating, setIsUpdating] = useState(true);
@@ -254,14 +284,27 @@ export default function BFCMDashboard() {
   const [, setTick] = useState(0);
 
   const loadDaily = useCallback(async () => {
+    if (inFlight.current) return; // a sync is already running; don't stack another on top
+    inFlight.current = true;
+    if (retryTimer.current) { clearTimeout(retryTimer.current); retryTimer.current = null; }
     setIsUpdating(true);
+    let ok = false;
     try {
       const res = await fetchRevelDailyData();
-      if (res.allData.length > 0) setDaily(res);
+      if (res.allData.length > 0) {
+        ok = true;
+        lastSyncAt.current = res.fetchedAt;
+        setDaily(res);
+        storeDaily(res);
+      }
     } catch (e) {
       console.error("BFCM: failed to load daily sales", e);
     } finally {
+      inFlight.current = false;
+      setSyncFailed(!ok);
       setIsUpdating(false);
+      // Keep the numbers on screen, and try again soon instead of waiting for the next 5-minute tick
+      if (!ok) retryTimer.current = setTimeout(() => { retryTimer.current = null; loadDaily(); }, RETRY_MS);
     }
   }, []);
 
@@ -286,7 +329,21 @@ export default function BFCMDashboard() {
     const live = setInterval(loadDaily, LIVE_REFRESH_MS);
     const slow = setInterval(() => loadFeed(true), FEED_REFRESH_MS);
     const clock = setInterval(() => setTick((t) => t + 1), 60 * 1000);
-    return () => { clearInterval(live); clearInterval(slow); clearInterval(clock); };
+    // Browsers pause or slow timers in background tabs and on sleeping phones and laptops,
+    // so catch up as soon as the page is looked at again.
+    const wake = () => {
+      if (document.visibilityState === "visible" && Date.now() - lastSyncAt.current > LIVE_REFRESH_MS) loadDaily();
+    };
+    document.addEventListener("visibilitychange", wake);
+    window.addEventListener("focus", wake);
+    window.addEventListener("online", wake);
+    return () => {
+      clearInterval(live); clearInterval(slow); clearInterval(clock);
+      if (retryTimer.current) clearTimeout(retryTimer.current);
+      document.removeEventListener("visibilitychange", wake);
+      window.removeEventListener("focus", wake);
+      window.removeEventListener("online", wake);
+    };
   }, [loadDaily, loadFeed]);
 
   const now = adelaideNow();
@@ -508,7 +565,18 @@ export default function BFCMDashboard() {
   const m = model;
   const ahead = m.paceVariance >= 0;
   const todayPct = m.dailyPace > 0 ? (m.todayActual / m.dailyPace) * 100 : 0;
-  const syncedAt = daily?.fetchedAt ? new Date(daily.fetchedAt).toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" }) : null;
+  const syncedDate = daily?.fetchedAt ? new Date(daily.fetchedAt) : null;
+  const syncedAt = syncedDate
+    ? syncedDate.toDateString() === new Date().toDateString()
+      ? syncedDate.toLocaleTimeString("en-AU", { hour: "numeric", minute: "2-digit" })
+      : syncedDate.toLocaleString("en-AU", { weekday: "short", day: "numeric", month: "short", hour: "numeric", minute: "2-digit" })
+    : null;
+  const isStale = !syncedDate || syncFailed || Date.now() - syncedDate.getTime() > STALE_MS;
+  const syncLabel = !syncedAt
+    ? syncFailed ? "Sheet not responding · retrying" : "Syncing…"
+    : isStale
+      ? `Last synced ${syncedAt}${isUpdating ? " · syncing" : " · retrying"}`
+      : `Synced ${syncedAt}`;
   const feedAt = feed?.generatedAt ? new Date(feed.generatedAt) : null;
   const monthLabel = new Date(year, MONTH, 1).toLocaleString("en-AU", { month: "long", year: "numeric" });
   const metricLabel = isCreated ? "Created" : "Fulfilled";
@@ -601,16 +669,25 @@ export default function BFCMDashboard() {
 
           <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
             <button
-              onClick={loadDaily}
+              onClick={() => loadDaily()}
               disabled={isUpdating}
-              className="flex items-center gap-1.5 text-xs text-gray-600 hover:text-gray-900 px-2 py-1 rounded-md hover:bg-gray-100 transition-colors disabled:opacity-60"
-              title="Refresh sales now (auto-refreshes every 5 minutes)"
+              className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-md transition-colors disabled:opacity-60 ${
+                isStale && syncedAt && !isUpdating ? "text-amber-700 bg-amber-50 hover:bg-amber-100" : "text-gray-600 hover:text-gray-900 hover:bg-gray-100"
+              }`}
+              title={isStale && syncedAt
+                ? "Google hasn't returned fresh sales yet. Showing the last good sync; retrying automatically. Click to try now."
+                : "Refresh sales now (auto-refreshes every 5 minutes)"}
+              aria-live="polite"
             >
-              <span className="relative flex h-2 w-2">
-                {status === "live" && <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: ACCENT }} />}
-                <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: status === "live" ? DARK : TARGET }} />
-              </span>
-              <span>{syncedAt ? `Synced ${syncedAt}` : "Syncing…"}</span>
+              {isStale && syncedAt && !isUpdating ? (
+                <AlertTriangle className="w-3.5 h-3.5" aria-hidden="true" />
+              ) : (
+                <span className="relative flex h-2 w-2">
+                  {status === "live" && <span className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style={{ backgroundColor: ACCENT }} />}
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: status === "live" ? DARK : TARGET }} />
+                </span>
+              )}
+              <span>{syncLabel}</span>
               <RefreshCw className={`w-3.5 h-3.5 ${isUpdating ? "animate-spin" : ""}`} />
             </button>
             <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">

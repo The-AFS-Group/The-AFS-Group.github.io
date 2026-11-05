@@ -259,7 +259,7 @@ const SectionTitle = ({ pre, title, sub }) => {
 //  EDITING GUIDE
 //  1. PERIOD    – reporting period label, shown on the title slide and as a
 //                 badge on every slide header.
-//  2. DATA      – sales numbers (Apr – Sep 2026). Slides 2, 3 and 4 are
+//  2. DATA      – sales numbers (Nov 2025 – Oct 2026). Slides 2, 3 and 4 are
 //                 calculated from this block automatically.
 //  3. TARGETS   – FY27 targets by channel ($K) and the other targets listed on the Targets slide.
 //                 Edit the numbers and text between the quotes.
@@ -272,11 +272,11 @@ const SectionTitle = ({ pre, title, sub }) => {
 
 // ===== 1. PERIOD =====
 const PERIOD = {
-  label: 'April – September 2026',
-  short: 'Apr – Sep 2026',
-  months: 6,
-  firstHalf: 'Apr – Jun',   // used for the half-on-half KPI
-  secondHalf: 'Jul – Sep',
+  label: 'November 2025 – October 2026',
+  short: "Nov '25 – Oct '26",
+  months: 12,
+  firstHalf: 'Nov – Apr',   // used for the half-on-half KPI
+  secondHalf: 'May – Oct',
 };
 
 // ===== 2. DATA =====
@@ -286,135 +286,184 @@ const DATA = {
  "prior": {
   "prior_months": [
    {
+    "month": "Nov '24",
+    "rev": 54005.44
+   },
+   {
+    "month": "Dec '24",
+    "rev": 22623.18
+   },
+   {
+    "month": "Jan '25",
+    "rev": 197716.27
+   },
+   {
+    "month": "Feb '25",
+    "rev": 183917.2
+   },
+   {
+    "month": "Mar '25",
+    "rev": 160950.29
+   },
+   {
     "month": "Apr '25",
     "rev": 116489.13
    },
    {
-    "month": "May",
+    "month": "May '25",
     "rev": 134692.17
    },
    {
-    "month": "Jun",
+    "month": "Jun '25",
     "rev": 115124.1
    },
    {
-    "month": "Jul",
+    "month": "Jul '25",
     "rev": 106286.22
    },
    {
-    "month": "Aug",
+    "month": "Aug '25",
     "rev": 139749.64
    },
    {
-    "month": "Sep",
+    "month": "Sep '25",
     "rev": 70201.09
+   },
+   {
+    "month": "Oct '25",
+    "rev": 44779.3
    }
   ],
   "prior_cats": {
-   "Storage & Other": {
-    "rev": 10313.49,
-    "units": 53
-   },
-   "Trainers & Power Racks": {
-    "rev": 158272.46,
-    "units": 46
-   },
    "Rigs & Rack Attachments": {
-    "rev": 151466.03,
-    "units": 808
-   },
-   "Barbells": {
-    "rev": 59994.04,
-    "units": 155
+    "rev": 316176.2,
+    "units": 0
    },
    "Benches": {
-    "rev": 141355.93,
-    "units": 274
+    "rev": 256460.69,
+    "units": 0
+   },
+   "Trainers & Power Racks": {
+    "rev": 341714.87,
+    "units": 0
    },
    "Adjustable Dumbbells": {
-    "rev": 161140.4,
-    "units": 267
+    "rev": 320437.33,
+    "units": 0
+   },
+   "Barbells": {
+    "rev": 99836.64,
+    "units": 0
+   },
+   "Storage & Other": {
+    "rev": 11908.3,
+    "units": 0
    }
   },
   "seq": {
-   "rev": 586102.78
+   "rev": 254730.03,
+   "cur": 241613.53
   },
-  "prior_units": 1603,
+  "prior_units": 3217,
   "cur_units": {},
-  "cur_units_total": 1127
+  "cur_units_total": 2614
  },
  "months": [
+  {
+   "month": "Nov '25",
+   "rev": 135223.37
+  },
+  {
+   "month": "Dec '25",
+   "rev": 77908.06
+  },
+  {
+   "month": "Jan '26",
+   "rev": 91619.32
+  },
+  {
+   "month": "Feb '26",
+   "rev": 177273.74
+  },
+  {
+   "month": "Mar '26",
+   "rev": 59298.99
+  },
   {
    "month": "Apr '26",
    "rev": 103005.68
   },
   {
-   "month": "May",
+   "month": "May '26",
    "rev": 40139.56
   },
   {
-   "month": "Jun",
+   "month": "Jun '26",
    "rev": 79883.91
   },
   {
-   "month": "Jul",
+   "month": "Jul '26",
    "rev": 166397.14
   },
   {
-   "month": "Aug",
+   "month": "Aug '26",
    "rev": 30109.09
   },
   {
-   "month": "Sep",
+   "month": "Sep '26",
    "rev": 52264.46
+  },
+  {
+   "month": "Oct '26",
+   "rev": 159239.98
   }
  ],
  "cats": [
   {
    "name": "Rigs & Rack Attachments",
-   "rev": 145034.53,
+   "rev": 284666.6,
    "color": "#f26422"
   },
   {
    "name": "Benches",
-   "rev": 134278.21,
+   "rev": 281058.73,
    "color": "#e8520d"
   },
   {
-   "name": "Trainers & Power Racks",
-   "rev": 63337.39,
+   "name": "Adjustable Dumbbells",
+   "rev": 253245.78,
    "color": "#d4410a"
   },
   {
-   "name": "Adjustable Dumbbells",
-   "rev": 61451.74,
+   "name": "Trainers & Power Racks",
+   "rev": 205248.02,
    "color": "#c03008"
   },
   {
-   "name": "Storage & Other",
-   "rev": 37666.18,
+   "name": "Barbells",
+   "rev": 81447.72,
    "color": "#8a8a8a"
   },
   {
-   "name": "Barbells",
-   "rev": 30031.79,
+   "name": "Storage & Other",
+   "rev": 66696.45,
    "color": "#aaa"
   }
  ],
  "depts": [
   {
    "name": "Direct to Consumer",
-   "value": 436875.83,
+   "value": 1123799.71,
    "color": "#f26422"
   },
   {
    "name": "Commercial",
-   "value": 34107.49,
+   "value": 47193.38,
    "color": "#888"
   },
   {
    "name": "Retail & Other Partners",
-   "value": 816.52,
+   "value": 1370.21,
    "color": "#c03008"
   }
  ],
@@ -443,12 +492,12 @@ const deptTotal = sum(departments, d => d.value);
 const commPct = commercial.value / deptTotal * 100;
 const retailPct = retail.value / deptTotal * 100;
 const money = v => '$' + Math.round(v).toLocaleString('en-AU');
-const kFmt = v => '$' + Math.round(v / 1000) + 'K';
+const kFmt = v => (Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v / 1000) + 'K');
 const mFmt = v => '$' + (v / 1e6).toFixed(2) + 'M';
 const pct1 = v => v.toFixed(1) + '%';
 
-// ----- comparison with the same six months last year (same NetSuite method, REP brand items) -----
-const PRIOR = { label: 'Apr – Sep 2025', short: "Apr '25 – Sep '25", seqLabel: 'Oct 2025 – Mar 2026' };
+// ----- comparison with the previous 12 months (same NetSuite method, REP brand items) -----
+const PRIOR = { label: 'Nov 2024 – Oct 2025', short: "Nov '24 – Oct '25", seqLabel: 'Aug – Oct 2026 vs Aug – Oct 2025' };
 const priorMonths = DATA.prior.prior_months;           // [{ month, rev }]
 const priorRev = sum(priorMonths, m => m.rev);
 const yoyRev = (totalRev / priorRev - 1) * 100;
@@ -456,7 +505,7 @@ const revMultiple = totalRev / priorRev;
 const curUnits = DATA.prior.cur_units_total;
 const yoyUnits = (curUnits / DATA.prior.prior_units - 1) * 100;
 const seqRev = DATA.prior.seq.rev;
-const vsSeqRev = (totalRev / seqRev - 1) * 100;
+const vsSeqRev = (DATA.prior.seq.cur / seqRev - 1) * 100;
 const up = v => (v >= 0 ? '+' : '') + Math.round(v) + '%';
 const catCompare = categories.map(c => {
   const p = DATA.prior.prior_cats[c.name] || { rev: 0, units: 0 };
@@ -737,7 +786,7 @@ const PerfSlide = ({ n, t }) => {
                   <div className="w-full rounded-sm bar-grow origin-bottom" style={{ height: `${(d.rev / max) * 82}%`, minHeight: '3px', background: `linear-gradient(to top, #f26422, ${d.rev === peak.rev ? '#ff8a50' : '#c03008'})`, animationDelay: `${i * 0.06 + 0.1}s` }}></div>
                 </div>
               </div>
-              <span className={`text-[12px] ${th.sub} mt-2 font-body`}>{d.month.replace(" '26", '')}</span>
+              <span className={`text-[12px] ${th.sub} mt-2 font-body`}>{d.month}</span>
             </div>
             );
           })}
@@ -756,12 +805,12 @@ const UpliftSlide = ({ n, t }) => {
   const hero = [
     { label: 'Revenue', value: up(yoyRev), sub: `${kFmt(priorRev)} → ${kFmt(totalRev)}` },
     { label: "Latest Month (Oct '26)", value: kFmt(DATA.oct.cur), sub: `${up((DATA.oct.cur / DATA.oct.prior - 1) * 100)} vs Oct '25 (${kFmt(DATA.oct.prior)})` },
-    { label: 'Peak Month', value: kFmt(peak.rev), sub: `${peak.month.replace(" '26", '')} · ${up((peak.rev / priorMonths[monthlyData.indexOf(peak)].rev - 1) * 100)} on ${priorMonths[monthlyData.indexOf(peak)].month.replace(" '25", '')} 2025` },
+    { label: 'Peak Month', value: kFmt(peak.rev), sub: `${peak.month} · ${up((peak.rev / priorMonths[monthlyData.indexOf(peak)].rev - 1) * 100)} on ${priorMonths[monthlyData.indexOf(peak)].month}` },
     { label: 'Units Sold', value: up(yoyUnits), sub: `${DATA.prior.prior_units.toLocaleString('en-AU')} → ${curUnits.toLocaleString('en-AU')} units` },
   ];
   return (
-  <Slide num={n} total={t} badge={`${PERIOD.short} vs ${PRIOR.label}`}>
-    <SectionTitle pre="Growth" title="YEAR ON YEAR" sub={`${PERIOD.label} compared with ${PRIOR.label} — REP brand items, same method`} />
+  <Slide num={n} total={t} badge={`${PERIOD.short} vs ${PRIOR.short}`}>
+    <SectionTitle pre="Growth" title="YEAR ON YEAR" sub={`${PERIOD.label} compared with ${PRIOR.label}`} />
     <div className="flex flex-col flex-1 gap-3 min-h-0">
       <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
         {hero.map((h, i) => (
@@ -799,10 +848,10 @@ const UpliftSlide = ({ n, t }) => {
           </div>
         </div>
         <div className={`w-[340px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col pb-14`}>
-          <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-4">Vs Previous 6 Months</p>
+          <p className="text-[13px] font-heading tracking-[.3em] text-gaf-orange uppercase mb-4">Latest 3 Months</p>
           <p className={`text-[12px] ${th.sub} font-body mb-3`}>{PRIOR.seqLabel}</p>
           <p className="text-6xl font-heading font-black text-gaf-orange leading-none">{up(vsSeqRev)}</p>
-          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Revenue {kFmt(seqRev)} → {kFmt(totalRev)}</p>
+          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Revenue {kFmt(seqRev)} → {kFmt(DATA.prior.seq.cur)}</p>
           <div className={`my-4 border-t ${th.cardBorder}`}></div>
           <p className={`text-4xl font-heading font-black ${th.text} leading-none`}>{`${hoh >= 0 ? '+' : ''}${hoh.toFixed(1)}%`}</p>
           <p className={`text-[14px] ${th.sub} mt-2 font-body`}>{PERIOD.secondHalf} vs {PERIOD.firstHalf} · {kFmt(h1)} → {kFmt(h2)}</p>

@@ -118,70 +118,73 @@ def main():
         types[r["it"]] += 1
     print("  item types: " + ", ".join(f"{k} [{v}]" for k, v in sorted(types.items(), key=lambda x: -x[1])))
 
-    NON_ITEM = {"Discount", "ShipItem", "Subtotal", "Description", "Markup", "Payment", "EndGroup", "Group", "OthCharge"}
+    SHIP_DISC = {"ShipItem", "Discount"}
+    TEXT = {"Description", "Subtotal"}
+    def line_gp(types_out):
+        return lambda r: f(r.get("lgp")) if r["it"] not in types_out else 0.0
     formulas = {
-        "all lines": lambda r: sign * f(r["amt"]) - f(r["cost"]),
-        "items only": lambda r: (sign * f(r["amt"]) - f(r["cost"])) if r["it"] not in NON_ITEM else 0.0,
-        "items+discounts": lambda r: (sign * f(r["amt"]) - f(r["cost"])) if r["it"] not in (NON_ITEM - {"Discount"}) else 0.0,
+        "line estGP, all lines": line_gp(TEXT),
+        "line estGP, no shipping": line_gp(TEXT | {"ShipItem"}),
+        "line estGP, no shipping/discount": line_gp(TEXT | SHIP_DISC),
     }
-    if "lgp" in ok:
-        formulas["line estgrossprofit"] = lambda r: f(r.get("lgp"))
-    revenue = lambda r: sign * f(r["amt"]) if r["it"] not in (NON_ITEM - {"Discount"}) else 0.0
-    status_sets = {"all": None, "excl cancelled": {"C"}, "excl cancelled+closed": {"C", "H"}, "excl cancelled+closed+pending approval": {"A", "C", "H"}}
-    date_keys = ["d"] + (["cd"] if "cd" in ok else [])
+    revenue_f = {
+        "line estGP, all lines": lambda r: sign * f(r["amt"]) if r["it"] not in TEXT else 0.0,
+        "line estGP, no shipping": lambda r: sign * f(r["amt"]) if r["it"] not in TEXT | {"ShipItem"} else 0.0,
+        "line estGP, no shipping/discount": lambda r: sign * f(r["amt"]) if r["it"] not in TEXT | SHIP_DISC else 0.0,
+    }
+    # Header (whole-order) estimated GP, counted once per order, attributed to the order's first department
+    first_dept, header_gp = {}, {}
+    for r in rows:
+        if r["tid"] not in first_dept and r.get("ldept"):
+            first_dept[r["tid"]] = r["ldept"]
+        header_gp[r["tid"]] = f(r.get("hgp"))
+    status_sets = {"all": set(), "excl cancelled+closed": {"C", "H"}, "excl cancelled": {"C"}, "billed only": {"A", "B", "C", "D", "E", "F", "H"}}
+    date_keys = ["d", "cd"]
+    sets = {
+        "REVEL": [["REVEL"], ["REVEL", "Revel Online - AU"], ["Revel Online - AU"]],
+        "GAF": [["GAF AU"], ["GAF AU", "GAF Online - AU"], ["GAF AU", "GAF Online - AU", "GAF Commercial Sales - AU"],
+                ["GAF AU", "GAF Online - AU", "GAF Commercial Sales - AU", "GAF Wholesale AU"], ["GAF AU", "GAF Commercial Sales - AU"]],
+    }
 
     for brand, url in SHEETS.items():
         tgt = sheet_targets(url)
         days = sorted(tgt)
-        print(f"\n=== {brand}: {len(days)} sheet days {days[0] if days else ''}..{days[-1] if days else ''}")
+        tot = sum(abs(tgt[d][0]) for d in days)
+        print(f"\n=== {brand}: {len(days)} sheet days {days[0]}..{days[-1]}")
         results = []
         for dk in date_keys:
             for sname, excl in status_sets.items():
-                for fname, gpf in formulas.items():
-                    for s in segs:
-                        series = defaultdict(lambda: defaultdict(float))
-                        rev = defaultdict(lambda: defaultdict(float))
+                for depts in sets[brand]:
+                    cands = {}
+                    for fname, gpf in formulas.items():
+                        g = defaultdict(float); rv = defaultdict(float)
                         for r in rows:
-                            if excl and r["st"] in excl:
+                            if r["st"] in excl or r.get("ldept") not in depts or r.get(dk) not in tgt:
                                 continue
-                            day = r.get(dk)
-                            if day not in tgt:
-                                continue
-                            v = r.get(s) or "(blank)"
-                            series[v][day] += gpf(r)
-                            rev[v][day] += revenue(r)
-                        def err(chosen):
-                            e = []
-                            for day in days:
-                                c = sum(series[v][day] for v in chosen)
-                                t = tgt[day][0]
-                                e.append(abs(c - t) / max(abs(t), 1.0))
-                            return sum(e) / len(e)
-                        chosen, best = [], 9e9
-                        while True:
-                            cand = [(err(chosen + [v]), v) for v in series if v not in chosen]
-                            if not cand:
-                                break
-                            e, v = min(cand)
-                            if e < best - 1e-4:
-                                chosen.append(v); best = e
-                            else:
-                                break
-                        mpp = []
-                        for day in days:
-                            g = sum(series[v][day] for v in chosen); rv = sum(rev[v][day] for v in chosen)
-                            if rv and tgt[day][1] is not None:
-                                mpp.append(abs(100 * g / rv - tgt[day][1]))
-                        within1 = sum(1 for day in days if abs(sum(series[v][day] for v in chosen) - tgt[day][0]) <= 0.01 * max(abs(tgt[day][0]), 1))
-                        results.append((best, dk, sname, fname, s, chosen, (sum(mpp) / len(mpp)) if mpp else None, within1))
+                            g[r[dk]] += gpf(r); rv[r[dk]] += revenue_f[fname](r)
+                        cands[fname] = (g, rv)
+                    g = defaultdict(float); seen = set()
+                    for r in rows:
+                        t = r["tid"]
+                        if t in seen or r["st"] in excl or first_dept.get(t) not in depts or r.get(dk) not in tgt:
+                            continue
+                        seen.add(t); g[r[dk]] += header_gp[t]
+                    cands["order estGP (header)"] = (g, None)
+                    for fname, (g, rv) in cands.items():
+                        werr = sum(abs(g[d] - tgt[d][0]) for d in days) / max(tot, 1)
+                        w2 = sum(1 for d in days if abs(g[d] - tgt[d][0]) <= 0.02 * max(abs(tgt[d][0]), 1))
+                        w5 = sum(1 for d in days if abs(g[d] - tgt[d][0]) <= 0.05 * max(abs(tgt[d][0]), 1))
+                        mpp = None
+                        if rv:
+                            m = [abs(100 * g[d] / rv[d] - tgt[d][1]) for d in days if rv[d] and tgt[d][1] is not None]
+                            mpp = round(sum(m) / len(m), 2) if m else None
+                        ratios = " ".join(f"{(g[d] / tgt[d][0]):.2f}" if tgt[d][0] else "-" for d in days)
+                        results.append((werr, f"{100*werr:5.1f}% $-weighted | within 2%: {w2:2d}/{len(days)} 5%: {w5:2d}/{len(days)} | margin off {mpp} pp | date={dk} status={sname} {fname} depts={depts}", ratios))
         results.sort(key=lambda x: x[0])
-        seen = 0
-        for best, dk, sname, fname, s, chosen, mpp, within1 in results:
-            print(f"  err {100*best:5.1f}% | days within 1%: {within1}/{len(days)} | margin off {mpp if mpp is None else round(mpp, 2)} pp | date={dk} status={sname} gp={fname} by {s} in {chosen}")
-            seen += 1
-            if seen >= 12:
-                break
-
+        for werr, line, ratios in results[:10]:
+            print("  " + line)
+        print("  daily ratios NetSuite/sheet for the best: " + results[0][2])
+        print("  days: " + " ".join(d[5:] for d in days))
 
 if __name__ == "__main__":
     main()

@@ -280,22 +280,22 @@ const PERIOD = {
 };
 
 // ===== 2. DATA =====
-// Sales: NetSuite invoices + cash sales for REP brand items, revenue ex GST net of discounts.
+// Sales: NetSuite invoices + cash sales for REP brand items (brand tag) plus untagged REP SKUs matched by SKU prefix PRA-FT-/AB-5300-KIT or 'Ares 2.0'/'REP Fitness' in the description, revenue ex GST net of discounts.
 //        Revenue only — gross profit / margin is intentionally not included in this deck.
 const DATA = {
  "prior": {
   "prior_months": [
    {
     "month": "Nov '24",
-    "rev": 54005.44
+    "rev": 55431.8
    },
    {
     "month": "Dec '24",
-    "rev": 22623.18
+    "rev": 23531.36
    },
    {
     "month": "Jan '25",
-    "rev": 197716.27
+    "rev": 199128.57
    },
    {
     "month": "Feb '25",
@@ -323,15 +323,15 @@ const DATA = {
    },
    {
     "month": "Aug '25",
-    "rev": 139749.64
+    "rev": 144445.31
    },
    {
     "month": "Sep '25",
-    "rev": 70201.09
+    "rev": 70617.63
    },
    {
     "month": "Oct '25",
-    "rev": 44779.3
+    "rev": 45206.73
    }
   ],
   "prior_cats": {
@@ -340,11 +340,11 @@ const DATA = {
     "units": 0
    },
    "Benches": {
-    "rev": 256460.69,
+    "rev": 260207.53,
     "units": 0
    },
    "Trainers & Power Racks": {
-    "rev": 341714.87,
+    "rev": 347254.51,
     "units": 0
    },
    "Adjustable Dumbbells": {
@@ -361,21 +361,21 @@ const DATA = {
    }
   },
   "seq": {
-   "rev": 254730.03,
-   "cur": 241613.53
+   "rev": 260269.67,
+   "cur": 243107.87
   },
-  "prior_units": 3217,
+  "prior_units": 3239,
   "cur_units": {},
-  "cur_units_total": 2614
+  "cur_units_total": 2709
  },
  "months": [
   {
    "month": "Nov '25",
-   "rev": 135223.37
+   "rev": 136872.61
   },
   {
    "month": "Dec '25",
-   "rev": 77908.06
+   "rev": 78263.19
   },
   {
    "month": "Jan '26",
@@ -383,27 +383,27 @@ const DATA = {
   },
   {
    "month": "Feb '26",
-   "rev": 177273.74
+   "rev": 181086.07
   },
   {
    "month": "Mar '26",
-   "rev": 59298.99
+   "rev": 60535.14
   },
   {
    "month": "Apr '26",
-   "rev": 103005.68
+   "rev": 104019.92
   },
   {
    "month": "May '26",
-   "rev": 40139.56
+   "rev": 40463.39
   },
   {
    "month": "Jun '26",
-   "rev": 79883.91
+   "rev": 79861.26
   },
   {
    "month": "Jul '26",
-   "rev": 166397.14
+   "rev": 166785.99
   },
   {
    "month": "Aug '26",
@@ -411,11 +411,11 @@ const DATA = {
   },
   {
    "month": "Sep '26",
-   "rev": 52264.46
+   "rev": 52459.74
   },
   {
    "month": "Oct '26",
-   "rev": 159239.98
+   "rev": 160539.04
   }
  ],
  "cats": [
@@ -436,7 +436,7 @@ const DATA = {
   },
   {
    "name": "Trainers & Power Racks",
-   "rev": 205248.02,
+   "rev": 215499.48,
    "color": "#c03008"
   },
   {
@@ -453,7 +453,7 @@ const DATA = {
  "depts": [
   {
    "name": "Direct to Consumer",
-   "value": 1123799.71,
+   "value": 1134051.17,
    "color": "#f26422"
   },
   {
@@ -468,8 +468,8 @@ const DATA = {
   }
  ],
  "oct": {
-  "cur": 159239.98,
-  "prior": 44779.3
+  "cur": 160539.04,
+  "prior": 45206.73
  }
 };
 
@@ -520,7 +520,7 @@ const TARGETS = {
   quarters: ['Q1 Jul–Sep (actual)', 'Q2 Oct–Dec', 'Q3 Jan–Mar', 'Q4 Apr–Jun'],
   channels: [
     { name: 'Retail', color: '#c03008', fy26: 2, q: [0, 1, 1, 1], note: 'Wholesale & other partners' },
-    { name: 'Direct to Consumer', color: '#f26422', fy26: 1098, q: [238, 362, 325, 199], note: 'Website and retail-store sales' },
+    { name: 'Direct to Consumer', color: '#f26422', fy26: 1112, q: [239, 365, 330, 200], note: 'Website and retail-store sales' },
     { name: 'Commercial', color: '#888888', fy26: 26, q: [11, 18, 18, 20], note: 'FY26 base is Jan – Jun only' },
   ],
   other: [
@@ -621,27 +621,27 @@ const TOPSELL = [
 ];
 // MAT (moving annual total) category roll-up, A$. Mix = share of total revenue.
 const CATMIX = {
- "total": 1172363,
+ "total": 1182614,
  "cats": [
   {
    "name": "Rigs & Rack Attachments",
    "rev": 284667,
-   "mix": 24.3
+   "mix": 24.1
   },
   {
    "name": "Benches",
    "rev": 281059,
-   "mix": 24.0
+   "mix": 23.8
   },
   {
    "name": "Adjustable Dumbbells",
    "rev": 253246,
-   "mix": 21.6
+   "mix": 21.4
   },
   {
    "name": "Trainers & Power Racks",
-   "rev": 205248,
-   "mix": 17.5
+   "rev": 215499,
+   "mix": 18.2
   },
   {
    "name": "Barbells",
@@ -651,7 +651,7 @@ const CATMIX = {
   {
    "name": "Storage & Other",
    "rev": 66696,
-   "mix": 5.7
+   "mix": 5.6
   }
  ],
  "subs": [
@@ -659,25 +659,25 @@ const CATMIX = {
    "name": "Rigs & Rack Attachments",
    "cat": "Strength",
    "rev": 272983,
-   "mix": 23.3
+   "mix": 23.1
   },
   {
    "name": "Adjustable Benches",
    "cat": "Strength",
    "rev": 267182,
-   "mix": 22.8
+   "mix": 22.6
   },
   {
    "name": "Adjustable Dumbbells",
    "cat": "Strength",
    "rev": 253246,
-   "mix": 21.6
+   "mix": 21.4
   },
   {
    "name": "Power Racks (incl. Ares 2.0)",
    "cat": "Strength",
-   "rev": 173274,
-   "mix": 14.8
+   "rev": 183525,
+   "mix": 15.5
   },
   {
    "name": "Speciality Barbells",

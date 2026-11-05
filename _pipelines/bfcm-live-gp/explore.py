@@ -93,6 +93,9 @@ def main():
             WHERE {base_where} ORDER BY t.id, tl.id"""
     print("Reading lines:")
     rows = ns.query("sales order lines", q)
+    # SuiteQL leaves a field out of a row when it is empty; give every row every key
+    keys = {"tid", "d", "st", "it", "amt", "cost", *ok.keys()}
+    rows = [{k: r.get(k, "") for k in keys} for r in rows]
 
     f = lambda v: float(v) if v not in ("", None) else 0.0
     inv = [r for r in rows if r["it"] == "InvtPart"]

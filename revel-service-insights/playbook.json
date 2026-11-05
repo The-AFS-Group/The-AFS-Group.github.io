@@ -1,23 +1,23 @@
 {
- "generated": "2026-11-04 10:15",
+ "generated": "2026-11-05 10:35",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1100,
+   "calls": 1104,
    "tickets": 502,
    "products": [
     [
      "Traditional sauna",
-     282
+     286
     ],
     [
      "Ice bath & chiller",
-     232
+     233
     ],
     [
      "Infrared sauna",
-     151
+     152
     ]
    ],
    "models": [
@@ -49,7 +49,7 @@
    "components": [
     [
      "Heater",
-     64
+     67
     ],
     [
      "Chiller unit",
@@ -73,20 +73,20 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.205,
+    "R": 0.204,
     "F": 0.533,
     "H": 0.044,
     "U": 0.219
    },
-   "upsetCallers": 129,
+   "upsetCallers": 131,
    "whyCallersLeftUpset": [
     [
      "Waiting too long",
-     16
+     17
     ],
     [
      "Chasing us, no call back",
-     15
+     17
     ],
     [
      "Still faulty or a repeat problem",
@@ -94,7 +94,7 @@
     ],
     [
      "No clear answer or date",
-     9
+     10
     ],
     [
      "Cost, refund or charge dispute",
@@ -139,31 +139,31 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.884,
+   "upsetTurnedAround": 0.87,
    "solutions": [
     {
      "solution": "Replacement part or unit",
-     "calls": 31,
-     "resolvedOnCall": 0.161,
-     "resolvedOrBooked": 0.871,
+     "calls": 32,
+     "resolvedOnCall": 0.156,
+     "resolvedOrBooked": 0.875,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.467
-    },
-    {
-     "solution": "Troubleshot on the call",
-     "calls": 53,
-     "resolvedOnCall": 0.132,
-     "resolvedOrBooked": 0.774,
-     "upsetTurnedAround": 1.0,
-     "endedPositive": 0.432
+     "endedPositive": 0.452
     },
     {
      "solution": "Info or instructions sent",
-     "calls": 184,
+     "calls": 185,
      "resolvedOnCall": 0.027,
-     "resolvedOrBooked": 0.94,
-     "upsetTurnedAround": 0.9,
-     "endedPositive": 0.426
+     "resolvedOrBooked": 0.935,
+     "upsetTurnedAround": 0.857,
+     "endedPositive": 0.424
+    },
+    {
+     "solution": "Troubleshot on the call",
+     "calls": 54,
+     "resolvedOnCall": 0.13,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.422
     },
     {
      "solution": "Refund, credit or return",
@@ -174,44 +174,44 @@
      "endedPositive": 0.412
     },
     {
-     "solution": "Passed to a colleague",
-     "calls": 95,
-     "resolvedOnCall": 0.074,
-     "resolvedOrBooked": 0.453,
-     "upsetTurnedAround": 0.852,
-     "endedPositive": 0.407
-    },
-    {
      "solution": "Explained how it works",
-     "calls": 128,
-     "resolvedOnCall": 0.156,
-     "resolvedOrBooked": 0.797,
-     "upsetTurnedAround": 0.931,
-     "endedPositive": 0.405
+     "calls": 129,
+     "resolvedOnCall": 0.155,
+     "resolvedOrBooked": 0.791,
+     "upsetTurnedAround": 0.9,
+     "endedPositive": 0.402
     },
     {
-     "solution": "Delivery rebooked or chased",
-     "calls": 80,
-     "resolvedOnCall": 0.212,
-     "resolvedOrBooked": 0.85,
-     "upsetTurnedAround": 0.846,
-     "endedPositive": 0.361
+     "solution": "Passed to a colleague",
+     "calls": 96,
+     "resolvedOnCall": 0.073,
+     "resolvedOrBooked": 0.448,
+     "upsetTurnedAround": 0.821,
+     "endedPositive": 0.402
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 293,
-     "resolvedOnCall": 0.119,
-     "resolvedOrBooked": 0.819,
-     "upsetTurnedAround": 0.885,
-     "endedPositive": 0.358
+     "calls": 296,
+     "resolvedOnCall": 0.118,
+     "resolvedOrBooked": 0.818,
+     "upsetTurnedAround": 0.871,
+     "endedPositive": 0.354
+    },
+    {
+     "solution": "Delivery rebooked or chased",
+     "calls": 82,
+     "resolvedOnCall": 0.207,
+     "resolvedOrBooked": 0.854,
+     "upsetTurnedAround": 0.846,
+     "endedPositive": 0.349
     },
     {
      "solution": "Technician or electrician",
-     "calls": 93,
-     "resolvedOnCall": 0.258,
-     "resolvedOrBooked": 0.817,
+     "calls": 94,
+     "resolvedOnCall": 0.255,
+     "resolvedOrBooked": 0.819,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.333
+     "endedPositive": 0.329
     },
     {
      "solution": "Asked for photos or video",
@@ -3230,7 +3230,7 @@
   },
   {
    "issue": "Damaged, missing or wrong items",
-   "calls": 67,
+   "calls": 68,
    "tickets": 59,
    "products": [
     [
@@ -3243,10 +3243,14 @@
     ],
     [
      "Infrared sauna",
-     11
+     12
     ]
    ],
    "models": [
+    [
+     "Nova",
+     3
+    ],
     [
      "Aura",
      3
@@ -3254,10 +3258,6 @@
     [
      "Aurora",
      3
-    ],
-    [
-     "Nova",
-     2
     ],
     [
      "Solaris",
@@ -3299,12 +3299,12 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.194,
-    "F": 0.507,
-    "H": 0.119,
-    "U": 0.179
+    "R": 0.191,
+    "F": 0.5,
+    "H": 0.132,
+    "U": 0.176
    },
-   "upsetCallers": 18,
+   "upsetCallers": 19,
    "whyCallersLeftUpset": [
     [
      "Still faulty or a repeat problem",
@@ -3349,7 +3349,7 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.722,
+   "upsetTurnedAround": 0.737,
    "solutions": [
     {
      "solution": "Refund, credit or return",
@@ -3361,11 +3361,11 @@
     },
     {
      "solution": "Explained how it works",
-     "calls": 8,
-     "resolvedOnCall": 0.25,
-     "resolvedOrBooked": 0.875,
-     "upsetTurnedAround": 0.75,
-     "endedPositive": 0.429
+     "calls": 9,
+     "resolvedOnCall": 0.222,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 0.8,
+     "endedPositive": 0.375
     },
     {
      "solution": "Technician or electrician",
@@ -3377,19 +3377,19 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 21,
-     "resolvedOnCall": 0.095,
-     "resolvedOrBooked": 0.762,
-     "upsetTurnedAround": 0.875,
-     "endedPositive": 0.286
+     "calls": 22,
+     "resolvedOnCall": 0.091,
+     "resolvedOrBooked": 0.727,
+     "upsetTurnedAround": 0.889,
+     "endedPositive": 0.273
     },
     {
      "solution": "Passed to a colleague",
-     "calls": 15,
+     "calls": 16,
      "resolvedOnCall": 0.0,
-     "resolvedOrBooked": 0.467,
-     "upsetTurnedAround": 0.571,
-     "endedPositive": 0.267
+     "resolvedOrBooked": 0.438,
+     "upsetTurnedAround": 0.625,
+     "endedPositive": 0.25
     },
     {
      "solution": "Info or instructions sent",
@@ -3409,9 +3409,9 @@
     },
     {
      "solution": "Asked for photos or video",
-     "calls": 7,
-     "resolvedOnCall": 0.143,
-     "resolvedOrBooked": 0.714,
+     "calls": 8,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.625,
      "upsetTurnedAround": 1.0,
      "endedPositive": 0.0
     }

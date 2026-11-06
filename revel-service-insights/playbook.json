@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-05 10:35",
+ "generated": "2026-11-06 10:36",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
@@ -278,16 +278,16 @@
   },
   {
    "issue": "Assembly & installation",
-   "calls": 557,
+   "calls": 560,
    "tickets": 226,
    "products": [
     [
      "Traditional sauna",
-     298
+     300
     ],
     [
      "Infrared sauna",
-     166
+     167
     ],
     [
      "Ice bath & chiller",
@@ -305,7 +305,7 @@
     ],
     [
      "Nordic Wave",
-     29
+     30
     ],
     [
      "Nova",
@@ -323,11 +323,11 @@
    "components": [
     [
      "Heater",
-     111
+     112
     ],
     [
      "Door & glass",
-     74
+     75
     ],
     [
      "Chiller unit",
@@ -335,24 +335,24 @@
     ],
     [
      "Timber & seals",
-     56
+     57
     ],
     [
      "Hoses & fittings",
-     49
+     50
     ],
     [
      "Lights",
-     48
+     49
     ]
    ],
    "callOutcomes": {
-    "R": 0.224,
-    "F": 0.535,
+    "R": 0.223,
+    "F": 0.536,
     "H": 0.066,
-    "U": 0.174
+    "U": 0.175
    },
-   "upsetCallers": 77,
+   "upsetCallers": 78,
    "whyCallersLeftUpset": [
     [
      "Waiting too long",
@@ -421,7 +421,7 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.831,
+   "upsetTurnedAround": 0.833,
    "solutions": [
     {
      "solution": "Delivery rebooked or chased",
@@ -465,11 +465,11 @@
     },
     {
      "solution": "Technician or electrician",
-     "calls": 81,
-     "resolvedOnCall": 0.235,
-     "resolvedOrBooked": 0.778,
+     "calls": 82,
+     "resolvedOnCall": 0.232,
+     "resolvedOrBooked": 0.78,
      "upsetTurnedAround": 0.5,
-     "endedPositive": 0.397
+     "endedPositive": 0.392
     },
     {
      "solution": "Asked for photos or video",
@@ -505,11 +505,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 153,
-     "resolvedOnCall": 0.105,
-     "resolvedOrBooked": 0.752,
-     "upsetTurnedAround": 0.76,
-     "endedPositive": 0.296
+     "calls": 154,
+     "resolvedOnCall": 0.104,
+     "resolvedOrBooked": 0.753,
+     "upsetTurnedAround": 0.769,
+     "endedPositive": 0.294
     }
    ],
    "exampleFixes": [
@@ -568,7 +568,7 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 305,
+   "calls": 306,
    "tickets": 165,
    "products": [
     [
@@ -637,10 +637,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.207,
-    "F": 0.62,
+    "R": 0.206,
+    "F": 0.618,
     "H": 0.033,
-    "U": 0.141
+    "U": 0.144
    },
    "upsetCallers": 38,
    "whyCallersLeftUpset": [
@@ -695,19 +695,19 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 58,
-     "resolvedOnCall": 0.224,
-     "resolvedOrBooked": 0.879,
+     "calls": 59,
+     "resolvedOnCall": 0.22,
+     "resolvedOrBooked": 0.864,
      "upsetTurnedAround": 0.923,
-     "endedPositive": 0.5
+     "endedPositive": 0.492
     },
     {
      "solution": "Passed to a colleague",
-     "calls": 21,
-     "resolvedOnCall": 0.143,
-     "resolvedOrBooked": 0.476,
+     "calls": 22,
+     "resolvedOnCall": 0.136,
+     "resolvedOrBooked": 0.455,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.476
+     "endedPositive": 0.455
     },
     {
      "solution": "Refund, credit or return",
@@ -814,7 +814,7 @@
   },
   {
    "issue": "Faulty unit / warranty (general)",
-   "calls": 313,
+   "calls": 314,
    "tickets": 139,
    "products": [
     [
@@ -823,7 +823,7 @@
     ],
     [
      "Traditional sauna",
-     95
+     96
     ],
     [
      "Infrared sauna",
@@ -883,8 +883,8 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.125,
-    "F": 0.626,
+    "R": 0.124,
+    "F": 0.627,
     "H": 0.096,
     "U": 0.153
    },
@@ -965,11 +965,11 @@
    "solutions": [
     {
      "solution": "Replacement part or unit",
-     "calls": 63,
-     "resolvedOnCall": 0.048,
-     "resolvedOrBooked": 0.857,
+     "calls": 64,
+     "resolvedOnCall": 0.047,
+     "resolvedOrBooked": 0.859,
      "upsetTurnedAround": 0.619,
-     "endedPositive": 0.349
+     "endedPositive": 0.344
     },
     {
      "solution": "Troubleshot on the call",
@@ -981,11 +981,11 @@
     },
     {
      "solution": "Info or instructions sent",
-     "calls": 63,
+     "calls": 64,
      "resolvedOnCall": 0.016,
-     "resolvedOrBooked": 0.873,
+     "resolvedOrBooked": 0.875,
      "upsetTurnedAround": 0.611,
-     "endedPositive": 0.317
+     "endedPositive": 0.312
     },
     {
      "solution": "Asked for photos or video",
@@ -1029,11 +1029,11 @@
     },
     {
      "solution": "Explained how it works",
-     "calls": 42,
-     "resolvedOnCall": 0.095,
-     "resolvedOrBooked": 0.857,
+     "calls": 43,
+     "resolvedOnCall": 0.093,
+     "resolvedOrBooked": 0.86,
      "upsetTurnedAround": 0.647,
-     "endedPositive": 0.238
+     "endedPositive": 0.233
     },
     {
      "solution": "Refund, credit or return",
@@ -1767,12 +1767,12 @@
   },
   {
    "issue": "Electrical, power & tripping",
-   "calls": 247,
+   "calls": 248,
    "tickets": 102,
    "products": [
     [
      "Traditional sauna",
-     157
+     158
     ],
     [
      "Infrared sauna",
@@ -1812,7 +1812,7 @@
    "components": [
     [
      "Heater",
-     90
+     91
     ],
     [
      "Power cable & plug",
@@ -1836,8 +1836,8 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.243,
-    "F": 0.49,
+    "R": 0.242,
+    "F": 0.492,
     "H": 0.073,
     "U": 0.194
    },
@@ -2001,9 +2001,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 35,
-     "resolvedOnCall": 0.286,
-     "resolvedOrBooked": 0.829
+     "calls": 36,
+     "resolvedOnCall": 0.278,
+     "resolvedOrBooked": 0.833
     },
     {
      "name": "Lachlan Wilson",
@@ -2791,12 +2791,12 @@
   },
   {
    "issue": "Cleaning, water care & maintenance",
-   "calls": 112,
+   "calls": 113,
    "tickets": 70,
    "products": [
     [
      "Ice bath & chiller",
-     113
+     114
     ],
     [
      "Traditional sauna",
@@ -2860,10 +2860,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.268,
-    "F": 0.554,
+    "R": 0.265,
+    "F": 0.558,
     "H": 0.062,
-    "U": 0.116
+    "U": 0.115
    },
    "upsetCallers": 23,
    "whyCallersLeftUpset": [
@@ -2942,11 +2942,11 @@
     },
     {
      "solution": "Technician or electrician",
-     "calls": 22,
-     "resolvedOnCall": 0.136,
-     "resolvedOrBooked": 0.864,
+     "calls": 23,
+     "resolvedOnCall": 0.13,
+     "resolvedOrBooked": 0.87,
      "upsetTurnedAround": 0.8,
-     "endedPositive": 0.318
+     "endedPositive": 0.304
     },
     {
      "solution": "Troubleshot on the call",

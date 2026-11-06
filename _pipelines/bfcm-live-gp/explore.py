@@ -20,7 +20,7 @@ SHEETS = {
     "REVEL": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT72MxE6-ziV7qfKCkHXatwJC47qjSAm0Fv0553yd09v3b0fLo-9QI3VZ-ehF_qjpaDNdd9jrYwDbU6/pub?gid=1965640519&single=true&output=csv",
     "GAF": "https://docs.google.com/spreadsheets/d/e/2PACX-1vT72MxE6-ziV7qfKCkHXatwJC47qjSAm0Fv0553yd09v3b0fLo-9QI3VZ-ehF_qjpaDNdd9jrYwDbU6/pub?gid=0&single=true&output=csv",
 }
-START, END = date(2026, 10, 20), date(2026, 11, 4)  # completed days, so the sheet is final
+START, END = date(2026, 10, 20), date(2026, 11, 5)  # 5 Nov was re-imported overnight  # completed days, so the sheet is final
 
 
 def money(v):
@@ -181,10 +181,10 @@ def main():
                         ratios = " ".join(f"{(g[d] / tgt[d][0]):.2f}" if tgt[d][0] else "-" for d in days)
                         results.append((werr, f"{100*werr:5.1f}% $-weighted | within 2%: {w2:2d}/{len(days)} 5%: {w5:2d}/{len(days)} | margin off {mpp} pp | date={dk} status={sname} {fname} depts={depts}", ratios))
         results.sort(key=lambda x: x[0])
-        for werr, line, ratios in results[:10]:
-            print("  " + line)
-        print("  daily ratios NetSuite/sheet for the best: " + results[0][2])
         print("  days: " + " ".join(d[5:] for d in days))
+        for werr, line, ratios in results[:6]:
+            print("  " + line)
+            print("     ratios: " + ratios)
 
 if __name__ == "__main__":
     main()

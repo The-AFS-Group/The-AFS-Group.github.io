@@ -1,15 +1,15 @@
 {
- "generated": "2026-11-06 10:36",
+ "generated": "2026-11-07 09:51",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1104,
+   "calls": 1105,
    "tickets": 502,
    "products": [
     [
      "Traditional sauna",
-     286
+     287
     ],
     [
      "Ice bath & chiller",
@@ -73,8 +73,8 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.204,
-    "F": 0.533,
+    "R": 0.205,
+    "F": 0.532,
     "H": 0.044,
     "U": 0.219
    },
@@ -143,11 +143,11 @@
    "solutions": [
     {
      "solution": "Replacement part or unit",
-     "calls": 32,
-     "resolvedOnCall": 0.156,
-     "resolvedOrBooked": 0.875,
+     "calls": 33,
+     "resolvedOnCall": 0.182,
+     "resolvedOrBooked": 0.879,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.452
+     "endedPositive": 0.438
     },
     {
      "solution": "Info or instructions sent",
@@ -159,19 +159,19 @@
     },
     {
      "solution": "Troubleshot on the call",
-     "calls": 54,
-     "resolvedOnCall": 0.13,
-     "resolvedOrBooked": 0.778,
+     "calls": 55,
+     "resolvedOnCall": 0.145,
+     "resolvedOrBooked": 0.782,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.422
+     "endedPositive": 0.413
     },
     {
      "solution": "Refund, credit or return",
-     "calls": 73,
-     "resolvedOnCall": 0.164,
-     "resolvedOrBooked": 0.781,
+     "calls": 74,
+     "resolvedOnCall": 0.176,
+     "resolvedOrBooked": 0.784,
      "upsetTurnedAround": 0.737,
-     "endedPositive": 0.412
+     "endedPositive": 0.406
     },
     {
      "solution": "Explained how it works",
@@ -1493,7 +1493,7 @@
   },
   {
    "issue": "Leaks, timber, doors & glass",
-   "calls": 135,
+   "calls": 136,
    "tickets": 220,
    "products": [
     [
@@ -1562,10 +1562,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.193,
-    "F": 0.511,
+    "R": 0.191,
+    "F": 0.507,
     "H": 0.096,
-    "U": 0.2
+    "U": 0.206
    },
    "upsetCallers": 29,
    "whyCallersLeftUpset": [
@@ -1735,9 +1735,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 26,
-     "resolvedOnCall": 0.192,
-     "resolvedOrBooked": 0.885
+     "calls": 27,
+     "resolvedOnCall": 0.185,
+     "resolvedOrBooked": 0.852
     },
     {
      "name": "Alice Ternen",
@@ -2295,7 +2295,7 @@
   },
   {
    "issue": "Delivery delay & tracking",
-   "calls": 223,
+   "calls": 224,
    "tickets": 94,
    "products": [
     [
@@ -2352,7 +2352,7 @@
     ],
     [
      "Door & glass",
-     11
+     12
     ],
     [
      "Pump & flow",
@@ -2364,10 +2364,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.224,
-    "F": 0.525,
+    "R": 0.223,
+    "F": 0.527,
     "H": 0.049,
-    "U": 0.202
+    "U": 0.201
    },
    "upsetCallers": 57,
    "whyCallersLeftUpset": [
@@ -2433,6 +2433,14 @@
      "endedPositive": 0.487
     },
     {
+     "solution": "Replacement part or unit",
+     "calls": 9,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.778,
+     "upsetTurnedAround": 1.0,
+     "endedPositive": 0.444
+    },
+    {
      "solution": "Explained how it works",
      "calls": 27,
      "resolvedOnCall": 0.185,
@@ -2441,20 +2449,20 @@
      "endedPositive": 0.385
     },
     {
-     "solution": "Replacement part or unit",
-     "calls": 8,
-     "resolvedOnCall": 0.0,
-     "resolvedOrBooked": 0.75,
-     "upsetTurnedAround": 1.0,
-     "endedPositive": 0.375
-    },
-    {
      "solution": "Passed to a colleague",
      "calls": 31,
      "resolvedOnCall": 0.129,
      "resolvedOrBooked": 0.581,
      "upsetTurnedAround": 0.714,
      "endedPositive": 0.355
+    },
+    {
+     "solution": "Asked for photos or video",
+     "calls": 6,
+     "resolvedOnCall": 0.0,
+     "resolvedOrBooked": 0.833,
+     "upsetTurnedAround": null,
+     "endedPositive": 0.333
     },
     {
      "solution": "Info or instructions sent",
@@ -2479,14 +2487,6 @@
      "resolvedOrBooked": 0.875,
      "upsetTurnedAround": 0.667,
      "endedPositive": 0.25
-    },
-    {
-     "solution": "Asked for photos or video",
-     "calls": 5,
-     "resolvedOnCall": 0.0,
-     "resolvedOrBooked": 0.8,
-     "upsetTurnedAround": null,
-     "endedPositive": 0.2
     },
     {
      "solution": "Callback or follow-up promised",
@@ -2791,7 +2791,7 @@
   },
   {
    "issue": "Cleaning, water care & maintenance",
-   "calls": 113,
+   "calls": 114,
    "tickets": 70,
    "products": [
     [
@@ -2860,20 +2860,20 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.265,
-    "F": 0.558,
-    "H": 0.062,
-    "U": 0.115
+    "R": 0.263,
+    "F": 0.561,
+    "H": 0.061,
+    "U": 0.114
    },
-   "upsetCallers": 23,
+   "upsetCallers": 24,
    "whyCallersLeftUpset": [
     [
      "Still faulty or a repeat problem",
-     7
+     8
     ],
     [
      "Waiting too long",
-     4
+     5
     ],
     [
      "Chasing us, no call back",
@@ -2898,7 +2898,7 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.957,
+   "upsetTurnedAround": 0.917,
    "solutions": [
     {
      "solution": "Passed to a colleague",
@@ -2958,11 +2958,11 @@
     },
     {
      "solution": "Asked for photos or video",
-     "calls": 14,
-     "resolvedOnCall": 0.143,
-     "resolvedOrBooked": 0.929,
-     "upsetTurnedAround": 1.0,
-     "endedPositive": 0.214
+     "calls": 15,
+     "resolvedOnCall": 0.133,
+     "resolvedOrBooked": 0.933,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.2
     }
    ],
    "exampleFixes": [

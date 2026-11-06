@@ -1058,64 +1058,111 @@ const CategoryMixSlide = ({ n, t }) => {
 
 
 // ===== 2027 OUTLOOK (from REP – 2027 Forecast.xlsx; units are forecast, revenue is indicative at last-12-month average prices) =====
+// Base = source forecast (cardio excluded, Aug–Oct held at the Jan–Jul average). Plan = Base + volume carried from replaced / under-forecast lines.
+// Stretch = Plan + cardio launch (units only, not priced).
 const OUTLOOK = {
   months: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-  core: [249,255,230,270,191,311,320,261,261,261,284,254],
-  adjusted: [7,8,9],              // Aug–Oct core held at the Jan–Jul average (the source forecast dips to ~150 a month)
+  base: [249,255,230,270,191,311,320,261,261,261,284,254],
+  planAdd: [13, 12, 11, 13, 9, 15, 15, 12, 12, 12, 14, 12],
   stretch: [27,27,27,27,27,27,27,15,15,15,30,27],
-  coreUnits: 3147, priorUnits: 2709, stretchUnits: 291, airbikes: 195, treadmills: 96,
-  coreRev: 1198000, onOrder: 2922,
+  adjusted: [7,8,9],
+  priorUnits: 2709, baseRev: 1198000, planRev: 1337000, planAddUnits: 150,
+  stretchUnits: 291, airbikes: 195, treadmills: 96,
+  backlogRev: 349000, backlogOrders: 124, backlogUnits: 793,
 };
+// Plan units = 2027 units; confirmed = NetSuite incoming; avail = available now (NetSuite); planned = workbook on-order above confirmed.
 const OUTLOOK_LINES = [
-  { name: 'REP x PEPIN Fast Series Dumbbell (kg)', sku: 'DB-7500', fc: 117, avail: 20, order: 152 },
-  { name: 'Ares 2.0 Functional Trainer Weight Stack', sku: 'PRA-FT-DUAL-5002-S', fc: 24, avail: 0, order: 40 },
-  { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, avail: 17, order: 31 },
-  { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 127, avail: 0, order: 110 },
-  { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, avail: 0, order: 29 },
-  { name: 'Altitude Functional Trainer Attachment', sku: 'PRA-FT-2000-S', fc: 20, avail: 24, order: 10 },
-  { name: 'Smith Attachment Structure, 80"', sku: 'PRA-5770-BASE-80', fc: 36, avail: 3, order: 30 },
-  { name: 'Nighthawk Adjustable Bench — Red', sku: 'AB-4102-RED', fc: 54, avail: 0, order: 40 },
-  { name: 'Nighthawk Adjustable Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 50, avail: 0, order: 80 },
-  { name: 'Leg Extension / Leg Curl Base Attachment', sku: 'BA-5010-BASE', fc: 36, avail: 39, order: 15 },
+  { name: 'REP x PEPIN Fast Series Dumbbell (kg)', sku: 'DB-7500', fc: 196, avail: 18, conf: 68, wb: 152 },
+  { name: 'Ares 2.0 Functional Trainer Weight Stack', sku: 'PRA-FT-DUAL-5002-S', fc: 36, avail: 0, conf: 0, wb: 40 },
+  { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 67, avail: 17, conf: 30, wb: 31 },
+  { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 143, avail: 0, conf: 64, wb: 110 },
+  { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 68, avail: 0, conf: 3, wb: 29 },
+  { name: 'Altitude Functional Trainer Attachment', sku: 'PRA-FT-2000-S', fc: 22, avail: 24, conf: 0, wb: 10 },
+  { name: 'Smith Attachment Structure, 80"', sku: 'PRA-5770-BASE-80', fc: 40, avail: 3, conf: 10, wb: 30 },
+  { name: 'Nighthawk Adjustable Bench — Red', sku: 'AB-4102-RED', fc: 61, avail: 0, conf: 0, wb: 40 },
+  { name: 'Nighthawk Adjustable Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 70, avail: 0, conf: 0, wb: 80 },
+  { name: 'Leg Extension / Leg Curl Base Attachment', sku: 'BA-5010-BASE', fc: 40, avail: 39, conf: 0, wb: 15 },
 ];
+const planTotal = OUTLOOK.base.reduce((x, y) => x + y, 0) + OUTLOOK.planAddUnits;
 
 const OutlookSlide = ({ n, t }) => {
   const th = useTheme();
   const O = OUTLOOK;
-  const max = Math.max(...O.core.map((c, i) => c + O.stretch[i]));
+  const tot = i => O.base[i] + O.planAdd[i] + O.stretch[i];
+  const max = Math.max(...O.months.map((_, i) => tot(i)));
   const grey = th.donutTrack === '#eeeef0' ? '#c4c4c8' : '#555';
   return (
   <Slide num={n} total={t} badge="2027 outlook">
-    <SectionTitle pre="Outlook" title="2027 DEMAND PLAN" sub="Jan – Dec 2027 unit forecast by month — base range plus the cardio launch as a stretch" />
+    <SectionTitle pre="Outlook" title="2027 SCENARIOS" sub="Jan – Dec 2027 monthly units: Base, Plan and Stretch" />
     <div className="flex flex-col flex-1 gap-3 min-h-0">
       <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
-        <Kpi label="2027 Base Units" value={O.coreUnits.toLocaleString('en-AU')} sub={`${up((O.coreUnits / O.priorUnits - 1) * 100)} vs ${O.priorUnits.toLocaleString('en-AU')} in the last 12 months`} accent />
-        <Kpi label="Indicative Base Revenue" value={kFmt(O.coreRev)} sub="At last-12-month average prices; cardio excluded" />
-        <Kpi label="Stretch: Cardio Launch" value={`+${O.stretchUnits}`} sub={`${O.airbikes} Strive airbikes + ${O.treadmills} Strive treadmills`} />
-        <Kpi label="Units On Order" value={O.onOrder.toLocaleString('en-AU')} sub="Inbound against the 2027 plan" />
+        <Kpi label="Base" value={kFmt(O.baseRev)} sub={`${(planTotal - O.planAddUnits).toLocaleString('en-AU')} units · ${up(((planTotal - O.planAddUnits) / O.priorUnits - 1) * 100)} vs last 12 months`} />
+        <Kpi label="Plan" value={kFmt(O.planRev)} sub={`${planTotal.toLocaleString('en-AU')} units · ${up((O.planRev / O.baseRev - 1) * 100)} on Base`} accent />
+        <Kpi label="Stretch" value={`+${O.stretchUnits} units`} sub={`Cardio launch on top of Plan · ${O.airbikes} airbikes, ${O.treadmills} treadmills`} />
+        <Kpi label="Open Order Book" value={kFmt(O.backlogRev)} sub={`${O.backlogOrders} orders · ${O.backlogUnits} units awaiting stock`} />
       </div>
       <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0`}>
         <div className="flex items-center justify-between mb-3">
           <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>Monthly Units — 2027</p>
           <div className={`flex items-center gap-4 text-[13px] ${th.sub} font-body`}>
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-gaf-orange"></span>Base range</span>
-            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: grey}}></span>Cardio launch (stretch)</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background:'#c03008'}}></span>Base</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-gaf-orange"></span>Plan uplift</span>
+            <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: grey}}></span>Cardio (Stretch)</span>
           </div>
         </div>
         <div className="flex items-end gap-[18px] h-[calc(100%-70px)] px-4">
           {O.months.map((m, i) => (
             <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
-              <span className={`text-[13px] font-heading font-bold ${th.text} mb-1`}>{O.core[i]}{O.adjusted.includes(i) ? '*' : ''}</span>
-              <div className="w-full flex flex-col rounded-sm overflow-hidden bar-grow origin-bottom" style={{ height: `${(O.core[i] + O.stretch[i]) / max * 80}%`, animationDelay: `${i * 0.06}s` }}>
-                <div style={{ height: `${O.stretch[i] / (O.core[i] + O.stretch[i]) * 100}%`, background: grey }}></div>
-                <div className="flex-1" style={{ background: 'linear-gradient(to top, #f26422, #c03008)', opacity: O.adjusted.includes(i) ? 0.7 : 1 }}></div>
+              <span className={`text-[13px] font-heading font-bold ${th.text} mb-1`}>{O.base[i] + O.planAdd[i]}{O.adjusted.includes(i) ? '*' : ''}</span>
+              <div className="w-full flex flex-col rounded-sm overflow-hidden bar-grow origin-bottom" style={{ height: `${tot(i) / max * 80}%`, animationDelay: `${i * 0.06}s` }}>
+                <div style={{ height: `${O.stretch[i] / tot(i) * 100}%`, background: grey }}></div>
+                <div style={{ height: `${O.planAdd[i] / tot(i) * 100}%`, background: '#f26422' }}></div>
+                <div className="flex-1" style={{ background: '#c03008', opacity: O.adjusted.includes(i) ? 0.75 : 1 }}></div>
               </div>
               <span className={`text-[12px] ${th.sub} mt-2 font-body`}>{m}</span>
             </div>
           ))}
         </div>
-        <p className={`text-[12px] ${th.muted} font-body mt-1`}>* Aug – Oct base units held at the Jan – Jul average (261 a month); the source forecast dips to about 150 a month in those months. Revenue is indicative only. The cardio launch is not in the base range.</p>
+        <p className={`text-[12px] ${th.muted} font-body mt-1`}>Labels show Plan units. * Aug – Oct base held at the Jan – Jul average (the source forecast dips to about 150 a month). Revenue is indicative at last-12-month average prices; Stretch is not priced.</p>
       </div>
+    </div>
+  </Slide>
+  );
+};
+
+const AssumptionsSlide = ({ n, t }) => {
+  const th = useTheme();
+  const cols = [
+    { h: 'Base', big: kFmt(OUTLOOK.baseRev), sub: `${(planTotal - OUTLOOK.planAddUnits).toLocaleString('en-AU')} units`, items: [
+      'REP 2027 line-by-line unit forecast, Jan – Dec 2027',
+      'Cardio excluded',
+      'Aug – Oct held at the Jan – Jul run rate',
+      'Priced at last-12-month average selling prices' ] },
+    { h: 'Plan', big: kFmt(OUTLOOK.planRev), sub: `${planTotal.toLocaleString('en-AU')} units · +${OUTLOOK.planAddUnits} units on Base`, accent: true, items: [
+      'REP x PEPIN kg dumbbell carries the lb range it replaced (family 196 units vs 117 forecast); add-on weights follow',
+      'Ares 2.0 weight stack held at last year’s 36 units (forecast 24)',
+      'Nighthawk metallic black held at last year’s 70 units',
+      'Needs the planned orders placed and landed in time' ] },
+    { h: 'Stretch', big: `+${OUTLOOK.stretchUnits} units`, sub: 'Cardio on top of Plan', items: [
+      `${OUTLOOK.airbikes} Strive airbikes and ${OUTLOOK.treadmills} Strive treadmills`,
+      'New category with little sales history — not priced',
+      'Added to the plan only once launch timing and buy are agreed',
+      `Open order book of ${kFmt(OUTLOOK.backlogRev)} converts as stock lands (mostly Nov – Dec 2026)` ] },
+  ];
+  return (
+  <Slide num={n} total={t} badge="2027 outlook">
+    <SectionTitle pre="Outlook" title="WHAT EACH SCENARIO ASSUMES" sub="Base is the forecast as built; Plan adds evidence-backed volume; Stretch adds the cardio launch" />
+    <div className="grid grid-cols-3 gap-4 flex-1 min-h-0 pb-12">
+      {cols.map((c, i) => (
+        <div key={i} className={`${c.accent ? th.kpiAccentBg + ' border ' + th.borderAccent : th.cardBg + ' border ' + th.cardBorder} rounded-lg p-5 flex flex-col`}>
+          <p className="text-[13px] font-heading font-semibold tracking-[.3em] uppercase text-gaf-orange">{c.h}</p>
+          <p className={`text-5xl font-heading font-black ${th.text} mt-2 leading-none`}>{c.big}</p>
+          <p className={`text-[13px] font-body ${th.sub} mt-1 mb-4`}>{c.sub}</p>
+          <ul className="flex-1 flex flex-col justify-around">
+            {c.items.map((it, j) => <li key={j} className={`text-[14px] font-body ${th.sub} leading-snug border-t ${th.cardBorder} pt-2`}>{it}</li>)}
+          </ul>
+        </div>
+      ))}
     </div>
   </Slide>
   );
@@ -1123,33 +1170,36 @@ const OutlookSlide = ({ n, t }) => {
 
 const DemandSlide = ({ n, t }) => {
   const th = useTheme();
-  const status = l => (l.avail >= l.fc / 4 ? { s: 'In stock', c: 'bg-emerald-500/15 text-emerald-600' } : { s: 'Inbound', c: 'bg-amber-500/15 text-amber-600' });
+  const status = l => l.avail >= l.fc / 4 ? { s: 'In stock', c: 'bg-emerald-500/15 text-emerald-600' } : l.conf > 0 ? { s: 'Confirmed', c: 'bg-amber-500/15 text-amber-600' } : { s: 'To place', c: 'bg-gaf-orange/15 text-gaf-orange' };
+  const cols = 'grid-cols-[1fr_180px_80px_90px_100px_90px_100px]';
   return (
   <Slide num={n} total={t} badge="2027 outlook">
-    <SectionTitle pre="Outlook" title="TOP LINES: DEMAND AND STOCK" sub="Ten largest base lines by forecast revenue — 2027 units against stock on hand and on order" />
+    <SectionTitle pre="Outlook" title="TOP LINES: DEMAND AND STOCK" sub="Ten largest lines — Plan units against stock, confirmed inbound and planned orders" />
     <div className="flex gap-4 flex-1 min-h-0">
       <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
-        <div className={`grid grid-cols-[1fr_190px_90px_90px_90px_100px] gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
-          <span>Product</span><span>SKU</span><span className="text-right">2027 units</span><span className="text-right">Available</span><span className="text-right">On order</span><span className="text-right">Status</span>
+        <div className={`grid ${cols} gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+          <span>Product</span><span>SKU</span><span className="text-right">2027 Plan</span><span className="text-right">Available</span><span className="text-right">Confirmed</span><span className="text-right">Planned</span><span className="text-right">Status</span>
         </div>
         <div className="flex-1 flex flex-col justify-around pb-8">
           {OUTLOOK_LINES.map((l, i) => { const st = status(l); return (
-            <div key={i} className="grid grid-cols-[1fr_190px_90px_90px_90px_100px] gap-3 items-center">
+            <div key={i} className={`grid ${cols} gap-3 items-center`}>
               <span className={`text-[14px] font-body ${th.text} truncate`}>{l.name}</span>
-              <span className={`text-[12px] font-body ${th.sub}`}>{l.sku}</span>
+              <span className={`text-[12px] font-body ${th.sub} truncate`}>{l.sku}</span>
               <span className={`text-[14px] font-heading font-bold ${th.text} text-right`}>{l.fc}</span>
               <span className={`text-[14px] font-body ${th.sub} text-right`}>{l.avail}</span>
-              <span className={`text-[14px] font-body ${th.sub} text-right`}>{l.order}</span>
+              <span className={`text-[14px] font-body ${th.sub} text-right`}>{l.conf}</span>
+              <span className={`text-[14px] font-body ${th.sub} text-right`}>{Math.max(l.wb - l.conf, 0)}</span>
               <span className="text-right"><span className={`text-[11px] font-heading font-semibold tracking-[.1em] uppercase px-2 py-0.5 rounded ${st.c}`}>{st.s}</span></span>
             </div>
           ); })}
         </div>
+        <p className={`text-[12px] ${th.muted} font-body -mt-5`}>Available and Confirmed from NetSuite. Planned = REP forecast file on-order quantity above Confirmed, to be confirmed by REP.</p>
       </div>
-      <div className="w-[380px] shrink-0 flex flex-col gap-3 pb-10">
+      <div className="w-[340px] shrink-0 flex flex-col gap-3 pb-10">
         {[
-          { h: 'A clear demand signal', b: 'The base range is built line by line, so purchasing can be planned against the same SKUs that sell.' },
-          { h: 'Stock is inbound', b: 'Every top line has units on order. Status shows where available stock covers less than three months of forecast demand.' },
-          { h: 'What we need from REP', b: 'Confirmed landing dates for the Inbound lines, and a view on the cardio launch before it is added to the plan.' },
+          { h: 'Confirmed vs planned', b: 'Confirmed is stock already on a placed order. Planned is the further quantity REP intends to order, shown so the Plan can be checked line by line.' },
+          { h: 'Where the Plan depends on orders', b: 'The Ares weight stack and the Nighthawk colours have no confirmed inbound yet. Plan volume on these lines needs the planned orders placed.' },
+          { h: 'What we need from REP', b: 'Order confirmation and landing dates for the To place and Confirmed lines, and a view on the cardio launch before it is added.' },
         ].map((c, i) => (
           <div key={i} className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-3 flex flex-col justify-center`}>
             <p className="text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1">{c.h}</p>
@@ -1194,7 +1244,7 @@ const saveFile = (content, name, type) => {
 };
 
 // ===== APP =====
-const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, CategoryMixSlide, OutlookSlide, DemandSlide, TargetsSlide];
+const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, CategoryMixSlide, OutlookSlide, AssumptionsSlide, DemandSlide, TargetsSlide];
 
 function App() {
   const [idx, setIdx] = useState(0);

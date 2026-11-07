@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-07 09:51",
+ "generated": "2026-11-08 09:08",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
@@ -568,16 +568,16 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 306,
+   "calls": 307,
    "tickets": 165,
    "products": [
     [
      "Traditional sauna",
-     70
+     71
     ],
     [
      "Ice bath & chiller",
-     61
+     62
     ],
     [
      "Infrared sauna",
@@ -598,15 +598,15 @@
      8
     ],
     [
+     "Eden",
+     6
+    ],
+    [
      "Verta",
      6
     ],
     [
      "Aura",
-     5
-    ],
-    [
-     "Eden",
      5
     ]
    ],
@@ -637,10 +637,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.206,
-    "F": 0.618,
+    "R": 0.205,
+    "F": 0.616,
     "H": 0.033,
-    "U": 0.144
+    "U": 0.147
    },
    "upsetCallers": 38,
    "whyCallersLeftUpset": [

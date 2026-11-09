@@ -1454,21 +1454,22 @@ const PurchasesSlide = ({ n, t }) => {
 };
 
 // ===== 2027 PURCHASE FORECAST (from rep-fitness-2027-purchasing-plan.xlsx; US$ at latest NetSuite PO cost) =====
-// Demand = REP 2027 forecast with growth: +10% all lines, +20% critical lines, +40% Strive Airbike and Runner. Orders to land = requirement (back orders + demand + 2 months' safety stock) less on hand and on order.
+// Demand = REP 2027 forecast with growth: +10% on all lines, +30% on the 15 best sellers, Airbike and Runner set to unit targets (Assault AirBike benchmark).
+// Orders to land = requirement (back orders + demand + 2 months' safety stock) less on hand and on order. Q1 – Q4 2027 only.
 const BUY = {
-  periods: ['Nov – Dec 26', 'Q1 27', 'Q2 27', 'Q3 27', 'Q4 27'],
-  total: [940, 75230, 120248, 131296, 146920],
-  cardio: [0, 66814, 92450, 80273, 84634],
-  units: 1701, usd: 474635, cardioUsd: 324170, fcUnits: 3093, grownUnits: 3592,
+  periods: ['Q1 27', 'Q2 27', 'Q3 27', 'Q4 27'],
+  total: [203989, 260087, 285698, 301909],
+  cardio: [190044, 226144, 226144, 226144],
+  units: 2313, usd: 1051684, cardioUsd: 868474, fcUnits: 3093, grownUnits: 4138, usd2026: 924265,
   lines: [
-    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 134, g: '+40%', units: 87, usd: 165300 },
-    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 273, g: '+40%', units: 255, usd: 158870 },
-    { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, grown: 68, g: '+10%', units: 60, usd: 18254 },
-    { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 127, grown: 153, g: '+20%', units: 73, usd: 10392 },
-    { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, grown: 67, g: '+10%', units: 37, usd: 10345 },
-    { name: 'Nighthawk Bench — Red', sku: 'AB-4102-RED', fc: 54, grown: 59, g: '+10%', units: 44, usd: 9028 },
-    { name: 'Nighthawk Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 50, grown: 60, g: '+20%', units: 42, usd: 8618 },
-    { name: 'Nighthawk Bench — Blue', sku: 'AB-4102-BLU', fc: 37, grown: 41, g: '+10%', units: 35, usd: 7181 },
+    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 720, g: '+269%', units: 720, usd: 448574 },
+    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 240, g: '+150%', units: 221, usd: 419900 },
+    { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, grown: 80, g: '+30%', units: 74, usd: 22514 },
+    { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, grown: 79, g: '+30%', units: 51, usd: 14260 },
+    { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 127, grown: 166, g: '+30%', units: 88, usd: 12527 },
+    { name: 'Nighthawk Bench — Red', sku: 'AB-4102-RED', fc: 54, grown: 72, g: '+30%', units: 59, usd: 12106 },
+    { name: 'Nighthawk Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 50, grown: 67, g: '+30%', units: 50, usd: 10259 },
+    { name: 'Nighthawk Bench — Blue', sku: 'AB-4102-BLU', fc: 37, grown: 50, g: '+30%', units: 45, usd: 9233 },
   ],
 };
 const BuyForecastSlide = ({ n, t }) => {
@@ -1478,17 +1479,17 @@ const BuyForecastSlide = ({ n, t }) => {
   const cols = 'grid-cols-[1fr_80px_90px_70px_90px_100px]';
   return (
   <Slide num={n} total={t} badge="2027 purchasing">
-    <SectionTitle pre="Supply" title="2027 PURCHASE FORECAST" sub="Orders still to land to cover the 2027 forecast with growth, in US$ at the latest PO cost" />
+    <SectionTitle pre="Supply" title="2027 PURCHASE FORECAST" sub="Orders to land in 2027 to cover the grown sales forecast, in US$ at the latest PO cost" />
     <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
-      <Kpi label="To order" value={usdK(BUY.usd)} sub={`${BUY.units.toLocaleString('en-AU')} units after stock and on-order`} accent />
-      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 342 units`} />
-      <Kpi label="2027 demand" value={`${BUY.grownUnits.toLocaleString('en-AU')} units`} sub={`${up((BUY.grownUnits / BUY.fcUnits - 1) * 100)} on the ${BUY.fcUnits.toLocaleString('en-AU')}-unit forecast`} />
-      <Kpi label="Growth applied" value="+10 / 20 / 40%" sub="All lines / critical lines / Airbike and Runner" />
+      <Kpi label="2027 purchases" value={usdK(BUY.usd)} sub={`${up((BUY.usd / BUY.usd2026 - 1) * 100)} on 2026 purchases to date (${usdK(BUY.usd2026)})`} accent />
+      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 941 units`} />
+      <Kpi label="2027 sales forecast" value={`${BUY.grownUnits.toLocaleString('en-AU')} units`} sub={`${up((BUY.grownUnits / BUY.fcUnits - 1) * 100)} on the ${BUY.fcUnits.toLocaleString('en-AU')}-unit REP forecast`} />
+      <Kpi label="Growth applied" value="+10 / 30%" sub="All lines / 15 best sellers · Airbike 720, Runner 240 units" />
     </div>
     <div className="flex gap-4 flex-1 min-h-0 mt-3">
       <div className={`w-[470px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col pb-10`}>
         <div className="flex items-center justify-between mb-3">
-          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>US$ to land by period</p>
+          <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>US$ to land by quarter</p>
           <div className={`flex items-center gap-3 text-[12px] ${th.sub} font-body`}>
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-gaf-orange"></span>Airbike + Runner</span>
             <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: grey}}></span>Other</span>
@@ -1518,13 +1519,13 @@ const BuyForecastSlide = ({ n, t }) => {
               <span className={`text-[13px] font-heading font-semibold ${th.text} leading-tight`}>{l.name}</span>
               <span className={`text-[13px] font-body ${th.sub} text-right`}>{l.fc}</span>
               <span className={`text-[13px] font-body ${th.text} text-right`}>{l.grown}</span>
-              <span className={`text-[13px] font-heading font-bold text-right ${l.g === '+40%' ? 'text-gaf-orange' : th.sub}`}>{l.g}</span>
+              <span className={`text-[13px] font-heading font-bold text-right ${l.g !== '+30%' ? 'text-gaf-orange' : th.sub}`}>{l.g}</span>
               <span className={`text-[13px] font-body ${th.text} text-right`}>{l.units}</span>
               <span className={`text-[13px] font-heading font-bold ${th.text} text-right`}>{usdK(l.usd)}</span>
             </div>
           ))}
         </div>
-        <p className={`text-[11px] ${th.muted} font-body`}>Growth rates are planning assumptions for review, not agreed targets. Safety stock is 2 months of demand. 5 minor lines with no PO cost are not priced (10 units).</p>
+        <p className={`text-[11px] ${th.muted} font-body`}>Growth and unit targets are planning assumptions. Airbike target matches the Assault AirBike's 716 units in 2025; the Runner is set lower. Safety stock is 2 months. 5 minor lines with no PO cost are not priced.</p>
       </div>
     </div>
   </Slide>

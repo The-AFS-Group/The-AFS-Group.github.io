@@ -259,7 +259,7 @@ const SectionTitle = ({ pre, title, sub }) => {
 //  EDITING GUIDE
 //  1. PERIOD    – reporting period label, shown on the title slide and as a
 //                 badge on every slide header.
-//  2. DATA      – sales numbers (Nov 2025 – Oct 2026). Slides 2, 3 and 4 are
+//  2. DATA      – sales numbers (calendar 2026 to date vs calendar 2025). Slides 2, 3 and 4 are
 //                 calculated from this block automatically.
 //  3. TARGETS   – FY27 targets by channel ($K) and the other targets listed on the Targets slide.
 //                 Edit the numbers and text between the quotes.
@@ -272,204 +272,201 @@ const SectionTitle = ({ pre, title, sub }) => {
 
 // ===== 1. PERIOD =====
 const PERIOD = {
-  label: 'November 2025 – October 2026',
-  short: "Nov '25 – Oct '26",
-  months: 12,
-  firstHalf: 'Nov – Apr',   // used for the half-on-half KPI
-  secondHalf: 'May – Oct',
+  label: 'Calendar 2026 to 6 Nov',
+  short: "CY26 YTD",
+  months: 11,
+  firstHalf: 'Jan – May',
+  secondHalf: 'Jun – Nov',
 };
 
 // ===== 2. DATA =====
-// Sales: NetSuite invoices + cash sales for REP brand items (brand tag) plus untagged REP SKUs matched by SKU prefix PRA-FT-/AB-5300-KIT or 'Ares 2.0'/'REP Fitness' in the description, revenue ex GST net of discounts.
+// Sales: NetSuite invoice + cash-sale lines for REP brand items (the two NetSuite exports: calendar 2025 and calendar 2026), plus untagged REP SKUs matched by SKU prefix PRA-FT-/AB-5300-KIT or 'Ares 2.0'/'REP Fitness' in the description. Revenue is the line amount ex GST, before order-level discounts and credit notes.
+//        Like-for-like: 1 Jan – 6 Nov in both years. Full calendar 2025 adds 7 Nov – 31 Dec 2025 from NetSuite.
 //        Revenue only — gross profit / margin is intentionally not included in this deck.
 const DATA = {
  "prior": {
   "prior_months": [
    {
-    "month": "Nov '24",
-    "rev": 55431.8
-   },
-   {
-    "month": "Dec '24",
-    "rev": 23531.36
-   },
-   {
     "month": "Jan '25",
-    "rev": 199128.57
+    "rev": 202212.88
    },
    {
     "month": "Feb '25",
-    "rev": 183917.2
+    "rev": 191530.66
    },
    {
     "month": "Mar '25",
-    "rev": 160950.29
+    "rev": 170231.02
    },
    {
     "month": "Apr '25",
-    "rev": 116489.13
+    "rev": 129347.61
    },
    {
     "month": "May '25",
-    "rev": 134692.17
+    "rev": 143530.28
    },
    {
     "month": "Jun '25",
-    "rev": 115124.1
+    "rev": 125107.68
    },
    {
     "month": "Jul '25",
-    "rev": 106286.22
+    "rev": 113624.73
    },
    {
     "month": "Aug '25",
-    "rev": 144445.31
+    "rev": 150464.12
    },
    {
     "month": "Sep '25",
-    "rev": 70617.63
+    "rev": 74410.54
    },
    {
     "month": "Oct '25",
-    "rev": 45206.73
+    "rev": 48067.61
+   },
+   {
+    "month": "Nov 1\u20136",
+    "rev": 25309.08
    }
   ],
   "prior_cats": {
-   "Rigs & Rack Attachments": {
-    "rev": 316176.2,
-    "units": 0
-   },
    "Benches": {
-    "rev": 260207.53,
-    "units": 0
+    "rev": 225479.59,
+    "units": 423.0
    },
-   "Trainers & Power Racks": {
-    "rev": 347254.51,
-    "units": 0
+   "Rigs & Rack Attachments": {
+    "rev": 329761.7,
+    "units": 1638.0
    },
    "Adjustable Dumbbells": {
-    "rev": 320437.33,
-    "units": 0
+    "rev": 349352.55,
+    "units": 553.0
+   },
+   "Trainers & Power Racks": {
+    "rev": 357794.65,
+    "units": 118.0
    },
    "Barbells": {
-    "rev": 99836.64,
-    "units": 0
+    "rev": 98133.62,
+    "units": 233.0
    },
    "Storage & Other": {
-    "rev": 11908.3,
-    "units": 0
+    "rev": 13314.1,
+    "units": 59.0
    }
   },
   "seq": {
-   "rev": 260269.67,
-   "cur": 243107.87
+   "rev": 272942.27,
+   "cur": 261072.71
   },
-  "prior_units": 3239,
+  "prior_units": 3024,
   "cur_units": {},
-  "cur_units_total": 2709
+  "cur_units_total": 2173,
+  "cy25": {
+   "rev": 1581979.77,
+   "units": 3501
+  }
  },
  "months": [
   {
-   "month": "Nov '25",
-   "rev": 136872.61
-  },
-  {
-   "month": "Dec '25",
-   "rev": 78263.19
-  },
-  {
    "month": "Jan '26",
-   "rev": 91619.32
+   "rev": 95046.73
   },
   {
    "month": "Feb '26",
-   "rev": 181086.07
+   "rev": 196068.27
   },
   {
    "month": "Mar '26",
-   "rev": 60535.14
+   "rev": 64032.56
   },
   {
    "month": "Apr '26",
-   "rev": 104019.92
+   "rev": 110253.04
   },
   {
    "month": "May '26",
-   "rev": 40463.39
+   "rev": 43066.79
   },
   {
    "month": "Jun '26",
-   "rev": 79861.26
+   "rev": 83789.14
   },
   {
    "month": "Jul '26",
-   "rev": 166785.99
+   "rev": 179003.7
   },
   {
    "month": "Aug '26",
-   "rev": 30109.09
+   "rev": 37286.22
   },
   {
    "month": "Sep '26",
-   "rev": 52459.74
+   "rev": 54120.93
   },
   {
    "month": "Oct '26",
-   "rev": 160539.04
+   "rev": 169665.56
+  },
+  {
+   "month": "Nov 1\u20136",
+   "rev": 18695.4
   }
  ],
  "cats": [
   {
    "name": "Rigs & Rack Attachments",
-   "rev": 284666.6,
+   "rev": 254627.11,
    "color": "#f26422"
   },
   {
-   "name": "Benches",
-   "rev": 281058.73,
+   "name": "Adjustable Dumbbells",
+   "rev": 245447.58,
    "color": "#e8520d"
   },
   {
-   "name": "Adjustable Dumbbells",
-   "rev": 253245.78,
+   "name": "Benches",
+   "rev": 230659.71,
    "color": "#d4410a"
   },
   {
    "name": "Trainers & Power Racks",
-   "rev": 215499.48,
+   "rev": 200071.71,
    "color": "#c03008"
   },
   {
    "name": "Barbells",
-   "rev": 81447.72,
+   "rev": 66439.33,
    "color": "#8a8a8a"
   },
   {
    "name": "Storage & Other",
-   "rev": 66696.45,
+   "rev": 53782.9,
    "color": "#aaa"
   }
  ],
  "depts": [
   {
    "name": "Direct to Consumer",
-   "value": 1134051.17,
+   "value": 999307.47,
    "color": "#f26422"
   },
   {
    "name": "Commercial",
-   "value": 47193.38,
+   "value": 49973.2,
    "color": "#888"
   },
   {
    "name": "Retail & Other Partners",
-   "value": 1370.21,
+   "value": 1747.67,
    "color": "#c03008"
   }
  ],
  "oct": {
-  "cur": 160539.04,
-  "prior": 45206.73
+  "cur": 169665.56,
+  "prior": 48067.61
  }
 };
 
@@ -496,8 +493,8 @@ const kFmt = v => (Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' +
 const mFmt = v => '$' + (v / 1e6).toFixed(2) + 'M';
 const pct1 = v => v.toFixed(1) + '%';
 
-// ----- comparison with the previous 12 months (same NetSuite method, REP brand items) -----
-const PRIOR = { label: 'Nov 2024 – Oct 2025', short: "Nov '24 – Oct '25", seqLabel: 'Aug – Oct 2026 vs Aug – Oct 2025' };
+// ----- comparison with the same period of calendar 2025 (same method, REP items) -----
+const PRIOR = { label: 'Calendar 2025 to 6 Nov', short: "CY25 YTD", seqLabel: 'Aug – Oct 2026 vs Aug – Oct 2025' };
 const priorMonths = DATA.prior.prior_months;           // [{ month, rev }]
 const priorRev = sum(priorMonths, m => m.rev);
 const yoyRev = (totalRev / priorRev - 1) * 100;
@@ -519,9 +516,9 @@ const TARGETS = {
   baselineLabel: 'FY26 (Jul 2025 – Jun 2026)',
   quarters: ['Q1 Jul–Sep (actual)', 'Q2 Oct–Dec', 'Q3 Jan–Mar', 'Q4 Apr–Jun'],
   channels: [
-    { name: 'Retail', color: '#c03008', fy26: 2, q: [0, 1, 1, 1], note: 'Wholesale & other partners' },
-    { name: 'Direct to Consumer', color: '#f26422', fy26: 1112, q: [239, 365, 330, 200], note: 'Website and retail-store sales' },
-    { name: 'Commercial', color: '#888888', fy26: 26, q: [11, 18, 18, 20], note: 'FY26 base is Jan – Jun only' },
+    { name: 'Retail', color: '#c03008', fy26: 3, q: [0, 1, 1, 1], note: 'Wholesale & other partners' },
+    { name: 'Direct to Consumer', color: '#f26422', fy26: 1183, q: [259, 392, 352, 212], note: 'Website and retail-store sales' },
+    { name: 'Commercial', color: '#888888', fy26: 27, q: [12, 18, 18, 20], note: 'FY26 base is Jan – Jun only' },
   ],
   other: [
     { label: 'Commercial accounts buying REP', base: '11 in Jan–Jun 2026 (5 in Q1)', target: '20 in FY27', review: true },
@@ -532,179 +529,180 @@ const TARGETS = {
   basisNote: "Basis: Q1 actual; Q2 = October actual + Nov–Dec held at last year's level; Q3–Q4 held at FY26 same-quarter levels; Commercial built from the Jul–Oct run rate.",
 };
 
-// ----- Ranking and category data, rolling 12 months Nov 2025 – Oct 2026 (rankings only, no values) -----
+// ----- Ranking and category data, calendar 2026 to date (rankings only, no values) -----
 const TOPSELL = [
  {
   "rev": 1,
-  "unit": 22,
+  "unit": 23,
   "sku": "PRA-FT-DUAL-5002-S",
   "name": "Ares 2.0 Functional Trainer Weight Stack"
  },
  {
   "rev": 2,
-  "unit": 5,
+  "unit": 3,
   "sku": "DB-7500",
   "name": "REP x PEPIN Fast Series Dumbbell (kg)"
  },
  {
   "rev": 3,
-  "unit": 7,
+  "unit": 6,
   "sku": "DB-7000",
   "name": "REP x PEPIN Fast Series Dumbbell (lb)"
  },
  {
   "rev": 4,
-  "unit": 1,
+  "unit": 2,
   "sku": "PR-5000-UP-93-MBLK-TWO",
   "name": "PR-5000 93\" Uprights (pair)"
  },
  {
   "rev": 5,
   "unit": 9,
-  "sku": "AB-4102-MBLK",
-  "name": "Nighthawk Adjustable Bench \u2014 Metallic Black"
- },
- {
-  "rev": 6,
-  "unit": 10,
   "sku": "AB-5300-FRAME-MBLK",
   "name": "AB-5300 Blackwing Adjustable Bench"
  },
  {
-  "rev": 7,
-  "unit": 13,
+  "rev": 6,
+  "unit": 11,
   "sku": "AB-4102-RED",
-  "name": "Nighthawk Adjustable Bench \u2014 Red"
+  "name": "Nighthawk Adjustable Bench — Red"
+ },
+ {
+  "rev": 7,
+  "unit": 1,
+  "sku": "DB-7500-01",
+  "name": "Fast Series Dumbbell 10kg Add-On Weights"
  },
  {
   "rev": 8,
-  "unit": 6,
+  "unit": 16,
+  "sku": "AB-4102-MBLK",
+  "name": "Nighthawk Adjustable Bench — Metallic Black"
+ },
+ {
+  "rev": 9,
+  "unit": 20,
+  "sku": "AB-4102-BLU",
+  "name": "Nighthawk Adjustable Bench — Blue"
+ },
+ {
+  "rev": 10,
+  "unit": 7,
   "sku": "DB-7000-01",
   "name": "Fast Series Dumbbell 20lb Add-On Weights"
  },
  {
-  "rev": 9,
+  "rev": 11,
+  "unit": 26,
+  "sku": "AB-5200",
+  "name": "AB-5200 2.0 Adjustable Bench"
+ },
+ {
+  "rev": 12,
   "unit": 67,
   "sku": "FT-3500",
   "name": "Arcadia Functional Trainer"
  },
  {
-  "rev": 10,
-  "unit": 20,
-  "sku": "AB-4102-BLU",
-  "name": "Nighthawk Adjustable Bench \u2014 Blue"
- },
- {
-  "rev": 11,
-  "unit": 22,
-  "sku": "BB-4211",
-  "name": "Open Trap Bar Frame"
- },
- {
-  "rev": 12,
-  "unit": 4,
-  "sku": "DB-7500-01",
-  "name": "Fast Series Dumbbell 10kg Add-On Weights"
- },
- {
   "rev": 13,
-  "unit": 24,
-  "sku": "AB-4102-OLV",
-  "name": "Nighthawk Adjustable Bench \u2014 Army Green"
+  "unit": 23,
+  "sku": "AB-4102-WHT",
+  "name": "Nighthawk Adjustable Bench — White"
  },
  {
   "rev": 14,
-  "unit": 29,
-  "sku": "AB-5200",
-  "name": "AB-5200 2.0 Adjustable Bench"
+  "unit": 23,
+  "sku": "AB-4102-OLV",
+  "name": "Nighthawk Adjustable Bench — Army Green"
  }
 ];
-// MAT (moving annual total) category roll-up, A$. Mix = share of total revenue.
+// Calendar 2026 to date category roll-up, A$. Mix = share of total revenue.
 const CATMIX = {
- "total": 1182614,
+ "total": 1051028,
  "cats": [
   {
    "name": "Rigs & Rack Attachments",
-   "rev": 284667,
-   "mix": 24.1
-  },
-  {
-   "name": "Benches",
-   "rev": 281059,
-   "mix": 23.8
+   "rev": 254627,
+   "mix": 24.2
   },
   {
    "name": "Adjustable Dumbbells",
-   "rev": 253246,
-   "mix": 21.4
+   "rev": 245448,
+   "mix": 23.4
+  },
+  {
+   "name": "Benches",
+   "rev": 230660,
+   "mix": 21.9
   },
   {
    "name": "Trainers & Power Racks",
-   "rev": 215499,
-   "mix": 18.2
+   "rev": 200072,
+   "mix": 19.0
   },
   {
    "name": "Barbells",
-   "rev": 81448,
-   "mix": 6.9
+   "rev": 66439,
+   "mix": 6.3
   },
   {
    "name": "Storage & Other",
-   "rev": 66696,
-   "mix": 5.6
+   "rev": 53783,
+   "mix": 5.1
   }
  ],
  "subs": [
   {
    "name": "Rigs & Rack Attachments",
    "cat": "Strength",
-   "rev": 272983,
-   "mix": 23.1
-  },
-  {
-   "name": "Adjustable Benches",
-   "cat": "Strength",
-   "rev": 267182,
-   "mix": 22.6
+   "rev": 254627,
+   "mix": 24.2
   },
   {
    "name": "Adjustable Dumbbells",
    "cat": "Strength",
-   "rev": 253246,
-   "mix": 21.4
+   "rev": 245448,
+   "mix": 23.4
   },
   {
-   "name": "Power Racks (incl. Ares 2.0)",
+   "name": "Adjustable Benches",
    "cat": "Strength",
-   "rev": 183525,
-   "mix": 15.5
+   "rev": 230660,
+   "mix": 21.9
+  },
+  {
+   "name": "Ares 2.0 & Functional Trainers",
+   "cat": "Strength",
+   "rev": 200072,
+   "mix": 19.0
   },
   {
    "name": "Speciality Barbells",
    "cat": "Strength",
-   "rev": 48137,
-   "mix": 4.1
-  },
-  {
-   "name": "Olympic Barbells",
-   "cat": "Strength",
-   "rev": 33310,
-   "mix": 2.8
+   "rev": 41625,
+   "mix": 4.0
   },
   {
    "name": "Dumbbell Storage",
    "cat": "Strength",
-   "rev": 32656,
-   "mix": 2.8
+   "rev": 35815,
+   "mix": 3.4
   },
   {
-   "name": "Home Gyms & Multi-Station",
+   "name": "Olympic Barbells",
    "cat": "Strength",
-   "rev": 31936,
-   "mix": 2.7
+   "rev": 24814,
+   "mix": 2.4
+  },
+  {
+   "name": "Other",
+   "cat": "Other",
+   "rev": 17968,
+   "mix": 1.7
   }
  ]
 };
+
 
 // ===== 3. CONTENT =====
 const CONTENT = {
@@ -753,7 +751,7 @@ const PerfSlide = ({ n, t }) => {
   const max = Math.max(...monthlyData.map(d => d.rev), ...priorMonths.map(d => d.rev));
   return (
   <Slide num={n} total={t}>
-    <SectionTitle pre="Performance" title={`${PERIOD.months} MONTHS`} sub={`REP Fitness sales: ${PERIOD.label}`} />
+    <SectionTitle pre="Performance" title="YEAR TO DATE" sub={`REP Fitness sales: ${PERIOD.label}`} />
     <div className="flex flex-col flex-1 gap-3 min-h-0">
       <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
         <Kpi label="Total Revenue" value={kFmt(totalRev)} sub={`${up(yoyRev)} vs ${PRIOR.label} (${kFmt(priorRev)})`} />
@@ -853,8 +851,8 @@ const UpliftSlide = ({ n, t }) => {
           <p className="text-6xl font-heading font-black text-gaf-orange leading-none">{up(vsSeqRev)}</p>
           <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Revenue {kFmt(seqRev)} → {kFmt(DATA.prior.seq.cur)}</p>
           <div className={`my-4 border-t ${th.cardBorder}`}></div>
-          <p className={`text-4xl font-heading font-black ${th.text} leading-none`}>{`${hoh >= 0 ? '+' : ''}${hoh.toFixed(1)}%`}</p>
-          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>{PERIOD.secondHalf} vs {PERIOD.firstHalf} · {kFmt(h1)} → {kFmt(h2)}</p>
+          <p className={`text-4xl font-heading font-black ${th.text} leading-none`}>{kFmt(DATA.prior.cy25.rev)}</p>
+          <p className={`text-[14px] ${th.sub} mt-2 font-body`}>Full calendar 2025 ({DATA.prior.cy25.units.toLocaleString('en-AU')} units). 2026 to date is {Math.round(totalRev / DATA.prior.cy25.rev * 100)}% of it.</p>
           <p className={`text-[12px] ${th.muted} mt-auto font-body leading-snug`}>Channel split not compared: the Commercial department was only used in NetSuite from Jan 2026.</p>
         </div>
       </div>
@@ -987,8 +985,8 @@ const TopSellersSlide = ({ n, t }) => {
   const th = useTheme();
   const badge = (r, hot) => <span className={`inline-flex items-center justify-center w-9 h-7 rounded-md text-[14px] font-heading font-bold ${hot ? 'bg-gaf-orange text-white' : `${th.bg3} ${th.text}`}`}>{r}</span>;
   return (
-  <Slide num={n} total={t} badge="Rolling 12 mths to Oct '26">
-    <SectionTitle pre="Performance" title="TOP SELLERS" sub="Ranked across the full REP Fitness range by revenue and by units · Nov 2025 – Oct 2026" />
+  <Slide num={n} total={t} badge={PERIOD.short}>
+    <SectionTitle pre="Performance" title="TOP SELLERS" sub="Ranked across the full REP Fitness range by revenue and by units · calendar 2026 to date" />
     <div className="flex gap-4 flex-1 min-h-0">
       <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
         <div className={`grid grid-cols-[90px_90px_1fr_210px] gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
@@ -1007,9 +1005,9 @@ const TopSellersSlide = ({ n, t }) => {
       </div>
       <div className="w-[380px] shrink-0 flex flex-col gap-3 pb-10">
         {[
-          { h: 'Dumbbells and the Ares trainer lead', b: 'The Ares 2.0 weight stack is #1 on revenue, followed by the REP x PEPIN Fast Series adjustable dumbbells at #2 and #3.' },
-          { h: 'Benches are split across colours', b: 'The Nighthawk adjustable bench holds five of the top 15 revenue ranks across its colourways (#5, #7, #10, #13 and #15).' },
-          { h: 'Volume vs value', b: 'Rack parts and add-on weights lead on units — PR-5000 uprights are #1 and the dumbbell add-ons #4 — while the Ares weight stack (#22 on units) and the Arcadia trainer (#67) rank high on revenue from far fewer sales.' },
+          { h: 'Dumbbells and the Ares trainer lead', b: "The Ares 2.0 weight stack is #1 on revenue, followed by the REP x PEPIN Fast Series dumbbells at #2 (kg) and #3 (lb), with the add-on weights at #7 and #10." },
+          { h: 'Benches are split across colours', b: "The Nighthawk adjustable bench holds 5 of the top 14 revenue ranks across its colourways (#6, #8, #9, #13 and #14)." },
+          { h: 'Volume vs value', b: "Add-on weights and rack parts lead on units — the 10kg add-ons are #1 and the PR-5000 uprights #2 — while the Ares weight stack (#23 on units) and the Arcadia trainer (#67) rank high on revenue from far fewer sales." },
         ].map((c, i) => (
           <div key={i} className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-3 flex flex-col justify-center`}>
             <p className="text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1">{c.h}</p>
@@ -1035,8 +1033,8 @@ const CategoryMixSlide = ({ n, t }) => {
     </div>
   );
   return (
-  <Slide num={n} total={t} badge="Rolling 12 mths to Oct '26">
-    <SectionTitle pre="Performance" title="CATEGORY MIX" sub={`Revenue and share of sales by category and sub-category · moving annual total ${audK(CATMIX.total)}`} />
+  <Slide num={n} total={t} badge={PERIOD.short}>
+    <SectionTitle pre="Performance" title="CATEGORY MIX" sub={`Revenue and share of sales by category and sub-category · calendar 2026 to date ${audK(CATMIX.total)}`} />
     <div className="flex gap-4 flex-1 min-h-0">
       <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col`}>
         <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase mb-3`}>By Category</p>
@@ -1051,7 +1049,7 @@ const CategoryMixSlide = ({ n, t }) => {
         </div>
       </div>
     </div>
-    <p className={`text-[12px] ${th.muted} font-body mt-2 pb-8`}>Rigs & rack attachments, adjustable benches and adjustable dumbbells make up about 68% of sales. Sub-categories shown are the top 8; shares are of total revenue.</p>
+    <p className={`text-[12px] ${th.muted} font-body mt-2 pb-8`}>The top three categories make up about 70% of sales. Sub-categories shown are the top 8; shares are of total revenue.</p>
   </Slide>
   );
 };
@@ -1066,7 +1064,7 @@ const OUTLOOK = {
   planAdd: [13, 12, 11, 13, 9, 15, 15, 12, 12, 12, 14, 12],
   stretch: [27,27,27,27,27,27,27,15,15,15,30,27],
   adjusted: [7,8,9],
-  priorUnits: 2709, baseRev: 1198000, planRev: 1337000, planAddUnits: 150,
+  priorUnits: 3501, priorRev: 1582000, baseRev: 1315000, planRev: 1465000, planAddUnits: 150,
   stretchUnits: 291, airbikes: 195, treadmills: 96,
   backlogRev: 349000, backlogOrders: 124, backlogUnits: 793,
 };
@@ -1096,8 +1094,8 @@ const OutlookSlide = ({ n, t }) => {
     <SectionTitle pre="Outlook" title="2027 SCENARIOS" sub="Jan – Dec 2027 monthly units: Base, Plan and Stretch" />
     <div className="flex flex-col flex-1 gap-3 min-h-0">
       <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
-        <Kpi label="Base" value={kFmt(O.baseRev)} sub={`${(planTotal - O.planAddUnits).toLocaleString('en-AU')} units · ${up(((planTotal - O.planAddUnits) / O.priorUnits - 1) * 100)} vs last 12 months`} />
-        <Kpi label="Plan" value={kFmt(O.planRev)} sub={`${planTotal.toLocaleString('en-AU')} units · ${up((O.planRev / O.baseRev - 1) * 100)} on Base`} accent />
+        <Kpi label="Base" value={kFmt(O.baseRev)} sub={`${(planTotal - O.planAddUnits).toLocaleString('en-AU')} units · ${up((O.baseRev / O.priorRev - 1) * 100)} vs calendar 2025 (${kFmt(O.priorRev)})`} />
+        <Kpi label="Plan" value={kFmt(O.planRev)} sub={`${planTotal.toLocaleString('en-AU')} units · ${up((O.planRev / O.priorRev - 1) * 100)} vs calendar 2025`} accent />
         <Kpi label="Stretch" value={`+${O.stretchUnits} units`} sub={`Cardio launch on top of Plan · ${O.airbikes} airbikes, ${O.treadmills} treadmills`} />
         <Kpi label="Open Order Book" value={kFmt(O.backlogRev)} sub={`${O.backlogOrders} orders · ${O.backlogUnits} units awaiting stock`} />
       </div>
@@ -1123,7 +1121,7 @@ const OutlookSlide = ({ n, t }) => {
             </div>
           ))}
         </div>
-        <p className={`text-[12px] ${th.muted} font-body mt-1`}>Labels show Plan units. * Aug – Oct base held at the Jan – Jul average (the source forecast dips to about 150 a month). Revenue is indicative at last-12-month average prices; Stretch is not priced.</p>
+        <p className={`text-[12px] ${th.muted} font-body mt-1`}>Labels show Plan units. * Aug – Oct base held at the Jan – Jul average (the source forecast dips to about 150 a month). Revenue is indicative at calendar 2025 – 2026 average selling prices (ex GST); Stretch is not priced.</p>
       </div>
     </div>
   </Slide>
@@ -1137,11 +1135,11 @@ const AssumptionsSlide = ({ n, t }) => {
       'REP 2027 line-by-line unit forecast, Jan – Dec 2027',
       'Cardio excluded',
       'Aug – Oct held at the Jan – Jul run rate',
-      'Priced at last-12-month average selling prices' ] },
+      'Priced at calendar 2025 – 2026 average selling prices' ] },
     { h: 'Plan', big: kFmt(OUTLOOK.planRev), sub: `${planTotal.toLocaleString('en-AU')} units · +${OUTLOOK.planAddUnits} units on Base`, accent: true, items: [
-      'REP x PEPIN kg dumbbell carries the lb range it replaced (family 196 units vs 117 forecast); add-on weights follow',
-      'Ares 2.0 weight stack held at last year’s 36 units (forecast 24)',
-      'Nighthawk metallic black held at last year’s 70 units',
+      'REP x PEPIN kg dumbbell carries the lb range it replaced (last 12 months’ family 196 units vs 117 forecast); add-on weights follow',
+      'Ares 2.0 weight stack held at the last 12 months’ 36 units (forecast 24)',
+      'Nighthawk metallic black held at the last 12 months’ 70 units',
       'Needs the planned orders placed and landed in time' ] },
     { h: 'Stretch', big: `+${OUTLOOK.stretchUnits} units`, sub: 'Cardio on top of Plan', items: [
       `${OUTLOOK.airbikes} Strive airbikes and ${OUTLOOK.treadmills} Strive treadmills`,

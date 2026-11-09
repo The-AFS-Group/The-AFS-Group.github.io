@@ -770,17 +770,17 @@ const TitleSlide = ({ n, t }) => {
 // ===== 2. AGENDA =====
 const AGENDA = [
   { day: 'Day 1', rows: [
-    ['10-11am', 'Introduction/ Objectives /Challenges', 'Steven/Adam/Alex'],
-    ['10.30-3.00 pm', 'F26 GAF Highlights', 'Steven/Adam'],
+    ['10am-11am', 'Introduction / Objectives / Challenges', 'Steven/Adam/Alex'],
+    ['10.30am-3.00pm', 'F26 GAF Highlights', 'Steven/Adam'],
     ['', 'F27 GAF Strategy Overview', 'Adam/Nick'],
     ['', 'GAF Marketing', 'Shanice/Lionel'],
     ['', 'Range assortment planning', 'Alex/Justin'],
     ['', 'GAF Operations', 'Todd/Michelle'],
-    ['3-5pm', 'AFS/REP Partnership Wining together', 'Dan/Steven'],
+    ['3-5pm', 'AFS/REP Partnership: Winning together', 'Dan/Steven'],
   ] },
   { day: 'Day 2', rows: [
     ['9.00am', 'Commercial strategy', 'Nick/Clarke'],
-    ['10.30am', 'Lift Brands -F45 Meeting', 'Nick /Clarke'],
+    ['10.30am', 'Lift Brands - F45 Meeting', 'Nick/Clarke'],
     ['12.00pm', 'Field trip', 'Nick/Clarke'],
   ] },
 ];
@@ -826,9 +826,9 @@ const ObjectivesSlide = ({ n, t }) => {
       <div className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-6 flex flex-col`}>
         <p className="text-[12px] font-heading font-semibold tracking-[.25em] uppercase text-gaf-orange mb-4">Objective</p>
         <div className="flex-1 flex flex-col justify-around">
-          {['Agree on one shared AFS x REP strategy for 2027, with both sides committed to the deliverables, targets and enablers needed WIN.',
-            'Demonstrate AFS commitment to the REP brand across Sales,Marketing and CX.',
-            'Leave with a aligned  plan, owners and a regular review schedule.'].map((p, i) => (
+          {['Agree on one shared AFS x REP strategy for 2027, with both sides committed to the deliverables, targets and enablers needed to win.',
+            'Demonstrate AFS commitment to the REP brand across Sales, Marketing and CX.',
+            'Leave with an aligned plan, owners and a regular review schedule.'].map((p, i) => (
             <p key={i} className={`text-[24px] font-heading font-semibold ${th.text} leading-snug`}>{p}</p>
           ))}
         </div>
@@ -844,7 +844,7 @@ const ObjectivesSlide = ({ n, t }) => {
 // ===== 4. CHALLENGES / OPPORTUNITIES =====
 const ChallengesSlide = ({ n, t }) => {
   const th = useTheme();
-  const afs = ['SKU count: keeping availability', 'Marketing alignment: communication and localisation', 'Lead times of new SKUs and lack of visibility', 'Pricing: acknowledging we have reset RRP and focus on increasing volumes'];
+  const afs = ['SKU count: keeping availability', 'Marketing alignment: communication and localisation', 'Lead times of new SKUs and lack of visibility', 'Pricing: acknowledging we have reset RRP and are focusing on increasing volumes'];
   return (
   <Slide num={n} total={t} badge="Introduction">
     <SectionTitle pre="Introduction" title="CHALLENGES / OPPORTUNITIES" sub="Where AFS and REP each see the challenges and opportunities for 2027" />

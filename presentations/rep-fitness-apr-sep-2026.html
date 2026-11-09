@@ -1505,16 +1505,16 @@ const ProductRankSlide = ({ n, t }) => {
 };
 
 // ===== 2027 PURCHASE FORECAST (from rep-fitness-2027-purchasing-plan.xlsx; US$ at latest NetSuite PO cost) =====
-// Demand = REP 2027 forecast with growth: +15% on all lines, +40% on the 15 best sellers, Airbike 600 and Runner 180 units (Assault AirBike sold 716 in 2025).
+// Demand = REP 2027 forecast with growth: +15% on all lines, +40% on the 15 best sellers, Airbike 660 and Runner 204 units (17 a month; Assault AirBike sold 716 in 2025).
 // Orders to land = requirement (back orders + demand + 2 months' safety stock) less on hand and on order. Q1 – Q4 2027 only.
 const BUY = {
   periods: ['Q1 27', 'Q2 27', 'Q3 27', 'Q4 27'],
-  total: [139545, 219796, 241562, 261761],
-  cardio: [123853, 178953, 178953, 178953],
-  units: 2261, usd: 862664, cardioUsd: 660712, fcUnits: 3093, grownUnits: 4124, usd2026: 924265,
+  total: [167890, 240541, 262307, 282507],
+  cardio: [152198, 199698, 199698, 199698],
+  units: 2349, usd: 953245, cardioUsd: 751293, fcUnits: 3093, grownUnits: 4208, usd2026: 924265,
   lines: [
-    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 600, g: '+208%', units: 600, usd: 373812 },
-    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 180, g: '+88%', units: 151, usd: 286900 },
+    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 660, g: '+238%', units: 660, usd: 411193 },
+    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 204, g: '+113%', units: 179, usd: 340100 },
     { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, grown: 86, g: '+40%', units: 80, usd: 24339 },
     { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, grown: 85, g: '+40%', units: 57, usd: 15937 },
     { name: 'Ares 2.0 Functional Trainer Weight Stack', sku: 'PRA-FT-DUAL-5002-S', fc: 24, grown: 34, g: '+40%', units: 10, usd: 15008 },
@@ -1533,9 +1533,9 @@ const BuyForecastSlide = ({ n, t }) => {
     <SectionTitle pre="Supply" title="2027 PURCHASE FORECAST" sub="Orders to land in 2027 to cover the grown sales forecast, in US$ at the latest PO cost" />
     <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
       <Kpi label="2027 purchases" value={usdK(BUY.usd)} sub={`${up((BUY.usd / BUY.usd2026 - 1) * 100)} on 2026 purchases to date (${usdK(BUY.usd2026)})`} accent />
-      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 751 units`} />
+      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 839 units`} />
       <Kpi label="2027 sales forecast" value={`${BUY.grownUnits.toLocaleString('en-AU')} units`} sub={`${up((BUY.grownUnits / BUY.fcUnits - 1) * 100)} on the ${BUY.fcUnits.toLocaleString('en-AU')}-unit REP forecast`} />
-      <Kpi label="Growth applied" value="+15 / 40%" sub="All lines / 15 best sellers · Airbike 600, Runner 180 units" />
+      <Kpi label="Growth applied" value="+15 / 40%" sub="All lines / 15 best sellers · Airbike 660, Runner 204 units" />
     </div>
     <div className="flex gap-4 flex-1 min-h-0 mt-3">
       <div className={`w-[470px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col pb-10`}>
@@ -1576,7 +1576,7 @@ const BuyForecastSlide = ({ n, t }) => {
             </div>
           ))}
         </div>
-        <p className={`text-[11px] ${th.muted} font-body`}>Growth and unit targets are planning assumptions. Airbike target is below the Assault AirBike's 716 units in 2025; the Runner is set lower. Purchases are below 2026 to date; about +25% / +60% on all other lines would level them. Safety stock is 2 months. 5 minor lines with no PO cost are not priced.</p>
+        <p className={`text-[11px] ${th.muted} font-body`}>Growth and unit targets are planning assumptions. Airbike target is just under the Assault AirBike's 716 units in 2025; the Runner is set lower. Purchases are above 2026 to date. Safety stock is 2 months. 5 minor lines with no PO cost are not priced.</p>
       </div>
     </div>
   </Slide>

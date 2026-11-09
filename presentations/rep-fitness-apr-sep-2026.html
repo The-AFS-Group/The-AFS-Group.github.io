@@ -1020,6 +1020,139 @@ const TopSellersSlide = ({ n, t }) => {
   );
 };
 
+
+// ===== PRODUCT PERFORMANCE (unit sales and revenue by product line; calendar 2026 to 6 Nov vs the same period of 2025) =====
+// Replaced SKUs are grouped with their successors (e.g. DB-7000 lb → DB-7500 kg; AB-4100 / AB-3002 → AB-4102 Nighthawk).
+const PRODUCTS = [
+ {
+  "name": "Ares 2.0 & functional trainers",
+  "rev": 200072,
+  "units": 139,
+  "prevRev": 357795,
+  "prevUnits": 118
+ },
+ {
+  "name": "FAST adjustable dumbbells (lb → kg)",
+  "rev": 187173,
+  "units": 180,
+  "prevRev": 255608,
+  "prevUnits": 272
+ },
+ {
+  "name": "Rack attachments & accessories",
+  "rev": 143371,
+  "units": 644,
+  "prevRev": 155455,
+  "prevUnits": 1051
+ },
+ {
+  "name": "Nighthawk benches (incl. AB-4100 / AB-3002)",
+  "rev": 135791,
+  "units": 184,
+  "prevRev": 126143,
+  "prevUnits": 206
+ },
+ {
+  "name": "PR-5000 / PR-4000 uprights & crossmembers",
+  "rev": 111256,
+  "units": 362,
+  "prevRev": 174307,
+  "prevUnits": 587
+ },
+ {
+  "name": "Barbells",
+  "rev": 66439,
+  "units": 150,
+  "prevRev": 98134,
+  "prevUnits": 233
+ },
+ {
+  "name": "FAST dumbbell add-on weights",
+  "rev": 58274,
+  "units": 178,
+  "prevRev": 93744,
+  "prevUnits": 281
+ },
+ {
+  "name": "Other benches & attachments",
+  "rev": 49663,
+  "units": 111,
+  "prevRev": 45709,
+  "prevUnits": 84
+ },
+ {
+  "name": "Blackwing benches & pads",
+  "rev": 45206,
+  "units": 105,
+  "prevRev": 53628,
+  "prevUnits": 133
+ },
+ {
+  "name": "Dumbbell & bar storage",
+  "rev": 37597,
+  "units": 102,
+  "prevRev": 13314,
+  "prevUnits": 59
+ },
+ {
+  "name": "Other (bikes, stations, accessories)",
+  "rev": 16186,
+  "units": 18,
+  "prevRev": 0,
+  "prevUnits": 0
+ }
+];
+
+const ProductSlide = ({ n, t }) => {
+  const th = useTheme();
+  const chg = (a, b) => (b ? (a / b - 1) * 100 : null);
+  const fmtChg = v => (v === null ? 'new' : up(v));
+  const totU = sum(PRODUCTS, p => p.units), totUp = sum(PRODUCTS, p => p.prevUnits);
+  const totR = sum(PRODUCTS, p => p.rev), totRp = sum(PRODUCTS, p => p.prevRev);
+  const maxU = Math.max(...PRODUCTS.map(p => Math.max(p.units, p.prevUnits)));
+  const grey = th.donutTrack === '#eeeef0' ? '#c4c4c8' : '#555';
+  const cols = 'grid-cols-[1fr_300px_80px_100px_90px]';
+  return (
+  <Slide num={n} total={t} badge={PERIOD.short}>
+    <SectionTitle pre="Performance" title="PRODUCT PERFORMANCE" sub={`Unit sales and revenue by product line · ${PERIOD.label} vs ${PRIOR.label}`} />
+    <div className="flex gap-4 flex-1 min-h-0">
+      <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+        <div className={`grid ${cols} gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+          <span>Product line</span><span>Units: {PRIOR.short} vs {PERIOD.short}</span><span className="text-right">Unit chg</span><span className="text-right">Revenue</span><span className="text-right">Rev. chg</span>
+        </div>
+        <div className="flex-1 flex flex-col justify-around pb-8">
+          {PRODUCTS.map((p, i) => (
+            <div key={i} className={`grid ${cols} gap-3 items-center`}>
+              <span className={`text-[14px] font-heading font-semibold ${th.text} leading-tight`}>{p.name}</span>
+              <div className="flex flex-col gap-1">
+                <div className="flex items-center gap-2"><div className="h-2 rounded-sm fill-anim" style={{'--target-w': `${p.prevUnits / maxU * 78}%`, background: grey}}></div><span className={`text-[11px] ${th.sub} font-body`}>{p.prevUnits.toLocaleString('en-AU')}</span></div>
+                <div className="flex items-center gap-2"><div className="h-2.5 rounded-sm fill-anim bg-gaf-orange" style={{'--target-w': `${p.units / maxU * 78}%`}}></div><span className={`text-[12px] font-heading font-bold ${th.text}`}>{p.units.toLocaleString('en-AU')}</span></div>
+              </div>
+              <span className={`text-[16px] font-heading font-black text-right ${chg(p.units, p.prevUnits) >= 0 ? 'text-gaf-orange' : th.sub}`}>{fmtChg(chg(p.units, p.prevUnits))}</span>
+              <span className={`text-[14px] font-body ${th.text} text-right`}>{audK(p.rev)}</span>
+              <span className={`text-[14px] font-heading font-bold text-right ${chg(p.rev, p.prevRev) >= 0 ? 'text-gaf-orange' : th.sub}`}>{fmtChg(chg(p.rev, p.prevRev))}</span>
+            </div>
+          ))}
+        </div>
+        <p className={`text-[12px] ${th.muted} font-body -mt-5`}>Total: {totU.toLocaleString('en-AU')} units ({up(chg(totU, totUp))}) and {audK(totR)} ({up(chg(totR, totRp))}). Replaced SKUs are grouped with their successors.</p>
+      </div>
+      <div className="w-[360px] shrink-0 flex flex-col gap-3 pb-10">
+        {[
+          { h: 'Fewer units, higher value per unit', b: 'Units are down 28% against revenue down 23%. Revenue per unit rose from $454 to $484, as low-priced parts and add-ons fell faster than complete products.' },
+          { h: 'Trainer units up, revenue down', b: 'Ares 2.0 and trainer units rose 18% on low-priced cable and guide-rod packages, but revenue fell 44% because the retired all-in-one trainers sold about $258K in 2025.' },
+          { h: 'Where it held or grew', b: 'Nighthawk benches grew revenue 8% on 11% fewer units, and dumbbell and bar storage nearly tripled. Dumbbells fell 27% as the lb range was replaced by the kg range.' },
+        ].map((c, i) => (
+          <div key={i} className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-3 flex flex-col justify-center`}>
+            <p className="text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1">{c.h}</p>
+            <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{c.b}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
 // ----- MAT category roll-up -----
 const CategoryMixSlide = ({ n, t }) => {
   const th = useTheme();
@@ -1242,7 +1375,7 @@ const saveFile = (content, name, type) => {
 };
 
 // ===== APP =====
-const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, CategoryMixSlide, OutlookSlide, AssumptionsSlide, DemandSlide, TargetsSlide];
+const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, ProductSlide, CategoryMixSlide, OutlookSlide, AssumptionsSlide, DemandSlide, TargetsSlide];
 
 function App() {
   const [idx, setIdx] = useState(0);

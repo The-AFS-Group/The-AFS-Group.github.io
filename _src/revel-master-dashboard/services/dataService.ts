@@ -28,9 +28,10 @@ const URLS = {
 // Daily website-sessions targets set on the dashboard while column I ("TARGET WEBSITE SESSIONS")
 // of the REVEL DATA sheet still holds the old figure. Each entry only replaces that old figure,
 // so as soon as someone edits the column in the sheet, the sheet wins again.
-// Nov 2026: target lowered from 9,835 to 6,500 sessions/day (requested 2 Nov 2026).
+// Nov 2026: target lowered from the sheet's 9,835 to 6,500 sessions/day (2 Nov 2026), then to
+// 5,250 (9 Nov 2026). Applies to Sales Health and BFCM alike.
 const TARGET_SESSIONS_OVERRIDES: Record<string, { sheetValue: number; target: number }> = {
-  "2026-11": { sheetValue: 9835, target: 6500 },
+  "2026-11": { sheetValue: 9835, target: 5250 },
 };
 
 const safeFetch = async (url: string, options?: RequestInit, timeoutMs = 60000): Promise<string> => {

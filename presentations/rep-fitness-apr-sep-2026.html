@@ -1453,23 +1453,74 @@ const PurchasesSlide = ({ n, t }) => {
   );
 };
 
+// ===== PRODUCT PERFORMANCE RANKING (ranks only, from the PRODUCTS roll-up: CY26 YTD vs CY25 same period) =====
+const RANKNOTES = [
+  { h: 'Top of the table is stable', b: 'Ares 2.0 and the FAST dumbbells hold ranks 1 and 2. Rack attachments and Nighthawk benches each move up one place to 3 and 4.' },
+  { h: 'Biggest fall', b: 'PR-5000 uprights and crossmembers drop from 3 to 5, and Ares 2.0 has the weakest growth of any line even though it still ranks first on sales.' },
+  { h: 'Fastest risers on growth', b: 'Dumbbell and bar storage, other benches and the new bikes and stations line lead on growth, but all sit in the bottom half on sales.' },
+];
+
+const ProductRankSlide = ({ n, t }) => {
+  const th = useTheme();
+  const rk = (arr, f) => { const o = [...arr].sort((a, b) => f(b) - f(a)); return arr.map(x => o.indexOf(x) + 1); };
+  const rNow = rk(PRODUCTS, p => p.rev), rPrev = rk(PRODUCTS, p => p.prevRev);
+  const rUnit = rk(PRODUCTS, p => p.units);
+  const rGrow = rk(PRODUCTS, p => (p.prevRev ? p.rev / p.prevRev : 99));
+  const rows = PRODUCTS.map((p, i) => ({ name: p.name, now: rNow[i], prev: rPrev[i], unit: rUnit[i], grow: rGrow[i], isNew: !p.prevRev })).sort((a, b) => a.now - b.now);
+  const cols = 'grid-cols-[70px_1fr_110px_110px_110px_110px]';
+  const move = r => (r.isNew ? { t: 'New', c: 'text-gaf-orange' } : r.prev > r.now ? { t: '▲ ' + (r.prev - r.now), c: 'text-gaf-orange' } : r.prev < r.now ? { t: '▼ ' + (r.now - r.prev), c: th.sub } : { t: '—', c: th.sub });
+  return (
+  <Slide num={n} total={t} badge={PERIOD.short}>
+    <SectionTitle pre="Performance" title="PRODUCT PERFORMANCE RANKING" sub={`Product lines ranked on sales · ${PERIOD.label} vs ${PRIOR.label}`} />
+    <div className="flex gap-4 flex-1 min-h-0">
+      <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col pb-10`}>
+        <div className={`grid ${cols} gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+          <span>Rank</span><span>Product line</span><span className="text-center">Last year</span><span className="text-center">Move</span><span className="text-center">Unit rank</span><span className="text-center">Growth rank</span>
+        </div>
+        <div className="flex-1 flex flex-col justify-around pb-8">
+          {rows.map((r, i) => (
+            <div key={i} className={`grid ${cols} gap-3 items-center`}>
+              <span className={`text-[26px] font-heading font-black ${r.now <= 3 ? 'text-gaf-orange' : th.text}`}>{r.now}</span>
+              <span className={`text-[15px] font-heading font-semibold ${th.text} leading-tight`}>{r.name}</span>
+              <span className={`text-[14px] font-body ${th.sub} text-center`}>{r.isNew ? '–' : r.prev}</span>
+              <span className={`text-[14px] font-heading font-bold text-center ${move(r).c}`}>{move(r).t}</span>
+              <span className={`text-[14px] font-body ${th.text} text-center`}>{r.unit}</span>
+              <span className={`text-[14px] font-body ${th.text} text-center`}>{r.grow}</span>
+            </div>
+          ))}
+        </div>
+        <p className={`text-[12px] ${th.muted} font-body -mt-5`}>Rank 1 is highest. Ranked on revenue; unit rank by units sold; growth rank by revenue change on the same period last year. Replaced SKUs are grouped with their successors.</p>
+      </div>
+      <div className="w-[360px] shrink-0 flex flex-col gap-3 pb-10">
+        {RANKNOTES.map((c, i) => (
+          <div key={i} className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-3 flex flex-col justify-center`}>
+            <p className="text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1">{c.h}</p>
+            <p className={`text-[14px] font-body ${th.sub} leading-snug`}>{c.b}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
 // ===== 2027 PURCHASE FORECAST (from rep-fitness-2027-purchasing-plan.xlsx; US$ at latest NetSuite PO cost) =====
-// Demand = REP 2027 forecast with growth: +10% on all lines, +30% on the 15 best sellers, Airbike and Runner set to unit targets (Assault AirBike benchmark).
+// Demand = REP 2027 forecast with growth: +15% on all lines, +40% on the 15 best sellers, Airbike 600 and Runner 180 units (Assault AirBike sold 716 in 2025).
 // Orders to land = requirement (back orders + demand + 2 months' safety stock) less on hand and on order. Q1 – Q4 2027 only.
 const BUY = {
   periods: ['Q1 27', 'Q2 27', 'Q3 27', 'Q4 27'],
-  total: [203989, 260087, 285698, 301909],
-  cardio: [190044, 226144, 226144, 226144],
-  units: 2313, usd: 1051684, cardioUsd: 868474, fcUnits: 3093, grownUnits: 4138, usd2026: 924265,
+  total: [139545, 219796, 241562, 261761],
+  cardio: [123853, 178953, 178953, 178953],
+  units: 2261, usd: 862664, cardioUsd: 660712, fcUnits: 3093, grownUnits: 4124, usd2026: 924265,
   lines: [
-    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 720, g: '+269%', units: 720, usd: 448574 },
-    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 240, g: '+150%', units: 221, usd: 419900 },
-    { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, grown: 80, g: '+30%', units: 74, usd: 22514 },
-    { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, grown: 79, g: '+30%', units: 51, usd: 14260 },
-    { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 127, grown: 166, g: '+30%', units: 88, usd: 12527 },
-    { name: 'Nighthawk Bench — Red', sku: 'AB-4102-RED', fc: 54, grown: 72, g: '+30%', units: 59, usd: 12106 },
-    { name: 'Nighthawk Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 50, grown: 67, g: '+30%', units: 50, usd: 10259 },
-    { name: 'Nighthawk Bench — Blue', sku: 'AB-4102-BLU', fc: 37, grown: 50, g: '+30%', units: 45, usd: 9233 },
+    { name: 'Strive VPR Airbike', sku: 'STRIVE-ABIKE', fc: 195, grown: 600, g: '+208%', units: 600, usd: 373812 },
+    { name: 'Strive Curved Treadmill (Runner)', sku: 'CRDO-RNR-5500', fc: 96, grown: 180, g: '+88%', units: 151, usd: 286900 },
+    { name: 'Blackwing Adjustable Bench', sku: 'AB-5300-FRAME-MBLK', fc: 61, grown: 86, g: '+40%', units: 80, usd: 24339 },
+    { name: 'Smith Attachment Structure, 93"', sku: 'PRA-5770-BASE-93', fc: 60, grown: 85, g: '+40%', units: 57, usd: 15937 },
+    { name: 'Ares 2.0 Functional Trainer Weight Stack', sku: 'PRA-FT-DUAL-5002-S', fc: 24, grown: 34, g: '+40%', units: 10, usd: 15008 },
+    { name: 'PR-5000 93" Uprights (pair)', sku: 'PR-5000-UP-93-MBLK-TWO', fc: 127, grown: 176, g: '+40%', units: 99, usd: 14093 },
+    { name: 'Nighthawk Bench — Red', sku: 'AB-4102-RED', fc: 54, grown: 75, g: '+40%', units: 62, usd: 12721 },
+    { name: 'Nighthawk Bench — Metallic Black', sku: 'AB-4102-MBLK', fc: 50, grown: 69, g: '+40%', units: 52, usd: 10669 },
   ],
 };
 const BuyForecastSlide = ({ n, t }) => {
@@ -1482,9 +1533,9 @@ const BuyForecastSlide = ({ n, t }) => {
     <SectionTitle pre="Supply" title="2027 PURCHASE FORECAST" sub="Orders to land in 2027 to cover the grown sales forecast, in US$ at the latest PO cost" />
     <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
       <Kpi label="2027 purchases" value={usdK(BUY.usd)} sub={`${up((BUY.usd / BUY.usd2026 - 1) * 100)} on 2026 purchases to date (${usdK(BUY.usd2026)})`} accent />
-      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 941 units`} />
+      <Kpi label="Airbike + Runner" value={usdK(BUY.cardioUsd)} sub={`${Math.round(BUY.cardioUsd / BUY.usd * 100)}% of the buy · 751 units`} />
       <Kpi label="2027 sales forecast" value={`${BUY.grownUnits.toLocaleString('en-AU')} units`} sub={`${up((BUY.grownUnits / BUY.fcUnits - 1) * 100)} on the ${BUY.fcUnits.toLocaleString('en-AU')}-unit REP forecast`} />
-      <Kpi label="Growth applied" value="+10 / 30%" sub="All lines / 15 best sellers · Airbike 720, Runner 240 units" />
+      <Kpi label="Growth applied" value="+15 / 40%" sub="All lines / 15 best sellers · Airbike 600, Runner 180 units" />
     </div>
     <div className="flex gap-4 flex-1 min-h-0 mt-3">
       <div className={`w-[470px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 flex flex-col pb-10`}>
@@ -1519,13 +1570,13 @@ const BuyForecastSlide = ({ n, t }) => {
               <span className={`text-[13px] font-heading font-semibold ${th.text} leading-tight`}>{l.name}</span>
               <span className={`text-[13px] font-body ${th.sub} text-right`}>{l.fc}</span>
               <span className={`text-[13px] font-body ${th.text} text-right`}>{l.grown}</span>
-              <span className={`text-[13px] font-heading font-bold text-right ${l.g !== '+30%' ? 'text-gaf-orange' : th.sub}`}>{l.g}</span>
+              <span className={`text-[13px] font-heading font-bold text-right ${l.g !== '+40%' ? 'text-gaf-orange' : th.sub}`}>{l.g}</span>
               <span className={`text-[13px] font-body ${th.text} text-right`}>{l.units}</span>
               <span className={`text-[13px] font-heading font-bold ${th.text} text-right`}>{usdK(l.usd)}</span>
             </div>
           ))}
         </div>
-        <p className={`text-[11px] ${th.muted} font-body`}>Growth and unit targets are planning assumptions. Airbike target matches the Assault AirBike's 716 units in 2025; the Runner is set lower. Safety stock is 2 months. 5 minor lines with no PO cost are not priced.</p>
+        <p className={`text-[11px] ${th.muted} font-body`}>Growth and unit targets are planning assumptions. Airbike target is below the Assault AirBike's 716 units in 2025; the Runner is set lower. Purchases are below 2026 to date; about +25% / +60% on all other lines would level them. Safety stock is 2 months. 5 minor lines with no PO cost are not priced.</p>
       </div>
     </div>
   </Slide>
@@ -1533,7 +1584,7 @@ const BuyForecastSlide = ({ n, t }) => {
 };
 
 // ===== APP =====
-const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, ProductSlide, CategoryMixSlide, OutlookSlide, AssumptionsSlide, DemandSlide, PurchasesSlide, BuyForecastSlide, TargetsSlide];
+const SLIDES = [TitleSlide, PerfSlide, UpliftSlide, SalesSlide, TopSellersSlide, ProductSlide, ProductRankSlide, CategoryMixSlide, OutlookSlide, AssumptionsSlide, DemandSlide, PurchasesSlide, BuyForecastSlide, TargetsSlide];
 
 function App() {
   const [idx, setIdx] = useState(0);

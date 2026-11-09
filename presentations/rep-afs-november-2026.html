@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>REP x AFS November 2026</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        gaf: { orange: '#f26422', black: '#0a0a0a', dark: '#141414', mid: '#1e1e1e', steel: '#2a2a2a', ash: '#8a8a8a' },
+        lt: { bg: '#ffffff', card: '#f7f7f8', card2: '#eeeef0', border: '#e0e0e2', text: '#1a1a1a', sub: '#6b6b6b', muted: '#b0b0b0' },
+      },
+      fontFamily: {
+        display: ['"Montserrat"', 'sans-serif'],
+        heading: ['"Montserrat"', 'sans-serif'],
+        body: ['"Open Sans"', 'sans-serif'],
+      },
+    }
+  }
+}
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Open+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Open Sans',sans-serif;overflow:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Montserrat',sans-serif}
+.font-display{font-weight:900;letter-spacing:.01em}
+.font-heading{font-family:'Montserrat',sans-serif}
+
+/* grain overlay — dark only */
+.grain-dark::after{content:'';position:fixed;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:9999}
+
+.slide-enter{animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes slideIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.stagger>*{opacity:0;animation:slideIn .5s cubic-bezier(.16,1,.3,1) forwards}
+.stagger>*:nth-child(1){animation-delay:.05s}
+.stagger>*:nth-child(2){animation-delay:.12s}
+.stagger>*:nth-child(3){animation-delay:.19s}
+.stagger>*:nth-child(4){animation-delay:.26s}
+.stagger>*:nth-child(5){animation-delay:.33s}
+.stagger>*:nth-child(6){animation-delay:.4s}
+.stagger>*:nth-child(7){animation-delay:.47s}
+.stagger>*:nth-child(8){animation-delay:.54s}
+
+.bar-grow{animation:barGrow .8s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes barGrow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+
+.fill-anim{animation:fillWidth 1s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes fillWidth{from{width:0}to{width:var(--target-w)}}
+
+.donut-animate{animation:donutDraw 1.2s cubic-bezier(.16,1,.3,1) forwards}
+@keyframes donutDraw{from{stroke-dashoffset:var(--circumference)}to{stroke-dashoffset:var(--dash-offset)}}
+
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#f26422;border-radius:10px}
+
+.slash{position:absolute;width:200%;height:1px;transform:rotate(-12deg)}
+
+/* PDF export: all slides stacked, one per page, in print only */
+.print-root{display:none}
+@media print{
+  @page{size:1600px 900px;margin:0}
+  html,body{margin:0!important;padding:0!important;background:#fff!important;overflow:visible!important;height:auto!important}
+  body::after,.grain-dark::after{display:none!important}
+  .screen-only{display:none!important}
+  .print-root{display:block!important}
+  .print-slide{width:1600px;height:900px;position:relative;overflow:hidden;break-after:page;page-break-after:always}
+  .print-slide:last-child{break-after:auto;page-break-after:auto}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .print-root *{animation:none!important}
+  .print-root .stagger>*{opacity:1!important}
+  .print-root .fill-anim{width:var(--target-w)!important}
+  .print-root .donut-animate{stroke-dashoffset:var(--dash-offset)!important}
+}
+
+/* click-to-edit mode */
+.edit-on [data-editable]{cursor:text;outline:1px dashed rgba(242,100,34,.45);outline-offset:2px;border-radius:2px}
+.edit-on [data-editable]:hover{outline-color:#f26422;background:rgba(242,100,34,.07)}
+.edit-on [data-editable]:focus{outline:2px solid #f26422;background:rgba(242,100,34,.10)}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script id="deck-edits" type="application/json">{"stamp":0,"edits":{}}</script>
+<script src="https://esm.sh/react@19.1.0" type="module"></script>
+<script src="https://esm.sh/react-dom@19.1.0/client" type="module"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel" data-type="module">
+import React, { useState, useEffect, useLayoutEffect, useRef, useCallback, createContext, useContext } from 'https://esm.sh/react@19.1.0';
+import { createRoot } from 'https://esm.sh/react-dom@19.1.0/client';
+
+// ===== THEME =====
+const ThemeCtx = createContext();
+const useTheme = () => useContext(ThemeCtx);
+
+const themes = {
+  light: {
+    bg: 'bg-white', bg2: 'bg-lt-card', bg3: 'bg-lt-card2',
+    border: 'border-lt-border', borderAccent: 'border-gaf-orange/20',
+    text: 'text-lt-text', sub: 'text-lt-sub', muted: 'text-lt-muted',
+    textInv: 'text-white',
+    cardBg: 'bg-lt-card', cardBorder: 'border-lt-border',
+    slashColor: 'rgba(242,100,34,0.06)', grainClass: '',
+    bodyBg: '#f0f0f0', logoFilter: '', titleText: 'text-lt-text',
+    donutTrack: '#eeeef0', barBg: 'linear-gradient(to top, #ddd, #ccc)',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-lt-text',
+    navBg: 'bg-black/5', navBorder: 'border-black/10', navText: 'text-lt-text',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange hover:text-white',
+    navDisabled: 'bg-black/5 text-lt-muted cursor-not-allowed',
+    green: 'text-emerald-600', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-600', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    progressBg: 'bg-emerald-500', progressWarn: 'bg-amber-500',
+    expOverlay: 'from-white via-white/70 to-transparent',
+    expOverlayR: 'from-white/80 to-transparent',
+    expText: 'text-lt-text', expSub: 'text-lt-sub',
+    expCard: 'bg-black/5 border-black/10',
+    footerText: 'text-lt-muted',
+  },
+  dark: {
+    bg: 'bg-gaf-black', bg2: 'bg-gaf-dark', bg3: 'bg-gaf-mid',
+    border: 'border-gaf-steel/20', borderAccent: 'border-gaf-orange/20',
+    text: 'text-white', sub: 'text-gaf-ash', muted: 'text-gaf-steel',
+    textInv: 'text-gaf-black',
+    cardBg: 'bg-gaf-dark', cardBorder: 'border-gaf-steel/20',
+    slashColor: 'rgba(242,100,34,0.15)', grainClass: 'grain-dark',
+    bodyBg: '#0a0a0a', logoFilter: 'brightness-0 invert', titleText: 'text-white',
+    donutTrack: '#1e1e1e', barBg: 'linear-gradient(to top, #333, #555)',
+    kpiAccentBg: 'bg-gaf-orange/5', kpiDarkBg: 'bg-gaf-dark',
+    navBg: 'bg-white/5', navBorder: 'border-white/10', navText: 'text-white',
+    navHover: 'hover:bg-gaf-orange hover:border-gaf-orange',
+    navDisabled: 'bg-gaf-steel/20 text-gaf-steel cursor-not-allowed',
+    green: 'text-emerald-400', greenBg: 'bg-emerald-500/10', greenBorder: 'hover:border-emerald-500/30',
+    amber: 'text-amber-400', amberBg: 'bg-amber-500/10', amberBorder: 'hover:border-amber-500/30',
+    progressBg: 'bg-emerald-400', progressWarn: 'bg-amber-400',
+    expOverlay: 'from-gaf-black via-gaf-black/50 to-transparent',
+    expOverlayR: 'from-gaf-black/70 to-transparent',
+    expText: 'text-white', expSub: 'text-white/80',
+    expCard: 'bg-white/5 border-white/10',
+    footerText: 'text-gaf-steel',
+  }
+};
+
+// ===== ICONS =====
+const I = ({ d, size = 18, className = '', sw = 1.5 }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" className={className}>
+    {Array.isArray(d) ? d.map((p, i) => <path key={i} d={p} />) : <path d={d} />}
+  </svg>
+);
+const ChevL = p => <I {...p} d="M15 18l-6-6 6-6" />;
+const ChevR = p => <I {...p} d="M9 18l6-6-6-6" />;
+const ArrowUp = p => <I {...p} d={["M22 7l-8.5 8.5-5-5L2 17","M16 7h6v6"]} />;
+const Dollar = p => <I {...p} d={["M12 2v20","M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"]} />;
+const Box = p => <I {...p} d={["M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z","M3.27 6.96L12 12.01l8.73-5.05","M12 22.08V12"]} />;
+const Bolt = p => <I {...p} d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />;
+const Eye = p => <I {...p} d={["M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"]} />;
+const Users = p => <I {...p} d={["M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2","M12 7a4 4 0 100-8 4 4 0 000 8","M22 21v-2a4 4 0 00-3-3.87","M16 3.13a4 4 0 010 7.75"]} />;
+const Check = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>;
+const Warn = p => <I {...p} d={["M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z","M12 9v4","M12 17h.01"]} />;
+const Target = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>;
+const Award = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>;
+const Globe = p => <svg xmlns="http://www.w3.org/2000/svg" width={p.size||18} height={p.size||18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className={p.className||''}><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>;
+const Msg = p => <I {...p} d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" />;
+const Pct = p => <I {...p} d={["M19 5L5 19","M6.5 9a2.5 2.5 0 100-5 2.5 2.5 0 000 5","M17.5 20a2.5 2.5 0 100-5 2.5 2.5 0 000 5"]} />;
+const Cam = p => <I {...p} d={["M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"]} />;
+const Sun = p => <I {...p} d={["M12 1v2","M12 21v2","M4.22 4.22l1.42 1.42","M18.36 18.36l1.42 1.42","M1 12h2","M21 12h2","M4.22 19.78l1.42-1.42","M18.36 5.64l1.42-1.42"]} />;
+const Moon = p => <I {...p} d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />;
+const Pencil = p => <I {...p} d={["M12 20h9","M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"]} />;
+const Download = p => <I {...p} d={["M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4","M7 10l5 5 5-5","M12 15V3"]} />;
+const BarIcon = p => <I {...p} d={["M12 20V10","M18 20V4","M6 20v-4"]} />;
+
+const GAF_LOGO = "https://cdn.shopify.com/s/files/1/1950/1891/files/GAFLogo-Primary-WhiteBG_51691f07-8b4f-4d1d-aefc-f2fc004eaa84.png?v=1775792576";
+
+// ===== DONUT CHART =====
+const Donut = ({ data, size = 220, thickness = 28 }) => {
+  const th = useTheme();
+  const r = (size - thickness) / 2;
+  const c = 2 * Math.PI * r;
+  const total = data.reduce((s, d) => s + d.value, 0);
+  let cum = 0;
+  return (
+    <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} style={{transform:'rotate(-90deg)'}}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={th.donutTrack} strokeWidth={thickness} />
+      {data.map((d, i) => {
+        const pct = d.value / total;
+        const offset = c * (1 - pct);
+        const rotation = cum * 360;
+        cum += pct;
+        return <circle key={i} cx={size/2} cy={size/2} r={r} fill="none" stroke={d.color} strokeWidth={thickness}
+          strokeDasharray={c} style={{'--circumference': c, '--dash-offset': offset}}
+          className="donut-animate" strokeDashoffset={c}
+          transform={`rotate(${rotation} ${size/2} ${size/2})`} />;
+      })}
+    </svg>
+  );
+};
+
+// ===== LOGO =====
+const Logo = () => {
+  const th = useTheme();
+  return <img src={GAF_LOGO} alt="GAF" className={`h-8 w-auto object-contain opacity-60 ${th.logoFilter}`} />;
+};
+
+// ===== SLIDE WRAPPER =====
+const Slide = ({ children, num, total, noPad, badge = PERIOD.short, badgeAlt }) => {
+  const th = useTheme();
+  return (
+  <div className={`w-full h-full ${th.bg} ${th.text} flex flex-col relative overflow-hidden`}>
+    <div className="slash" style={{top:'30%',left:'-50%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <div className="slash" style={{top:'60%',left:'-30%',background:`linear-gradient(90deg,transparent,${th.slashColor},transparent)`}}></div>
+    <header className="flex justify-between items-center px-10 pt-5 pb-3 z-10 shrink-0">
+      <Logo />
+      <div className="flex items-center gap-3">
+        <span className={`px-3 py-1 rounded-full text-[12px] font-heading font-bold tracking-[.2em] uppercase ${badgeAlt ? `border border-gaf-orange/50 text-gaf-orange` : `bg-gaf-orange text-white`}`}>{badge}</span>
+        <span className={`text-[14px] font-heading font-light tracking-[.3em] ${th.sub} uppercase`}>REP x AFS · November 2026</span>
+        <div className={`w-px h-4 ${th.bg3}`}></div>
+        <span className={`text-[14px] font-body ${th.sub}`}>{num}<span className={`${th.muted} mx-1`}>/</span>{total}</span>
+      </div>
+    </header>
+    <main className={`flex-1 flex flex-col z-10 overflow-hidden ${noPad ? '' : 'px-10 pb-8'}`}>
+      {children}
+    </main>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width: `${(num/total)*100}%`}}></footer>
+  </div>
+  );
+};
+
+// ===== KPI CARD =====
+const Kpi = ({ label, value, sub, accent }) => {
+  const th = useTheme();
+  return (
+  <div className={`p-4 rounded-lg border ${accent ? `${th.kpiAccentBg} ${th.borderAccent}` : `${th.cardBg} ${th.cardBorder}`}`}>
+    <p className={`text-[13px] font-heading font-medium tracking-[.25em] uppercase mb-3 ${accent ? 'text-gaf-orange' : th.sub}`}>{label}</p>
+    <p className={`text-3xl font-heading font-bold ${accent ? 'text-gaf-orange' : th.text}`}>{value}</p>
+    {sub && <p className={`text-[14px] ${th.sub} mt-1.5 font-body`}>{sub}</p>}
+  </div>
+  );
+};
+
+// ===== SECTION TITLE =====
+const SectionTitle = ({ pre, title, sub }) => {
+  const th = useTheme();
+  return (
+  <div className="mb-4 shrink-0 stagger">
+    {pre && <p className="text-[14px] font-heading tracking-[.4em] text-gaf-orange uppercase mb-2">{pre}</p>}
+    <h1 className={`font-display text-5xl md:text-7xl ${th.text} leading-[0.9] tracking-wide`}>{title}</h1>
+    {sub && <p className={`text-[15px] ${th.sub} mt-3 font-body max-w-2xl leading-relaxed`}>{sub}</p>}
+  </div>
+  );
+};
+
+// =====================================================================
+//  EDITING GUIDE
+//  1. PERIOD    – reporting period label, shown on the title slide and as a
+//                 badge on every slide header.
+//  2. DATA      – sales numbers (calendar 2026 to date vs calendar 2025). Slides 2, 3 and 4 are
+//                 calculated from this block automatically.
+//  3. TARGETS   – FY27 targets by channel ($K) and the other targets listed on the Targets slide.
+//                 Edit the numbers and text between the quotes.
+//                 Add  review: true  to an item to show an amber REVIEW tag,
+//                 delete it once the item has been checked.
+//  Keyboard: ← / → or space = navigate, D = dark mode, E = click-to-edit mode, P = export PDF.
+//  Click-to-edit: press E (or the pencil button), click any text on a slide and type.
+//  Edits autosave in this browser; use "Download deck" to save them into a new copy of this file.
+// =====================================================================
+
+// ===== 1. PERIOD =====
+const PERIOD = {
+  label: 'Calendar 2026 to 6 Nov',
+  short: "CY26 YTD",
+  months: 11,
+  firstHalf: 'Jan – May',
+  secondHalf: 'Jun – Nov',
+};
+
+// ===== 2. DATA =====
+// Sales: NetSuite invoice + cash-sale lines for REP brand items (the two NetSuite exports: calendar 2025 and calendar 2026), plus untagged REP SKUs matched by SKU prefix PRA-FT-/AB-5300-KIT or 'Ares 2.0'/'REP Fitness' in the description. Revenue is the line amount ex GST, before order-level discounts and credit notes.
+//        Like-for-like: 1 Jan – 6 Nov in both years. Full calendar 2025 adds 7 Nov – 31 Dec 2025 from NetSuite.
+//        Revenue only — gross profit / margin is intentionally not included in this deck.
+const DATA = {
+ "prior": {
+  "prior_months": [
+   {
+    "month": "Jan '25",
+    "rev": 202212.88
+   },
+   {
+    "month": "Feb '25",
+    "rev": 191530.66
+   },
+   {
+    "month": "Mar '25",
+    "rev": 170231.02
+   },
+   {
+    "month": "Apr '25",
+    "rev": 129347.61
+   },
+   {
+    "month": "May '25",
+    "rev": 143530.28
+   },
+   {
+    "month": "Jun '25",
+    "rev": 125107.68
+   },
+   {
+    "month": "Jul '25",
+    "rev": 113624.73
+   },
+   {
+    "month": "Aug '25",
+    "rev": 150464.12
+   },
+   {
+    "month": "Sep '25",
+    "rev": 74410.54
+   },
+   {
+    "month": "Oct '25",
+    "rev": 48067.61
+   },
+   {
+    "month": "Nov 1\u20136",
+    "rev": 25309.08
+   }
+  ],
+  "prior_cats": {
+   "Benches": {
+    "rev": 225479.59,
+    "units": 423.0
+   },
+   "Rigs & Rack Attachments": {
+    "rev": 329761.7,
+    "units": 1638.0
+   },
+   "Adjustable Dumbbells": {
+    "rev": 349352.55,
+    "units": 553.0
+   },
+   "Trainers & Power Racks": {
+    "rev": 357794.65,
+    "units": 118.0
+   },
+   "Barbells": {
+    "rev": 98133.62,
+    "units": 233.0
+   },
+   "Storage & Other": {
+    "rev": 13314.1,
+    "units": 59.0
+   }
+  },
+  "seq": {
+   "rev": 272942.27,
+   "cur": 261072.71
+  },
+  "prior_units": 3024,
+  "cur_units": {},
+  "cur_units_total": 2173,
+  "cy25": {
+   "rev": 1581979.77,
+   "units": 3501
+  }
+ },
+ "months": [
+  {
+   "month": "Jan '26",
+   "rev": 95046.73
+  },
+  {
+   "month": "Feb '26",
+   "rev": 196068.27
+  },
+  {
+   "month": "Mar '26",
+   "rev": 64032.56
+  },
+  {
+   "month": "Apr '26",
+   "rev": 110253.04
+  },
+  {
+   "month": "May '26",
+   "rev": 43066.79
+  },
+  {
+   "month": "Jun '26",
+   "rev": 83789.14
+  },
+  {
+   "month": "Jul '26",
+   "rev": 179003.7
+  },
+  {
+   "month": "Aug '26",
+   "rev": 37286.22
+  },
+  {
+   "month": "Sep '26",
+   "rev": 54120.93
+  },
+  {
+   "month": "Oct '26",
+   "rev": 169665.56
+  },
+  {
+   "month": "Nov 1\u20136",
+   "rev": 18695.4
+  }
+ ],
+ "cats": [
+  {
+   "name": "Rigs & Rack Attachments",
+   "rev": 254627.11,
+   "color": "#f26422"
+  },
+  {
+   "name": "Adjustable Dumbbells",
+   "rev": 245447.58,
+   "color": "#e8520d"
+  },
+  {
+   "name": "Benches",
+   "rev": 230659.71,
+   "color": "#d4410a"
+  },
+  {
+   "name": "Trainers & Power Racks",
+   "rev": 200071.71,
+   "color": "#c03008"
+  },
+  {
+   "name": "Barbells",
+   "rev": 66439.33,
+   "color": "#8a8a8a"
+  },
+  {
+   "name": "Storage & Other",
+   "rev": 53782.9,
+   "color": "#aaa"
+  }
+ ],
+ "depts": [
+  {
+   "name": "Direct to Consumer",
+   "value": 999307.47,
+   "color": "#f26422"
+  },
+  {
+   "name": "Commercial",
+   "value": 49973.2,
+   "color": "#888"
+  },
+  {
+   "name": "Retail & Other Partners",
+   "value": 1747.67,
+   "color": "#c03008"
+  }
+ ],
+ "oct": {
+  "cur": 169665.56,
+  "prior": 48067.61
+ }
+};
+
+const monthlyData = DATA.months;          // [{ month, rev }]
+const categories = DATA.cats;             // [{ name, rev, color }]
+const departments = DATA.depts;           // [{ name, value, color }]  – 2nd entry (Commercial) is highlighted
+
+// ----- derived numbers (do not edit) -----
+const sum = (a, f) => a.reduce((s, x) => s + f(x), 0);
+const totalRev = sum(monthlyData, m => m.rev);
+const peak = monthlyData.reduce((a, b) => (b.rev > a.rev ? b : a));
+const half = Math.floor(monthlyData.length / 2);
+const h1 = sum(monthlyData.slice(0, half), m => m.rev);
+const h2 = sum(monthlyData.slice(half), m => m.rev);
+const hoh = (h2 / h1 - 1) * 100;
+const dept = n => departments.find(d => d.name.startsWith(n)) || { value: 0 };
+const commercial = dept('Commercial');
+const retail = dept('Direct');
+const deptTotal = sum(departments, d => d.value);
+const commPct = commercial.value / deptTotal * 100;
+const retailPct = retail.value / deptTotal * 100;
+const money = v => '$' + Math.round(v).toLocaleString('en-AU');
+const kFmt = v => (Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v / 1000) + 'K');
+const mFmt = v => '$' + (v / 1e6).toFixed(2) + 'M';
+const pct1 = v => v.toFixed(1) + '%';
+
+// ----- comparison with the same period of calendar 2025 (same method, REP items) -----
+const PRIOR = { label: 'Calendar 2025 to 6 Nov', short: "CY25 YTD", seqLabel: 'Aug – Oct 2026 vs Aug – Oct 2025' };
+const priorMonths = DATA.prior.prior_months;           // [{ month, rev }]
+const priorRev = sum(priorMonths, m => m.rev);
+const yoyRev = (totalRev / priorRev - 1) * 100;
+const revMultiple = totalRev / priorRev;
+const curUnits = DATA.prior.cur_units_total;
+const yoyUnits = (curUnits / DATA.prior.prior_units - 1) * 100;
+const seqRev = DATA.prior.seq.rev;
+const vsSeqRev = (DATA.prior.seq.cur / seqRev - 1) * 100;
+const up = v => (v >= 0 ? '+' : '') + Math.round(v) + '%';
+const catCompare = categories.map(c => {
+  const p = DATA.prior.prior_cats[c.name] || { rev: 0, units: 0 };
+  return { ...c, priorRev: p.rev, change: p.rev ? (c.rev / p.rev - 1) * 100 : null };
+});
+
+// ----- FY27 targets by channel ($K). Q1 is actual; Q2 – Q4 are proposed targets. Edit freely. -----
+const TARGETS = {
+  fy: 'FY27',
+  period: 'Jul 2026 – Jun 2027',
+  baselineLabel: 'FY26 (Jul 2025 – Jun 2026)',
+  quarters: ['Q1 Jul–Sep (actual)', 'Q2 Oct–Dec', 'Q3 Jan–Mar', 'Q4 Apr–Jun'],
+  channels: [
+    { name: 'Retail', color: '#c03008', fy26: 3, q: [0, 1, 1, 1], note: 'Wholesale & other partners' },
+    { name: 'Direct to Consumer', color: '#f26422', fy26: 1183, q: [259, 392, 352, 212], note: 'Website and retail-store sales' },
+    { name: 'Commercial', color: '#888888', fy26: 27, q: [12, 18, 18, 20], note: 'FY26 base is Jan – Jun only' },
+  ],
+  other: [
+    { label: 'Commercial accounts buying REP', base: '11 in Jan–Jun 2026 (5 in Q1)', target: '20 in FY27', review: true },
+    { label: 'Top-20 lines in stock', base: '50% (5 Nov 2026)', target: '≥ 95%', review: true },
+    { label: 'On-time-in-full (customer orders)', base: 'Not yet measured', target: '≥ 98%', review: true },
+  ],
+  stretchNote: 'Q3 – Q4 are held at FY26 levels, so the target assumes the out-of-stock top sellers are replenished.',
+  basisNote: "Basis: Q1 actual; Q2 = October actual + Nov–Dec held at last year's level; Q3–Q4 held at FY26 same-quarter levels; Commercial built from the Jul–Oct run rate.",
+};
+
+// ----- Ranking and category data, calendar 2026 to date (rankings only, no values) -----
+const TOPSELL = [
+ {
+  "rev": 1,
+  "unit": 23,
+  "sku": "PRA-FT-DUAL-5002-S",
+  "name": "Ares 2.0 Functional Trainer Weight Stack"
+ },
+ {
+  "rev": 2,
+  "unit": 3,
+  "sku": "DB-7500",
+  "name": "REP x PEPIN Fast Series Dumbbell (kg)"
+ },
+ {
+  "rev": 3,
+  "unit": 6,
+  "sku": "DB-7000",
+  "name": "REP x PEPIN Fast Series Dumbbell (lb)"
+ },
+ {
+  "rev": 4,
+  "unit": 2,
+  "sku": "PR-5000-UP-93-MBLK-TWO",
+  "name": "PR-5000 93\" Uprights (pair)"
+ },
+ {
+  "rev": 5,
+  "unit": 9,
+  "sku": "AB-5300-FRAME-MBLK",
+  "name": "AB-5300 Blackwing Adjustable Bench"
+ },
+ {
+  "rev": 6,
+  "unit": 11,
+  "sku": "AB-4102-RED",
+  "name": "Nighthawk Adjustable Bench — Red"
+ },
+ {
+  "rev": 7,
+  "unit": 1,
+  "sku": "DB-7500-01",
+  "name": "Fast Series Dumbbell 10kg Add-On Weights"
+ },
+ {
+  "rev": 8,
+  "unit": 16,
+  "sku": "AB-4102-MBLK",
+  "name": "Nighthawk Adjustable Bench — Metallic Black"
+ },
+ {
+  "rev": 9,
+  "unit": 20,
+  "sku": "AB-4102-BLU",
+  "name": "Nighthawk Adjustable Bench — Blue"
+ },
+ {
+  "rev": 10,
+  "unit": 7,
+  "sku": "DB-7000-01",
+  "name": "Fast Series Dumbbell 20lb Add-On Weights"
+ },
+ {
+  "rev": 11,
+  "unit": 26,
+  "sku": "AB-5200",
+  "name": "AB-5200 2.0 Adjustable Bench"
+ },
+ {
+  "rev": 12,
+  "unit": 67,
+  "sku": "FT-3500",
+  "name": "Arcadia Functional Trainer"
+ },
+ {
+  "rev": 13,
+  "unit": 23,
+  "sku": "AB-4102-WHT",
+  "name": "Nighthawk Adjustable Bench — White"
+ },
+ {
+  "rev": 14,
+  "unit": 23,
+  "sku": "AB-4102-OLV",
+  "name": "Nighthawk Adjustable Bench — Army Green"
+ }
+];
+// Calendar 2026 to date category roll-up, A$. Mix = share of total revenue.
+const CATMIX = {
+ "total": 1051028,
+ "cats": [
+  {
+   "name": "Rigs & Rack Attachments",
+   "rev": 254627,
+   "mix": 24.2
+  },
+  {
+   "name": "Adjustable Dumbbells",
+   "rev": 245448,
+   "mix": 23.4
+  },
+  {
+   "name": "Benches",
+   "rev": 230660,
+   "mix": 21.9
+  },
+  {
+   "name": "Trainers & Power Racks",
+   "rev": 200072,
+   "mix": 19.0
+  },
+  {
+   "name": "Barbells",
+   "rev": 66439,
+   "mix": 6.3
+  },
+  {
+   "name": "Storage & Other",
+   "rev": 53783,
+   "mix": 5.1
+  }
+ ],
+ "subs": [
+  {
+   "name": "Rigs & Rack Attachments",
+   "cat": "Strength",
+   "rev": 254627,
+   "mix": 24.2
+  },
+  {
+   "name": "Adjustable Dumbbells",
+   "cat": "Strength",
+   "rev": 245448,
+   "mix": 23.4
+  },
+  {
+   "name": "Adjustable Benches",
+   "cat": "Strength",
+   "rev": 230660,
+   "mix": 21.9
+  },
+  {
+   "name": "Ares 2.0 & Functional Trainers",
+   "cat": "Strength",
+   "rev": 200072,
+   "mix": 19.0
+  },
+  {
+   "name": "Speciality Barbells",
+   "cat": "Strength",
+   "rev": 41625,
+   "mix": 4.0
+  },
+  {
+   "name": "Dumbbell Storage",
+   "cat": "Strength",
+   "rev": 35815,
+   "mix": 3.4
+  },
+  {
+   "name": "Olympic Barbells",
+   "cat": "Strength",
+   "rev": 24814,
+   "mix": 2.4
+  },
+  {
+   "name": "Other",
+   "cat": "Other",
+   "rev": 17968,
+   "mix": 1.7
+  }
+ ]
+};
+
+
+// ===== 3. CONTENT =====
+const CONTENT = {
+  titleTag: 'Supplier Update',
+  confidential: 'Confidential Internal Use',
+};
+
+const Review = () => <span className="ml-2 align-middle text-[10px] font-heading font-semibold tracking-[.15em] uppercase px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-600">Review</span>;
+const itemText = i => (typeof i === 'string' ? { text: i } : i);
+
+const audK = v => (Math.abs(v) >= 1e6 ? '$' + (v / 1e6).toFixed(2) + 'M' : '$' + Math.round(v / 1000) + 'K');
+const Card = ({ h, b, small }) => {
+  const th = useTheme();
+  return (
+  <div className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-3 flex flex-col justify-center`}>
+    <p className="text-[12px] font-heading font-semibold tracking-[.2em] uppercase text-gaf-orange mb-1">{h}</p>
+    <p className={`${small ? 'text-[13px]' : 'text-[14px]'} font-body ${th.sub} leading-snug`}>{b}</p>
+  </div>
+  );
+};
+const grayBar = th => (th.donutTrack === '#eeeef0' ? '#c4c4c8' : '#555');
+const RECIPIENT = 'REP Fitness';
+
+// ===== 1. TITLE =====
+const TitleSlide = ({ n, t }) => {
+  const th = useTheme();
+  const items = [
+    ['01', 'Product performance ranking', 'How each REP product line ranks on sales, against last year'],
+    ['02', 'Purchases placed', 'REP orders placed in 2026 to date, against the same period of 2025'],
+    ['03', '2027 purchase forecast', 'Orders needed to land in 2027 to support our sales forecast'],
+  ];
+  return (
+  <div className={`w-full h-full ${th.bg} relative flex flex-col justify-end overflow-hidden`}>
+    <div className="absolute -right-[20%] top-[10%] w-[70%] h-[140%] bg-gaf-orange opacity-[0.04] transform rotate-[-18deg]"></div>
+    <div className="flex-1 flex items-center px-16 z-10">
+      <div className="stagger w-full">
+        <div className="flex items-center gap-5 mb-8">
+          <img src={GAF_LOGO} alt="Gym and Fitness" className={`h-14 w-auto object-contain ${th.logoFilter}`} />
+          <div className={`w-px h-10 ${th.bg3}`}></div>
+          <span className={`text-[14px] font-heading tracking-[.4em] ${th.sub} uppercase`}>{CONTENT.titleTag}</span>
+        </div>
+        <h1 className={`font-display text-[8rem] leading-[0.85] tracking-wider ${th.titleText}`}>REP<br/><span className="text-gaf-orange">FITNESS</span></h1>
+        <div className="flex items-center gap-6 mt-8">
+          <div className="w-16 h-[2px] bg-gaf-orange"></div>
+          <span className="px-5 py-2 rounded-full bg-gaf-orange text-white font-heading font-bold text-[18px] tracking-[.25em] uppercase">Purchasing and product performance</span>
+          <p className={`text-[15px] font-body ${th.sub} tracking-wider`}>2026 to date and the 2027 outlook</p>
+        </div>
+        <div className="grid grid-cols-3 gap-4 mt-8 max-w-[1100px]">
+          {items.map((it, i) => (
+            <div key={i} className={`${th.cardBg} border ${th.cardBorder} rounded-lg p-4`}>
+              <p className="text-[12px] font-heading font-bold tracking-[.2em] text-gaf-orange">{it[0]}</p>
+              <p className={`text-[17px] font-heading font-bold ${th.text} mt-1`}>{it[1]}</p>
+              <p className={`text-[13px] font-body ${th.sub} mt-1 leading-snug`}>{it[2]}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div className="px-16 pb-8 z-10"><p className={`text-[14px] font-heading tracking-[.5em] ${th.muted} uppercase`}>Confidential · Prepared for REP Fitness</p></div>
+    <footer className="h-1 bg-gradient-to-r from-gaf-orange via-gaf-orange to-transparent z-10 shrink-0" style={{width:'10%'}}></footer>
+  </div>
+  );
+};
+
+// ===== 2. AGENDA =====
+const AGENDA = [
+  { day: 'Day 1', rows: [
+    ['10-11am', 'Introduction/ Objectives /Challenges', 'Steven/Adam/Alex'],
+    ['10.30-3.00 pm', 'F26 GAF Highlights', 'Steven/Adam'],
+    ['', 'F27 GAF Strategy Overview', 'Adam/Nick'],
+    ['', 'GAF Marketing', 'Shanice/Lionel'],
+    ['', 'Range assortment planning', 'Alex/Justin'],
+    ['', 'GAF Operations', 'Todd/Michelle'],
+    ['3-5pm', 'AFS/REP Partnership Wining together', 'Dan/Steven'],
+  ] },
+  { day: 'Day 2', rows: [
+    ['9.00am', 'Commercial strategy', 'Nick/Clarke'],
+    ['10.30am', 'Lift Brands -F45 Meeting', 'Nick /Clarke'],
+    ['12.00pm', 'Field trip', 'Nick/Clarke'],
+  ] },
+];
+const AgendaSlide = ({ n, t }) => {
+  const th = useTheme();
+  const cols = 'grid-cols-[170px_1fr_300px]';
+  return (
+  <Slide num={n} total={t} badge="Day 1">
+    <SectionTitle pre="Day 1" title="AGENDA · DAY 1" sub="2026 performance, wins & challenges · 2027 planning: forecasting, marketing, training & commercial strategy" />
+    <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col mb-10`}>
+      <div className={`grid ${cols} gap-4 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}><span>Time</span><span>Session</span><span>Owners</span></div>
+      <div className="flex-1 flex flex-col justify-around">
+        {AGENDA.map((g, gi) => (
+          <div key={gi} className="flex flex-col gap-1.5">
+            <p className="text-[13px] font-heading font-bold tracking-[.25em] uppercase text-gaf-orange mt-1">{g.day}</p>
+            {g.rows.map((r, i) => (
+              <div key={i} className={`grid ${cols} gap-4 items-center border-t ${th.cardBorder} pt-1.5`}>
+                <span className={`text-[14px] font-body ${th.sub}`}>{r[0]}</span>
+                <span className={`text-[16px] font-heading font-semibold ${th.text}`}>{r[1]}</span>
+                <span className={`text-[15px] font-body ${th.text}`}>{r[2]}</span>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 3. KEY OBJECTIVES =====
+const ObjectivesSlide = ({ n, t }) => {
+  const th = useTheme();
+  const wins = [
+    ['Win #1 · Focus area', 'Agree 2027 priorities across range, channels and growth lines, with AFS and REP working to one plan and timeline.'],
+    ['Win #2 · Focus area', 'Set joint 2027 sales, purchasing and range targets, with owners and agreed commitments on supply, pricing, marketing, training and stock.'],
+    ['Win #3 · Focus area', 'Agree shared KPIs, reporting cadence and reviews to track performance and keep REP leading the category.'],
+  ];
+  return (
+  <Slide num={n} total={t} badge="Introduction">
+    <SectionTitle pre="Introduction" title="KEY OBJECTIVES" sub="REP x AFS collaboration to strengthen the REP footprint across ANZ" />
+    <div className="flex gap-4 flex-1 min-h-0 pb-10">
+      <div className={`flex-1 ${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-6 flex flex-col`}>
+        <p className="text-[12px] font-heading font-semibold tracking-[.25em] uppercase text-gaf-orange mb-4">Objective</p>
+        <div className="flex-1 flex flex-col justify-around">
+          {['Agree on one shared AFS x REP strategy for 2027, with both sides committed to the deliverables, targets and enablers needed WIN.',
+            'Demonstrate AFS commitment to the REP brand across Sales,Marketing and CX.',
+            'Leave with a aligned  plan, owners and a regular review schedule.'].map((p, i) => (
+            <p key={i} className={`text-[24px] font-heading font-semibold ${th.text} leading-snug`}>{p}</p>
+          ))}
+        </div>
+      </div>
+      <div className="w-[400px] shrink-0 flex flex-col gap-3">
+        {wins.map((w, i) => <Card key={i} h={w[0]} b={w[1]} />)}
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 4. CHALLENGES / OPPORTUNITIES =====
+const ChallengesSlide = ({ n, t }) => {
+  const th = useTheme();
+  const afs = ['SKU count: keeping availability', 'Marketing alignment: communication and localisation', 'Lead times of new SKUs and lack of visibility', 'Pricing: acknowledging we have reset RRP and focus on increasing volumes'];
+  return (
+  <Slide num={n} total={t} badge="Introduction">
+    <SectionTitle pre="Introduction" title="CHALLENGES / OPPORTUNITIES" sub="Where AFS and REP each see the challenges and opportunities for 2027" />
+    <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 pb-10">
+      <div className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-6 flex flex-col`}>
+        <p className="text-[12px] font-heading font-semibold tracking-[.25em] uppercase text-gaf-orange mb-2">AFS</p>
+        <p className={`text-[22px] font-heading font-bold ${th.text} mb-4`}>CHALLENGES</p>
+        <ol className="flex-1 flex flex-col justify-around">
+          {afs.map((a, i) => (
+            <li key={i} className="flex gap-4 items-start">
+              <span className="text-[20px] font-heading font-black text-gaf-orange w-8 shrink-0">{i + 1}.</span>
+              <span className={`text-[20px] font-body ${th.text} leading-snug`}>{a}</span>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-6 flex flex-col`}>
+        <p className="text-[12px] font-heading font-semibold tracking-[.25em] uppercase text-gaf-orange mb-2">REP</p>
+        <p className={`text-[22px] font-heading font-bold ${th.text} mb-4`}>CHALLENGES</p>
+        <div className="flex-1"></div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 5. THINGS WE MUST DO =====
+const MustDoSlide = ({ n, t }) => {
+  const th = useTheme();
+  const box = (h, b, accent) => (
+    <div className={`${th.kpiAccentBg} border ${th.borderAccent} rounded-lg p-5 flex flex-col`}>
+      <p className="text-[12px] font-heading font-semibold tracking-[.25em] uppercase text-gaf-orange mb-3">{h}</p>
+      <p className={`text-[28px] font-heading font-black ${th.text} leading-tight`}>{b}</p>
+    </div>
+  );
+  return (
+  <Slide num={n} total={t} badge="Introduction">
+    <SectionTitle pre="Introduction" title="THINGS WE MUST DO" sub="Three AFS priorities for 2027, each matched by REP support as the enabler" />
+    <div className="grid grid-cols-3 grid-rows-2 gap-4 flex-1 min-h-0 pb-10">
+      {box('Must do #1', 'TRAIN OUR TEAM')}{box('Must do #2', 'WIN COMMERCIAL')}{box('Must do #3', 'IMPROVE AVAILABILITY')}
+      {box('Enabler #1', 'REP SUPPORT: TRAINING')}{box('Enabler #2', 'REP SUPPORT: COMMERCIAL')}{box('Enabler #3', 'REP SUPPORT: AVAILABILITY')}
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 6. PRODUCT PERFORMANCE RANKING =====
+const RANKING = [
+  [1, 'Ares 2.0 & functional trainers', 1, '—', 7, 11], [2, 'FAST adjustable dumbbells (lb → kg)', 2, '—', 4, 7],
+  [3, 'Rack attachments & accessories', 4, '▲ 1', 1, 5], [4, 'Nighthawk benches (incl. AB-4100 / AB-3002)', 5, '▲ 1', 3, 4],
+  [5, 'PR-5000 / PR-4000 uprights & crossmembers', 3, '▼ 2', 2, 9], [6, 'Barbells', 6, '—', 6, 8],
+  [7, 'FAST dumbbell add-on weights', 7, '—', 5, 10], [8, 'Other benches & attachments', 9, '▲ 1', 8, 3],
+  [9, 'Blackwing benches & pads', 8, '▼ 1', 9, 6], [10, 'Dumbbell & bar storage', 10, '—', 10, 2],
+  [11, 'Other (bikes, stations, accessories)', '–', 'New', 11, 1],
+];
+const RankingSlide = ({ n, t }) => {
+  const th = useTheme();
+  const cols = 'grid-cols-[60px_1fr_90px_80px_90px_90px]';
+  return (
+  <Slide num={n} total={t} badge="CY26 YTD">
+    <SectionTitle pre="Performance" title="PRODUCT PERFORMANCE RANKING" sub="Product lines ranked on sales · Calendar 2026 to 6 Nov vs Calendar 2025 to 6 Nov" />
+    <div className="flex gap-4 flex-1 min-h-0">
+      <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+        <div className={`grid ${cols} gap-3 text-[11px] font-heading tracking-[.15em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+          <span>Rank</span><span>Product line</span><span className="text-center">Last year</span><span className="text-center">Move</span><span className="text-center">Unit rank</span><span className="text-center">Growth rank</span>
+        </div>
+        <div className="flex-1 flex flex-col justify-around pb-8">
+          {RANKING.map((r, i) => (
+            <div key={i} className={`grid ${cols} gap-3 items-center`}>
+              <span className="text-[16px] font-heading font-black text-gaf-orange">{r[0]}</span>
+              <span className={`text-[14px] font-body ${th.text}`}>{r[1]}</span>
+              <span className={`text-[14px] font-body ${th.sub} text-center`}>{r[2]}</span>
+              <span className={`text-[14px] font-heading font-bold text-center ${String(r[3]).startsWith('▲') || r[3] === 'New' ? 'text-gaf-orange' : th.sub}`}>{r[3]}</span>
+              <span className={`text-[14px] font-body ${th.text} text-center`}>{r[4]}</span>
+              <span className={`text-[14px] font-body ${th.text} text-center`}>{r[5]}</span>
+            </div>
+          ))}
+        </div>
+        <p className={`text-[12px] ${th.muted} font-body -mt-5`}>Rank 1 is highest. Ranked on revenue; unit rank by units sold; growth rank by revenue change on the same period last year. Replaced SKUs are grouped with their successors.</p>
+      </div>
+      <div className="w-[360px] shrink-0 flex flex-col gap-3 pb-10">
+        <Card h="Top of the table is stable" b="Ares 2.0 and the FAST dumbbells hold ranks 1 and 2. Rack attachments and Nighthawk benches each move up one place to 3 and 4." />
+        <Card h="Biggest fall" b="PR-5000 uprights and crossmembers drop from 3 to 5, and Ares 2.0 has the weakest growth of any line even though it still ranks first on sales." />
+        <Card h="Fastest risers on growth" b="Dumbbell and bar storage, other benches and the new bikes and stations line lead on growth, but all sit in the bottom half on sales." />
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 7. PURCHASES =====
+const PUR_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov*'];
+const PUR_26 = [83, 0, 183, 0, 103, 268, 96, 83, 55, 51, 2];
+const PUR_25 = [54, 45, 2, 32, 2, 36, 74, 3, 2, 87, 0];   // 2025 bars read from the supplied chart (not labelled in the source)
+const PUR_LINES = [
+  ['Cardio (Strive airbike & treadmill)', '0 → 336', 'US$273K', '–', 'new'], ['Ares 2.0 & functional trainers', '160 → 726', 'US$168K', 'US$40K', '+318%'],
+  ['FAST dumbbells & add-ons', '300 → 785', 'US$155K', 'US$69K', '+124%'], ['Rack uprights, crossmembers & packs', '617 → 1,030', 'US$102K', 'US$54K', '+89%'],
+  ['Rack attachments & accessories', '583 → 1,178', 'US$94K', 'US$39K', '+142%'], ['Benches', '491 → 378', 'US$72K', 'US$95K', '-24%'],
+  ['Machines & bases', '0 → 244', 'US$40K', '–', 'new'], ['Barbells, plates & bumpers', '141 → 220', 'US$23K', 'US$20K', '+13%'],
+  ['Dumbbell & bar storage', '90 → 130', 'US$3K', 'US$16K', '-80%'], ['Other & adjustments', '263 → 167', '-US$7K', '-US$29K', '–'],
+];
+const PurchasesSlide = ({ n, t }) => {
+  const th = useTheme();
+  const grey = grayBar(th), max = Math.max(...PUR_26, ...PUR_25);
+  const cols = 'grid-cols-[1fr_110px_90px_90px_70px]';
+  return (
+  <Slide num={n} total={t} badge="Purchasing">
+    <SectionTitle pre="Supply" title="PURCHASES" sub="REP purchase orders in US$ by PO date · 1 Jan – 9 Nov 2026 vs the same period of 2025" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-3 gap-4 shrink-0 stagger">
+        <Kpi label="CY26 YTD Purchases" value="US$924K" sub="5,194 units" accent />
+        <Kpi label="CY25 Same Period" value="US$337K" sub="2,645 units" />
+        <Kpi label="Change" value="+174%" sub="+96% units · US$178 vs US$127 per unit" />
+      </div>
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className={`w-[540px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+          <div className="flex items-center justify-between mb-2">
+            <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>US$ placed by month</p>
+            <div className={`flex items-center gap-3 text-[12px] ${th.sub} font-body`}>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: grey}}></span>2025</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-gaf-orange"></span>2026</span>
+            </div>
+          </div>
+          <div className="flex-1 flex items-end gap-2 px-1 min-h-0">
+            {PUR_MONTHS.map((m, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                <div className="w-full flex items-end gap-0.5 flex-1 min-h-0">
+                  <div className="flex-1 flex flex-col justify-end h-full"><div className="w-full rounded-sm bar-grow origin-bottom" style={{ height: `${PUR_25[i] / max * 80}%`, minHeight: PUR_25[i] ? '2px' : 0, background: grey }}></div></div>
+                  <div className="flex-1 flex flex-col items-center justify-end h-full">
+                    {PUR_26[i] > 0 && <span className={`text-[11px] font-heading font-bold ${th.text} mb-0.5`}>{PUR_26[i]}</span>}
+                    <div className="w-full rounded-sm bar-grow origin-bottom bg-gaf-orange" style={{ height: `${PUR_26[i] / max * 80}%`, minHeight: PUR_26[i] ? '2px' : 0 }}></div>
+                  </div>
+                </div>
+                <span className={`text-[11px] ${th.sub} mt-1 font-body`}>{m}</span>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[11px] ${th.muted} font-body mt-1 pb-8`}>Labels show 2026 US$K. *Nov 2026 is to 9 Nov. Orders placed, not receipts. The 2025 comparison excludes a Nov 2025 order dated after 9 Nov.</p>
+        </div>
+        <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+          <div className={`grid ${cols} gap-2 text-[11px] font-heading tracking-[.12em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+            <span>Product line</span><span className="text-right">Units 25 → 26</span><span className="text-right">US$ 2026</span><span className="text-right">US$ 2025</span><span className="text-right">Change</span>
+          </div>
+          <div className="flex-1 flex flex-col justify-around pb-8">
+            {PUR_LINES.map((r, i) => (
+              <div key={i} className={`grid ${cols} gap-2 items-center`}>
+                <span className={`text-[13px] font-body ${th.text}`}>{r[0]}</span>
+                <span className={`text-[13px] font-body ${th.sub} text-right`}>{r[1]}</span>
+                <span className={`text-[13px] font-body ${th.text} text-right`}>{r[2]}</span>
+                <span className={`text-[13px] font-body ${th.sub} text-right`}>{r[3]}</span>
+                <span className={`text-[13px] font-heading font-bold text-right ${r[4].startsWith('+') || r[4] === 'new' ? 'text-gaf-orange' : th.sub}`}>{r[4]}</span>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[11px] ${th.muted} font-body -mt-5`}>Cardio and machines are new in 2026 and account for US$313K of the US$587K increase. Without them, purchases rose 81%.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+// ===== 8. 2027 PURCHASE FORECAST =====
+const FC_Q = [{ q: 'Q1 27', ab: 152, other: 16, tot: 168 }, { q: 'Q2 27', ab: 200, other: 41, tot: 241 }, { q: 'Q3 27', ab: 200, other: 62, tot: 262 }, { q: 'Q4 27', ab: 200, other: 83, tot: 283 }];
+const FC_LINES = [
+  ['Strive VPR Airbike', 195, 660, '+238%', 660, 'US$411K'], ['Strive Curved Treadmill (Runner)', 96, 204, '+113%', 179, 'US$340K'],
+  ['Blackwing Adjustable Bench', 61, 86, '+40%', 80, 'US$24K'], ['Smith Attachment Structure, 93"', 60, 85, '+40%', 57, 'US$16K'],
+  ['Ares 2.0 Functional Trainer Weight Stack', 24, 34, '+40%', 10, 'US$15K'], ['PR-5000 93" Uprights (pair)', 127, 176, '+40%', 99, 'US$14K'],
+  ['Nighthawk Bench — Red', 54, 75, '+40%', 62, 'US$13K'], ['Nighthawk Bench — Metallic Black', 50, 69, '+40%', 52, 'US$11K'],
+];
+const ForecastSlide = ({ n, t }) => {
+  const th = useTheme();
+  const grey = grayBar(th), max = Math.max(...FC_Q.map(q => q.tot));
+  const cols = 'grid-cols-[1fr_80px_90px_70px_80px_80px]';
+  return (
+  <Slide num={n} total={t} badge="2027 purchasing">
+    <SectionTitle pre="Supply" title="2027 PURCHASE FORECAST" sub="Orders to land in 2027 to cover the grown sales forecast, in US$ at the latest PO cost" />
+    <div className="flex flex-col flex-1 gap-3 min-h-0">
+      <div className="grid grid-cols-4 gap-4 shrink-0 stagger">
+        <Kpi label="2027 Purchases" value="US$953K" sub="+3% on 2026 purchases to date (US$924K)" accent />
+        <Kpi label="Airbike + Runner" value="US$751K" sub="79% of the buy · 839 units" />
+        <Kpi label="2027 Sales Forecast" value="4,208 units" sub="+36% on the 3,093-unit REP forecast" />
+        <Kpi label="Growth Applied" value="+15 / 40%" sub="All lines / 15 best sellers · Airbike 660, Runner 204 units" />
+      </div>
+      <div className="flex gap-4 flex-1 min-h-0">
+        <div className={`w-[540px] shrink-0 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+          <div className="flex items-center justify-between mb-2">
+            <p className={`text-[13px] font-heading tracking-[.3em] ${th.sub} uppercase`}>US$ to land by quarter</p>
+            <div className={`flex items-center gap-3 text-[12px] ${th.sub} font-body`}>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm bg-gaf-orange"></span>Airbike + Runner</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-sm" style={{background: grey}}></span>Other</span>
+            </div>
+          </div>
+          <div className="flex-1 flex items-end gap-5 px-3 min-h-0">
+            {FC_Q.map((q, i) => (
+              <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                <span className={`text-[14px] font-heading font-bold ${th.text} mb-1`}>US${q.tot}K</span>
+                <div className="w-full flex flex-col rounded-sm overflow-hidden bar-grow origin-bottom" style={{ height: `${q.tot / max * 78}%` }}>
+                  <div style={{ height: `${q.other / q.tot * 100}%`, background: grey }}></div>
+                  <div className="flex-1 bg-gaf-orange"></div>
+                </div>
+                <span className={`text-[12px] ${th.sub} mt-1.5 font-body`}>{q.q}</span>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[11px] ${th.muted} font-body mt-1 pb-8`}>Landing quarter, not order date. Supply is stock on hand plus stock on order; some on-order quantities may not yet be placed with REP.</p>
+        </div>
+        <div className={`flex-1 ${th.cardBg} rounded-lg border ${th.cardBorder} p-4 min-h-0 flex flex-col`}>
+          <div className={`grid ${cols} gap-2 text-[11px] font-heading tracking-[.12em] uppercase ${th.muted} pb-2 border-b ${th.cardBorder}`}>
+            <span>Largest lines to buy</span><span className="text-right">Forecast</span><span className="text-right">With growth</span><span className="text-right">Growth</span><span className="text-right">To order</span><span className="text-right">US$</span>
+          </div>
+          <div className="flex-1 flex flex-col justify-around pb-8">
+            {FC_LINES.map((r, i) => (
+              <div key={i} className={`grid ${cols} gap-2 items-center`}>
+                <span className={`text-[13px] font-body ${th.text}`}>{r[0]}</span>
+                <span className={`text-[13px] font-body ${th.sub} text-right`}>{r[1]}</span>
+                <span className={`text-[13px] font-body ${th.text} text-right`}>{r[2]}</span>
+                <span className={`text-[13px] font-heading font-bold text-gaf-orange text-right`}>{r[3]}</span>
+                <span className={`text-[13px] font-body ${th.text} text-right`}>{r[4]}</span>
+                <span className={`text-[13px] font-heading font-bold ${th.text} text-right`}>{r[5]}</span>
+              </div>
+            ))}
+          </div>
+          <p className={`text-[11px] ${th.muted} font-body -mt-5`}>Growth rates and unit targets are planning assumptions, not commitments. Safety stock is 2 months of demand. 5 minor lines with no PO cost on file are not priced.</p>
+        </div>
+      </div>
+    </div>
+  </Slide>
+  );
+};
+
+const SLIDES = [TitleSlide, AgendaSlide, ObjectivesSlide, ChallengesSlide, MustDoSlide, RankingSlide, PurchasesSlide, ForecastSlide];
+
+// ===== CLICK-TO-EDIT =====
+// Edits are stored per slide as { i: element position, from: original html, to: edited html }.
+// They autosave in this browser (localStorage). "Download deck" bakes them into a copy of this file
+// (the <script id="deck-edits"> tag), so everyone who opens that copy sees the edited text.
+const BAKED = (() => { try { return JSON.parse(document.getElementById('deck-edits').textContent); } catch (e) { return { stamp: 0, edits: {} }; } })();
+const LS_KEY = 'repAfsNov26Edits:' + (BAKED.stamp || 0);
+const loadEdits = () => {
+  try { const s = localStorage.getItem(LS_KEY); if (s) return JSON.parse(s); } catch (e) {}
+  return JSON.parse(JSON.stringify(BAKED.edits || {}));
+};
+const persistEdits = (edits) => { try { localStorage.setItem(LS_KEY, JSON.stringify(edits)); } catch (e) {} };
+const countEdits = (edits) => Object.values(edits).reduce((s, l) => s + (l ? l.length : 0), 0);
+// Outermost elements that hold their own text (so a paragraph with a REVIEW tag edits as one block).
+const collectEditable = (root) => {
+  const out = [];
+  const walk = (el) => {
+    for (const c of el.children) {
+      if (c instanceof SVGElement || c.tagName === 'IMG' || c.tagName === 'SCRIPT' || c.hasAttribute('data-noedit')) continue;
+      const hasText = [...c.childNodes].some(n => n.nodeType === 3 && n.textContent.trim());
+      if (hasText) out.push(c); else walk(c);
+    }
+  };
+  walk(root);
+  return out;
+};
+const saveFile = (content, name, type) => {
+  const url = URL.createObjectURL(new Blob([content], { type }));
+  const a = document.createElement('a'); a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+};
+
+// ===== APP =====
+
+function App() {
+  const [idx, setIdx] = useState(0);
+  const [key, setKey] = useState(0);
+  const [dark, setDark] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [printing, setPrinting] = useState(false);
+  const [editCount, setEditCount] = useState(() => countEdits(loadEdits()));
+  const [zoom, setZoom] = useState(() => Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+  const th = dark ? themes.dark : themes.light;
+  const stageRef = useRef(null);
+  const fileRef = useRef(null);
+  const printRef = useRef(null);
+  const editsRef = useRef(loadEdits());
+  const elsRef = useRef([]);
+  const origRef = useRef([]);
+
+  const go = useCallback((dir) => {
+    const next = idx + dir;
+    if (next >= 0 && next < SLIDES.length) { setIdx(next); setKey(k => k + 1); }
+  }, [idx]);
+
+  useEffect(() => {
+    const calc = () => setZoom(Math.min(window.innerWidth / 1600, window.innerHeight / 900, 1));
+    window.addEventListener('resize', calc);
+    return () => window.removeEventListener('resize', calc);
+  }, []);
+
+  useEffect(() => {
+    const h = e => {
+      if (e.target && e.target.isContentEditable) return;           // typing on a slide
+      if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); go(1); }
+      else if (e.key === 'ArrowLeft') go(-1);
+      else if (e.key === 'd' || e.key === 'D') setDark(d => !d);
+      else if (e.key === 'e' || e.key === 'E') setEditMode(m => !m);
+      else if (e.key === 'p' || e.key === 'P') { e.preventDefault(); setPrinting(true); }
+    };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [go]);
+
+  useEffect(() => {
+    document.body.style.background = th.bodyBg;
+    document.body.className = th.grainClass + (editMode ? ' edit-on' : '');
+  }, [dark, editMode]);
+
+  // Each time a slide is mounted: find its editable text, remember the originals, apply saved edits.
+  useLayoutEffect(() => {
+    const els = collectEditable(stageRef.current);
+    elsRef.current = els;
+    origRef.current = els.map(e => e.innerHTML);
+    (editsRef.current[idx] || []).forEach(({ i, from, to }) => {
+      if (els[i] && origRef.current[i] === from) els[i].innerHTML = to;
+    });
+    els.forEach(e => { e.setAttribute('data-editable', ''); e.setAttribute('spellcheck', 'false'); e.contentEditable = editMode ? 'true' : 'false'; });
+  }, [idx, key]);
+
+  useEffect(() => {
+    elsRef.current.forEach(e => { e.contentEditable = editMode ? 'true' : 'false'; });
+    if (!editMode && document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }, [editMode]);
+
+  // PDF export: render every slide (light theme, with any saved edits applied), then open the print dialog.
+  useLayoutEffect(() => {
+    if (!printing || !printRef.current) return;
+    [...printRef.current.children].forEach((slideEl, si) => {
+      const els = collectEditable(slideEl);
+      const orig = els.map(e => e.innerHTML);
+      (editsRef.current[si] || []).forEach(({ i, from, to }) => { if (els[i] && orig[i] === from) els[i].innerHTML = to; });
+    });
+  }, [printing]);
+  useEffect(() => {
+    if (!printing) return;
+    const after = () => setPrinting(false);
+    window.addEventListener('afterprint', after);
+    (async () => {
+      try { await document.fonts.ready; } catch (e) {}
+      await new Promise(r => setTimeout(r, 500));
+      window.print();
+    })();
+    return () => window.removeEventListener('afterprint', after);
+  }, [printing]);
+
+  const recordEdits = () => {
+    const list = [];
+    elsRef.current.forEach((e, i) => { if (e.innerHTML !== origRef.current[i]) list.push({ i, from: origRef.current[i], to: e.innerHTML }); });
+    if (list.length) editsRef.current[idx] = list; else delete editsRef.current[idx];
+    persistEdits(editsRef.current);
+    setEditCount(countEdits(editsRef.current));
+  };
+  const onKeyDown = (e) => {
+    if (!e.target.isContentEditable) return;
+    if (e.key === 'Enter') { e.preventDefault(); if (e.shiftKey) document.execCommand('insertLineBreak'); else e.target.blur(); }
+    else if (e.key === 'Escape') { e.target.blur(); }
+  };
+  const onPaste = (e) => {
+    if (!e.target.isContentEditable) return;
+    e.preventDefault();
+    document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+  };
+  const resetSlide = () => {
+    elsRef.current.forEach((e, i) => { e.innerHTML = origRef.current[i]; });
+    delete editsRef.current[idx]; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current));
+  };
+  const resetAll = () => {
+    if (!window.confirm('Discard every edit on every slide?')) return;
+    editsRef.current = {}; try { localStorage.removeItem(LS_KEY); } catch (e) {}
+    setEditCount(0); setKey(k => k + 1);
+  };
+  const downloadEdits = () => saveFile(JSON.stringify({ stamp: BAKED.stamp || 0, edits: editsRef.current }, null, 1), 'rep-afs-nov26-edits.json', 'application/json');
+  const loadEditsFile = (e) => {
+    const f = e.target.files && e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try { const j = JSON.parse(r.result); editsRef.current = j.edits || j; persistEdits(editsRef.current); setEditCount(countEdits(editsRef.current)); setKey(k => k + 1); }
+      catch (err) { window.alert('That file is not a valid edits file.'); }
+    };
+    r.readAsText(f); e.target.value = '';
+  };
+  const downloadDeck = async () => {
+    try {
+      const res = await fetch(location.href.split('#')[0]);
+      if (!res.ok) throw new Error('fetch failed');
+      const src = await res.text();
+      const payload = JSON.stringify({ stamp: Date.now(), edits: editsRef.current }).replace(/</g, '\\u003c');
+      const out = src.replace(/(<script id="deck-edits" type="application\/json">)[\s\S]*?(<\/script>)/, (m, a, b) => a + payload + b);
+      saveFile(out, 'rep-afs-november-2026.html', 'text/html');
+    } catch (err) {
+      window.alert('"Download deck" only works when the deck is opened from a web address (for example the published site). Use "Download edits" instead, and "Load edits" on another copy.');
+    }
+  };
+
+  const C = SLIDES[idx];
+  const tbtn = 'px-3 py-1.5 rounded-md text-[12px] font-heading font-semibold tracking-wide whitespace-nowrap bg-white/10 hover:bg-gaf-orange text-white transition-colors';
+  return (
+    <ThemeCtx.Provider value={th}>
+      {editMode && (
+        <div data-noedit className="screen-only fixed top-2 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-2 bg-gaf-black/95 text-white rounded-lg px-3 py-2 shadow-xl">
+          <Pencil size={14} className="text-gaf-orange" />
+          <span className="text-[12px] font-body mr-1 whitespace-nowrap">Edit mode · click text to edit · {editCount} change{editCount === 1 ? '' : 's'}</span>
+          <button className={tbtn} onClick={resetSlide}>Reset slide</button>
+          <button className={tbtn} onClick={resetAll}>Reset all</button>
+          <button className={tbtn} onClick={() => setPrinting(true)}>Export PDF</button>
+          <button className={tbtn} onClick={downloadDeck}>Download deck</button>
+          <button className={tbtn} onClick={downloadEdits}>Download edits</button>
+          <button className={tbtn} onClick={() => fileRef.current && fileRef.current.click()}>Load edits</button>
+          <button className="px-3 py-1.5 rounded-md text-[12px] font-heading font-bold whitespace-nowrap bg-gaf-orange text-white" onClick={() => setEditMode(false)}>Done</button>
+          <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={loadEditsFile} />
+        </div>
+      )}
+      <div className="screen-only w-screen h-screen overflow-hidden flex items-center justify-center" style={{background: th.bodyBg}}>
+        <div key={key} ref={stageRef} onInput={recordEdits} onKeyDown={onKeyDown} onPaste={onPaste} className="overflow-hidden slide-enter rounded-lg shrink-0" style={{width: 1600, height: 900, zoom, boxShadow: dark ? '0 0 80px rgba(0,0,0,.6)' : '0 4px 60px rgba(0,0,0,.12)'}}>
+          <C n={idx + 1} t={SLIDES.length} />
+          {/* Nav + theme toggle */}
+          <div data-noedit className="absolute bottom-6 right-8 flex gap-2 z-50">
+            <button onClick={() => setPrinting(true)} title="Export PDF (P)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+              <Download size={14} />
+            </button>
+            <button onClick={() => setEditMode(m => !m)} title="Click-to-edit mode (E)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${editMode ? 'bg-gaf-orange border-gaf-orange text-white' : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <Pencil size={14} />
+            </button>
+            <button onClick={() => setDark(d => !d)} title="Toggle theme (D)"
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}>
+              {dark ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+            <div className="w-px h-9 bg-gaf-orange/20"></div>
+            <button onClick={() => go(-1)} disabled={idx===0}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===0 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevL size={16} />
+            </button>
+            <button onClick={() => go(1)} disabled={idx===SLIDES.length-1}
+              className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border ${idx===SLIDES.length-1 ? th.navDisabled : `${th.navBg} ${th.navBorder} ${th.navText} ${th.navHover}`}`}>
+              <ChevR size={16} />
+            </button>
+          </div>
+        </div>
+      </div>
+      {printing && (
+        <div className="print-root" ref={printRef}>
+          <ThemeCtx.Provider value={themes.light}>
+            {SLIDES.map((S, i) => <div key={i} className="print-slide"><S n={i + 1} t={SLIDES.length} /></div>)}
+          </ThemeCtx.Provider>
+        </div>
+      )}
+    </ThemeCtx.Provider>
+  );
+}
+
+const root = createRoot(document.getElementById('root'));
+root.render(<App />);
+</script>
+</body>
+</html>

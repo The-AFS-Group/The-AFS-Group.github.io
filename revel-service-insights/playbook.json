@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-09 09:13",
+ "generated": "2026-11-10 12:27",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
@@ -3682,7 +3682,7 @@
   },
   {
    "issue": "Pre-sale & product questions",
-   "calls": 67,
+   "calls": 68,
    "tickets": 45,
    "products": [
     [
@@ -3695,7 +3695,7 @@
     ],
     [
      "Infrared sauna",
-     22
+     23
     ]
    ],
    "models": [
@@ -3720,8 +3720,8 @@
      4
     ],
     [
-     "Nova",
-     3
+     "Luna",
+     4
     ]
    ],
    "components": [
@@ -3751,10 +3751,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.194,
-    "F": 0.657,
-    "H": 0.03,
-    "U": 0.119
+    "R": 0.206,
+    "F": 0.647,
+    "H": 0.029,
+    "U": 0.118
    },
    "upsetCallers": 13,
    "whyCallersLeftUpset": [
@@ -3800,11 +3800,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 23,
-     "resolvedOnCall": 0.13,
-     "resolvedOrBooked": 0.913,
+     "calls": 24,
+     "resolvedOnCall": 0.167,
+     "resolvedOrBooked": 0.917,
      "upsetTurnedAround": 0.5,
-     "endedPositive": 0.261
+     "endedPositive": 0.292
     },
     {
      "solution": "Explained how it works",

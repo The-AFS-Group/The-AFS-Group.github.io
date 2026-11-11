@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-10 12:27",
+ "generated": "2026-11-11 10:16",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1105,
+   "calls": 1107,
    "tickets": 502,
    "products": [
     [
@@ -13,7 +13,7 @@
     ],
     [
      "Ice bath & chiller",
-     233
+     234
     ],
     [
      "Infrared sauna",
@@ -53,11 +53,11 @@
     ],
     [
      "Chiller unit",
-     61
+     62
     ],
     [
      "Door & glass",
-     57
+     58
     ],
     [
      "Lights",
@@ -74,9 +74,9 @@
    ],
    "callOutcomes": {
     "R": 0.205,
-    "F": 0.532,
+    "F": 0.531,
     "H": 0.044,
-    "U": 0.219
+    "U": 0.22
    },
    "upsetCallers": 131,
    "whyCallersLeftUpset": [
@@ -191,11 +191,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 296,
-     "resolvedOnCall": 0.118,
+     "calls": 297,
+     "resolvedOnCall": 0.121,
      "resolvedOrBooked": 0.818,
      "upsetTurnedAround": 0.871,
-     "endedPositive": 0.354
+     "endedPositive": 0.356
     },
     {
      "solution": "Delivery rebooked or chased",
@@ -207,11 +207,11 @@
     },
     {
      "solution": "Technician or electrician",
-     "calls": 94,
-     "resolvedOnCall": 0.255,
-     "resolvedOrBooked": 0.819,
+     "calls": 95,
+     "resolvedOnCall": 0.263,
+     "resolvedOrBooked": 0.821,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.329
+     "endedPositive": 0.337
     },
     {
      "solution": "Asked for photos or video",

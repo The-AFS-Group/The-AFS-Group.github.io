@@ -1,0 +1,634 @@
+[
+ {
+  "kind": "conflict",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 4.5kW - SW45",
+  "row": 52,
+  "topic": "specs",
+  "text": "Listed twice on the spec sheet (rows 51 and 52, SKUs `s-017` / `R-H-SW45KW`) and they differ: Max Temp `85°C` vs `80°C`; Stones `20g` vs `(blank)`; Dimensions (cm) `(blank)` vs `61(H) x 38 (W) x 26 (D)`; Net Weight `(blank)` vs `10.1 kg`. Cards use row 52; confirm which is right and retire the other SKU."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Tampere Plus",
+  "row": 10,
+  "topic": "install",
+  "text": "Manual link is `Revel_Tampere_Grand_Sauna_Manual_A4_1026a.pdf`, which names Grand, not this product. Confirm the right manual."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Black Wall Heater 6kW - SW60E",
+  "row": 47,
+  "topic": "install",
+  "text": "Manual link is `Electric_heater_Harvia_SW45_f0f86663-7888-42e1-86c8-b50a0be46fc4.pdf`, which names SW45, not this product. Confirm the right manual."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Black Wall Heater 9kW - SW90E",
+  "row": 48,
+  "topic": "install",
+  "text": "Manual link is `Electric_heater_Harvia_SW45_f0f86663-7888-42e1-86c8-b50a0be46fc4.pdf`, which names SW45, not this product. Confirm the right manual."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Vega Heater 3.5kW",
+  "row": 55,
+  "topic": "install",
+  "text": "Manual link is `Harvia_BC_Compact_Manual.pdf`, which names Compact, not this product. Confirm the right manual."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Loom 4P (Next Gen)",
+  "row": 5,
+  "topic": "electrical",
+  "text": "SKU `R-TR-PREM-4P-S-019-XENIO-WIFI-CX170` pairs a manual heater with a Xenio controller (a retrofit, per the Xenio card). Confirm this variant ships the manual heater and not the electronic (E) model."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Solaris 3-4P",
+  "row": 6,
+  "topic": "electrical",
+  "text": "SKU `R-TR-CAB-3P-V2-S-019-WIFI-XENIO` pairs a manual heater with a Xenio controller (a retrofit, per the Xenio card). Confirm this variant ships the manual heater and not the electronic (E) model."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Tampere 4P (Next Gen)",
+  "row": 8,
+  "topic": "electrical",
+  "text": "SKU `R-TR-4P-V3-S-019-XENIO-WIFI-CX170` pairs a manual heater with a Xenio controller (a retrofit, per the Xenio card). Confirm this variant ships the manual heater and not the electronic (E) model."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Virta 4P",
+  "row": 12,
+  "topic": "electrical",
+  "text": "SKU `R-TR-VIRTA-4P-S-019-XENIO-WIFI-CX170` pairs a manual heater with a Xenio controller (a retrofit, per the Xenio card). Confirm this variant ships the manual heater and not the electronic (E) model."
+ },
+ {
+  "kind": "check",
+  "cat": "bundles",
+  "product": "Aura 3P Infrared Sauna with Glacier Solo Ice Bath and 1HP Chiller",
+  "row": 30,
+  "topic": "specs",
+  "text": "SKU `R-FS-3P-V2-ICESOLO-V3-TUB-1HP-ICECHILL`: 1HP chiller (`1HP-ICECHILL`): which 1HP chiller? Medium (`CHILLER-XY-10-M`) or Zero (`ICECHILL-SY-10-I`)."
+ },
+ {
+  "kind": "check",
+  "cat": "bundles",
+  "product": "Luna 3P with Glacier Solo Ice Bath and 1HP Chiller",
+  "row": 31,
+  "topic": "specs",
+  "text": "SKU `R-BFS-CEDAR-3P-V2-ICESOLO-V3-TUB-1HP-ICECHILL`: 1HP chiller (`1HP-ICECHILL`): which 1HP chiller? Medium (`CHILLER-XY-10-M`) or Zero (`ICECHILL-SY-10-I`)."
+ },
+ {
+  "kind": "check",
+  "cat": "ice-bath",
+  "product": "Freeze - Mobile Ice Bath",
+  "row": 34,
+  "topic": "specs",
+  "text": "SKU `R-ICEMOB-CHILLERMOB`: Mobile chiller (`CHILLERMOB`): no chiller with this code on the spec sheet."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Kuusi 2P",
+  "row": 2,
+  "topic": "",
+  "text": "Typo fixed on import (warranty: 'Componetry' -> 'Componentry')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Kuusi 4P",
+  "row": 3,
+  "topic": "",
+  "text": "Typo fixed on import (warranty: 'Componetry' -> 'Componentry')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Loom 2P (Next Gen)",
+  "row": 4,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Loom 4P (Next Gen)",
+  "row": 5,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: '200W)' -> '200(W)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Loom 4P (Next Gen)",
+  "row": 5,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Tampere 2P (Next Gen)",
+  "row": 7,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Tampere 4P (Next Gen)",
+  "row": 8,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Tampere 4P (Next Gen)",
+  "row": 8,
+  "topic": "",
+  "text": "Typo fixed on import (warranty: 'Componetry' -> 'Componentry')."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-traditional",
+  "product": "Tampere Grand",
+  "row": 9,
+  "topic": "electrical",
+  "text": "`37.5 Amp (dedicated circuit)`: 37.5 A is the heater's load at 240 V, not a standard circuit or breaker size. Confirm the circuit rating to quote customers."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-traditional",
+  "product": "Tampere Plus",
+  "row": 10,
+  "topic": "electrical",
+  "text": "Says `Heater: Harvia Wall 9kw` but power is 6,000 W and the SKU is `R-TR-C6P-H-SW60KW-E`."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Virta 2P",
+  "row": 11,
+  "topic": "",
+  "text": "Typo fixed on import (general: space after 'Temperature:')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Virta 4P",
+  "row": 12,
+  "topic": "",
+  "text": "Typo fixed on import (general: space after 'Temperature:')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Eden 8P",
+  "row": 15,
+  "topic": "",
+  "text": "Typo fixed on import (general: space after 'Temperature:')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-traditional",
+  "product": "Edenview 4P",
+  "row": 16,
+  "topic": "",
+  "text": "Typo fixed on import (general: space after 'Temperature:')."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Aura 2P (Next Gen)",
+  "row": 17,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-infrared",
+  "product": "Aura 2P (Next Gen)",
+  "row": 17,
+  "topic": "specs",
+  "text": "Temperature range 30–70°C; the Infrared information sheet gives a 65°C cut-off and 42–54°C recommended. Confirm the maximum to quote."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Aura 2P (Next Gen)",
+  "row": 17,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Aura 3P (Next Gen)",
+  "row": 18,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-infrared",
+  "product": "Aura 3P (Next Gen)",
+  "row": 18,
+  "topic": "specs",
+  "text": "Temperature range 30–70°C; the Infrared information sheet gives a 65°C cut-off and 42–54°C recommended. Confirm the maximum to quote."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Aura 3P (Next Gen)",
+  "row": 18,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Eclipse 2P",
+  "row": 19,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Kora 2P (Next Gen)",
+  "row": 20,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-infrared",
+  "product": "Kora 2P (Next Gen)",
+  "row": 20,
+  "topic": "specs",
+  "text": "Temperature range 30–70°C; the Infrared information sheet gives a 65°C cut-off and 42–54°C recommended. Confirm the maximum to quote."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Kora 2P (Next Gen)",
+  "row": 20,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Kora 3P (Next Gen)",
+  "row": 21,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-infrared",
+  "product": "Kora 3P (Next Gen)",
+  "row": 21,
+  "topic": "specs",
+  "text": "Temperature range 30–70°C; the Infrared information sheet gives a 65°C cut-off and 42–54°C recommended. Confirm the maximum to quote."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Kora 3P (Next Gen)",
+  "row": 21,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "check",
+  "cat": "sauna-infrared",
+  "product": "Luna 3P (Next Gen)",
+  "row": 22,
+  "topic": "specs",
+  "text": "Temperature range 30–70°C; the Infrared information sheet gives a 65°C cut-off and 42–54°C recommended. Confirm the maximum to quote."
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Luna 3P (Next Gen)",
+  "row": 22,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "gap",
+  "cat": "sauna-infrared",
+  "product": "Noir 2P",
+  "row": 23,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Noir 2P",
+  "row": 23,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "claim",
+  "cat": "sauna-infrared",
+  "product": "Noir 2P",
+  "row": 23,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Nova 2P (Gen 1)",
+  "row": 24,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Nova 3P (Gen 1)",
+  "row": 25,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Nova 2P (Next Gen)",
+  "row": 26,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "conflict",
+  "cat": "sauna-infrared",
+  "product": "Nova 3P (Next Gen)",
+  "row": 27,
+  "topic": "install",
+  "text": "Product says 'Unobstructed Front Access'; the Infrared information sheet gives a 600 mm front clearance. Which should we quote?"
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-hybrid",
+  "product": "NordicWave (Next Gen)",
+  "row": 28,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-hybrid",
+  "product": "Outdoor NordicWave 3P",
+  "row": 29,
+  "topic": "",
+  "text": "Typo fixed on import (dimensions: double space in '(lower bench)')."
+ },
+ {
+  "kind": "fixed",
+  "cat": "sauna-hybrid",
+  "product": "Outdoor NordicWave 3P",
+  "row": 29,
+  "topic": "",
+  "text": "Typo fixed on import (warranty: 'Componetry' -> 'Componentry')."
+ },
+ {
+  "kind": "claim",
+  "cat": "ice-bath",
+  "product": "Edur - Noir Ice Bath Includes Chiller",
+  "row": 32,
+  "topic": "electrical",
+  "text": "Running-cost claim (`Cost p/h`). Confirm the tariff it assumes before it goes live."
+ },
+ {
+  "kind": "gap",
+  "cat": "ice-bath",
+  "product": "Freeze - Mobile Ice Bath",
+  "row": 34,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "ice-bath",
+  "product": "Ice Bath Chiller - Mini 0.5HP",
+  "row": 41,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "conflict",
+  "cat": "ice-bath",
+  "product": "Zero - Ice Making Chiller 1.0HP",
+  "row": 42,
+  "topic": "electrical",
+  "text": "Power 2450 (the sheet gives no unit) is more than a 10 A outlet supplies (2,400 W at 240 V). Confirm the power figure and the outlet needed."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "10kg Harvia Olivine Diabase Sauna Stones",
+  "row": 43,
+  "topic": "specs",
+  "text": "SKU `S-030` doesn't follow the `R-` format. Confirm it is current."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "10kg Harvia Olivine Diabase Sauna Stones",
+  "row": 43,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "10kg Harvia Olivine Diabase Sauna Stones",
+  "row": 43,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "10kg Harvia Olivine Diabase Sauna Stones",
+  "row": 43,
+  "topic": "specs",
+  "text": "No specs on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "20kg Harvia Vulcanite Sauna Stones",
+  "row": 44,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "20kg Harvia Vulcanite Sauna Stones",
+  "row": 44,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Black Cilindro Heater",
+  "row": 45,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "conflict",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Black Wall Heater 4.5kW - SW45E",
+  "row": 46,
+  "topic": "warranty",
+  "text": "The warranty column holds dimensions, not warranty terms. Warranty card not created; terms needed."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Black Wall Heater 9kW - SW90E",
+  "row": 48,
+  "topic": "electrical",
+  "text": "`37.5 Amp (hardwired dedicated circuit)`: 37.5 A is the heater's load at 240 V, not a standard circuit or breaker size. Confirm the circuit rating to quote customers."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Electronic Silver Cilindro Heater",
+  "row": 49,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 4.5kW - SW45",
+  "row": 52,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 6kW - SW60",
+  "row": 53,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 6kW - SW60",
+  "row": 53,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 9KW - SW90",
+  "row": 54,
+  "topic": "specs",
+  "text": "SKU `s-019` doesn't follow the `R-` format. Confirm it is current."
+ },
+ {
+  "kind": "check",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 9KW - SW90",
+  "row": 54,
+  "topic": "electrical",
+  "text": "`37.5 Amp (dedicated circuit)`: 37.5 A is the heater's load at 240 V, not a standard circuit or breaker size. Confirm the circuit rating to quote customers."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Manual Black Wall Heater 9KW - SW90",
+  "row": 54,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "gap",
+  "cat": "heaters-controls",
+  "product": "Harvia Xenio Heater Control Kits - Non Wifi",
+  "row": 56,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "claim",
+  "cat": "red-light",
+  "product": "Helio Red Light & Stand",
+  "row": 58,
+  "topic": "specs",
+  "text": "Says 'Low EMF'. Approved EMF wording needed (see compliance/ EMF cards)."
+ },
+ {
+  "kind": "gap",
+  "cat": "accessories",
+  "product": "Glacier EVA - Headrest",
+  "row": 59,
+  "topic": "specs",
+  "text": "No specs on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "accessories",
+  "product": "Ice Bath Replacement Filter",
+  "row": 63,
+  "topic": "specs",
+  "text": "No specs on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "accessories",
+  "product": "Massage Gun Pro",
+  "row": 73,
+  "topic": "specs",
+  "text": "No specs on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "red-light",
+  "product": "Noir Sauna Redlight",
+  "row": 74,
+  "topic": "warranty",
+  "text": "No warranty terms on the spec sheet."
+ },
+ {
+  "kind": "gap",
+  "cat": "red-light",
+  "product": "Noir Sauna Redlight",
+  "row": 74,
+  "topic": "install",
+  "text": "No product manual linked."
+ },
+ {
+  "kind": "gap",
+  "cat": "red-light",
+  "product": "Ultra Glow Redlight Face Mask",
+  "row": 80,
+  "topic": "install",
+  "text": "No product manual linked."
+ }
+]

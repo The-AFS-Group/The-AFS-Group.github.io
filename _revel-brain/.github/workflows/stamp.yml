@@ -1,0 +1,88 @@
+name: Stamp approval
+
+# After a pull request merges into main, record who approved it and when on every card it
+# changed (status Live, approved_by, approved_on, review_by), then rebuild INDEX.md.
+# Pushes with the STAMP_DEPLOY_KEY deploy key, the only actor the main ruleset lets bypass
+# pull requests. It changes approval fields and INDEX.md only, never card content.
+# If the PR somehow merged without both approvals, nothing is stamped (cards stay
+# "In review", so the chatbot ignores them) and an issue is opened.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+
+concurrency:
+  group: brain-stamp
+  cancel-in-progress: false
+
+jobs:
+  stamp:
+    if: "!startsWith(github.event.head_commit.message, 'Stamp approval')"
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRAIN_INBOX_URL: ${{ secrets.BRAIN_INBOX_URL }}
+      BRAIN_INBOX_STATUS_TOKEN: ${{ secrets.BRAIN_INBOX_STATUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          ssh-key: ${{ secrets.STAMP_DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet pyyaml
+
+      - name: Find the merged pull request
+        id: pr
+        run: |
+          set -euo pipefail
+          NUM=$(gh api "repos/$GITHUB_REPOSITORY/commits/$GITHUB_SHA/pulls" --jq '[.[] | select(.merged_at != null)][0].number // empty')
+          echo "number=$NUM" >> "$GITHUB_OUTPUT"
+          [ -n "$NUM" ] || { echo "Direct push (no PR): index refresh only."; exit 0; }
+          gh pr view "$NUM" --repo "$GITHUB_REPOSITORY" --json headRefOid,body,url,files > pr.json
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$NUM/reviews" --paginate --jq '.[]' | jq -s . > reviews.json
+          python3 scripts/brain.py approvals --reviews reviews.json --head "$(jq -r .headRefOid pr.json)" > result.json
+          cat result.json
+          echo "ok=$(jq -r .ok result.json)" >> "$GITHUB_OUTPUT"
+          echo "approvers=$(jq -r '.approved | join(",")' result.json)" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r .url pr.json)" >> "$GITHUB_OUTPUT"
+          echo "refs=$(jq -r .body pr.json | python3 scripts/pr_refs.py)" >> "$GITHUB_OUTPUT"
+          jq -r '.files[].path' pr.json > files.txt
+
+      - name: Merged without both approvals
+        if: steps.pr.outputs.number != '' && steps.pr.outputs.ok != 'true'
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" --label needs-attention \
+            --title "PR #${{ steps.pr.outputs.number }} merged without both approvals" \
+            --body "The stamp did not mark its cards Live, so the chatbot won't use them. Approve the change in a new PR, or revert. ${{ steps.pr.outputs.url }}"
+
+      - name: Stamp the cards and rebuild the index
+        run: |
+          set -euo pipefail
+          if [ "${{ steps.pr.outputs.ok }}" = "true" ]; then
+            DATE=$(TZ=Australia/Brisbane date +%F)
+            xargs -a files.txt -d '\n' python3 scripts/brain.py stamp --pr "${{ steps.pr.outputs.number }}" \
+              --date "$DATE" --approvers "${{ steps.pr.outputs.approvers }}"
+          fi
+          python3 scripts/brain.py index
+          git config user.name "revel-brain-stamp"
+          git config user.email "revel-brain-stamp@users.noreply.github.com"
+          git add -A cards compliance policies faq internal INDEX.md
+          if git diff --cached --quiet; then echo "Nothing to stamp."; exit 0; fi
+          git commit -q -m "Stamp approval: PR #${{ steps.pr.outputs.number || 'none' }}" \
+            -m "Approved by ${{ steps.pr.outputs.approvers || 'n/a' }}"
+          git push -q origin HEAD:main
+
+      - name: Tell the submitter it's live
+        if: steps.pr.outputs.ok == 'true' && steps.pr.outputs.refs != ''
+        run: scripts/notify_inbox.sh "Live" "${{ steps.pr.outputs.url }}" "Approved by ${{ steps.pr.outputs.approvers }}. The chatbot uses it from the next sync." ${{ steps.pr.outputs.refs }}

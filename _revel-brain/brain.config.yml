@@ -1,0 +1,90 @@
+# Revel Wellness Brain: settings every script and workflow reads.
+# Change values here, not in the scripts.
+
+repo: The-AFS-Group/revel-brain
+timezone: Australia/Brisbane
+
+# Both must approve every pull request (enforced by the brain/dual-approval check).
+# `github` is the GitHub username. scripts/bootstrap.sh fills in placeholders.
+approvers:
+  - name: Tristan Krutz
+    github: TRISTAN_GITHUB_USERNAME
+    checks:
+      - Technical accuracy against the source
+      - Matches current factory spec and SKU
+  - name: Ben Coleman
+    github: benc-revel
+    checks:
+      - Technical accuracy against the source
+      - Brand voice, claims and compliance wording
+      - Fit for customer-facing use (FAQ cards)
+
+review:
+  default_months: 12          # every card is re-checked at least this often
+  warn_days: 30               # flag cards this many days before review_by
+  approval_sla_business_days: 5
+
+# Folder name -> label used on cards. The plan's four categories come first;
+# the last four are proposed additions for products on the spec sheet that
+# don't fit them (see docs/decisions.md).
+categories:
+  sauna-infrared: Sauna Infrared
+  sauna-traditional: Sauna Traditional
+  ice-bath: Ice Bath
+  red-light: Red Light
+  sauna-hybrid: Sauna Hybrid
+  heaters-controls: Heaters & Controls
+  accessories: Accessories
+  bundles: Bundles
+
+# File name -> label. One card per topic per product.
+topics:
+  specs: Specs
+  electrical: Electrical
+  install: Install
+  warranty: Warranty
+  care: Care
+  compliance: Compliance
+  faq: FAQ
+  policy: Policy
+
+markets: [AU, NZ, US]
+statuses: [Draft, In review, Live, Retired]
+audiences: [customer, internal]
+
+# Words that must never appear in a customer-facing card (internal-only detail).
+internal_terms:
+  - supplier
+  - factory price
+  - cost price
+  - landed cost
+  - margin
+  - FOB
+  - EXW
+  - purchase order
+  - MOQ
+
+# Words that need Ben's sign-off on health or medical claims. Flagged, not blocked.
+claim_terms:
+  - cure
+  - cures
+  - treat
+  - treats
+  - treatment
+  - heal
+  - heals
+  - detox
+  - weight loss
+  - burn calories
+  - boosts immunity
+  - immune
+  - anti-ageing
+  - anti-aging
+  - pain relief
+  - reduces inflammation
+  - clinically proven
+
+# Where the Brain Inbox (upload page + tracker sheet) lives.
+inbox:
+  page: https://the-afs-group.github.io/revel-brain-inbox/
+  label: brain-inbox

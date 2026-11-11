@@ -1,0 +1,83 @@
+name: Dual approval
+
+# The merge gate. Reports commit status "brain/dual-approval" (required by the main ruleset):
+# success only when BOTH approvers in brain.config.yml (read from main, never from the PR)
+# have approved the PR's current head commit. Any new commit resets it.
+# Also keeps the Brain Inbox tracker and the submitter up to date.
+
+on:
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review, closed]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: read
+  statuses: write
+
+concurrency:
+  group: brain-approvals-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: false
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number || inputs.pr }}
+      BRAIN_INBOX_URL: ${{ secrets.BRAIN_INBOX_URL }}
+      BRAIN_INBOX_STATUS_TOKEN: ${{ secrets.BRAIN_INBOX_STATUS_TOKEN }}
+    steps:
+      # Config and scripts come from main so a PR can't change who approves.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet pyyaml
+
+      - name: Read the PR and its reviews
+        id: pr
+        run: |
+          set -euo pipefail
+          gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid,state,mergedAt,body,url > pr.json
+          echo "sha=$(jq -r .headRefOid pr.json)" >> "$GITHUB_OUTPUT"
+          echo "state=$(jq -r .state pr.json)" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r .url pr.json)" >> "$GITHUB_OUTPUT"
+          echo "refs=$(jq -r .body pr.json | python3 scripts/pr_refs.py)" >> "$GITHUB_OUTPUT"
+          gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --paginate --jq '.[]' | jq -s . > reviews.json
+          python3 scripts/brain.py approvals --reviews reviews.json --head "$(jq -r .headRefOid pr.json)" > result.json
+          cat result.json
+
+      - name: Report status brain/dual-approval
+        if: steps.pr.outputs.state == 'OPEN'
+        run: |
+          OK=$(jq -r .ok result.json); DESC=$(jq -r .description result.json)
+          if [ "$OK" = "true" ]; then STATE=success; else STATE=pending; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/${{ steps.pr.outputs.sha }}" \
+            -f state="$STATE" -f context="brain/dual-approval" -f description="$DESC" > /dev/null
+          echo "brain/dual-approval: $STATE ($DESC)"
+
+      - name: Update the Brain Inbox tracker
+        if: steps.pr.outputs.refs != ''
+        run: |
+          REFS="${{ steps.pr.outputs.refs }}"
+          URL="${{ steps.pr.outputs.url }}"
+          if [ "${{ steps.pr.outputs.state }}" = "CLOSED" ]; then
+            scripts/notify_inbox.sh "Not accepted" "$URL" "Closed without merging. See the pull request for why." $REFS
+          elif [ "${{ github.event_name }}" = "pull_request_review" ] && [ "${{ github.event.review.state }}" = "changes_requested" ]; then
+            scripts/notify_inbox.sh "Changes requested" "$URL" "An approver asked for changes. Claude is redrafting." $REFS
+          elif [ "${{ github.event_name }}" = "pull_request_review" ]; then
+            scripts/notify_inbox.sh "In review" "$URL" "$(jq -r .description result.json)" $REFS
+          fi

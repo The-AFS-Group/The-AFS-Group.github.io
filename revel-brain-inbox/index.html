@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#485D4D">
+<title>Revel Brain Inbox</title>
+<link rel="icon" href="assets/revel-saunas.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f6f7f5; --panel: #ffffff; --ink: #1f2420; --mut: #5f6a61; --line: #dde3d8;
+  --brand: #485D4D; --brand-dark: #34463a; --sage: #ABB99C; --sel: #e9f4ea;
+  --green: #1d7a36; --greenbg: #e6f5ea; --amber: #8a5d00; --amberbg: #fbf2da;
+  --red: #b3261e; --redbg: #fae9e7; --blue: #1f5c99; --bluebg: #e7f0fa;
+  --radius: 12px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 Montserrat, Arial, sans-serif; }
+a { color: var(--brand); }
+button, input, select, textarea { font: inherit; color: inherit; }
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 64px; }
+
+header { background: var(--panel); border-bottom: 1px solid var(--line); position: sticky; top: 0; z-index: 5; }
+header .wrap { display: flex; align-items: center; gap: 16px; padding-top: 12px; padding-bottom: 12px; }
+header img { height: 34px; width: auto; }
+header h1 { font-size: 17px; font-weight: 600; margin: 0; flex: 1; letter-spacing: .01em; }
+header h1 span { color: var(--mut); font-weight: 500; }
+nav { display: flex; gap: 4px; background: var(--bg); padding: 4px; border-radius: 10px; }
+nav button { border: 0; background: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-weight: 600; color: var(--mut); }
+nav button[aria-selected="true"] { background: var(--panel); color: var(--brand); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; margin-top: 20px; }
+.card h2 { font-size: 20px; margin: 0 0 6px; }
+.lede { color: var(--mut); margin: 0 0 4px; }
+.routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+.route { border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--mut); }
+.route b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
+.route code { display: inline-block; margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; color: var(--brand); background: var(--sel); padding: 2px 6px; border-radius: 4px; user-select: all; }
+
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 22px; }
+.full { grid-column: 1 / -1; }
+label.f { display: block; font-weight: 600; font-size: 13px; margin-bottom: 6px; }
+label.f small { font-weight: 500; color: var(--mut); }
+input[type=text], input[type=email], input[type=password], select, textarea {
+  width: 100%; border: 1px solid #c9d1c4; border-radius: 9px; padding: 10px 12px; background: #fff;
+}
+textarea { min-height: 120px; resize: vertical; }
+input:focus, select:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(72,93,77,.25); outline-offset: 1px; border-color: var(--brand); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips label { border: 1px solid #c9d1c4; border-radius: 999px; padding: 6px 13px; cursor: pointer; font-size: 13px; font-weight: 500; background: #fff; user-select: none; }
+.chips input { position: absolute; opacity: 0; pointer-events: none; }
+.chips input:checked + span { color: #fff; }
+.chips label:has(input:checked) { background: var(--brand); border-color: var(--brand); color: #fff; }
+.chips label:has(input:focus-visible) { outline: 3px solid rgba(72,93,77,.25); }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check input { margin-top: 4px; width: 17px; height: 17px; accent-color: var(--brand); }
+
+.drop { border: 2px dashed #b9c4b2; border-radius: var(--radius); padding: 26px 16px; text-align: center; background: #fbfcfa; cursor: pointer; transition: background .15s, border-color .15s; }
+.drop.over { background: var(--sel); border-color: var(--brand); }
+.drop strong { display: block; font-size: 15px; }
+.drop span { color: var(--mut); font-size: 13px; }
+.files { list-style: none; padding: 0; margin: 10px 0 0; }
+.files li { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 9px; margin-top: 6px; font-size: 14px; background: #fff; }
+.files .n { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.files .s { color: var(--mut); font-size: 12px; white-space: nowrap; }
+.files button { border: 0; background: none; color: var(--red); cursor: pointer; font-size: 13px; padding: 2px 6px; }
+.files .bad { color: var(--red); font-size: 12px; }
+.bar { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; width: 90px; }
+.bar i { display: block; height: 100%; width: 0; background: var(--brand); transition: width .3s; }
+
+.actions { display: flex; gap: 12px; align-items: center; margin-top: 24px; flex-wrap: wrap; }
+.btn { border: 0; border-radius: 10px; padding: 12px 22px; font-weight: 600; cursor: pointer; background: var(--brand); color: #fff; }
+.btn:hover { background: var(--brand-dark); }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn.ghost { background: none; color: var(--brand); border: 1px solid var(--brand); }
+.msg { font-size: 14px; }
+.msg.err { color: var(--red); }
+.note { border-radius: 10px; padding: 10px 14px; font-size: 14px; margin-top: 16px; }
+.note.warn { background: var(--amberbg); color: var(--amber); }
+.note.err { background: var(--redbg); color: var(--red); }
+.note.info { background: var(--bluebg); color: var(--blue); }
+
+.done { text-align: center; padding: 36px 24px; }
+.done .ref { font-size: 34px; font-weight: 700; color: var(--brand); letter-spacing: .02em; margin: 6px 0 10px; }
+.steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 22px 0 6px; text-align: left; }
+.steps div { border-top: 3px solid var(--line); padding-top: 8px; font-size: 13px; color: var(--mut); }
+.steps div.on { border-color: var(--brand); color: var(--ink); }
+.steps b { display: block; font-size: 13px; }
+
+.track-top { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.track-top input { flex: 1; min-width: 200px; }
+table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 14px; }
+th { text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--mut); font-weight: 600; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr.hi td { background: var(--sel); }
+td .sub { color: var(--mut); font-size: 12px; }
+.pill { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.pill.received, .pill.uploading, .pill.sent { background: var(--bluebg); color: var(--blue); }
+.pill.review, .pill.changes { background: var(--amberbg); color: var(--amber); }
+.pill.live { background: var(--greenbg); color: var(--green); }
+.pill.no, .pill.attention { background: var(--redbg); color: var(--red); }
+.pill.nochange { background: #eef0ed; color: var(--mut); }
+.empty { text-align: center; color: var(--mut); padding: 30px 0; }
+[hidden] { display: none !important; }
+
+@media (max-width: 640px) {
+  header .wrap { flex-wrap: wrap; gap: 10px; }
+  header h1 { font-size: 15px; }
+  nav { width: 100%; }
+  nav button { flex: 1; }
+  .card { padding: 18px; }
+  .grid, .routes { grid-template-columns: 1fr; }
+  .steps { grid-template-columns: 1fr 1fr; }
+  thead { display: none; }
+  table, tbody, tr, td { display: block; width: 100%; }
+  tr { border-bottom: 1px solid var(--line); padding: 8px 0; }
+  td { border: 0; padding: 3px 0; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <img src="assets/revel-saunas.svg" alt="Revel">
+    <h1>Brain Inbox <span>· product knowledge</span></h1>
+    <nav role="tablist" aria-label="Brain Inbox">
+      <button role="tab" id="tab-submit" aria-selected="true" aria-controls="v-submit">Submit</button>
+      <button role="tab" id="tab-track" aria-selected="false" aria-controls="v-track">Track</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="setup-note" class="note warn" hidden>Setup needed: the Brain Inbox endpoint isn't set in <code>config.js</code> yet, so nothing can be sent.</div>
+
+  <!-- team code -->
+  <section id="v-code" class="card" hidden>
+    <h2>Enter the team code</h2>
+    <p class="lede">Ask Ben or Tristan for the Brain Inbox code. You only need to enter it once on this device.</p>
+    <form id="code-form" class="actions">
+      <input type="password" id="code" autocomplete="current-password" placeholder="Team code" style="max-width:260px" required>
+      <button class="btn" type="submit">Continue</button>
+      <span id="code-msg" class="msg err" role="alert"></span>
+    </form>
+  </section>
+
+  <!-- submit -->
+  <section id="v-submit" role="tabpanel" aria-labelledby="tab-submit" hidden>
+    <form id="form" class="card" novalidate>
+      <h2>Send something to the Brain</h2>
+      <p class="lede">Spec sheets, tech packs, compliance certificates, manuals, or a correction you spotted. Claude turns it into a Brain card, then Tristan and Ben both approve it before the chatbot uses it. You'll get an email at each step.</p>
+      <div class="routes">
+        <div class="route"><b>Upload here</b>Any number of files, with a note.</div>
+        <div class="route"><b>Email it</b><span id="intake-line">Email the files as attachments.</span></div>
+        <div class="route"><b>Drive folder</b><span id="drop-line">Drop files in the Brain Inbox folder.</span></div>
+      </div>
+
+      <div class="grid">
+        <div>
+          <label class="f" for="name">Your name</label>
+          <input type="text" id="name" autocomplete="name" required>
+        </div>
+        <div>
+          <label class="f" for="email">Your work email <small>(for updates)</small></label>
+          <input type="email" id="email" autocomplete="email" required>
+        </div>
+        <div>
+          <label class="f" for="team">Team</label>
+          <select id="team" required>
+            <option value="">Choose…</option>
+            <option>Sales</option><option>Customer service &amp; warranty</option><option>Marketing</option>
+            <option>Showroom</option><option>Ops &amp; logistics</option><option>Product</option>
+            <option>Offshore team</option><option>Management</option><option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="f" for="product">Product</label>
+          <select id="product"></select>
+          <input type="text" id="product-new" placeholder="Product name or SKU" style="margin-top:8px" hidden>
+        </div>
+        <div class="full">
+          <span class="f" id="topic-label" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px">Topic</span>
+          <div class="chips" role="radiogroup" aria-labelledby="topic-label" id="topics"></div>
+        </div>
+        <div>
+          <label class="f" for="doctype">What are you sending?</label>
+          <select id="doctype">
+            <option>Factory spec sheet</option><option>Tech pack</option><option>Compliance certificate or test report</option>
+            <option>Manual or install guide</option><option>Customer service answers / FAQ</option>
+            <option>Correction (no file)</option><option>Other</option>
+          </select>
+        </div>
+        <div>
+          <span class="f" id="mk-label" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px">Markets it applies to</span>
+          <div class="chips" role="group" aria-labelledby="mk-label">
+            <label><input type="checkbox" name="mk" value="AU" checked><span>AU</span></label>
+            <label><input type="checkbox" name="mk" value="NZ"><span>NZ</span></label>
+            <label><input type="checkbox" name="mk" value="US"><span>US</span></label>
+          </div>
+        </div>
+        <div class="full">
+          <label class="f" for="note">What's new or wrong? <small>(the more specific, the faster it's approved)</small></label>
+          <textarea id="note" placeholder="e.g. New factory spec for the Kora 2P. Power is now 2,100 W, the website still says 1,960 W."></textarea>
+        </div>
+        <div class="full">
+          <span class="f" style="display:block;font-weight:600;font-size:13px;margin-bottom:6px">Files</span>
+          <div class="drop" id="drop" tabindex="0" role="button" aria-label="Add files">
+            <strong>Drop files here or click to choose</strong>
+            <span id="limits">PDF, Excel, Word, images. Up to 25 files, 25 MB each.</span>
+          </div>
+          <input type="file" id="file" multiple hidden>
+          <ul class="files" id="files"></ul>
+        </div>
+        <div class="full">
+          <label class="check"><input type="checkbox" id="confidential"> <span>Contains supplier names, costs, pricing or other commercial-in-confidence detail. It will only go in the Brain's internal section, never in customer answers.</span></label>
+        </div>
+      </div>
+
+      <div id="form-err" class="note err" role="alert" hidden></div>
+      <div class="actions">
+        <button class="btn" type="submit" id="send">Send to the Brain</button>
+        <span id="send-msg" class="msg"></span>
+      </div>
+    </form>
+
+    <div id="done" class="card done" hidden>
+      <p class="lede">Received. Your reference is</p>
+      <div class="ref" id="done-ref">BRAIN-0000</div>
+      <p class="lede">A receipt is on its way to your inbox. We'll email you again when it's in review and when it's live.</p>
+      <div class="steps">
+        <div class="on"><b>1 Received</b>Saved to the Brain Inbox</div>
+        <div><b>2 Drafted</b>Claude writes the card</div>
+        <div><b>3 Approved</b>Tristan and Ben both sign off</div>
+        <div><b>4 Live</b>The chatbot can use it</div>
+      </div>
+      <div class="actions" style="justify-content:center">
+        <button class="btn" id="again" type="button">Send something else</button>
+        <button class="btn ghost" id="to-track" type="button">Track it</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- track -->
+  <section id="v-track" role="tabpanel" aria-labelledby="tab-track" class="card" hidden>
+    <h2>Where's my submission?</h2>
+    <p class="lede">The latest 200 submissions and where each one is in approval.</p>
+    <div class="track-top" style="margin-top:14px">
+      <input type="text" id="filter" placeholder="Filter by ref, name, product or status" aria-label="Filter">
+      <button class="btn ghost" id="refresh" type="button">Refresh</button>
+    </div>
+    <div id="track-msg" class="msg" style="margin-top:10px"></div>
+    <table id="track-table" hidden>
+      <thead><tr><th>Ref</th><th>Product · topic</th><th>From</th><th>Status</th></tr></thead>
+      <tbody id="track-body"></tbody>
+    </table>
+  </section>
+</main>
+
+<script src="config.js"></script>
+<script src="products.js"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.BRAIN_INBOX_CONFIG || {};
+  var PRODUCTS = window.BRAIN_PRODUCTS || [];
+  var MAX_MB = CFG.MAX_FILE_MB || 25, MAX_FILES = CFG.MAX_FILES || 25;
+  var TOPICS = ['Specs', 'Electrical', 'Install', 'Warranty', 'Care', 'Compliance', 'FAQ', 'Policy', 'Not sure'];
+  var $ = function (id) { return document.getElementById(id); };
+  var store = {
+    get: function (k) { try { return localStorage.getItem('brainInbox.' + k); } catch (e) { return null; } },
+    set: function (k, v) { try { localStorage.setItem('brainInbox.' + k, v); } catch (e) { /* private mode */ } },
+    del: function (k) { try { localStorage.removeItem('brainInbox.' + k); } catch (e) { /* ignore */ } }
+  };
+  var code = store.get('code') || '';
+  var files = [];
+  var params = new URLSearchParams(location.search);
+
+  if (!CFG.ENDPOINT) $('setup-note').hidden = false;
+  $('limits').textContent = 'PDF, Excel, Word, images. Up to ' + MAX_FILES + ' files, ' + MAX_MB + ' MB each.';
+
+  /* ---------- API ---------- */
+  function post(body) {
+    return fetch(CFG.ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json(); });
+  }
+  function get(params) {
+    var q = Object.keys(params).map(function (k) { return k + '=' + encodeURIComponent(params[k]); }).join('&');
+    return fetch(CFG.ENDPOINT + (CFG.ENDPOINT.indexOf('?') >= 0 ? '&' : '?') + q).then(function (r) { return r.json(); });
+  }
+  var ERRORS = {
+    bad_code: 'That team code isn\'t right. Check it with Ben or Tristan.',
+    missing_name: 'Add your name.', bad_email: 'Check your email address.',
+    empty: 'Add a note or at least one file.', too_large: 'A file is over the size limit.',
+    expired: 'The upload took too long and timed out. Please send it again.'
+  };
+  function errText(e) { return ERRORS[e] || ('Something went wrong (' + e + '). Try again, or email the files instead.'); }
+
+  /* ---------- views ---------- */
+  function show(view) {
+    var needCode = !code;
+    $('v-code').hidden = !needCode;
+    $('v-submit').hidden = needCode || view !== 'submit';
+    $('v-track').hidden = needCode || view !== 'track';
+    $('tab-submit').setAttribute('aria-selected', String(view === 'submit'));
+    $('tab-track').setAttribute('aria-selected', String(view === 'track'));
+    if (!needCode && view === 'track') loadTrack();
+  }
+  $('tab-submit').onclick = function () { history.replaceState(null, '', location.pathname + location.search); show('submit'); };
+  $('tab-track').onclick = function () { location.hash = 'track'; show('track'); };
+
+  function loadConfig() {
+    if (!CFG.ENDPOINT || !code) return Promise.resolve(true);
+    return get({ action: 'config', code: code }).then(function (j) {
+      if (!j.ok) return false;
+      if (j.intakeAddress) {
+        $('intake-line').innerHTML = 'Send attachments to<br><code></code>';
+        $('intake-line').querySelector('code').textContent = j.intakeAddress;
+      }
+      if (j.dropFolder) {
+        $('drop-line').innerHTML = 'Drop files in the <a target="_blank" rel="noopener">Brain Inbox folder</a>.';
+        $('drop-line').querySelector('a').href = j.dropFolder;
+      }
+      return true;
+    }).catch(function () { return true; });
+  }
+
+  $('code-form').onsubmit = function (e) {
+    e.preventDefault();
+    var c = $('code').value.trim();
+    if (!c) return;
+    $('code-msg').textContent = '';
+    if (!CFG.ENDPOINT) { code = c; store.set('code', c); route(); return; }
+    get({ action: 'config', code: c }).then(function (j) {
+      if (j.ok) { code = c; store.set('code', c); loadConfig(); route(); }
+      else $('code-msg').textContent = errText(j.error);
+    }).catch(function () { $('code-msg').textContent = 'Can\'t reach the Brain Inbox. Check your connection.'; });
+  };
+
+  /* ---------- form setup ---------- */
+  (function buildProducts() {
+    var sel = $('product');
+    var opt = function (v, t) { var o = document.createElement('option'); o.value = v; o.textContent = t || v; return o; };
+    sel.appendChild(opt('', 'Choose a product…'));
+    sel.appendChild(opt('__several', 'Several products / not sure'));
+    sel.appendChild(opt('__all', 'Applies to every product (policy)'));
+    sel.appendChild(opt('__new', 'New product (not on the list)'));
+    var groups = {};
+    PRODUCTS.forEach(function (p) {
+      if (!groups[p.category]) { groups[p.category] = document.createElement('optgroup'); groups[p.category].label = p.category; sel.appendChild(groups[p.category]); }
+      groups[p.category].appendChild(opt(p.name, p.short));
+    });
+    sel.onchange = function () { $('product-new').hidden = sel.value !== '__new'; };
+  })();
+  TOPICS.forEach(function (t, i) {
+    var l = document.createElement('label');
+    l.innerHTML = '<input type="radio" name="topic"><span></span>';
+    l.querySelector('input').value = t;
+    l.querySelector('span').textContent = t;
+    if (t === 'Not sure') l.querySelector('input').checked = true;
+    $('topics').appendChild(l);
+  });
+
+  ['name', 'email', 'team'].forEach(function (k) { var v = store.get(k); if (v) $(k).value = v; });
+
+  // Prefill: ?product=&topic=&note=&markets=AU,NZ&doctype=&channel=ask-claude (used by the Brain chatbot)
+  (function prefill() {
+    var p = params.get('product');
+    if (p) {
+      var match = PRODUCTS.filter(function (x) { return x.name.toLowerCase() === p.toLowerCase() || x.short.toLowerCase() === p.toLowerCase(); })[0];
+      if (match) $('product').value = match.name;
+      else { $('product').value = '__new'; $('product-new').hidden = false; $('product-new').value = p; }
+    }
+    var t = params.get('topic');
+    if (t) document.querySelectorAll('input[name=topic]').forEach(function (r) { r.checked = r.value.toLowerCase() === t.toLowerCase(); });
+    if (params.get('note')) $('note').value = params.get('note');
+    if (params.get('doctype')) $('doctype').value = params.get('doctype');
+    if (params.get('markets')) {
+      var ms = params.get('markets').toUpperCase().split(/[,\s]+/);
+      document.querySelectorAll('input[name=mk]').forEach(function (c) { c.checked = ms.indexOf(c.value) >= 0; });
+    }
+  })();
+
+  /* ---------- files ---------- */
+  function fmt(b) { return b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b / 1024)) + ' KB'; }
+  function uniqueName(n) {
+    var names = files.map(function (f) { return f.name; });
+    if (names.indexOf(n) < 0) return n;
+    var dot = n.lastIndexOf('.'), base = dot > 0 ? n.slice(0, dot) : n, ext = dot > 0 ? n.slice(dot) : '';
+    for (var i = 2; ; i++) if (names.indexOf(base + ' (' + i + ')' + ext) < 0) return base + ' (' + i + ')' + ext;
+  }
+  function addFiles(list) {
+    Array.prototype.forEach.call(list, function (f) {
+      if (files.length >= MAX_FILES) return;
+      files.push({ file: f, name: uniqueName(f.name), bad: f.size > MAX_MB * 1048576 ? 'Over ' + MAX_MB + ' MB: email it or use the Drive folder' : (f.size === 0 ? 'Empty file' : '') });
+    });
+    renderFiles();
+  }
+  function renderFiles() {
+    var ul = $('files');
+    ul.innerHTML = '';
+    files.forEach(function (f, i) {
+      var li = document.createElement('li');
+      li.innerHTML = '<span class="n"></span><span class="s"></span><span class="bar" hidden><i></i></span><button type="button" aria-label="Remove">Remove</button>';
+      li.querySelector('.n').textContent = f.name;
+      li.querySelector('.s').textContent = f.bad ? '' : fmt(f.file.size);
+      if (f.bad) { var b = document.createElement('span'); b.className = 'bad'; b.textContent = f.bad; li.insertBefore(b, li.querySelector('.bar')); }
+      li.querySelector('button').onclick = function () { files.splice(i, 1); renderFiles(); };
+      f.li = li;
+      ul.appendChild(li);
+    });
+  }
+  var drop = $('drop');
+  drop.onclick = function () { $('file').click(); };
+  drop.onkeydown = function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('file').click(); } };
+  $('file').onchange = function () { addFiles(this.files); this.value = ''; };
+  ['dragenter', 'dragover'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.add('over'); }); });
+  ['dragleave', 'drop'].forEach(function (ev) { drop.addEventListener(ev, function (e) { e.preventDefault(); drop.classList.remove('over'); }); });
+  drop.addEventListener('drop', function (e) { if (e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+  function readB64(file) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () { resolve(String(r.result).split(',')[1] || ''); };
+      r.onerror = function () { reject(r.error); };
+      r.readAsDataURL(file);
+    });
+  }
+
+  /* ---------- submit ---------- */
+  function formError(t) { $('form-err').textContent = t; $('form-err').hidden = !t; if (t) $('form-err').scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+
+  $('form').addEventListener('input', function () { if (!$('form-err').hidden) formError(''); });
+  $('form').addEventListener('change', function () { if (!$('form-err').hidden) formError(''); });
+
+  $('form').onsubmit = function (e) {
+    e.preventDefault();
+    formError('');
+    var name = $('name').value.trim(), email = $('email').value.trim(), team = $('team').value;
+    var prodSel = $('product').value;
+    var product = prodSel === '__new' ? $('product-new').value.trim()
+      : prodSel === '__several' ? 'Several products' : prodSel === '__all' ? 'All products' : prodSel;
+    var topic = (document.querySelector('input[name=topic]:checked') || {}).value || 'Not sure';
+    var markets = Array.prototype.map.call(document.querySelectorAll('input[name=mk]:checked'), function (c) { return c.value; });
+    var note = $('note').value.trim();
+    var good = files.filter(function (f) { return !f.bad; });
+    if (!name) return formError('Add your name.');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return formError('Add your work email so we can send you updates.');
+    if (!team) return formError('Choose your team.');
+    if (!note && !good.length) return formError('Add a note or at least one file.');
+    if (files.some(function (f) { return f.bad; })) return formError('Remove the files marked in red first.');
+    if (!CFG.ENDPOINT) return formError('The Brain Inbox isn\'t connected yet (setup needed). Email the files to Ben or Tristan for now.');
+    store.set('name', name); store.set('email', email); store.set('team', team);
+
+    var btn = $('send');
+    btn.disabled = true;
+    var msg = $('send-msg');
+    msg.className = 'msg';
+    msg.textContent = 'Starting…';
+    var ref, key;
+    post({ action: 'begin', code: code, submission: { name: name, email: email, team: team, product: product, topic: topic,
+      docType: $('doctype').value, markets: markets, note: note, confidential: $('confidential').checked,
+      fileCount: good.length, channel: params.get('channel') || '' } })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error);
+        ref = j.ref; key = j.key;
+        return good.reduce(function (p, f, i) {
+          return p.then(function () {
+            msg.textContent = 'Uploading ' + (i + 1) + ' of ' + good.length + '…';
+            var bar = f.li.querySelector('.bar');
+            bar.hidden = false;
+            bar.firstChild.style.width = '15%';
+            return readB64(f.file).then(function (data) {
+              bar.firstChild.style.width = '45%';
+              return sendFile(ref, key, f, data, 0);
+            }).then(function () { bar.firstChild.style.width = '100%'; });
+          });
+        }, Promise.resolve());
+      })
+      .then(function () {
+        msg.textContent = 'Finishing…';
+        return post({ action: 'finish', code: code, ref: ref, key: key });
+      })
+      .then(function (j) {
+        if (!j.ok) throw new Error(j.error);
+        btn.disabled = false;
+        msg.textContent = '';
+        $('done-ref').textContent = j.ref;
+        $('form').hidden = true;
+        $('done').hidden = false;
+        window.scrollTo(0, 0);
+        lastRef = j.ref;
+      })
+      .catch(function (err) {
+        btn.disabled = false;
+        msg.textContent = '';
+        if (String(err.message) === 'bad_code') { store.del('code'); code = ''; show('submit'); }
+        formError(errText(err.message || 'network') + (ref ? ' (Partly sent as ' + ref + '.)' : ''));
+      });
+  };
+
+  function sendFile(ref, key, f, data, attempt) {
+    return post({ action: 'upload', code: code, ref: ref, key: key, name: f.name, mime: f.file.type || 'application/octet-stream', data: data })
+      .then(function (j) {
+        if (j.ok) return;
+        if (j.permanent || attempt >= 2) throw new Error(j.error);
+        return sendFile(ref, key, f, data, attempt + 1);
+      }, function (e) {
+        if (attempt >= 2) throw e;
+        return new Promise(function (r) { setTimeout(r, 1500 * (attempt + 1)); }).then(function () { return sendFile(ref, key, f, data, attempt + 1); });
+      });
+  }
+
+  var lastRef = '';
+  $('again').onclick = function () {
+    files = []; renderFiles();
+    $('note').value = ''; $('confidential').checked = false; $('product').value = ''; $('product-new').hidden = true;
+    document.querySelectorAll('input[name=topic]').forEach(function (r) { r.checked = r.value === 'Not sure'; });
+    $('done').hidden = true; $('form').hidden = false;
+  };
+  $('to-track').onclick = function () { location.hash = 'track=' + lastRef; show('track'); };
+
+  /* ---------- track ---------- */
+  var rows = [];
+  var PILL = { 'Uploading': 'uploading', 'Received': 'received', 'Sent to Claude': 'sent', 'In review': 'review',
+    'Changes requested': 'changes', 'Live': 'live', 'Not accepted': 'no', 'Needs attention': 'attention', 'No change needed': 'nochange' };
+  function loadTrack() {
+    if (!CFG.ENDPOINT) { $('track-msg').textContent = 'The Brain Inbox isn\'t connected yet.'; return; }
+    $('track-msg').textContent = 'Loading…';
+    get({ action: 'track', code: code }).then(function (j) {
+      if (!j.ok) { $('track-msg').textContent = errText(j.error); return; }
+      rows = j.rows || [];
+      var m = location.hash.match(/track=(BRAIN-\d+)/);
+      if (m && !$('filter').value) $('filter').value = m[1];
+      renderTrack();
+    }).catch(function () { $('track-msg').textContent = 'Can\'t reach the Brain Inbox. Check your connection.'; });
+  }
+  function renderTrack() {
+    var q = $('filter').value.trim().toLowerCase();
+    var hi = (location.hash.match(/track=(BRAIN-\d+)/) || [])[1];
+    var list = rows.filter(function (r) {
+      return !q || [r.ref, r.name, r.product, r.topic, r.status, r.channel].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    var tb = $('track-body');
+    tb.innerHTML = '';
+    list.forEach(function (r) {
+      var tr = document.createElement('tr');
+      if (r.ref === hi) tr.className = 'hi';
+      tr.innerHTML = '<td><b class="r"></b><div class="sub d"></div></td><td><span class="p"></span><div class="sub t"></div></td>' +
+        '<td><span class="w"></span><div class="sub c"></div></td><td><span class="pill"></span><div class="sub u"></div></td>';
+      tr.querySelector('.r').textContent = r.ref;
+      tr.querySelector('.d').textContent = r.received;
+      tr.querySelector('.p').textContent = r.product || 'Product to identify';
+      tr.querySelector('.t').textContent = r.topic + (r.files ? ' · ' + r.files + ' file' + (r.files > 1 ? 's' : '') : '');
+      tr.querySelector('.w').textContent = r.name;
+      tr.querySelector('.c').textContent = r.channel;
+      var pill = tr.querySelector('.pill');
+      pill.textContent = r.status;
+      pill.className = 'pill ' + (PILL[r.status] || 'received');
+      tr.querySelector('.u').textContent = (r.updated ? r.updated + (r.note ? ': ' : '') : '') + (r.note || '');
+      tb.appendChild(tr);
+    });
+    $('track-table').hidden = !list.length;
+    $('track-msg').textContent = list.length ? '' : (rows.length ? 'Nothing matches that filter.' : 'Nothing submitted yet.');
+  }
+  $('filter').oninput = renderTrack;
+  $('refresh').onclick = loadTrack;
+
+  /* ---------- start ---------- */
+  function route() { show(/^#track/.test(location.hash) ? 'track' : 'submit'); }
+  window.addEventListener('hashchange', route);
+  loadConfig().then(function (ok) {
+    if (!ok) { store.del('code'); code = ''; }
+    route();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+name: Draft from the Brain Inbox
+
+# Every capture route (upload page, email, Drive drop folder, review-due list) ends as an issue
+# labelled "brain-inbox". This workflow has Claude Code draft the cards and opens a pull request
+# for Tristan and Ben. Claude runs with file tools only: no git, no GitHub token, no network
+# tools. The deterministic steps after it check, commit and open the PR.
+#
+# Secrets: ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN), BRAIN_INBOX_URL, BRAIN_INBOX_STATUS_TOKEN.
+
+on:
+  issues:
+    types: [opened, labeled]
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: Brain Inbox issue number to draft
+        required: true
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  actions: write
+  statuses: write
+
+concurrency:
+  group: brain-draft-${{ github.event.issue.number || inputs.issue }}
+  cancel-in-progress: false
+
+jobs:
+  # GitHub can send both "opened" and "labeled" for one new issue. Runs for the same issue
+  # queue on the concurrency group above, so the second one sees "drafted" here and stops.
+  gate:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (contains(github.event.issue.labels.*.name, 'brain-inbox') &&
+       (github.event.action == 'opened' || github.event.label.name == 'brain-inbox'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    outputs:
+      go: ${{ steps.check.outputs.go }}
+    steps:
+      - id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ github.event.issue.number || inputs.issue }}
+        run: |
+          LABELS=$(gh issue view "$ISSUE" --repo "$GITHUB_REPOSITORY" --json labels,state --jq '[.state] + [.labels[].name] | join(",")')
+          echo "Issue #$ISSUE: $LABELS"
+          if [ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ] && { [[ ",$LABELS," == *",drafted,"* ]] || [[ "$LABELS" == CLOSED* ]]; }; then
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+  draft:
+    needs: gate
+    if: needs.gate.outputs.go == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      ISSUE: ${{ github.event.issue.number || inputs.issue }}
+      BRAIN_INBOX_URL: ${{ secrets.BRAIN_INBOX_URL }}
+      BRAIN_INBOX_STATUS_TOKEN: ${{ secrets.BRAIN_INBOX_STATUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Read the request and pick the branch
+        id: req
+        run: |
+          set -euo pipefail
+          mkdir -p .brain
+          gh issue view "$ISSUE" --repo "$GITHUB_REPOSITORY" --json number,title,body,labels,url > .brain/issue.json
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, re
+          i = json.load(open(".brain/issue.json"))
+          body = i.get("body") or ""
+          m = re.search(r"<!--\s*brain-inbox\s+ref=(BRAIN-\d+)\s+branch=([\w./-]+)\s*-->", body)
+          ref = m.group(1) if m else ""
+          branch = m.group(2) if m else f"draft/issue-{i['number']}"
+          labels = ",".join(l["name"] for l in i.get("labels", []))
+          open(".brain/request.md", "w").write(
+              f"# Request: {i['title']}\n\nIssue #{i['number']}: {i['url']}\nLabels: {labels}\n"
+              f"Source folder: sources/inbox/{ref}/\n\n{body}\n" if ref else
+              f"# Request: {i['title']}\n\nIssue #{i['number']}: {i['url']}\nLabels: {labels}\n"
+              f"Source folder: none (text-only request)\n\n{body}\n")
+          print(f"ref={ref}")
+          print(f"branch={branch}")
+          print(f"faq={'true' if 'faq-candidate' in labels.split(',') else 'false'}")
+          print(f"review={'true' if 'review-due' in labels.split(',') else 'false'}")
+          PY
+
+      - name: Check out the working branch
+        run: |
+          set -euo pipefail
+          B="${{ steps.req.outputs.branch }}"
+          if git ls-remote --exit-code --heads origin "$B" > /dev/null; then
+            git fetch --quiet origin "$B" && git checkout -q -B "$B" "origin/$B"
+          else
+            git checkout -q -B "$B" origin/main
+          fi
+          git fetch --quiet origin main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          pip install --quiet pyyaml openpyxl python-docx
+          sudo apt-get -qq update && sudo apt-get -qq install -y poppler-utils > /dev/null
+          npm install -g --silent @anthropic-ai/claude-code
+
+      - name: Extract text from the submitted files
+        run: |
+          REF="${{ steps.req.outputs.ref }}"
+          if [ -n "$REF" ] && [ -d "sources/inbox/$REF" ]; then
+            python3 scripts/extract_text.py --out .brain/work "sources/inbox/$REF"
+          else
+            python3 scripts/extract_text.py --out .brain/work
+          fi
+
+      - name: Claude drafts the cards
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          claude -p "$(cat .github/prompts/draft.md)" \
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(python3 scripts/brain.py:*)" \
+            --permission-mode acceptEdits \
+            --max-turns 80 > .brain/claude.log 2>&1 || { tail -n 40 .brain/claude.log; exit 1; }
+          tail -n 20 .brain/claude.log
+
+      - name: Run the checks
+        run: |
+          set +e
+          python3 scripts/brain.py validate --base origin/main --md .brain/validate.md
+          python3 scripts/brain.py conflicts --allow-in-review --md .brain/conflicts.md
+          exit 0
+
+      - name: Commit and push
+        id: push
+        run: |
+          set -euo pipefail
+          git config user.name "revel-brain-bot"
+          git config user.email "revel-brain-bot@users.noreply.github.com"
+          git add -A cards compliance policies faq internal sources
+          if git diff --cached --quiet && [ "$(git rev-list --count origin/main..HEAD)" = "0" ]; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          TITLE=$(head -n1 .brain/pr-title.txt 2>/dev/null || echo "Brain update from issue #$ISSUE")
+          git diff --cached --quiet || git commit -q -m "$TITLE" -m "Drafted by Claude from #$ISSUE"
+          git push -q "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${{ steps.req.outputs.branch }}"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Nothing to change
+        if: steps.push.outputs.changed == 'false'
+        run: |
+          SUMMARY=$(cat .brain/summary.txt 2>/dev/null || echo "Already covered by the Brain; no change needed.")
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "No card changes needed. $SUMMARY"
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --add-label drafted,no-change
+          gh issue close "$ISSUE" --repo "$GITHUB_REPOSITORY" --reason "not planned"
+          [ -z "${{ steps.req.outputs.ref }}" ] || scripts/notify_inbox.sh "No change needed" "" "$SUMMARY" "${{ steps.req.outputs.ref }}"
+
+      - name: Open or update the pull request
+        id: pr
+        if: steps.push.outputs.changed == 'true'
+        run: |
+          set -euo pipefail
+          REF="${{ steps.req.outputs.ref }}"
+          B="${{ steps.req.outputs.branch }}"
+          {
+            cat .brain/pr-body.md 2>/dev/null || echo "Claude did not write a summary. Check the diff."
+            echo
+            echo "---"
+            echo
+            if [ -n "$REF" ]; then echo "**Source files:** [sources/inbox/$REF]($GITHUB_SERVER_URL/$GITHUB_REPOSITORY/tree/$B/sources/inbox/$REF)"; echo; fi
+            echo "Closes #$ISSUE"
+            echo
+            cat .brain/validate.md .brain/conflicts.md 2>/dev/null || true
+            echo
+            python3 scripts/brain.py checklist
+            [ -z "$REF" ] || echo "<!-- brain-refs: $REF -->"
+          } > .brain/pr.md
+          LABELS="brain-draft"
+          [ "${{ steps.req.outputs.faq }}" != "true" ] || LABELS="$LABELS,faq-candidate"
+          [ "${{ steps.req.outputs.review }}" != "true" ] || LABELS="$LABELS,review-due"
+          EXISTING=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$B" --state open --json number --jq '.[0].number // empty')
+          TITLE=$(head -n1 .brain/pr-title.txt 2>/dev/null || echo "Brain update from issue #$ISSUE")
+          if [ -n "$EXISTING" ]; then
+            gh pr edit "$EXISTING" --repo "$GITHUB_REPOSITORY" --title "$TITLE" --body-file .brain/pr.md
+            NUM=$EXISTING
+          else
+            URL=$(gh pr create --repo "$GITHUB_REPOSITORY" --base main --head "$B" --title "$TITLE" --body-file .brain/pr.md --label "$LABELS")
+            NUM=${URL##*/}
+          fi
+          echo "number=$NUM" >> "$GITHUB_OUTPUT"
+          echo "url=$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/pull/$NUM" >> "$GITHUB_OUTPUT"
+          # Bot-made PRs don't fire pull_request events, so start the checks explicitly.
+          gh workflow run brain-checks.yml --repo "$GITHUB_REPOSITORY" -f pr="$NUM"
+          gh workflow run approvals.yml --repo "$GITHUB_REPOSITORY" -f pr="$NUM"
+
+      - name: Tell the submitter and the approvers
+        if: steps.push.outputs.changed == 'true'
+        run: |
+          URL="${{ steps.pr.outputs.url }}"
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "Draft ready for approval: $URL"
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --add-label drafted
+          SUMMARY=$(cat .brain/summary.txt 2>/dev/null || echo "Draft ready for approval.")
+          [ -z "${{ steps.req.outputs.ref }}" ] || scripts/notify_inbox.sh "In review" "$URL" "$SUMMARY" "${{ steps.req.outputs.ref }}"
+
+      - name: Flag a failed run
+        if: failure()
+        run: |
+          RUN="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          gh issue comment "$ISSUE" --repo "$GITHUB_REPOSITORY" --body "Drafting failed. Run log: $RUN. Re-run it from the Actions tab, or remove and re-add the brain-inbox label." || true
+          gh issue edit "$ISSUE" --repo "$GITHUB_REPOSITORY" --add-label needs-attention || true
+          [ -z "${{ steps.req.outputs.ref }}" ] || scripts/notify_inbox.sh "Needs attention" "$RUN" "Drafting hit a problem; Ben and Tristan have been told." "${{ steps.req.outputs.ref }}" || true

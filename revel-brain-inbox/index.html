@@ -40,7 +40,7 @@ nav button[aria-selected="true"] { background: var(--panel); color: var(--brand)
 .routes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
 .route { border: 1px solid var(--line); border-radius: 10px; padding: 12px; font-size: 13px; color: var(--mut); }
 .route b { display: block; color: var(--ink); font-size: 14px; margin-bottom: 2px; }
-.route code { display: inline-block; margin-top: 4px; font-size: 12px; overflow-wrap: anywhere; color: var(--brand); background: var(--sel); padding: 2px 6px; border-radius: 4px; user-select: all; }
+.route code { display: inline-block; margin-top: 4px; font-size: 12px; overflow-wrap: break-word; color: var(--brand); background: var(--sel); padding: 2px 6px; border-radius: 4px; user-select: all; }
 
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 18px; margin-top: 22px; }
 .full { grid-column: 1 / -1; }
@@ -319,7 +319,9 @@ td .sub { color: var(--mut); font-size: 12px; }
       if (!j.ok) return false;
       if (j.intakeAddress) {
         $('intake-line').innerHTML = 'Send attachments to<br><code></code>';
-        $('intake-line').querySelector('code').textContent = j.intakeAddress;
+        var at = j.intakeAddress.indexOf('@'), c = $('intake-line').querySelector('code');
+        c.appendChild(document.createTextNode(at > 0 ? j.intakeAddress.slice(0, at + 1) : j.intakeAddress));
+        if (at > 0) { c.appendChild(document.createElement('wbr')); c.appendChild(document.createTextNode(j.intakeAddress.slice(at + 1))); }
       }
       if (j.dropFolder) {
         $('drop-line').innerHTML = 'Drop files in the <a target="_blank" rel="noopener">Brain Inbox folder</a>.';

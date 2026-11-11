@@ -1,0 +1,128 @@
+name: Redraft on requested changes
+
+# When Tristan or Ben submits a review with "Request changes" (or comments "/redraft" on the PR),
+# Claude redrafts on the same branch using their comments. The new commit resets approvals.
+
+on:
+  pull_request_review:
+    types: [submitted]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  actions: write
+  statuses: write
+
+concurrency:
+  group: brain-redraft-${{ github.event.pull_request.number || github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  redraft:
+    if: >-
+      (github.event_name == 'pull_request_review' && github.event.review.state == 'changes_requested') ||
+      (github.event_name == 'issue_comment' && github.event.issue.pull_request && startsWith(github.event.comment.body, '/redraft'))
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number || github.event.issue.number }}
+      ACTOR: ${{ github.event.review.user.login || github.event.comment.user.login }}
+      BRAIN_INBOX_URL: ${{ secrets.BRAIN_INBOX_URL }}
+      BRAIN_INBOX_STATUS_TOKEN: ${{ secrets.BRAIN_INBOX_STATUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet pyyaml openpyxl python-docx
+
+      - name: Only the approvers can trigger a redraft
+        run: |
+          python3 - <<'PY'
+          import os, sys, yaml
+          cfg = yaml.safe_load(open("brain.config.yml"))
+          ok = os.environ["ACTOR"].lower() in [str(a["github"]).lower() for a in cfg["approvers"]]
+          print("approver" if ok else "not an approver: skipping")
+          sys.exit(0 if ok else 1)
+          PY
+
+      - name: Check out the PR branch and gather the comments
+        id: pr
+        run: |
+          set -euo pipefail
+          gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefName,headRepositoryOwner,body,url,files > pr.json
+          B=$(jq -r .headRefName pr.json)
+          [ "$(jq -r .headRepositoryOwner.login pr.json)" = "${GITHUB_REPOSITORY%%/*}" ] || { echo "PR from a fork: not redrafting"; exit 1; }
+          git fetch --quiet origin "$B" main && git checkout -q -B "$B" "origin/$B"
+          mkdir -p .brain
+          {
+            echo "# Review comments on PR #$PR"
+            echo
+            echo "## Cards in this PR"
+            jq -r '.files[].path' pr.json | sed 's/^/- /'
+            echo
+            echo "## Review summaries"
+            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/reviews" --paginate --jq '.[] | select(.body != "") | "- \(.user.login) (\(.state)): \(.body)"'
+            echo
+            echo "## Line comments"
+            gh api "repos/$GITHUB_REPOSITORY/pulls/$PR/comments" --paginate --jq '.[] | "- \(.user.login) on `\(.path)`: \(.body)"'
+            echo
+            echo "## PR conversation"
+            gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- brain-checks -->") | not) | "- \(.user.login): \(.body)"'
+          } > .brain/request.md
+          echo "branch=$B" >> "$GITHUB_OUTPUT"
+          echo "url=$(jq -r .url pr.json)" >> "$GITHUB_OUTPUT"
+          echo "refs=$(jq -r .body pr.json | python3 scripts/pr_refs.py)" >> "$GITHUB_OUTPUT"
+
+      - name: Install tools and extract source text
+        run: |
+          sudo apt-get -qq update && sudo apt-get -qq install -y poppler-utils > /dev/null
+          npm install -g --silent @anthropic-ai/claude-code
+          DIRS=""
+          for r in ${{ steps.pr.outputs.refs }}; do [ -d "sources/inbox/$r" ] && DIRS="$DIRS sources/inbox/$r"; done
+          python3 scripts/extract_text.py --out .brain/work $DIRS
+
+      - name: Claude redrafts
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          claude -p "$(cat .github/prompts/redraft.md)" \
+            --allowedTools "Read,Write,Edit,Glob,Grep,Bash(python3 scripts/brain.py:*)" \
+            --permission-mode acceptEdits \
+            --max-turns 60 > .brain/claude.log 2>&1 || { tail -n 40 .brain/claude.log; exit 1; }
+          tail -n 20 .brain/claude.log
+
+      - name: Commit, push and update the PR
+        run: |
+          set -euo pipefail
+          git config user.name "revel-brain-bot"
+          git config user.email "revel-brain-bot@users.noreply.github.com"
+          git add -A cards compliance policies faq internal
+          if git diff --cached --quiet; then
+            gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "Redraft made no card changes. $(cat .brain/summary.txt 2>/dev/null)"
+            exit 0
+          fi
+          git commit -q -m "Redraft after review by $ACTOR" -m "$(cat .brain/summary.txt 2>/dev/null || true)"
+          git push -q "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "HEAD:refs/heads/${{ steps.pr.outputs.branch }}"
+          if [ -f .brain/pr-body.md ]; then
+            REFS="${{ steps.pr.outputs.refs }}"
+            { cat .brain/pr-body.md; echo; python3 scripts/brain.py checklist; [ -z "$REFS" ] || echo "<!-- brain-refs: $REFS -->"; } > .brain/pr.md
+            gh pr edit "$PR" --repo "$GITHUB_REPOSITORY" --body-file .brain/pr.md
+          fi
+          gh pr comment "$PR" --repo "$GITHUB_REPOSITORY" --body "Redrafted after @$ACTOR's review. Both approvals are needed again. $(cat .brain/summary.txt 2>/dev/null)"
+          gh workflow run brain-checks.yml --repo "$GITHUB_REPOSITORY" -f pr="$PR"
+          gh workflow run approvals.yml --repo "$GITHUB_REPOSITORY" -f pr="$PR"
+          scripts/notify_inbox.sh "In review" "${{ steps.pr.outputs.url }}" "Redrafted after review; waiting for both approvals again." ${{ steps.pr.outputs.refs }}

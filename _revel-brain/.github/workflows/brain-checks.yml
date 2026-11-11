@@ -1,0 +1,87 @@
+name: Brain checks
+
+# Validates cards and looks for conflicts on every pull request. Reports a commit status
+# "brain/validate" (required by the main ruleset) and a sticky comment on the PR.
+# Bot-made PRs and pushes don't trigger pull_request events, so the drafting workflows
+# start this one with workflow_dispatch (pr=<number>).
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: Pull request number
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+  statuses: write
+
+concurrency:
+  group: brain-checks-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ github.event.pull_request.number || inputs.pr }}
+    steps:
+      - name: Find the PR head
+        id: pr
+        run: |
+          set -euo pipefail
+          read -r SHA BRANCH < <(gh pr view "$PR" --repo "$GITHUB_REPOSITORY" --json headRefOid,headRefName --jq '"\(.headRefOid) \(.headRefName)"')
+          echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+          echo "branch=$BRANCH" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ steps.pr.outputs.sha }}
+          fetch-depth: 0
+          persist-credentials: false
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install --quiet pyyaml
+
+      - name: Validate and check conflicts
+        id: run
+        run: |
+          set +e
+          git fetch --quiet origin main
+          python3 scripts/brain.py validate --base origin/main --md validate.md; v=$?
+          python3 scripts/brain.py conflicts --allow-in-review --md conflicts.md; c=$?
+          cat validate.md conflicts.md >> "$GITHUB_STEP_SUMMARY"
+          if [ $v -ne 0 ] || [ $c -ne 0 ]; then echo "failed=true" >> "$GITHUB_OUTPUT"; else echo "failed=false" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Update the checks comment on the PR
+        if: always()
+        run: |
+          set -euo pipefail
+          { echo "<!-- brain-checks -->"; echo "## Brain checks"; echo; cat validate.md conflicts.md 2>/dev/null || echo "Checks did not run."; } > comment.md
+          ID=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/comments" --paginate --jq '.[] | select(.body | startswith("<!-- brain-checks -->")) | .id' | head -n1)
+          if [ -n "$ID" ]; then
+            gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$ID" -F body=@comment.md > /dev/null
+          else
+            gh api -X POST "repos/$GITHUB_REPOSITORY/issues/$PR/comments" -F body=@comment.md > /dev/null
+          fi
+
+      - name: Report status brain/validate
+        if: always()
+        run: |
+          if [ "${{ steps.run.outputs.failed }}" = "false" ]; then STATE=success; DESC="Cards valid, no conflicts"; else STATE=failure; DESC="Fix the errors listed on the PR"; fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/${{ steps.pr.outputs.sha }}" \
+            -f state="$STATE" -f context="brain/validate" -f description="$DESC" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
+
+      - name: Fail on errors
+        if: steps.run.outputs.failed == 'true'
+        run: exit 1

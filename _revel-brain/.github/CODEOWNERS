@@ -1,0 +1,4 @@
+# Both approvers own every file. GitHub asks both for review on every pull request, and the
+# required "brain/dual-approval" check only passes once BOTH have approved the latest commit.
+# scripts/bootstrap.sh replaces the placeholder with Tristan's GitHub username.
+*  @TRISTAN_GITHUB_USERNAME @benc-revel

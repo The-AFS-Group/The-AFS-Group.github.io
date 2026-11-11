@@ -1,0 +1,44 @@
+---
+id: cards/heaters-controls/harvia-electronic-black-wall-heater-9kw-sw90e/electrical
+title: Harvia Electronic Black Wall Heater 9kW - SW90E · Electrical
+product: Harvia Electronic Black Wall Heater 9kW - SW90E
+skus: [R-H-SW90KW-E]
+category: Heaters & Controls
+topic: Electrical
+markets: [AU]
+audience: customer
+source:
+- {type: Spec sheet, ref: 'Revel Product Spec Sheets.xlsx, Product Specs row 48', date: '2026-11-11'}
+- {type: Product page, ref: 'https://revelsaunas.com.au/products/harvia-electronic-black-wall-heater-9kw-sw90e'}
+- {type: Product manual, ref: 'https://cdn.shopify.com/s/files/1/0802/6279/1481/files/Electric_heater_Harvia_SW45_f0f86663-7888-42e1-86c8-b50a0be46fc4.pdf?v=1762754464'}
+approved_by: []
+approved_on: null
+approval_pr: null
+review_by: null
+status: In review
+---
+
+# Harvia Electronic Black Wall Heater 9kW - SW90E · Electrical
+
+**Product:** Harvia Electronic Black Wall Heater 9kW - SW90E  
+**SKUs:** `R-H-SW90KW-E`  
+**Markets:** AU
+
+## Facts
+
+- **Max Temp:** 110°C
+- **Voltage:** 220 – 240 Volts
+- **Power:** 9000 Watts
+- **Socket:** 37.5 Amp (hardwired dedicated circuit)
+- **Supply Requirements:** Compatible with 3-Phase power supply. May run on Single-Phase power depending on site load and setup (electrician’s assessment required for single-phase compatibility).
+- **Installation:** By a licensed electrician only
+
+## Customer-ready answer
+
+The Harvia Electronic Black Wall Heater 9kW - SW90E draws 9,000 W and needs its own 37.5 amp dedicated circuit. It has no plug and must be hard-wired by a licensed electrician.
+
+## Sources
+
+- Spec sheet: Revel Product Spec Sheets.xlsx, Product Specs row 48 (2026-11-11)
+- Product page: https://revelsaunas.com.au/products/harvia-electronic-black-wall-heater-9kw-sw90e
+- Product manual: https://cdn.shopify.com/s/files/1/0802/6279/1481/files/Electric_heater_Harvia_SW45_f0f86663-7888-42e1-86c8-b50a0be46fc4.pdf?v=1762754464

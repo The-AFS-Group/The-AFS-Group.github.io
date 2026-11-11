@@ -1,0 +1,45 @@
+name: Weekly digest
+
+# Mondays: everything waiting on Tristan and Ben, so approvals don't become the bottleneck.
+# Posted as a GitHub issue assigned to both (GitHub emails them) and emailed through the
+# Brain Inbox. 21:53 UTC Sunday = 7:53am Monday AEST.
+
+on:
+  schedule:
+    - cron: "53 21 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: read
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      BRAIN_INBOX_URL: ${{ secrets.BRAIN_INBOX_URL }}
+      BRAIN_INBOX_STATUS_TOKEN: ${{ secrets.BRAIN_INBOX_STATUS_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pyyaml
+      - name: Build and post the digest
+        run: |
+          set -euo pipefail
+          gh pr list --repo "$GITHUB_REPOSITORY" --state open --limit 200 --json number,title,url,createdAt,labels > prs.json
+          gh issue list --repo "$GITHUB_REPOSITORY" --label brain-inbox --state open --limit 200 --json number,title,url,labels > issues.json
+          python3 scripts/brain.py digest --prs prs.json --issues issues.json --md digest.md
+          for n in $(gh issue list --repo "$GITHUB_REPOSITORY" --label digest --state open --json number --jq '.[].number'); do
+            gh issue close "$n" --repo "$GITHUB_REPOSITORY" --comment "Superseded by this week's digest."
+          done
+          ASSIGN=$(python3 -c 'import yaml;print(",".join(str(a["github"]) for a in yaml.safe_load(open("brain.config.yml"))["approvers"]))')
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "Brain weekly digest · $(TZ=Australia/Brisbane date '+%-d %b %Y')" \
+            --label digest --assignee "$ASSIGN" --body-file digest.md
+          scripts/notify_inbox.sh digest "" "" digest.md

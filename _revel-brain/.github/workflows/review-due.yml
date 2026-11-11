@@ -1,0 +1,41 @@
+name: Review due
+
+# Mondays: finds Live cards whose review date is within 30 days (brain.config.yml > review)
+# and opens one "review-due" inbox issue, which Claude then re-checks into a review PR.
+# 21:41 UTC Sunday = 7:41am Monday AEST.
+
+on:
+  schedule:
+    - cron: "41 21 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: write
+
+jobs:
+  due:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install --quiet pyyaml
+      - name: Open a review issue if cards are due
+        run: |
+          set -euo pipefail
+          python3 scripts/brain.py due --days "$(python3 -c 'import yaml;print(yaml.safe_load(open("brain.config.yml"))["review"]["warn_days"])')" --md due.md --json due.json
+          [ -s due.md ] || { echo "Nothing due."; exit 0; }
+          OPEN=$(gh issue list --repo "$GITHUB_REPOSITORY" --label review-due --state open --json number --jq '.[0].number // empty')
+          if [ -n "$OPEN" ]; then echo "Review issue #$OPEN is still open."; exit 0; fi
+          { echo "These Live cards reach their review date within 30 days. Re-check each against its sources and current factory spec."; echo; cat due.md; } > body.md
+          URL=$(gh issue create --repo "$GITHUB_REPOSITORY" --title "Review due: $(jq length due.json) card(s)" --label review-due,brain-inbox --body-file body.md)
+          # Issues made with GITHUB_TOKEN don't fire the drafting workflow, so start it.
+          gh workflow run draft.yml --repo "$GITHUB_REPOSITORY" -f issue="${URL##*/}"

@@ -7,16 +7,11 @@ window.BR_CONFIG = {
   // sent from the same phone. It can't read anyone else's reports.
   TOKEN: 'br-rXFtaIb5p1yK3ynBdDYcpcl996Dn6U08',
 
-  // Sites staff can choose from. "Other" is added automatically, with a box to type the site.
-  // Use the same names in the Landlords tab of the Sheet so each landlord sees their own sites.
+  // Sites staff can choose from. Use the same names in the Landlords tab of the Sheet
+  // so each landlord sees their own site.
   SITES: [
-    'Head office',
-    'Sydney warehouse',
-    'Sydney showroom',
-    'Melbourne showroom',
-    'Brisbane warehouse',
-    'Adelaide showroom',
-    'Perth showroom'
+    'Arundel EC',
+    'Molendinar Warehouse'
   ],
 
   // What kind of report it is. Staff must pick one.

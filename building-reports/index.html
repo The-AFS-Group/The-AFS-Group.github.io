@@ -77,16 +77,9 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
     <section class="card">
       <h2><span class="n">2</span>Where is it?</h2>
       <p class="lead">The site, then the exact spot so a trade can find it.</p>
-      <div class="grid">
-        <div class="field" id="f-site">
-          <label for="site">Site</label>
-          <select id="site"><option value="">Choose&hellip;</option></select>
-          <div class="err"></div>
-          <div class="field" id="f-site-other" hidden>
-            <input type="text" id="site-other" autocapitalize="words" maxlength="80" placeholder="Which site?" aria-label="Which site?">
-            <div class="err"></div>
-          </div>
-        </div>
+      <div class="stack">
+        <fieldset class="choices" id="f-site"><legend>Site</legend></fieldset>
+        <div class="err" id="site-err"></div>
         <div class="field" id="f-area">
           <label for="area">Where on site <span class="opt">(optional)</span></label>
           <input type="text" id="area" maxlength="160" placeholder="e.g. Loading dock, roller door 2">
@@ -173,10 +166,6 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
   var api = BR.api(CFG);
 
   /* ---------- page setup ---------- */
-  var siteSel = $('site');
-  (CFG.SITES || []).concat(['Other']).forEach(function (s) {
-    var o = document.createElement('option'); o.value = s; o.textContent = s; siteSel.appendChild(o);
-  });
   (CFG.TRADES || []).forEach(function (t) { var o = document.createElement('option'); o.value = t; o.textContent = t; $('trade').appendChild(o); });
 
   function radios(fsId, name, list, cls) {
@@ -189,6 +178,7 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
       fs.appendChild(lab);
     });
   }
+  radios('f-site', 'site', (CFG.SITES || []).map(function (s) { return { name: s }; }));
   radios('f-category', 'category', CFG.CATEGORIES || []);
   radios('f-priority', 'priority', CFG.PRIORITIES || [], function (p) { return p.name === 'Urgent' ? 'urgent' : ''; });
   function radioVal(name) { var r = document.querySelector('input[name="' + name + '"]:checked'); return r ? r.value : ''; }
@@ -196,11 +186,6 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
   setRadio('priority', CFG.DEFAULT_PRIORITY || 'Normal');
   $('photo-lead').textContent = 'Take or add up to ' + MAX + ' photos. Tap one to draw on it: circle the problem, add an arrow or a label.';
 
-  siteSel.addEventListener('change', function () {
-    $('f-site-other').hidden = siteSel.value !== 'Other';
-    if (siteSel.value === 'Other') $('site-other').focus();
-    setErr('f-site', ''); saveDraft();
-  });
 
   /* ---------- remember me + draft ---------- */
   var me = BR.load(ME_KEY, null);
@@ -209,11 +194,7 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
     $('contact').value = me.contact || '';
     setSite(me.site);
   }
-  function setSite(s) {
-    if (!s) return;
-    if ((CFG.SITES || []).indexOf(s) >= 0) { siteSel.value = s; $('f-site-other').hidden = true; }
-    else { siteSel.value = 'Other'; $('site-other').value = s; $('f-site-other').hidden = false; }
-  }
+  function setSite(s) { if (s && (CFG.SITES || []).indexOf(s) >= 0) setRadio('site', s); }
   var voiceUsed = false;
   var draft = BR.load(DRAFT_KEY, null);
   if (draft) {
@@ -228,15 +209,18 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
     if (draft.priority) setRadio('priority', draft.priority);
     voiceUsed = !!draft.voiceUsed;
   }
-  function site() { return siteSel.value === 'Other' ? $('site-other').value.trim() : siteSel.value; }
+  function site() { return radioVal('site'); }
   function saveDraft() {
     BR.save(DRAFT_KEY, { name: $('name').value, contact: $('contact').value, site: site(), area: $('area').value, title: $('title').value, desc: $('desc').value, trade: $('trade').value,
       category: radioVal('category'), priority: radioVal('priority'), voiceUsed: voiceUsed });
   }
-  ['name', 'contact', 'area', 'title', 'desc', 'site-other'].forEach(function (id) { $(id).addEventListener('input', saveDraft); });
+  ['name', 'contact', 'area', 'title', 'desc'].forEach(function (id) { $(id).addEventListener('input', saveDraft); });
   ['trade'].forEach(function (id) { $(id).addEventListener('change', saveDraft); });
   document.querySelectorAll('input[type=radio]').forEach(function (r) {
-    r.addEventListener('change', function () { saveDraft(); if (r.name === 'category') { $('f-category').classList.remove('bad'); $('category-err').textContent = ''; } });
+    r.addEventListener('change', function () {
+      saveDraft();
+      if (r.name === 'category' || r.name === 'site') { $('f-' + r.name).classList.remove('bad'); $(r.name + '-err').textContent = ''; }
+    });
   });
 
   var desc = $('desc');
@@ -266,16 +250,18 @@ main.wrap { padding-top: 22px; padding-bottom: 60px; }
     f.classList.toggle('bad', !!msg);
     var e = f.querySelector('.err'); if (e) e.textContent = msg || '';
   }
-  ['name', 'title', 'site-other'].forEach(function (id) { $(id).addEventListener('input', function () { setErr('f-' + id, ''); }); });
+  ['name', 'title'].forEach(function (id) { $(id).addEventListener('input', function () { setErr('f-' + id, ''); }); });
 
   function validate() {
     var ok = true, first = null;
     function fail(fid, msg, el) { setErr(fid, msg); ok = false; first = first || el; }
-    ['f-name', 'f-site', 'f-site-other', 'f-title'].forEach(function (f) { setErr(f, ''); });
-    $('f-category').classList.remove('bad'); $('category-err').textContent = '';
+    ['f-name', 'f-title'].forEach(function (f) { setErr(f, ''); });
+    ['site', 'category'].forEach(function (n) { $('f-' + n).classList.remove('bad'); $(n + '-err').textContent = ''; });
     if (!$('name').value.trim()) fail('f-name', 'Please add your name', $('name'));
-    if (!siteSel.value) fail('f-site', 'Choose the site', siteSel);
-    else if (siteSel.value === 'Other' && !$('site-other').value.trim()) fail('f-site-other', 'Type the site', $('site-other'));
+    if (!radioVal('site')) {
+      ok = false; $('f-site').classList.add('bad'); $('site-err').textContent = 'Choose the site';
+      first = first || document.querySelector('input[name="site"]');
+    }
     if (!radioVal('category')) {
       ok = false; $('f-category').classList.add('bad'); $('category-err').textContent = 'Choose the type of report';
       first = first || document.querySelector('input[name="category"]');

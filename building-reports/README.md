@@ -1,12 +1,12 @@
 # AFS Building Reports
 
-Staff report building damage, maintenance and site requirements from their phone: typed or spoken, with photos they can mark up. The facilities manager triages each job, books a trade, tracks status, and closes it out with completion photos and the final bill. Landlords see the jobs shared with them and can reply.
+Staff at Arundel EC and Molendinar Warehouse report building damage, maintenance and site requirements from their phone: typed or spoken, with photos they can mark up. The facilities manager triages each job, books a trade, tracks status, and closes it out with completion photos and the final bill. Landlords see the jobs shared with them and can reply.
 
 Everything lands in one Google Sheet. Photos are saved to a Google Drive folder, one folder per job.
 
 | Page | Who uses it | Link |
 |---|---|---|
-| `index.html` | All staff, at any site | `https://the-afs-group.github.io/building-reports/` |
+| `index.html` | Staff at Arundel EC and Molendinar Warehouse | `https://the-afs-group.github.io/building-reports/` |
 | `manage.html` | Facilities manager (manager PIN) | `https://the-afs-group.github.io/building-reports/manage.html` |
 | `landlord.html` | Landlords (their own PIN) | `https://the-afs-group.github.io/building-reports/landlord.html` |
 | `manage.html?demo`, `landlord.html?demo` | Anyone, before setup | Made-up jobs, to show how the pages work |
@@ -21,7 +21,7 @@ Everything lands in one Google Sheet. Photos are saved to a Google Drive folder,
 ## What staff see
 
 1. **About you:** name, and a phone or email (optional). Remembered on their device.
-2. **Where is it?** Site (dropdown, plus Other), and where on site.
+2. **Where is it?** Arundel EC or Molendinar Warehouse, and where on site.
 3. **What's the issue?** Type (Damage, Maintenance or Building requirement), how urgent, a short summary, details (typed or tap **Speak**), and the trade it might need.
 4. **Photos:** up to 8. **Take a photo** opens the camera; **Choose photos** picks from the library. Tapping a photo opens the mark-up editor: draw, arrow, circle and label, in four colours, with undo. Each photo can have a caption.
 
@@ -73,7 +73,7 @@ They don't see staff names or contact details, internal notes, or costs that AFS
    - `NOTIFY_EMAIL`: optional. Who to email when a report comes in or a landlord replies. Comma-separated.
 3. Run `setup` once from the editor and approve the permissions (Sheets, Drive, and sending email). It creates the **Jobs**, **Photos**, **Activity** and **Landlords** tabs and an **AFS Building Reports - Photos** folder next to the Sheet. It's safe to run again.
 4. **Deploy → New deployment → Web app**. Execute as **Me**, access **Anyone**. Copy the `/exec` URL.
-5. In `config.js`, set `ENDPOINT` to that URL. Check the `SITES` list: it's a starting point, so replace it with your real sites.
+5. In `config.js`, set `ENDPOINT` to that URL. `SITES` lists Arundel EC and Molendinar Warehouse; add a site there if one is ever needed.
 6. Add landlords to the **Landlords** tab (see below).
 7. Share the Sheet and the photos folder with whoever needs them in Google Drive.
 8. Commit and publish. After any later change to `Code.gs`, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
@@ -88,7 +88,7 @@ One row per landlord in the **Landlords** tab:
 |---|---|---|
 | `landlord` | `Smith Property Group` | Shown on their page |
 | `pin` | `482913` | Different for each landlord, and not the manager PIN. The column is plain text, so leading zeros are kept. |
-| `sites` | `Sydney warehouse, Sydney showroom` | Comma-separated, spelled exactly as in `config.js`. `*` means every site. |
+| `sites` | `Molendinar Warehouse` | `Arundel EC`, `Molendinar Warehouse`, or both separated by a comma. Spelled exactly as in `config.js`. `*` means every site. |
 | `email` | `facilities@smithproperty.example` | Optional. Used by **Email the landlord**. |
 
 No code change or redeploy is needed. Send them the landlord page link and their PIN.

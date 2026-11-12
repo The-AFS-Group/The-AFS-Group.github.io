@@ -68,8 +68,8 @@ window.BR_DEMO = (function () {
 
   /* ---------- jobs ---------- */
   var landlords = [
-    { name: 'Demo Property Group', pin: 'demo-landlord', sites: ['Sydney showroom', 'Sydney warehouse'], hasEmail: true },
-    { name: 'Demo Holdings', pin: 'demo-2', sites: ['Melbourne showroom'], hasEmail: false }
+    { name: 'Demo Property Group', pin: 'demo-landlord', sites: ['Molendinar Warehouse'], hasEmail: true },
+    { name: 'Demo Holdings', pin: 'demo-2', sites: ['Arundel EC'], hasEmail: false }
   ];
   var jobs = [], photos = [], activity = [], seq = 0;
   function job(o) {
@@ -97,13 +97,13 @@ window.BR_DEMO = (function () {
   }
 
   var j;
-  j = job({ ago: 2 * H, priority: 'Urgent', site: 'Sydney showroom', area: 'Ceiling above the front counter', category: 'Damage', trade: 'Plumbing',
+  j = job({ ago: 2 * H, priority: 'Urgent', site: 'Arundel EC', area: 'Ceiling above the front counter', category: 'Damage', trade: 'Plumbing',
     title: 'Water leaking through the ceiling above the front counter', reporterName: 'Demo Staff A', reporterContact: '0400 000 000', voiceUsed: true,
     description: 'Started dripping around 9 this morning after the rain. Ceiling tile is stained and sagging. We have put a bucket down and moved the display bike away from it.' });
   photo(j, 'report', 'ceiling', 'Stain on the ceiling tile, bigger than yesterday', [470, 330]);
   photo(j, 'report', 'ceiling', 'Drip line onto the counter');
 
-  j = job({ ago: 4 * D, updatedAgo: 6 * H, priority: 'High', site: 'Sydney warehouse', area: 'Loading dock, roller door 2', category: 'Damage', trade: 'Roller doors & dock',
+  j = job({ ago: 4 * D, updatedAgo: 6 * H, priority: 'High', site: 'Molendinar Warehouse', area: 'Loading dock, roller door 2', category: 'Damage', trade: 'Roller doors & dock',
     title: 'Roller door 2 won’t close fully', reporterName: 'Demo Staff B', status: 'Scheduled', responsibility: 'Landlord', sharedWithLandlord: true,
     tradeCompany: 'Demo Doors Pty Ltd', tradeContact: '02 0000 0000', scheduledFor: day(NOW + 2 * D), quote: 1450,
     description: 'Forklift clipped the bottom rail. Door stops about 30cm from the ground so the dock can’t be locked overnight.' });
@@ -116,21 +116,21 @@ window.BR_DEMO = (function () {
   log(j, 2 * D, 'Demo Landlord (Demo Property Group)', 'landlord', 'landlord_comment', 'Approved. Please go ahead with Demo Doors and send the invoice to our accounts team.', true);
   log(j, 6 * H, 'Demo Manager', 'manager', 'status', 'Status: Awaiting approval → Scheduled', true);
 
-  j = job({ ago: 26 * H, site: 'Melbourne showroom', area: 'Back office', category: 'Maintenance', trade: 'Electrical', status: 'Acknowledged', responsibility: 'AFS',
+  j = job({ ago: 26 * H, site: 'Arundel EC', area: 'Back office', category: 'Maintenance', trade: 'Electrical', status: 'Acknowledged', responsibility: 'AFS',
     title: 'Two fluorescent tubes out in the back office', reporterName: 'Demo Staff C' });
   photo(j, 'report', 'light', '', null);
   log(j, 20 * H, 'Demo Manager', 'manager', 'status', 'Status: New → Acknowledged', true);
 
-  j = job({ ago: 6 * D, site: 'Head office', area: 'Kitchen', category: 'Building requirement', trade: 'Carpentry & joinery', status: 'Quoting', responsibility: 'AFS',
+  j = job({ ago: 6 * D, site: 'Arundel EC', area: 'Staff kitchen', category: 'Building requirement', trade: 'Carpentry & joinery', status: 'Quoting', responsibility: 'AFS',
     title: 'Lockable cabinet for first aid supplies', reporterName: 'Demo Staff D', description: 'First aid kit is on an open shelf. Need a wall cabinet that locks, near the kitchen.' });
   log(j, 5 * D, 'Demo Manager', 'manager', 'note', 'Asked two joiners for quotes. Expect them by Friday.', false);
 
-  j = job({ ago: 18 * D, updatedAgo: 9 * D, priority: 'Low', site: 'Brisbane warehouse', area: 'Staff car park', category: 'Maintenance', trade: 'Landscaping & car park',
+  j = job({ ago: 18 * D, updatedAgo: 9 * D, priority: 'Low', site: 'Molendinar Warehouse', area: 'Staff car park', category: 'Maintenance', trade: 'Landscaping & car park',
     title: 'Car park line marking has faded', reporterName: 'Demo Staff E', status: 'On hold' });
   photo(j, 'report', 'floor', 'Bays 1 to 6', null);
   log(j, 9 * D, 'Demo Manager', 'manager', 'note', 'Holding until the landlord’s resurfacing works in March.', false);
 
-  j = job({ ago: 12 * D, updatedAgo: 5 * D, priority: 'High', site: 'Sydney showroom', area: 'Main entrance', category: 'Damage', trade: 'Flooring',
+  j = job({ ago: 12 * D, updatedAgo: 5 * D, priority: 'High', site: 'Molendinar Warehouse', area: 'Office entrance', category: 'Damage', trade: 'Flooring',
     title: 'Cracked floor tile at the entrance: trip hazard', reporterName: 'Demo Staff A', status: 'Completed', responsibility: 'Landlord', sharedWithLandlord: true,
     tradeCompany: 'Demo Tiling', quote: 680, finalCost: 680, invoiceRef: 'INV-2210', completedAt: day(NOW - 5 * D),
     completionNotes: 'Replaced two tiles and regrouted the entrance threshold. Spare tiles left in the store room.' });
@@ -139,20 +139,20 @@ window.BR_DEMO = (function () {
   log(j, 11 * D, 'Demo Manager', 'manager', 'shared', 'Shared with the landlord', true);
   log(j, 5 * D, 'Demo Manager', 'manager', 'status', 'Status: Scheduled → Completed', true);
 
-  j = job({ ago: 30 * D, updatedAgo: 20 * D, site: 'Adelaide showroom', area: 'Treadmill display', category: 'Maintenance', trade: 'Air-con & HVAC',
+  j = job({ ago: 30 * D, updatedAgo: 20 * D, site: 'Arundel EC', area: 'Treadmill display', category: 'Maintenance', trade: 'Air-con & HVAC',
     title: 'Air-con dripping onto the display floor', reporterName: 'Demo Staff F', status: 'Completed', responsibility: 'AFS',
     tradeCompany: 'Demo Cooling', finalCost: 420, invoiceRef: 'DC-5531', paid: true, completedAt: day(NOW - 20 * D), completionNotes: 'Cleared a blocked drain line and cleaned the filters.' });
   photo(j, 'report', 'aircon', 'Drips land on the treadmill deck', [470, 420]);
   photo(j, 'completion', 'aircon', 'Unit serviced, no more drips', null, 20 * D);
 
-  j = job({ ago: 9 * D, updatedAgo: D, site: 'Sydney warehouse', area: 'Packing bench 3', category: 'Building requirement', trade: 'Electrical',
+  j = job({ ago: 9 * D, updatedAgo: D, site: 'Molendinar Warehouse', area: 'Packing bench 3', category: 'Building requirement', trade: 'Electrical',
     title: 'Extra power points at the packing bench', reporterName: 'Demo Staff B', status: 'In progress', responsibility: 'Shared', sharedWithLandlord: true,
     tradeCompany: 'Demo Electrical', quote: 950, scheduledFor: day(NOW - D) });
   photo(j, 'report', 'wall', 'Only two outlets for four label printers', [470, 365]);
   log(j, 8 * D, 'Demo Manager', 'manager', 'shared', 'Shared with the landlord', true);
   log(j, D, 'Demo Manager', 'manager', 'status', 'Status: Scheduled → In progress', true);
 
-  j = job({ ago: 8 * D, updatedAgo: 2 * D, priority: 'Low', site: 'Perth showroom', area: 'Front window', category: 'Maintenance', trade: 'Signage',
+  j = job({ ago: 8 * D, updatedAgo: 2 * D, priority: 'Low', site: 'Arundel EC', area: 'Front window', category: 'Maintenance', trade: 'Signage',
     title: 'Front window signage peeling', reporterName: 'Demo Staff G', status: 'Completed', responsibility: 'AFS', tradeCompany: 'Demo Signs', completedAt: day(NOW - 2 * D) });
   photo(j, 'report', 'sign', 'Top corner lifting', null);
 

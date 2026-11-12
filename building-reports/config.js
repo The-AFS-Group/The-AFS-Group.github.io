@@ -1,7 +1,7 @@
 // Edit this file after deploying the Apps Script (see README.md).
 window.BR_CONFIG = {
   // Apps Script web app URL (ends in /exec). Leave blank to test without sending.
-  ENDPOINT: '',
+  ENDPOINT: 'https://script.google.com/macros/s/AKfycbzz7G5jjH7RpRJLeQog1_I0EgO963SW-UOrF3tQOBqNwYc_dqxttIo9BGRRdYRAEslJwA/exec',
   // Must match SUBMIT_TOKEN in the Apps Script project's Script Properties.
   // This token can only add reports and their photos, and check the status of reports
   // sent from the same phone. It can't read anyone else's reports.

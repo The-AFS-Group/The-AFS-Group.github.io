@@ -76,9 +76,20 @@ They don't see staff names or contact details, internal notes, or costs that AFS
 5. In `config.js`, set `ENDPOINT` to that URL. `SITES` lists Arundel EC and Molendinar Warehouse; add a site there if one is ever needed.
 6. Add landlords to the **Landlords** tab (see below).
 7. Share the Sheet and the photos folder with whoever needs them in Google Drive.
-8. Commit and publish. After any later change to `Code.gs`, use **Deploy → Manage deployments → Edit → New version** so the URL stays the same.
+8. Commit and publish. After any later change to `Code.gs`, follow **Updating the code** below so the URL stays the same.
 
 Until `ENDPOINT` is set, the form shows a red "Setup needed" note and keeps reports only on that device.
+
+To check emails, choose **testEmail** in the function dropdown and click **Run**. It sends a test email to `NOTIFY_EMAIL`, or shows the error if it can't.
+
+### If something doesn't arrive
+
+- **Reports not in the Sheet:** check the Activity tab. Every report adds a `created` row there. If you set this up before 13 November 2026, paste the latest `Code.gs`, run **setup** again, and deploy a new version (see below). Earlier versions put new jobs below 1,000 rows of empty tick boxes, and setup moves them back to the top.
+- **No emails:** run **testEmail**. Each job's history (and the Activity tab) records `Email sent` or `Email failed` with the reason. The manager page's **Links** panel says whether email alerts are on.
+
+### Updating the code
+
+Paste the new `Code.gs` over the old one, save, run **setup**, then **Deploy → Manage deployments → pencil icon → Version: New version → Deploy**. The URL stays the same, so `config.js` doesn't change.
 
 ### Adding a landlord
 

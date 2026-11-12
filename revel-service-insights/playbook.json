@@ -1,10 +1,10 @@
 {
- "generated": "2026-11-11 10:16",
+ "generated": "2026-11-12 11:44",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1107,
+   "calls": 1108,
    "tickets": 502,
    "products": [
     [
@@ -74,9 +74,9 @@
    ],
    "callOutcomes": {
     "R": 0.205,
-    "F": 0.531,
+    "F": 0.532,
     "H": 0.044,
-    "U": 0.22
+    "U": 0.219
    },
    "upsetCallers": 131,
    "whyCallersLeftUpset": [
@@ -191,9 +191,9 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 297,
+     "calls": 298,
      "resolvedOnCall": 0.121,
-     "resolvedOrBooked": 0.818,
+     "resolvedOrBooked": 0.819,
      "upsetTurnedAround": 0.871,
      "endedPositive": 0.356
     },
@@ -568,12 +568,12 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 307,
+   "calls": 308,
    "tickets": 165,
    "products": [
     [
      "Traditional sauna",
-     71
+     72
     ],
     [
      "Ice bath & chiller",
@@ -637,10 +637,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.205,
-    "F": 0.616,
-    "H": 0.033,
-    "U": 0.147
+    "R": 0.208,
+    "F": 0.614,
+    "H": 0.032,
+    "U": 0.146
    },
    "upsetCallers": 38,
    "whyCallersLeftUpset": [
@@ -1493,12 +1493,12 @@
   },
   {
    "issue": "Leaks, timber, doors & glass",
-   "calls": 136,
+   "calls": 137,
    "tickets": 220,
    "products": [
     [
      "Traditional sauna",
-     118
+     119
     ],
     [
      "Infrared sauna",
@@ -1538,11 +1538,11 @@
    "components": [
     [
      "Door & glass",
-     192
+     193
     ],
     [
      "Timber & seals",
-     131
+     132
     ],
     [
      "Roof & shingles",
@@ -1562,12 +1562,12 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.191,
-    "F": 0.507,
-    "H": 0.096,
-    "U": 0.206
+    "R": 0.19,
+    "F": 0.511,
+    "H": 0.095,
+    "U": 0.204
    },
-   "upsetCallers": 29,
+   "upsetCallers": 30,
    "whyCallersLeftUpset": [
     [
      "Waiting too long",
@@ -1628,7 +1628,7 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.897,
+   "upsetTurnedAround": 0.9,
    "solutions": [
     {
      "solution": "Explained how it works",
@@ -1696,11 +1696,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 47,
-     "resolvedOnCall": 0.128,
-     "resolvedOrBooked": 0.723,
-     "upsetTurnedAround": 0.846,
-     "endedPositive": 0.174
+     "calls": 48,
+     "resolvedOnCall": 0.125,
+     "resolvedOrBooked": 0.729,
+     "upsetTurnedAround": 0.857,
+     "endedPositive": 0.17
     },
     {
      "solution": "Refund, credit or return",
@@ -1735,9 +1735,9 @@
     },
     {
      "name": "Matthew Taylor",
-     "calls": 27,
-     "resolvedOnCall": 0.185,
-     "resolvedOrBooked": 0.852
+     "calls": 28,
+     "resolvedOnCall": 0.179,
+     "resolvedOrBooked": 0.857
     },
     {
      "name": "Alice Ternen",

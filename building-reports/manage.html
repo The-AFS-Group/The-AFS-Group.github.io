@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2A44">
+<title>Building Jobs</title>
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/br.css?v=1">
+<style>
+main.wrap { padding-top: 20px; padding-bottom: 70px; }
+.two { display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(260px, 1fr); gap: 16px; align-items: start; }
+.job .main > span { display: block; }
+.links { list-style: none; margin: 0; padding: 0; }
+.links li { padding: 10px 0; border-top: 1px solid var(--line); }
+.links li:first-child { border-top: 0; padding-top: 0; }
+.links b { display: block; color: var(--navy); font-family: var(--head); font-size: 15px; }
+.links .help { display: block; font-size: 13.5px; color: var(--muted); margin: 1px 0 6px; }
+.links .row { display: flex; gap: 6px; flex-wrap: wrap; }
+.dsec .grid { gap: 12px 14px; }
+.dsec label { font-size: 14px; }
+.ll-box { background: var(--tint); border-radius: 10px; padding: 10px 12px; margin-top: 14px; }
+.ll-box .help { font-size: 13.5px; color: var(--muted); margin: 0 0 8px; }
+.ll-box .row, .note-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.edit-report { margin-top: 4px; }
+.edit-report summary { cursor: pointer; color: var(--navy); font-weight: 700; font-size: 14px; padding: 6px 0; }
+.edit-report .grid { margin-top: 8px; }
+.sec-photos { margin-top: 14px; }
+.sec-photos h4 { font-size: 14px; margin: 0 0 8px; }
+.upload-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+.upload-row .msg { font-size: 14px; color: var(--muted); }
+.loading { display: flex; align-items: center; gap: 10px; color: var(--navy); font-weight: 700; padding: 10px 0; }
+.field .bad-note { color: var(--error); font-size: 13px; font-weight: 700; }
+.field.bad input { border-color: var(--error); }
+@media (max-width: 960px) { .two { grid-template-columns: 1fr; } }
+@media (max-width: 520px) {
+  .topbar .right .btn.ghost.small { padding: 0 9px; font-size: 13px; }
+  .topbar .me { width: 100%; }
+}
+@media print {
+  .topbar .right, .filters, .demo-bar, aside, .stats, .dr-foot, .x, .note-form, .upload-row, .tray-btns, .ll-box .row { display: none !important; }
+  body { background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="login" hidden>
+  <img src="assets/afs-group.png" alt="The AFS Group">
+  <h1>Building jobs</h1>
+  <p>For the facilities team.</p>
+  <div class="field"><label for="who">Your name</label><input type="text" id="who" autocomplete="name" maxlength="80"><span class="help">Shown in each job's history.</span></div>
+  <div class="field"><label for="pin">Manager PIN</label><input id="pin" class="pin" type="password" inputmode="numeric" autocomplete="off"></div>
+  <div class="err" id="err"></div>
+  <button class="btn big" id="go">Open jobs</button>
+  <a class="demo" href="?demo">Preview with demo data</a>
+</div>
+
+<div id="app" hidden>
+  <div class="demo-bar" id="demo-bar" hidden>Demo data. These jobs are made up, and changes only last until you reload.</div>
+  <div class="topbar"><div class="wrap wide">
+    <img src="assets/afs-group.png" alt="The AFS Group">
+    <div class="right">
+      <span class="me" id="me"></span>
+      <button class="btn ghost small" id="csv">Download CSV</button>
+      <button class="btn ghost small" id="refresh">Refresh</button>
+      <button class="btn ghost small" id="lock">Lock</button>
+    </div>
+  </div></div>
+  <header class="hero"><div class="wrap wide">
+    <p class="eyebrow">Facilities</p>
+    <h1>Building and maintenance jobs</h1>
+    <div class="meta" id="meta"></div>
+  </div></header>
+
+  <main class="wrap wide">
+    <div class="stats" id="stats"></div>
+    <div class="two">
+      <section class="panel" id="jobs-panel">
+        <h2>Jobs</h2>
+        <p class="sub">Tap a job to update its status, book a trade, add costs and completion photos.</p>
+        <div class="filters">
+          <select id="f-view" aria-label="Which jobs">
+            <option value="open">Open jobs</option>
+            <option value="done">Completed</option>
+            <option value="cancelled">Cancelled</option>
+            <option value="all">All jobs</option>
+          </select>
+          <select id="f-site" aria-label="Site"></select>
+          <select id="f-cat" aria-label="Type"></select>
+          <select id="f-pri" aria-label="Priority"></select>
+          <select id="f-resp" aria-label="Who pays"></select>
+          <select id="f-sort" aria-label="Sort">
+            <option value="priority">Most urgent first</option>
+            <option value="newest">Newest first</option>
+            <option value="oldest">Oldest first</option>
+            <option value="updated">Recently updated</option>
+          </select>
+          <input type="search" id="f-q" placeholder="Search jobs" aria-label="Search jobs">
+          <span class="n" id="f-n"></span>
+        </div>
+        <div class="jobs" id="jobs"></div>
+      </section>
+      <aside>
+        <section class="panel">
+          <h2>Open jobs by site</h2>
+          <p class="sub" id="bars-sub"></p>
+          <div class="bars" id="bars"></div>
+        </section>
+        <section class="panel">
+          <h2>Links</h2>
+          <ul class="links" id="links"></ul>
+        </section>
+      </aside>
+    </div>
+  </main>
+</div>
+<div id="drawer-root"></div>
+
+<script>
+  // Always load the current config.js (GitHub Pages lets browsers keep files for 10 minutes).
+  document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');
+</script>
+<script src="assets/br.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.BR_CONFIG || {};
+  var $ = BR.$, esc = BR.esc;
+  var PIN_KEY = 'br-manager-pin', NAME_KEY = 'br-manager-name';
+  var DEMO = new URLSearchParams(location.search).has('demo');
+  var COST = CFG.COST_NOTE || 'ex GST';
+  var PRIORITIES = (CFG.PRIORITIES || []).map(function (p) { return p.name; });
+  var CATEGORIES = (CFG.CATEGORIES || []).map(function (c) { return c.name; });
+  var MONEY = { quote: 1, finalCost: 1 };
+  var api = null;
+  var state = { data: null, pin: '', name: BR.load(NAME_KEY, ''), quick: '', detail: null, openId: null, dirty: false, busy: false };
+
+  /* ---------- sign in ---------- */
+  function showLogin(msg) {
+    $('app').hidden = true; $('login').hidden = false;
+    $('who').value = state.name || '';
+    $('pin').value = '';
+    $('err').textContent = msg || '';
+    (state.name ? $('pin') : $('who')).focus();
+  }
+  $('go').addEventListener('click', function () {
+    var name = $('who').value.trim(), pin = $('pin').value.trim();
+    if (!name) { $('err').textContent = 'Add your name'; $('who').focus(); return; }
+    if (!pin) { $('err').textContent = 'Enter the PIN'; $('pin').focus(); return; }
+    state.name = name; BR.save(NAME_KEY, name);
+    load(pin, true);
+  });
+  $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('go').click(); });
+  $('who').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('pin').focus(); });
+  $('refresh').addEventListener('click', function () { load(state.pin, 'keep').then(function (ok) { if (ok) BR.toast('Refreshed'); }); });
+  $('lock').addEventListener('click', function () {
+    if (!confirmLeave()) return;
+    closeDrawer(true);
+    BR.session(PIN_KEY, null);
+    state.pin = ''; state.data = null;
+    if (DEMO) location.search = ''; else showLogin();
+  });
+
+  function load(pin, fromLogin) {
+    $('err').textContent = '';
+    return api.get({ action: 'list', pin: pin }).then(function (j) {
+      if (!j.ok) {
+        BR.session(PIN_KEY, null);
+        showLogin(j.error === 'bad_pin' ? 'Wrong PIN' : 'Something went wrong: ' + j.error);
+        return false;
+      }
+      state.pin = pin; BR.session(PIN_KEY, pin);
+      state.data = j;
+      render();
+      if (fromLogin !== 'keep') openFromHash();
+      return true;
+    }).catch(function (e) {
+      if (fromLogin === true || !state.data) showLogin(e && e.message === 'no_endpoint' ? 'Not connected yet: set ENDPOINT in config.js, or preview with demo data.' : 'Could not reach the Sheet. Check your connection.');
+      else BR.toast('Offline: showing the last load');
+      return false;
+    });
+  }
+
+  /* ---------- list ---------- */
+  function jobs() { return (state.data && state.data.jobs) || []; }
+  function byId(id) { return jobs().filter(function (j) { return j.id === id; })[0]; }
+  function rank(list, v) { var i = list.indexOf(v); return i < 0 ? list.length : i; }
+  function fy(d) { return d.getMonth() >= 6 ? d.getFullYear() + 1 : d.getFullYear(); }
+  function landlordPays(j) { return BR.LANDLORD_PAYS.indexOf(j.responsibility) >= 0; }
+
+  var QUICK = {
+    open: { label: 'Open jobs', test: BR.isOpen },
+    fresh: { label: 'New, to triage', test: function (j) { return j.status === 'New'; } },
+    urgent: { label: 'Urgent or high, open', test: function (j) { return BR.isOpen(j) && (j.priority === PRIORITIES[0] || j.priority === PRIORITIES[1]); } },
+    landlord: { label: 'Open, landlord to pay', test: function (j) { return BR.isOpen(j) && landlordPays(j); } },
+    tobill: { label: 'Completed, no final cost', test: function (j) { return j.status === 'Completed' && j.finalCost == null; } }
+  };
+
+  function render() {
+    $('login').hidden = true; $('app').hidden = false;
+    $('demo-bar').hidden = !DEMO;
+    $('me').textContent = 'Signed in as ' + state.name;
+    var all = jobs();
+    $('meta').textContent = all.filter(BR.isOpen).length + ' open · ' + all.length + ' in total · updated ' +
+      new Date().toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
+    renderStats(all);
+    renderBars(all);
+    renderFilters(all);
+    renderLinks();
+    renderJobs();
+  }
+
+  function renderStats(all) {
+    var now = new Date(), thisFy = fy(now), spend = 0, llSpend = 0;
+    all.forEach(function (j) {
+      var d = BR.parse(j.completedAt);
+      if (j.status === 'Completed' && d && fy(d) === thisFy && j.finalCost != null) {
+        spend += Number(j.finalCost); if (landlordPays(j)) llSpend += Number(j.finalCost);
+      }
+    });
+    var tiles = Object.keys(QUICK).map(function (k) {
+      var n = all.filter(QUICK[k].test).length;
+      return '<button type="button" class="stat click' + (state.quick === k ? ' on' : '') + '" data-q="' + k + '" aria-pressed="' + (state.quick === k) + '"><b>' + n + '</b><span>' + QUICK[k].label + '</span></button>';
+    });
+    tiles.push('<div class="stat"><b>' + BR.moneyShort(spend) + '</b><span>Spent FY' + String(thisFy).slice(2) + ' to date</span>' +
+      '<small>' + (llSpend ? BR.moneyShort(llSpend) + ' of it landlord to pay · ' : '') + COST + '</small></div>');
+    $('stats').innerHTML = tiles.join('');
+  }
+  $('stats').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-q]');
+    if (!b) return;
+    state.quick = state.quick === b.dataset.q ? '' : b.dataset.q;
+    if (state.quick) $('f-view').value = state.quick === 'tobill' ? 'done' : 'open';
+    renderStats(jobs()); renderJobs();
+  });
+
+  function renderBars(all) {
+    var m = {};
+    all.filter(BR.isOpen).forEach(function (j) { m[j.site] = (m[j.site] || 0) + 1; });
+    var by = Object.keys(m).map(function (k) { return { name: k, n: m[k] }; }).sort(function (a, b) { return b.n - a.n || a.name.localeCompare(b.name); });
+    var max = by.length ? by[0].n : 1;
+    $('bars-sub').textContent = by.length ? by.length + ' site' + (by.length === 1 ? '' : 's') + ' with open jobs' : '';
+    $('bars').innerHTML = by.length ? by.map(function (b) {
+      return '<div class="bar-row" title="' + esc(b.name + ': ' + b.n + ' open job' + (b.n === 1 ? '' : 's')) + '"><span class="name">' + esc(b.name) + '</span>' +
+        '<span class="track"><span class="fill" style="width:' + (b.n / max * 100).toFixed(1) + '%"></span></span><span class="val">' + b.n + '</span></div>';
+    }).join('') : '<p class="empty-note">No open jobs.</p>';
+  }
+
+  function renderLinks() {
+    var base = location.href.replace(/[?#].*$/, '').replace(/[^\/]*$/, '');
+    var d = state.data || {};
+    var items = [
+      ['Staff report form', 'Share with staff at Arundel EC and Molendinar Warehouse. Works on any phone.', base, true],
+      ['Landlord page', 'Landlords sign in with their own PIN from the Landlords tab.', base + 'landlord.html', true]
+    ];
+    if (d.sheetUrl) items.push(['The spreadsheet', 'Every job, photo and update. Add landlords in the Landlords tab.', d.sheetUrl, false]);
+    if (d.photosUrl) items.push(['Photos folder', 'Every photo, in a folder per job.', d.photosUrl, false]);
+    var ll = (d.landlords || []);
+    $('links').innerHTML = items.map(function (x) {
+      return '<li><b>' + esc(x[0]) + '</b><span class="help">' + esc(x[1]) + '</span><div class="row">' +
+        '<a class="btn ghost small" href="' + esc(x[2]) + '" target="_blank" rel="noopener">Open</a>' +
+        (x[3] ? '<button type="button" class="btn ghost small" data-copy="' + esc(x[2]) + '">Copy link</button>' : '') + '</div></li>';
+    }).join('') + '<li><b>Landlords set up</b><span class="help">' + (ll.length ? ll.map(function (l) { return esc(l.name) + ' (' + esc(l.sites.join(', ')) + ')'; }).join('<br>') : 'None yet. Add a row to the Landlords tab with a name, PIN and sites.') + '</span></li>';
+  }
+  $('links').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-copy]');
+    if (b) BR.copyText(b.dataset.copy).then(function () { BR.toast('Link copied'); }, function () { BR.toast('Couldn’t copy'); });
+  });
+
+  function uniq(list) { var m = {}; list.forEach(function (v) { if (v) m[v] = 1; }); return Object.keys(m); }
+  function fillSelect(el, label, values) {
+    var cur = el.value;
+    el.innerHTML = '<option value="">' + label + '</option>' + values.map(function (v) {
+      var val = Array.isArray(v) ? v[0] : v, txt = Array.isArray(v) ? v[1] : v;
+      return '<option value="' + esc(val) + '"' + (val === cur ? ' selected' : '') + '>' + esc(txt) + '</option>';
+    }).join('');
+  }
+  function renderFilters(all) {
+    fillSelect($('f-site'), 'All sites', uniq(all.map(function (j) { return j.site; })).sort());
+    fillSelect($('f-cat'), 'All types', uniq(CATEGORIES.concat(all.map(function (j) { return j.category; }))));
+    fillSelect($('f-pri'), 'Any priority', uniq(PRIORITIES.concat(all.map(function (j) { return j.priority; }))));
+    fillSelect($('f-resp'), 'Anyone pays', BR.RESPONSIBILITY.map(function (r) { return [r, BR.RESP_LABEL[r]]; }));
+  }
+  ['f-view', 'f-site', 'f-cat', 'f-pri', 'f-resp', 'f-sort'].forEach(function (id) {
+    $(id).addEventListener('change', function () { if (id === 'f-view') { state.quick = ''; renderStats(jobs()); } renderJobs(); });
+  });
+  $('f-q').addEventListener('input', function () { clearTimeout(renderJobs.t); renderJobs.t = setTimeout(renderJobs, 150); });
+
+  function filtered() {
+    var view = $('f-view').value, site = $('f-site').value, cat = $('f-cat').value, pri = $('f-pri').value, resp = $('f-resp').value;
+    var q = $('f-q').value.trim().toLowerCase(), quick = QUICK[state.quick];
+    var list = jobs().filter(function (j) {
+      if (quick && !quick.test(j)) return false;
+      if (view === 'open' && !BR.isOpen(j)) return false;
+      if (view === 'done' && j.status !== 'Completed') return false;
+      if (view === 'cancelled' && j.status !== 'Cancelled') return false;
+      if (site && j.site !== site) return false;
+      if (cat && j.category !== cat) return false;
+      if (pri && j.priority !== pri) return false;
+      if (resp && j.responsibility !== resp) return false;
+      if (q && [j.ref, j.title, j.site, j.area, j.category, j.trade, j.description, j.reporterName, j.tradeCompany, j.invoiceRef, j.status].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    });
+    var sort = $('f-sort').value;
+    list.sort(function (a, b) {
+      if (sort === 'oldest') return String(a.submittedAt).localeCompare(String(b.submittedAt));
+      if (sort === 'updated') return String(b.updatedAt).localeCompare(String(a.updatedAt));
+      if (sort === 'priority') {
+        var d = (BR.isOpen(b) ? 1 : 0) - (BR.isOpen(a) ? 1 : 0) || rank(PRIORITIES, a.priority) - rank(PRIORITIES, b.priority) || (a.status === 'New' ? 0 : 1) - (b.status === 'New' ? 0 : 1);
+        if (d) return d;
+      }
+      return String(b.submittedAt).localeCompare(String(a.submittedAt));
+    });
+    return list;
+  }
+
+  function hl(text, q) {
+    text = String(text == null ? '' : text);
+    if (!q) return esc(text);
+    var lower = text.toLowerCase(), ql = q.toLowerCase(), out = '', i = 0, k;
+    while ((k = lower.indexOf(ql, i)) >= 0) { out += esc(text.slice(i, k)) + '<mark>' + esc(text.slice(k, k + ql.length)) + '</mark>'; i = k + ql.length; }
+    return out + esc(text.slice(i));
+  }
+
+  function renderJobs() {
+    var list = filtered(), q = $('f-q').value.trim(), total = jobs().length;
+    $('f-n').textContent = list.length + ' shown';
+    $('jobs').innerHTML = list.length ? list.map(function (j) {
+      var side = [BR.statusBadge(j.status)];
+      if (j.status === 'Scheduled' && j.scheduledFor) side.push('<span>Booked ' + esc(BR.fmtDay(j.scheduledFor)) + '</span>');
+      else if (j.status === 'Completed' && j.completedAt) side.push('<span>Done ' + esc(BR.fmtDay(j.completedAt)) + '</span>');
+      else side.push('<span>' + esc(BR.ago(j.submittedAt)) + '</span>');
+      var cost = j.finalCost != null ? j.finalCost : j.quote;
+      if (cost != null) side.push('<span class="cost">' + BR.money(cost) + (j.finalCost == null ? ' quote' : '') + '</span>');
+      var badges = [BR.priorityBadge(j.priority)];
+      if (j.responsibility && j.responsibility !== 'TBC') badges.push(BR.plainBadge(BR.RESP_LABEL[j.responsibility] || j.responsibility));
+      if (j.sharedWithLandlord) badges.push('<span class="badge plain">Landlord can see</span>');
+      var n = (j.photos && j.photos.report) || 0;
+      return '<button type="button" class="job" data-id="' + esc(j.id) + '">' +
+        '<span class="th">' + (j.thumb ? '<img alt="" loading="lazy" src="' + BR.dataUrl(j.thumb) + '">' : BR.ICON.building) + '</span>' +
+        '<span class="main"><span class="ref">' + hl(j.ref, q) + ' · ' + hl(j.site, q) + (n ? ' · ' + n + ' photo' + (n === 1 ? '' : 's') : '') + '</span>' +
+        '<span class="ttl">' + hl(j.title, q) + '</span>' +
+        '<span class="where">' + hl([j.area, j.category, j.trade].filter(String).join(' · '), q) + '</span>' +
+        '<span class="badges">' + badges.join('') + '</span></span>' +
+        '<span class="side">' + side.join('') + '</span></button>';
+    }).join('') : '<p class="none">' + (total ? 'No jobs match those filters.' : 'No reports yet. Share the report form with the sites.') + '</p>';
+  }
+  $('jobs').addEventListener('click', function (e) {
+    var b = e.target.closest('.job');
+    if (b) openJob(b.dataset.id);
+  });
+
+  /* ---------- job detail ---------- */
+  function openFromHash() {
+    var ref = decodeURIComponent(location.hash.slice(1));
+    if (!ref) return;
+    var j = jobs().filter(function (x) { return x.ref === ref || x.id === ref; })[0];
+    if (j) openJob(j.id);
+  }
+
+  function confirmLeave() { return !state.dirty || confirm('You have unsaved changes on this job. Discard them?'); }
+
+  function openJob(id) {
+    if (state.openId && state.openId !== id && !confirmLeave()) return;
+    var j = byId(id);
+    if (!j) return;
+    state.openId = id; state.dirty = false;
+    state.detail = { job: j, photos: null, activity: null };
+    renderDrawer();
+    history.replaceState(null, '', '#' + encodeURIComponent(j.ref));
+    fetchDetail(id);
+  }
+  function fetchDetail(id) {
+    return api.get({ action: 'job', pin: state.pin, id: id }).then(function (d) {
+      if (state.openId !== id) return;
+      if (!d.ok) { BR.toast(d.error === 'bad_pin' ? 'Your PIN has changed. Lock and sign in again.' : 'Couldn’t load the job: ' + d.error); return; }
+      applyDetail(d);
+    }).catch(function () { BR.toast('Couldn’t load the job. Check your connection.'); });
+  }
+  function applyDetail(d) {
+    // Keep the list in step with what the server now holds.
+    var list = jobs();
+    for (var i = 0; i < list.length; i++) {
+      if (list[i].id === d.job.id) {
+        d.job.thumb = list[i].thumb; d.job.completionThumb = list[i].completionThumb;
+        var rp = (d.photos || []).filter(function (p) { return p.kind === 'report' && p.thumb; })[0];
+        if (rp) d.job.thumb = rp.thumb;
+        list[i] = d.job;
+      }
+    }
+    state.detail = d; state.dirty = false;
+    renderDrawer();
+    renderStats(list); renderBars(list); renderJobs();
+  }
+
+  function closeDrawer(force) {
+    if (!force && !confirmLeave()) return;
+    BR.stopMic();
+    state.openId = null; state.detail = null; state.dirty = false;
+    $('drawer-root').innerHTML = '';
+    document.body.classList.remove('noscroll');
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  function opts(list, cur, labels) {
+    if (cur && list.indexOf(cur) < 0) list = list.concat([cur]);
+    return list.map(function (v) { return '<option value="' + esc(v) + '"' + (v === cur ? ' selected' : '') + '>' + esc(labels ? labels[v] || v : v) + '</option>'; }).join('');
+  }
+  function moneyIn(v) { return v == null ? '' : Number(v).toFixed(2); }
+  var fieldN = 0;
+  function field(label, html, cls) {
+    var id = 'fk-' + (++fieldN);
+    return '<div class="field' + (cls ? ' ' + cls : '') + '"><label for="' + id + '">' + label + '</label>' + html.replace('data-k=', 'id="' + id + '" data-k=') + '</div>';
+  }
+
+  var trays = {};
+  function renderDrawer() {
+    var d = state.detail;
+    if (!d) return;
+    var j = d.job, loading = !d.photos;
+    var root = $('drawer-root');
+    var prevScroll = root.querySelector('.dr-body') ? root.querySelector('.dr-body').scrollTop : 0;
+    var keepTray = trays.completion && trays.completion.items();
+    var landlords = ((state.data && state.data.landlords) || []).filter(function (l) {
+      return l.sites.some(function (s) { return s === '*' || s.toLowerCase() === String(j.site).toLowerCase(); });
+    });
+    var reportPhotos = (d.photos || []).filter(function (p) { return p.kind === 'report'; });
+    var donePhotos = (d.photos || []).filter(function (p) { return p.kind === 'completion'; });
+    var missing = Math.max(0, (j.photosExpected || 0) - reportPhotos.length);
+
+    root.innerHTML =
+      '<div class="drawer-bg"></div>' +
+      '<div class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">' +
+      '<div class="dr-head"><div><p class="eyebrow">' + esc(j.ref) + ' · Reported ' + esc(BR.fmtDate(j.submittedAt)) + '</p>' +
+        '<h2 id="dr-title">' + esc(j.title) + '</h2><div class="badges">' + BR.statusBadge(j.status) + BR.priorityBadge(j.priority) + BR.plainBadge(j.category) + '</div></div>' +
+        '<button type="button" class="x" id="dr-x" aria-label="Close">&times;</button></div>' +
+      '<div class="dr-body" id="dr-body">' +
+
+      // Report
+      '<section class="dsec"><h3>The report</h3>' +
+        '<dl class="facts">' +
+          '<dt>Site</dt><dd>' + esc(j.site) + '</dd>' +
+          (j.area ? '<dt>Where</dt><dd>' + esc(j.area) + '</dd>' : '') +
+          '<dt>Type</dt><dd>' + esc(j.category) + (j.trade ? ' · ' + esc(j.trade) : '') + '</dd>' +
+          '<dt>Reported by</dt><dd>' + esc(j.reporterName) + contactLink(j.reporterContact) + (j.voiceUsed ? ' <span class="badge plain">Dictated</span>' : '') + '</dd>' +
+        '</dl>' +
+        (j.description ? '<p class="desc">' + esc(j.description) + '</p>' : '') +
+        (loading ? '<div class="loading"><span class="spinner dark"></span>Loading photos and history…</div>' :
+          (reportPhotos.length ? gallery(reportPhotos, 'report') : '<p class="empty-note">No photos with this report.</p>') +
+          (missing ? '<p class="callout warn">' + missing + ' more photo' + (missing === 1 ? ' is' : 's are') + ' still uploading from the reporter’s phone.</p>' : '')) +
+        '<details class="edit-report"><summary>Correct the report details</summary><div class="grid">' +
+          field('Site', '<select data-k="site">' + opts((CFG.SITES || []).slice(), j.site) + '</select>') +
+          field('Where on site', '<input type="text" data-k="area" maxlength="160" value="' + esc(j.area) + '">') +
+          field('Summary', '<input type="text" data-k="title" maxlength="160" value="' + esc(j.title) + '">', 'full') +
+        '</div></details>' +
+      '</section>' +
+
+      // Manage
+      '<section class="dsec"><h3>Status and trade</h3><div class="grid">' +
+        field('Status', '<select data-k="status">' + opts(BR.STATUSES.slice(), j.status) + '</select>') +
+        field('Priority', '<select data-k="priority">' + opts(PRIORITIES.slice(), j.priority) + '</select>') +
+        field('Type', '<select data-k="category">' + opts(CATEGORIES.slice(), j.category) + '</select>') +
+        field('Trade needed', '<select data-k="trade"><option value="">Not sure</option>' + opts((CFG.TRADES || []).slice(), j.trade) + '</select>') +
+        field('Trade booked', '<input type="text" data-k="tradeCompany" maxlength="120" placeholder="Company or person" value="' + esc(j.tradeCompany) + '">') +
+        field('Trade contact', '<input type="text" data-k="tradeContact" maxlength="160" placeholder="Phone or email" value="' + esc(j.tradeContact) + '">') +
+        field('Scheduled for', '<input type="date" data-k="scheduledFor" value="' + esc(j.scheduledFor) + '">') +
+        field('Quote (' + esc(COST) + ')', '<div class="money-wrap"><input type="text" inputmode="decimal" class="money" data-k="quote" value="' + moneyIn(j.quote) + '" placeholder="0.00"></div>') +
+        field('Who pays', '<select data-k="responsibility">' + opts(BR.RESPONSIBILITY.slice(), j.responsibility, BR.RESP_LABEL) + '</select>', 'full') +
+      '</div>' +
+      '<div class="ll-box">' +
+        '<label class="check"><input type="checkbox" data-k="sharedWithLandlord"' + (j.sharedWithLandlord ? ' checked' : '') + '>Share this job with the landlord</label>' +
+        '<p class="help">' + (landlords.length
+          ? 'Landlord for ' + esc(j.site) + ': ' + landlords.map(function (l) { return esc(l.name) + (l.hasEmail ? '' : ' (no email on file)'); }).join(', ') + '. They see the report, photos, status and messages, and costs only when the landlord pays.'
+          : 'No landlord is set up for ' + esc(j.site) + ' yet. Add one in the Landlords tab of the Sheet.') + '</p>' +
+        '<div class="row"><button type="button" class="btn ghost small" id="email-ll"' + (j.sharedWithLandlord && landlords.some(function (l) { return l.hasEmail; }) ? '' : ' disabled') + '>Email the landlord</button>' +
+        '<button type="button" class="btn ghost small" id="copy-ll">Copy landlord link</button></div>' +
+      '</div></section>' +
+
+      // Completion
+      '<section class="dsec"><h3>Completion and bill</h3><div class="grid">' +
+        field('Completed on', '<input type="date" data-k="completedAt" value="' + esc(j.completedAt) + '">') +
+        field('Final cost (' + esc(COST) + ')', '<div class="money-wrap"><input type="text" inputmode="decimal" class="money" data-k="finalCost" value="' + moneyIn(j.finalCost) + '" placeholder="0.00"></div>') +
+        field('Invoice or bill ref', '<input type="text" data-k="invoiceRef" maxlength="80" value="' + esc(j.invoiceRef) + '">') +
+        '<div class="field"><span class="lbl">&nbsp;</span><label class="check"><input type="checkbox" data-k="paid"' + (j.paid ? ' checked' : '') + '>Bill paid</label></div>' +
+        field('What was done', '<textarea data-k="completionNotes" maxlength="6000" placeholder="Work completed, parts replaced, anything to watch">' + esc(j.completionNotes) + '</textarea>', 'full') +
+      '</div>' +
+      '<div class="sec-photos"><h4>Completion photos</h4>' +
+        (loading ? '' : (donePhotos.length ? gallery(donePhotos, 'completion') : '<p class="empty-note" style="margin-bottom:10px">None yet. Add photos of the finished work.</p>')) +
+        '<div id="done-tray" style="margin-top:10px"></div>' +
+        '<div class="upload-row" id="upload-row" hidden><button type="button" class="btn" id="upload">Upload photos</button><span class="msg" id="upload-msg"></span></div>' +
+      '</div></section>' +
+
+      // Notes + history
+      '<section class="dsec"><h3>Notes and history</h3>' +
+        '<div class="note-form"><div class="field"><div class="label-row"><label for="note">Add a note</label><button type="button" class="mic" id="note-mic" aria-controls="note"></button></div>' +
+        '<textarea id="note" maxlength="4000" placeholder="Internal notes stay with the facilities team. Messages to the landlord show on their page."></textarea><div class="voice-note" id="note-voice" role="status"></div></div>' +
+        '<div class="note-row" style="margin-top:8px"><button type="button" class="btn ghost small" id="add-note">Add internal note</button>' +
+        '<button type="button" class="btn ghost small" id="msg-ll"' + (j.sharedWithLandlord ? '' : ' disabled title="Share the job with the landlord first"') + '>Send to landlord</button></div></div>' +
+        (loading ? '' : timeline(d.activity || [])) +
+      '</section>' +
+      '</div>' +
+      '<div class="dr-foot"><span class="dirty" id="dirty" hidden>Unsaved changes</span>' +
+        (j.status !== 'Completed' ? '<button type="button" class="btn ghost" id="mark-done">Mark completed</button>' : '') +
+        '<button type="button" class="btn" id="save" disabled>Save changes</button></div>' +
+      '</div>';
+    document.body.classList.add('noscroll');
+    $('dr-body').scrollTop = prevScroll;
+
+    root.querySelector('.drawer-bg').addEventListener('click', function () { closeDrawer(); });
+    $('dr-x').addEventListener('click', function () { closeDrawer(); });
+    root.querySelectorAll('[data-k]').forEach(function (el) {
+      el.addEventListener(el.tagName === 'SELECT' || el.type === 'checkbox' || el.type === 'date' ? 'change' : 'input', checkDirty);
+    });
+    root.querySelectorAll('.gallery').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-i]');
+        if (!b) return;
+        var list = (d.photos || []).filter(function (p) { return p.kind === g.dataset.kind; });
+        BR.lightbox(list.map(function (p) {
+          return { id: p.id, thumb: BR.dataUrl(p.thumb), caption: p.caption, label: (p.kind === 'completion' ? 'Completion photo' : 'Reported') + ' · ' + BR.fmtDate(p.uploadedAt) + (p.annotated ? ' · marked up' : '') };
+        }), Number(b.dataset.i), function (it) {
+          return api.get({ action: 'photo', pin: state.pin, id: it.id }).then(function (r) {
+            if (!r.ok) throw new Error(r.error);
+            return { src: BR.dataUrl(r.data, r.mime), url: r.url };
+          });
+        });
+      });
+    });
+
+    trays.completion = BR.Tray($('done-tray'), { max: 8, onChange: syncUpload });
+    if (keepTray && keepTray.length) trays.completion.set(keepTray);
+    syncUpload();
+    $('upload').addEventListener('click', uploadCompletion);
+
+    var note = $('note');
+    BR.mic($('note-mic'), note, { wrap: note.parentNode, note: $('note-voice'), onGrow: function () { BR.autoGrow(note, 90); } });
+    note.addEventListener('input', function () { BR.autoGrow(note, 90); });
+    $('add-note').addEventListener('click', function () { sendNote(false); });
+    $('msg-ll').addEventListener('click', function () { sendNote(true); });
+    $('email-ll').addEventListener('click', emailLandlord);
+    $('copy-ll').addEventListener('click', function () {
+      var url = location.href.replace(/[?#].*$/, '').replace(/[^\/]*$/, '') + 'landlord.html#' + encodeURIComponent(j.ref);
+      BR.copyText(url).then(function () { BR.toast('Landlord link copied'); }, function () { BR.toast('Couldn’t copy'); });
+    });
+    var md = $('mark-done');
+    if (md) md.addEventListener('click', function () {
+      root.querySelector('[data-k="status"]').value = 'Completed';
+      var ca = root.querySelector('[data-k="completedAt"]');
+      if (!ca.value) ca.value = BR.todayISO();
+      checkDirty();
+      var fc = root.querySelector('[data-k="finalCost"]');
+      fc.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      setTimeout(function () { fc.focus({ preventScroll: true }); }, 350);
+      BR.toast('Add the final cost and completion photos, then save');
+    });
+    $('save').addEventListener('click', save);
+    document.onkeydown = function (e) {
+      if (e.key === 'Escape' && state.openId && !document.querySelector('.ann, .lb')) closeDrawer();
+    };
+  }
+
+  function contactLink(c) {
+    if (!c) return '';
+    var href = /@/.test(c) ? 'mailto:' + c : (/^[\d\s+()-]{6,}$/.test(c) ? 'tel:' + c.replace(/[^\d+]/g, '') : '');
+    return ' · ' + (href ? '<a href="' + esc(href) + '">' + esc(c) + '</a>' : esc(c));
+  }
+  function gallery(list, kind) {
+    return '<div class="gallery" data-kind="' + kind + '">' + list.map(function (p, i) {
+      return '<button type="button" data-i="' + i + '" aria-label="Open photo ' + (i + 1) + (p.caption ? ': ' + esc(p.caption) : '') + '">' +
+        (p.thumb ? '<img alt="" src="' + BR.dataUrl(p.thumb) + '">' : '<span class="noimg">Photo ' + (i + 1) + '</span>') +
+        (p.caption ? '<span class="cap">' + esc(p.caption) + '</span>' : '') + '</button>';
+    }).join('') + '</div>';
+  }
+  var TYPE_LABEL = { note: 'Internal note', message: 'Message to landlord', landlord_comment: 'Landlord', email: 'Email' };
+  function timeline(list) {
+    if (!list.length) return '';
+    return '<ul class="timeline">' + list.slice().reverse().map(function (a) {
+      return '<li class="t-' + esc(a.type) + '"><span class="meta">' + esc(BR.fmtDate(a.at)) + ' · ' + esc(a.who || '') +
+        (TYPE_LABEL[a.type] ? ' · ' + TYPE_LABEL[a.type] : '') + (a.landlordCanSee && a.type !== 'landlord_comment' ? '<span class="vis">Landlord can see</span>' : '') + '</span>' +
+        '<span class="body">' + esc(a.detail) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function formVals() {
+    var o = {};
+    $('drawer-root').querySelectorAll('[data-k]').forEach(function (el) { o[el.dataset.k] = el.type === 'checkbox' ? el.checked : el.value.trim(); });
+    return o;
+  }
+  function parseMoney(v) { v = String(v).replace(/[$,\s]/g, ''); if (v === '') return null; var n = Number(v); return isFinite(n) && n >= 0 ? Math.round(n * 100) / 100 : NaN; }
+  function changes() {
+    var j = state.detail.job, vals = formVals(), out = {};
+    Object.keys(vals).forEach(function (k) {
+      var a = j[k], b = vals[k];
+      if (MONEY[k]) { var nb = parseMoney(b); if (!(nb === (a == null ? null : Number(a)))) out[k] = b; return; }
+      if (typeof b === 'boolean') { if (!!a !== b) out[k] = b; return; }
+      if (String(a == null ? '' : a) !== b) out[k] = b;
+    });
+    return out;
+  }
+  function checkDirty() {
+    var ch = changes(), n = Object.keys(ch).length, bad = false;
+    $('drawer-root').querySelectorAll('.money').forEach(function (el) {
+      var isBad = isNaN(parseMoney(el.value));
+      el.closest('.field').classList.toggle('bad', isBad);
+      if (isBad) bad = true;
+    });
+    state.dirty = n > 0;
+    $('dirty').hidden = !n;
+    $('dirty').textContent = bad ? 'Check the cost: numbers only' : 'Unsaved changes';
+    $('save').disabled = !n || bad || state.busy;
+  }
+
+  function save() {
+    var ch = changes();
+    if (!Object.keys(ch).length || state.busy) return;
+    if (ch.status === 'Completed' && !ch.finalCost && state.detail.job.finalCost == null && !formVals().finalCost) {
+      if (!confirm('Mark as completed without a final cost? You can add it later.')) return;
+    }
+    busy(true, $('save'), 'Saving…');
+    api.post({ action: 'update', pin: state.pin, by: state.name, id: state.openId, changes: ch }).then(function (d) {
+      busy(false);
+      if (!d.ok) { BR.toast(errText(d)); checkDirty(); return; }
+      applyDetail(d);
+      BR.toast('Saved');
+    }).catch(function () { busy(false); checkDirty(); BR.toast('Couldn’t save. Check your connection and try again.'); });
+  }
+  function errText(d) {
+    return ({
+      bad_pin: 'Your PIN has changed. Lock and sign in again.',
+      bad_value: 'Check these fields: ' + (d.fields || []).join(', '),
+      not_found: 'That job is no longer in the Sheet.',
+      not_shared: 'Share the job with the landlord and save first.',
+      no_landlord_email: 'No landlord email for this site. Add one in the Landlords tab.',
+      empty: 'Type a note first.'
+    })[d.error] || ('Something went wrong: ' + d.error);
+  }
+  var busyBtn = null, busyHtml = '';
+  function busy(on, btn, label) {
+    state.busy = on;
+    if (on) { busyBtn = btn; busyHtml = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>' + label; }
+    else if (busyBtn) { busyBtn.innerHTML = busyHtml; busyBtn.disabled = false; busyBtn = null; }
+  }
+
+  function sendNote(toLandlord) {
+    var text = $('note').value.trim();
+    if (!text) { BR.toast('Type a note first'); $('note').focus(); return; }
+    if (state.dirty && !confirm('Adding a note reloads the job, and your unsaved changes will be lost. Continue?')) return;
+    BR.stopMic();
+    busy(true, toLandlord ? $('msg-ll') : $('add-note'), 'Adding…');
+    api.post({ action: 'note', pin: state.pin, by: state.name, id: state.openId, text: text, landlord: toLandlord }).then(function (d) {
+      busy(false);
+      if (!d.ok) { BR.toast(errText(d)); return; }
+      applyDetail(d);
+      BR.toast(toLandlord ? 'Sent to the landlord’s page' : 'Note added');
+    }).catch(function () { busy(false); BR.toast('Couldn’t add the note. Check your connection.'); });
+  }
+
+  function emailLandlord() {
+    if (state.dirty) { BR.toast('Save your changes first'); return; }
+    var msg = prompt('Email the landlord a link to this job. Add a short message (optional):', '');
+    if (msg === null) return;
+    busy(true, $('email-ll'), 'Sending…');
+    api.post({ action: 'email_landlord', pin: state.pin, by: state.name, id: state.openId, message: msg }).then(function (d) {
+      busy(false);
+      if (!d.ok) { BR.toast(errText(d)); return; }
+      BR.toast('Emailed ' + d.sent.join(', '));
+      fetchDetail(state.openId);
+    }).catch(function () { busy(false); BR.toast('Couldn’t send. Check your connection.'); });
+  }
+
+  function syncUpload() {
+    var t = trays.completion, n = t ? t.items().length : 0;
+    $('upload-row').hidden = !n;
+    $('upload').textContent = 'Upload ' + n + ' photo' + (n === 1 ? '' : 's');
+  }
+  function uploadCompletion() {
+    var items = trays.completion.items(), id = state.openId, done = 0;
+    if (!items.length || state.busy) return;
+    busy(true, $('upload'), 'Uploading…');
+    items.reduce(function (p, ph) {
+      return p.then(function () {
+        $('upload-msg').textContent = (done + 1) + ' of ' + items.length;
+        return api.post({ action: 'photo', pin: state.pin, by: state.name, photo: {
+          id: ph.id, jobId: id, kind: 'completion', caption: (ph.caption || '').trim(), annotated: !!ph.annotated,
+          mime: 'image/jpeg', data: BR.b64(ph.data), thumb: BR.b64(ph.thumb)
+        } }).then(function (r) {
+          if (!r.ok) throw new Error(r.error);
+          done++;
+        });
+      });
+    }, Promise.resolve()).then(function () {
+      busy(false);
+      trays.completion.clear();
+      BR.toast(done + ' photo' + (done === 1 ? '' : 's') + ' uploaded');
+      return fetchDetail(id);
+    }).catch(function (e) {
+      busy(false);
+      var left = trays.completion.items().slice(done);
+      trays.completion.set(left);
+      if (done) fetchDetail(id);
+      BR.toast('Upload stopped after ' + done + ': ' + (e && e.message === 'Failed to fetch' ? 'no connection' : (e && e.message) || 'error') + '. Try again.');
+      syncUpload();
+    });
+  }
+
+  /* ---------- export ---------- */
+  $('csv').addEventListener('click', function () {
+    var list = filtered();
+    var head = ['ref', 'status', 'priority', 'site', 'area', 'type', 'trade_needed', 'summary', 'details', 'reported_at', 'reported_by', 'who_pays', 'shared_with_landlord',
+      'trade_booked', 'trade_contact', 'scheduled_for', 'quote_ex_gst', 'final_cost_ex_gst', 'invoice_ref', 'paid', 'completed_on', 'completion_notes', 'photos'];
+    function cell(v) { v = String(v == null ? '' : v); if (/^[=+\-@]/.test(v)) v = "'" + v; return '"' + v.replace(/"/g, '""') + '"'; }
+    var csv = [head.join(',')].concat(list.map(function (j) {
+      return [j.ref, j.status, j.priority, j.site, j.area, j.category, j.trade, j.title, j.description, j.submittedAt, j.reporterName, j.responsibility,
+        j.sharedWithLandlord ? 'TRUE' : 'FALSE', j.tradeCompany, j.tradeContact, j.scheduledFor, j.quote, j.finalCost, j.invoiceRef, j.paid ? 'TRUE' : 'FALSE',
+        j.completedAt, j.completionNotes, (j.photos && j.photos.report) || 0].map(cell).join(',');
+    })).join('\r\n');
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+    a.download = 'building-jobs-' + BR.todayISO() + '.csv';
+    document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  window.addEventListener('beforeunload', function (e) { if (state.dirty) { e.preventDefault(); e.returnValue = ''; } });
+
+  /* ---------- start ---------- */
+  function start() {
+    api = BR.api(CFG, DEMO ? window.BR_DEMO : null);
+    if (DEMO) { state.name = state.name || 'Demo manager'; load('demo'); return; }
+    var saved = BR.session(PIN_KEY);
+    if (saved && state.name) load(saved); else showLogin();
+    setInterval(function () { if (state.pin && !$('app').hidden && !state.dirty && !state.busy && !document.querySelector('.ann, .lb')) load(state.pin, 'keep'); }, 120000);
+  }
+  if (DEMO) {
+    var s = document.createElement('script');
+    s.src = 'demo-data.js?v=1';
+    s.onload = start;
+    s.onerror = function () { showLogin('Demo data not found'); };
+    document.body.appendChild(s);
+  } else start();
+})();
+</script>
+</body>
+</html>

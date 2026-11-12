@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0E2A44">
+<title>Shared Building Jobs</title>
+<link rel="icon" href="assets/icon.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/br.css?v=1">
+<style>
+main.wrap { padding-top: 20px; padding-bottom: 70px; }
+.job .main > span { display: block; }
+.costs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.costs div { background: var(--tint); border-radius: 10px; padding: 10px 12px; }
+.costs b { display: block; font-family: var(--head); font-size: 20px; color: var(--navy); font-variant-numeric: tabular-nums; }
+.costs span { font-size: 13px; color: var(--muted); }
+.comment .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+.loading { display: flex; align-items: center; gap: 10px; color: var(--navy); font-weight: 700; padding: 10px 0; }
+@media print {
+  .topbar .right, .filters, .stats, .dr-foot, .x, .comment, .drawer-bg, #app main, .hero { display: none !important; }
+  body { background: #fff; }
+  .drawer { position: static; width: 100%; box-shadow: none; background: #fff; }
+  .dr-body { overflow: visible; }
+}
+</style>
+</head>
+<body>
+
+<div id="login" class="login" hidden>
+  <img src="assets/afs-group.png" alt="The AFS Group">
+  <h1>Shared building jobs</h1>
+  <p>For landlords of The AFS Group's sites. Enter the PIN the facilities team gave you.</p>
+  <div class="field"><label for="pin">Your PIN</label><input id="pin" class="pin" type="password" inputmode="numeric" autocomplete="off"></div>
+  <div class="err" id="err"></div>
+  <button class="btn big" id="go">View jobs</button>
+  <a class="demo" href="?demo">Preview with demo data</a>
+</div>
+
+<div id="app" hidden>
+  <div class="demo-bar" id="demo-bar" hidden>Demo data. These jobs are made up.</div>
+  <div class="topbar"><div class="wrap wide">
+    <img src="assets/afs-group.png" alt="The AFS Group">
+    <div class="right">
+      <button class="btn ghost small" id="refresh">Refresh</button>
+      <button class="btn ghost small" id="lock">Sign out</button>
+    </div>
+  </div></div>
+  <header class="hero"><div class="wrap wide">
+    <p class="eyebrow">Shared by The AFS Group</p>
+    <h1 id="hello">Building jobs</h1>
+    <div class="meta" id="meta"></div>
+  </div></header>
+
+  <main class="wrap wide">
+    <div class="stats" id="stats"></div>
+    <section class="panel">
+      <h2>Jobs shared with you</h2>
+      <p class="sub">Reports, photos and progress on repairs and maintenance at your sites. Open a job to see everything and reply to the facilities team.</p>
+      <div class="filters">
+        <select id="f-view" aria-label="Which jobs">
+          <option value="open">Open jobs</option>
+          <option value="done">Completed</option>
+          <option value="all">All jobs</option>
+        </select>
+        <select id="f-site" aria-label="Site"></select>
+        <select id="f-pays" aria-label="Who pays">
+          <option value="">Anyone pays</option>
+          <option value="yes">Landlord to pay</option>
+        </select>
+        <input type="search" id="f-q" placeholder="Search" aria-label="Search jobs">
+        <span class="n" id="f-n"></span>
+      </div>
+      <div class="jobs" id="jobs"></div>
+    </section>
+  </main>
+</div>
+<div id="drawer-root"></div>
+
+<script>
+  document.write('<script src="config.js?v=' + Date.now() + '"><\/script>');
+</script>
+<script src="assets/br.js?v=1"></script>
+<script>
+(function () {
+  'use strict';
+  var CFG = window.BR_CONFIG || {};
+  var $ = BR.$, esc = BR.esc;
+  var PIN_KEY = 'br-landlord-pin', NAME_KEY = 'br-landlord-name';
+  var DEMO = new URLSearchParams(location.search).has('demo');
+  var COST = CFG.COST_NOTE || 'ex GST';
+  var PRIORITIES = (CFG.PRIORITIES || []).map(function (p) { return p.name; });
+  var api = null;
+  var state = { data: null, pin: '', detail: null, openId: null, hashDone: false };
+
+  function showLogin(msg) { $('app').hidden = true; $('login').hidden = false; $('pin').value = ''; $('err').textContent = msg || ''; $('pin').focus(); }
+  $('go').addEventListener('click', function () { var p = $('pin').value.trim(); if (!p) { $('err').textContent = 'Enter your PIN'; return; } load(p, true); });
+  $('pin').addEventListener('keydown', function (e) { if (e.key === 'Enter') $('go').click(); });
+  $('refresh').addEventListener('click', function () { load(state.pin).then(function (ok) { if (ok) BR.toast('Refreshed'); }); });
+  $('lock').addEventListener('click', function () { closeDrawer(); BR.session(PIN_KEY, null); state.pin = ''; state.data = null; if (DEMO) location.search = ''; else showLogin(); });
+
+  function load(pin, fromLogin) {
+    return api.get({ action: 'landlord', pin: pin }).then(function (j) {
+      if (!j.ok) { BR.session(PIN_KEY, null); showLogin(j.error === 'bad_pin' ? 'That PIN didn’t work. Check it with the facilities team.' : 'Something went wrong: ' + j.error); return false; }
+      state.pin = pin; BR.session(PIN_KEY, pin); state.data = j;
+      render();
+      if (!state.hashDone || fromLogin === true) { state.hashDone = true; openFromHash(); }
+      return true;
+    }).catch(function (e) {
+      if (fromLogin === true || !state.data) showLogin(e && e.message === 'no_endpoint' ? 'This page isn’t connected yet.' : 'Couldn’t connect. Check your internet connection.');
+      else BR.toast('Offline: showing the last load');
+      return false;
+    });
+  }
+
+  function jobs() { return (state.data && state.data.jobs) || []; }
+  function rank(v) { var i = PRIORITIES.indexOf(v); return i < 0 ? 99 : i; }
+
+  function render() {
+    $('login').hidden = true; $('app').hidden = false; $('demo-bar').hidden = !DEMO;
+    var d = state.data, all = jobs();
+    $('hello').textContent = d.landlord.name;
+    document.title = d.landlord.name + ': Shared Building Jobs';
+    var sites = d.landlord.sites.indexOf('*') >= 0 ? 'All AFS sites' : d.landlord.sites.join(', ');
+    $('meta').textContent = sites + ' · updated ' + new Date().toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
+    var open = all.filter(BR.isOpen);
+    var tiles = [
+      [open.length, 'Open jobs'],
+      [open.filter(function (j) { return j.landlordPays; }).length, 'Open, landlord to pay'],
+      [open.filter(function (j) { return j.status === 'Scheduled'; }).length, 'Booked in'],
+      [all.filter(function (j) { return j.status === 'Completed'; }).length, 'Completed']
+    ];
+    $('stats').innerHTML = tiles.map(function (t) { return '<div class="stat"><b>' + t[0] + '</b><span>' + t[1] + '</span></div>'; }).join('');
+    var cur = $('f-site').value, siteList = {};
+    all.forEach(function (j) { siteList[j.site] = 1; });
+    $('f-site').innerHTML = '<option value="">All sites</option>' + Object.keys(siteList).sort().map(function (s) { return '<option' + (s === cur ? ' selected' : '') + '>' + esc(s) + '</option>'; }).join('');
+    $('f-site').hidden = Object.keys(siteList).length < 2;
+    renderJobs();
+  }
+  ['f-view', 'f-site', 'f-pays'].forEach(function (id) { $(id).addEventListener('change', renderJobs); });
+  $('f-q').addEventListener('input', function () { clearTimeout(renderJobs.t); renderJobs.t = setTimeout(renderJobs, 150); });
+
+  function renderJobs() {
+    var view = $('f-view').value, site = $('f-site').value, pays = $('f-pays').value, q = $('f-q').value.trim().toLowerCase();
+    var list = jobs().filter(function (j) {
+      if (view === 'open' && !BR.isOpen(j)) return false;
+      if (view === 'done' && j.status !== 'Completed') return false;
+      if (site && j.site !== site) return false;
+      if (pays && !j.landlordPays) return false;
+      if (q && [j.ref, j.title, j.site, j.area, j.category, j.description, j.status].join(' ').toLowerCase().indexOf(q) < 0) return false;
+      return true;
+    }).sort(function (a, b) {
+      return (BR.isOpen(b) ? 1 : 0) - (BR.isOpen(a) ? 1 : 0) || rank(a.priority) - rank(b.priority) || String(b.submittedAt).localeCompare(String(a.submittedAt));
+    });
+    $('f-n').textContent = list.length + ' shown';
+    $('jobs').innerHTML = list.length ? list.map(function (j) {
+      var side = [BR.statusBadge(j.status)];
+      if (j.status === 'Scheduled' && j.scheduledFor) side.push('<span>Booked ' + esc(BR.fmtDay(j.scheduledFor)) + '</span>');
+      else if (j.status === 'Completed' && j.completedAt) side.push('<span>Done ' + esc(BR.fmtDay(j.completedAt)) + '</span>');
+      else side.push('<span>Reported ' + esc(BR.ago(j.submittedAt)) + '</span>');
+      var thumb = j.status === 'Completed' && j.completionThumb ? j.completionThumb : j.thumb;
+      return '<button type="button" class="job" data-id="' + esc(j.id) + '">' +
+        '<span class="th">' + (thumb ? '<img alt="" loading="lazy" src="' + BR.dataUrl(thumb) + '">' : BR.ICON.building) + '</span>' +
+        '<span class="main"><span class="ref">' + esc(j.ref + ' · ' + j.site) + '</span><span class="ttl">' + esc(j.title) + '</span>' +
+        '<span class="where">' + esc([j.area, j.category].filter(String).join(' · ')) + '</span>' +
+        '<span class="badges">' + BR.priorityBadge(j.priority) + (j.landlordPays ? '<span class="badge plain">Landlord to pay</span>' : '') + '</span></span>' +
+        '<span class="side">' + side.join('') + '</span></button>';
+    }).join('') : '<p class="none">' + (jobs().length ? 'No jobs match those filters.' : 'Nothing has been shared with you yet.') + '</p>';
+  }
+  $('jobs').addEventListener('click', function (e) { var b = e.target.closest('.job'); if (b) openJob(b.dataset.id); });
+
+  function openFromHash() {
+    var ref = decodeURIComponent(location.hash.slice(1));
+    if (!ref) return;
+    var j = jobs().filter(function (x) { return x.ref === ref; })[0];
+    if (j) openJob(j.id); else BR.toast(ref + ' isn’t shared with you');
+  }
+
+  function openJob(id) {
+    var j = jobs().filter(function (x) { return x.id === id; })[0];
+    if (!j) return;
+    state.openId = id; state.detail = { job: j };
+    renderDrawer();
+    history.replaceState(null, '', '#' + encodeURIComponent(j.ref));
+    fetchDetail(id);
+  }
+  function fetchDetail(id) {
+    return api.get({ action: 'job', pin: state.pin, id: id }).then(function (d) {
+      if (state.openId !== id) return;
+      if (!d.ok) { BR.toast('Couldn’t load the job'); return; }
+      state.detail = d; renderDrawer();
+    }).catch(function () { BR.toast('Couldn’t load the job. Check your connection.'); });
+  }
+  function closeDrawer() {
+    if (!state.openId) return;
+    BR.stopMic();
+    state.openId = null; state.detail = null;
+    $('drawer-root').innerHTML = '';
+    document.body.classList.remove('noscroll');
+    history.replaceState(null, '', location.pathname + location.search);
+  }
+
+  var TYPE_LABEL = { message: 'Message from The AFS Group', landlord_comment: 'Your comment' };
+  function renderDrawer() {
+    var d = state.detail, j = d.job, loading = !d.photos;
+    var reportPhotos = (d.photos || []).filter(function (p) { return p.kind === 'report'; });
+    var donePhotos = (d.photos || []).filter(function (p) { return p.kind === 'completion'; });
+    var root = $('drawer-root');
+    var keep = root.querySelector('#comment') ? root.querySelector('#comment').value : '';
+    var costs = [];
+    if (j.landlordPays) {
+      if (j.quote != null) costs.push(['Quote', BR.money(j.quote)]);
+      if (j.finalCost != null) costs.push(['Final cost', BR.money(j.finalCost)]);
+      if (j.invoiceRef) costs.push(['Invoice', esc(j.invoiceRef)]);
+    }
+    root.innerHTML =
+      '<div class="drawer-bg"></div>' +
+      '<div class="drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title">' +
+      '<div class="dr-head"><div><p class="eyebrow">' + esc(j.ref) + ' · Reported ' + esc(BR.fmtDate(j.submittedAt)) + '</p>' +
+        '<h2 id="dr-title">' + esc(j.title) + '</h2><div class="badges">' + BR.statusBadge(j.status) + BR.priorityBadge(j.priority) + BR.plainBadge(j.category) + '</div></div>' +
+        '<button type="button" class="x" id="dr-x" aria-label="Close">&times;</button></div>' +
+      '<div class="dr-body" id="dr-body">' +
+      '<section class="dsec"><h3>The report</h3><dl class="facts">' +
+        '<dt>Site</dt><dd>' + esc(j.site) + '</dd>' +
+        (j.area ? '<dt>Where</dt><dd>' + esc(j.area) + '</dd>' : '') +
+        '<dt>Type</dt><dd>' + esc(j.category) + (j.trade ? ' · ' + esc(j.trade) : '') + '</dd>' +
+        '<dt>Who pays</dt><dd>' + esc(BR.RESP_LABEL[j.responsibility] || j.responsibility) + '</dd>' +
+        (j.tradeCompany ? '<dt>Trade</dt><dd>' + esc(j.tradeCompany) + '</dd>' : '') +
+        (j.scheduledFor ? '<dt>Scheduled for</dt><dd>' + esc(BR.fmtDay(j.scheduledFor)) + '</dd>' : '') +
+        (j.completedAt ? '<dt>Completed on</dt><dd>' + esc(BR.fmtDay(j.completedAt)) + '</dd>' : '') +
+      '</dl>' +
+      (j.description ? '<p class="desc">' + esc(j.description) + '</p>' : '') +
+      (loading ? '<div class="loading"><span class="spinner dark"></span>Loading photos…</div>' : (reportPhotos.length ? gallery(reportPhotos, 'report') : '<p class="empty-note">No photos with this report.</p>')) +
+      '</section>' +
+      (j.completionNotes || donePhotos.length || costs.length ? '<section class="dsec"><h3>Completion' + (costs.length ? ' and cost <small>' + esc(COST) + '</small>' : '') + '</h3>' +
+        (costs.length ? '<div class="costs">' + costs.map(function (c) { return '<div><b>' + c[1] + '</b><span>' + c[0] + '</span></div>'; }).join('') + '</div>' : '') +
+        (j.completionNotes ? '<p class="desc" style="margin-top:12px">' + esc(j.completionNotes) + '</p>' : '') +
+        (donePhotos.length ? '<div style="margin-top:12px">' + gallery(donePhotos, 'completion') + '</div>' : '') +
+      '</section>' : '') +
+      '<section class="dsec comment"><h3>Reply to the facilities team</h3>' +
+        '<div class="field"><label for="c-name">Your name <span class="opt">(optional)</span></label><input type="text" id="c-name" maxlength="80" value="' + esc(BR.load(NAME_KEY, '')) + '"></div>' +
+        '<div class="field" style="margin-top:10px"><label for="comment">Comment</label><textarea id="comment" maxlength="4000" placeholder="e.g. Approved. Our contractor can attend Tuesday morning.">' + esc(keep) + '</textarea></div>' +
+        '<div class="row"><button type="button" class="btn" id="send">Send comment</button><span class="help" style="font-size:13.5px;color:var(--muted)">The facilities team is notified.</span></div>' +
+        (loading ? '' : timeline(d.activity || [])) +
+      '</section>' +
+      '</div>' +
+      '<div class="dr-foot"><button type="button" class="btn ghost" id="print">Print</button><button type="button" class="btn" id="close2">Close</button></div>' +
+      '</div>';
+    document.body.classList.add('noscroll');
+    root.querySelector('.drawer-bg').addEventListener('click', closeDrawer);
+    $('dr-x').addEventListener('click', closeDrawer);
+    $('close2').addEventListener('click', closeDrawer);
+    $('print').addEventListener('click', function () { window.print(); });
+    $('send').addEventListener('click', sendComment);
+    root.querySelectorAll('.gallery').forEach(function (g) {
+      g.addEventListener('click', function (e) {
+        var b = e.target.closest('button[data-i]');
+        if (!b) return;
+        var list = (d.photos || []).filter(function (p) { return p.kind === g.dataset.kind; });
+        BR.lightbox(list.map(function (p) {
+          return { id: p.id, thumb: BR.dataUrl(p.thumb), caption: p.caption, label: (p.kind === 'completion' ? 'Completed work' : 'Reported') + ' · ' + BR.fmtDate(p.uploadedAt) };
+        }), Number(b.dataset.i), function (it) {
+          return api.get({ action: 'photo', pin: state.pin, id: it.id }).then(function (r) { if (!r.ok) throw new Error(r.error); return { src: BR.dataUrl(r.data, r.mime) }; });
+        });
+      });
+    });
+    document.onkeydown = function (e) { if (e.key === 'Escape' && state.openId && !document.querySelector('.lb')) closeDrawer(); };
+  }
+
+  function gallery(list, kind) {
+    return '<div class="gallery" data-kind="' + kind + '">' + list.map(function (p, i) {
+      return '<button type="button" data-i="' + i + '" aria-label="Open photo ' + (i + 1) + (p.caption ? ': ' + esc(p.caption) : '') + '">' +
+        (p.thumb ? '<img alt="" src="' + BR.dataUrl(p.thumb) + '">' : '<span class="noimg">Photo ' + (i + 1) + '</span>') +
+        (p.caption ? '<span class="cap">' + esc(p.caption) + '</span>' : '') + '</button>';
+    }).join('') + '</div>';
+  }
+  function timeline(list) {
+    if (!list.length) return '';
+    return '<h4 style="margin:18px 0 0;font-size:14px">History</h4><ul class="timeline">' + list.slice().reverse().map(function (a) {
+      var who = a.role === 'landlord' ? a.who : 'The AFS Group';
+      return '<li class="t-' + esc(a.type) + '"><span class="meta">' + esc(BR.fmtDate(a.at)) + ' · ' + esc(who) + (TYPE_LABEL[a.type] && a.role !== 'landlord' ? ' · ' + TYPE_LABEL[a.type] : '') + '</span>' +
+        '<span class="body">' + esc(a.detail) + '</span></li>';
+    }).join('') + '</ul>';
+  }
+
+  function sendComment() {
+    var text = $('comment').value.trim(), name = $('c-name').value.trim();
+    if (!text) { BR.toast('Type a comment first'); $('comment').focus(); return; }
+    BR.save(NAME_KEY, name);
+    var btn = $('send'); btn.disabled = true; btn.innerHTML = '<span class="spinner"></span>Sending…';
+    api.post({ action: 'landlord_comment', pin: state.pin, id: state.openId, name: name, text: text }).then(function (d) {
+      if (!d.ok) { btn.disabled = false; btn.textContent = 'Send comment'; BR.toast('Couldn’t send: ' + d.error); return; }
+      $('comment').value = '';
+      state.detail = d; renderDrawer();
+      BR.toast('Sent to the facilities team');
+    }).catch(function () { btn.disabled = false; btn.textContent = 'Send comment'; BR.toast('Couldn’t send. Check your connection.'); });
+  }
+
+  function start() {
+    api = BR.api(CFG, DEMO ? window.BR_DEMO : null);
+    if (DEMO) { load('demo-landlord'); return; }
+    var saved = BR.session(PIN_KEY);
+    if (saved) load(saved); else showLogin();
+    setInterval(function () { if (state.pin && !$('app').hidden && !state.openId) load(state.pin); }, 180000);
+  }
+  if (DEMO) {
+    var s = document.createElement('script');
+    s.src = 'demo-data.js?v=1'; s.onload = start; s.onerror = function () { showLogin('Demo data not found'); };
+    document.body.appendChild(s);
+  } else start();
+})();
+</script>
+</body>
+</html>

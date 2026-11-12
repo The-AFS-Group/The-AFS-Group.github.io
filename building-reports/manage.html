@@ -261,12 +261,16 @@ main.wrap { padding-top: 20px; padding-bottom: 70px; }
     ];
     if (d.sheetUrl) items.push(['The spreadsheet', 'Every job, photo and update. Add landlords in the Landlords tab.', d.sheetUrl, false]);
     if (d.photosUrl) items.push(['Photos folder', 'Every photo, in a folder per job.', d.photosUrl, false]);
-    var ll = (d.landlords || []);
+    var ll = (d.landlords || []), al = d.alerts;
+    var alertsLi = !al ? '' : '<li><b>Email alerts</b><span class="help">' + (
+      al.error ? 'Not working: ' + esc(al.error) + '. In Apps Script, run <b>testEmail</b> and approve the email permission.'
+      : al.to ? 'New reports and landlord replies are emailed to ' + esc(al.to.split(',').join(', ')) + '. Each job\u2019s history shows whether its email went.'
+      : 'Off. Add <b>NOTIFY_EMAIL</b> in Apps Script under Project Settings \u2192 Script properties, then run <b>testEmail</b>.') + '</span></li>';
     $('links').innerHTML = items.map(function (x) {
       return '<li><b>' + esc(x[0]) + '</b><span class="help">' + esc(x[1]) + '</span><div class="row">' +
         '<a class="btn ghost small" href="' + esc(x[2]) + '" target="_blank" rel="noopener">Open</a>' +
         (x[3] ? '<button type="button" class="btn ghost small" data-copy="' + esc(x[2]) + '">Copy link</button>' : '') + '</div></li>';
-    }).join('') + '<li><b>Landlords set up</b><span class="help">' + (ll.length ? ll.map(function (l) { return esc(l.name) + ' (' + esc(l.sites.join(', ')) + ')'; }).join('<br>') : 'None yet. Add a row to the Landlords tab with a name, PIN and sites.') + '</span></li>';
+    }).join('') + alertsLi + '<li><b>Landlords set up</b><span class="help">' + (ll.length ? ll.map(function (l) { return esc(l.name) + ' (' + esc(l.sites.join(', ')) + ')'; }).join('<br>') : 'None yet. Add a row to the Landlords tab with a name, PIN and sites.') + '</span></li>';
   }
   $('links').addEventListener('click', function (e) {
     var b = e.target.closest('[data-copy]');

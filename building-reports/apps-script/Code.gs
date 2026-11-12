@@ -73,6 +73,9 @@ var JOB_FIELDS = [
 var PHOTO_HEADERS = ['uploaded_at', 'photo_id', 'job_id', 'ref', 'kind', 'caption', 'annotated', 'uploaded_by', 'file_id', 'url', 'thumb'];
 var ACTIVITY_HEADERS = ['at', 'job_id', 'ref', 'who', 'role', 'type', 'detail', 'landlord_can_see'];
 var LANDLORD_HEADERS = ['landlord', 'pin', 'sites', 'email', 'notes'];
+// The column that is always filled on a real row, per tab. New rows go after the last one.
+var KEYS = { Jobs: 'job_id', Photos: 'photo_id', Activity: 'at', Landlords: 'landlord' };
+var CHECKBOX_COLUMNS = { Jobs: ['voice_used', 'shared_with_landlord', 'paid'] };
 
 // What the manager page may change, and how each value is checked.
 var EDITABLE = {
@@ -105,21 +108,31 @@ var LIST_THUMB_DAYS = 120;       // list view sends previews only for open or re
 
 /* ================= setup ================= */
 
-/** Run once from the editor after pasting the script. Safe to re-run: it only adds what's missing. */
+/**
+ * Run once from the editor after pasting the script. Safe to re-run: it only adds what's missing,
+ * and moves any jobs that were written below empty rows (by older versions of this script) back up.
+ */
 function setup() {
   var ss = ss_();
   ss.setSpreadsheetTimeZone(TZ);
 
   var j = ensureSheet_(ss, JOBS, JOB_FIELDS.map(function (f) { return f[0]; }));
+  tidy_(j, 'job_id');
+  if (j.getMaxRows() < 1000) {
+    j.insertRowsAfter(j.getMaxRows(), 1000 - j.getMaxRows());
+    tidy_(j, 'job_id'); // new rows can copy tick boxes from the row above; clear them
+  }
   var t = table_(JOBS), rows = j.getMaxRows() - 1;
   function col(h) { return j.getRange(2, t.idx[h] + 1, rows, 1); }
   ['submitted_at', 'updated_at'].forEach(function (h) { col(h).setNumberFormat('yyyy-mm-dd hh:mm'); });
   ['scheduled_for', 'completed_at'].forEach(function (h) { col(h).setNumberFormat('d mmm yyyy'); });
   ['quote_ex_gst', 'final_cost_ex_gst'].forEach(function (h) { col(h).setNumberFormat('$#,##0.00'); });
-  var box = SpreadsheetApp.newDataValidation().requireCheckbox().build();
-  ['voice_used', 'shared_with_landlord', 'paid'].forEach(function (h) { col(h).setDataValidation(box); });
   col('status').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(STATUSES, true).setAllowInvalid(true).build());
   col('responsibility').setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(RESPONSIBILITY, true).setAllowInvalid(true).build());
+  // Tick boxes go on each job's row as it's written. Pre-filling a whole column with them makes
+  // Sheets count those rows as used, so new jobs would land below them.
+  var used = nextRow_(t) - 2;
+  for (var r = 0; r < used; r++) checkboxes_(t, r + 2);
   j.setColumnWidth(t.idx.title + 1, 260);
   j.setColumnWidth(t.idx.description + 1, 360);
   j.setColumnWidth(t.idx.completion_notes + 1, 300);
@@ -127,12 +140,14 @@ function setup() {
   j.setFrozenColumns(1);
 
   var p = ensureSheet_(ss, PHOTOS, PHOTO_HEADERS);
+  tidy_(p, 'photo_id');
   var pt = table_(PHOTOS);
   p.getRange(2, pt.idx.uploaded_at + 1, p.getMaxRows() - 1, 1).setNumberFormat('yyyy-mm-dd hh:mm');
   p.getRange(2, pt.idx.thumb + 1, p.getMaxRows() - 1, 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
   p.setColumnWidth(pt.idx.thumb + 1, 80);
 
   var a = ensureSheet_(ss, ACTIVITY, ACTIVITY_HEADERS);
+  tidy_(a, 'at');
   var at = table_(ACTIVITY);
   a.getRange(2, at.idx.at + 1, a.getMaxRows() - 1, 1).setNumberFormat('yyyy-mm-dd hh:mm');
   a.setColumnWidth(at.idx.detail + 1, 420);
@@ -151,6 +166,39 @@ function setup() {
   Logger.log('Photos folder: ' + folder.getUrl());
   if (!prop_('SUBMIT_TOKEN')) Logger.log('Add SUBMIT_TOKEN to Script properties.');
   if (!prop_('MANAGER_PIN')) Logger.log('Add MANAGER_PIN to Script properties.');
+  Logger.log(notifyTo_() ? 'New-report emails go to: ' + notifyTo_() : 'NOTIFY_EMAIL is not set, so no new-report emails will be sent.');
+}
+
+/**
+ * Removes empty rows sitting between the header and real rows, and clears stray tick boxes or
+ * values below the last real row. A row is real when its key column has a value.
+ */
+function tidy_(sh, keyHeader) {
+  var t = table_(sh.getName());
+  var k = t.idx[keyHeader];
+  if (k == null) return;
+  function real(i) { return String(t.rows[i][k]).trim() !== ''; }
+  var last = -1;
+  for (var i = 0; i < t.rows.length; i++) if (real(i)) last = i;
+  var below = last + 3, max = sh.getMaxRows();
+  if (below <= max) sh.getRange(below, 1, max - below + 1, t.width).clearContent().clearDataValidations();
+  for (i = last; i >= 0;) {
+    if (real(i)) { i--; continue; }
+    var end = i;
+    while (i >= 0 && !real(i)) i--;
+    sh.deleteRows(i + 3, end - i);
+  }
+}
+
+/** Editor check: sends a test email to NOTIFY_EMAIL, so you can see straight away whether alerts work. */
+function testEmail() {
+  var to = notifyTo_();
+  if (!to) throw new Error('NOTIFY_EMAIL is not set. Add it under Project Settings > Script properties.');
+  MailApp.sendEmail({
+    to: to, name: 'AFS Building Reports', subject: 'AFS Building Reports: test email',
+    htmlBody: emailHtml_('Test email', 'If you can read this, new-report emails will reach you.', [['Sent to', to]], 'Open the manager page', siteUrl_() + 'manage.html')
+  });
+  Logger.log('Sent a test email to ' + to + '. Emails left today: ' + MailApp.getRemainingDailyQuota());
 }
 
 function ensureSheet_(ss, name, headers) {
@@ -264,7 +312,7 @@ function table_(name) {
   var idx = {};
   headers.forEach(function (h, i) { h = String(h).trim(); if (h && idx[h] == null) idx[h] = i; });
   var rows = lastR > 1 ? sh.getRange(2, 1, lastR - 1, lastC).getValues() : [];
-  return { sh: sh, idx: idx, rows: rows, width: lastC };
+  return { sh: sh, name: name, key: KEYS[name], idx: idx, rows: rows, width: lastC };
 }
 
 function findRow_(t, header, value) {
@@ -276,13 +324,44 @@ function findRow_(t, header, value) {
   return null;
 }
 
-/** Appends a row from an object keyed by header name. Unknown headers are left blank. */
+/** The sheet row after the last real row (one whose key column is filled). */
+function nextRow_(t) {
+  var c = t.idx[t.key], last = t.sh.getLastRow();
+  if (c == null || last < 2) return Math.max(2, last + 1);
+  var vals = t.sh.getRange(2, c + 1, last - 1, 1).getValues();
+  for (var i = vals.length - 1; i >= 0; i--) if (String(vals[i][0]).trim() !== '') return i + 3;
+  return 2;
+}
+
+/**
+ * Adds a row from an object keyed by header name, straight after the last real row.
+ * Unknown headers are left blank. Not appendRow: that goes below anything in the sheet, even empty tick boxes.
+ */
 function appendByHeader_(t, obj) {
   var arr = [];
   for (var i = 0; i < t.width; i++) arr.push('');
   Object.keys(obj).forEach(function (h) { if (t.idx[h] != null) arr[t.idx[h]] = obj[h]; });
-  t.sh.appendRow(arr);
-  t.rows.push(arr);
+  var row = nextRow_(t), max = t.sh.getMaxRows();
+  if (row > max) {
+    t.sh.insertRowsAfter(max, 200);
+    (CHECKBOX_COLUMNS[t.name] || []).forEach(function (h) {
+      if (t.idx[h] != null) t.sh.getRange(max + 1, t.idx[h] + 1, 200, 1).clearDataValidations().clearContent();
+    });
+  }
+  t.sh.getRange(row, 1, 1, t.width).setValues([arr]);
+  checkboxes_(t, row);
+  if (t.rows) {
+    while (t.rows.length < row - 2) t.rows.push(arr.map(function () { return ''; }));
+    t.rows[row - 2] = arr;
+  }
+  return row;
+}
+
+function checkboxes_(t, row) {
+  var cols = CHECKBOX_COLUMNS[t.name];
+  if (!cols) return;
+  var box = SpreadsheetApp.newDataValidation().requireCheckbox().build();
+  cols.forEach(function (h) { if (t.idx[h] != null) t.sh.getRange(row, t.idx[h] + 1).setDataValidation(box); });
 }
 
 function setCell_(t, rowNum, header, value) {
@@ -307,7 +386,7 @@ function header_(name) {
   if (!sh) throw new Error('Missing tab "' + name + '". Run setup from the Apps Script editor.');
   var lastC = Math.max(sh.getLastColumn(), 1), idx = {};
   sh.getRange(1, 1, 1, lastC).getValues()[0].forEach(function (h, i) { h = String(h).trim(); if (h && idx[h] == null) idx[h] = i; });
-  return { sh: sh, idx: idx, rows: [], width: lastC };
+  return { sh: sh, name: name, key: KEYS[name], idx: idx, rows: null, width: lastC };
 }
 
 function fmtStamp_(d) { return Utilities.formatDate(d, TZ, "yyyy-MM-dd'T'HH:mm:ss"); }
@@ -573,9 +652,17 @@ function listAction_(p) {
     landlords: landlords_().map(function (l) { return { name: l.name, sites: l.sites, hasEmail: !!l.email }; }),
     statuses: STATUSES,
     responsibility: RESPONSIBILITY,
+    alerts: alerts_(),
     sheetUrl: ss_().getUrl(),
     photosUrl: prop_('PHOTO_FOLDER_ID') ? 'https://drive.google.com/drive/folders/' + prop_('PHOTO_FOLDER_ID') : ''
   };
+}
+
+/** Whether new-report emails are switched on, for the manager page. */
+function alerts_() {
+  var to = notifyTo_(), out = { to: to };
+  try { out.quota = MailApp.getRemainingDailyQuota(); } catch (x) { out.error = String(x && x.message || x); }
+  return out;
 }
 
 /** What a landlord may see of a job. Costs only show where the landlord is paying. */
@@ -791,8 +878,24 @@ function emailHtml_(heading, intro, rows, linkText, link) {
     '</div></div>';
 }
 
+/** NOTIFY_EMAIL, tidied: commas, semicolons or spaces between addresses all work. */
+function notifyTo_() {
+  var props = PropertiesService.getScriptProperties().getProperties(), raw = props.NOTIFY_EMAIL;
+  if (raw == null) {
+    // Forgive small slips in the property name, like "Notify email" or a trailing space.
+    Object.keys(props).forEach(function (k) { if (raw == null && k.replace(/[\s_-]/g, '').toUpperCase() === 'NOTIFYEMAIL') raw = props[k]; });
+  }
+  return String(raw || '').split(/[,;\s]+/).filter(function (e) { return /@/.test(e); }).join(',');
+}
+
+/** Records an email attempt in the job's history, so a failure is visible on the manager page. */
+function logEmail_(job, ok, detail) {
+  try { withLock_(function () { log_(job.id, job.ref, 'System', 'system', 'email', (ok ? 'Email sent: ' : 'Email failed: ') + detail, false); }); }
+  catch (x) { Logger.log('Could not log email result: ' + x); }
+}
+
 function notifyNewReport_(job) {
-  var to = prop_('NOTIFY_EMAIL');
+  var to = notifyTo_();
   if (!to) return;
   try {
     MailApp.sendEmail({
@@ -805,11 +908,15 @@ function notifyNewReport_(job) {
         ['Photos', job.photosExpected ? job.photosExpected + ' on the way' : 'None']
       ], 'Open the job', siteUrl_() + 'manage.html#' + job.ref)
     });
-  } catch (err) { Logger.log('New report email failed: ' + err); }
+    logEmail_(job, true, 'new report to ' + to);
+  } catch (err) {
+    Logger.log('New report email failed: ' + err);
+    logEmail_(job, false, 'new report to ' + to + ' (' + (err && err.message || err) + ')');
+  }
 }
 
 function notifyLandlordComment_(job, who, text) {
-  var to = prop_('NOTIFY_EMAIL');
+  var to = notifyTo_();
   if (!to) return;
   try {
     MailApp.sendEmail({
@@ -819,7 +926,10 @@ function notifyLandlordComment_(job, who, text) {
       htmlBody: emailHtml_(job.ref + ': ' + job.title, who + ' commented:', [['Comment', text], ['Site', job.site], ['Status', job.status]],
         'Open the job', siteUrl_() + 'manage.html#' + job.ref)
     });
-  } catch (err) { Logger.log('Landlord comment email failed: ' + err); }
+  } catch (err) {
+    Logger.log('Landlord comment email failed: ' + err);
+    logEmail_(job, false, 'landlord comment to ' + to + ' (' + (err && err.message || err) + ')');
+  }
 }
 
 function emailLandlordAction_(body) {

@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-12 11:44",
+ "generated": "2026-11-13 10:44",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
@@ -2295,20 +2295,20 @@
   },
   {
    "issue": "Delivery delay & tracking",
-   "calls": 224,
+   "calls": 226,
    "tickets": 94,
    "products": [
+    [
+     "Traditional sauna",
+     51
+    ],
     [
      "Ice bath & chiller",
      50
     ],
     [
-     "Traditional sauna",
-     49
-    ],
-    [
      "Infrared sauna",
-     38
+     40
     ]
    ],
    "models": [
@@ -2339,11 +2339,11 @@
    ],
    "components": [
     [
-     "Bench & backrest",
-     15
+     "Heater",
+     16
     ],
     [
-     "Heater",
+     "Bench & backrest",
      15
     ],
     [
@@ -2364,12 +2364,12 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.223,
+    "R": 0.226,
     "F": 0.527,
     "H": 0.049,
-    "U": 0.201
+    "U": 0.199
    },
-   "upsetCallers": 57,
+   "upsetCallers": 58,
    "whyCallersLeftUpset": [
     [
      "Waiting too long",
@@ -2422,7 +2422,7 @@
      1
     ]
    ],
-   "upsetTurnedAround": 0.807,
+   "upsetTurnedAround": 0.81,
    "solutions": [
     {
      "solution": "Delivery rebooked or chased",
@@ -2442,11 +2442,11 @@
     },
     {
      "solution": "Explained how it works",
-     "calls": 27,
-     "resolvedOnCall": 0.185,
-     "resolvedOrBooked": 0.778,
-     "upsetTurnedAround": 0.625,
-     "endedPositive": 0.385
+     "calls": 28,
+     "resolvedOnCall": 0.179,
+     "resolvedOrBooked": 0.786,
+     "upsetTurnedAround": 0.667,
+     "endedPositive": 0.407
     },
     {
      "solution": "Passed to a colleague",
@@ -2457,19 +2457,19 @@
      "endedPositive": 0.355
     },
     {
+     "solution": "Info or instructions sent",
+     "calls": 41,
+     "resolvedOnCall": 0.049,
+     "resolvedOrBooked": 0.951,
+     "upsetTurnedAround": 0.818,
+     "endedPositive": 0.35
+    },
+    {
      "solution": "Asked for photos or video",
      "calls": 6,
      "resolvedOnCall": 0.0,
      "resolvedOrBooked": 0.833,
      "upsetTurnedAround": null,
-     "endedPositive": 0.333
-    },
-    {
-     "solution": "Info or instructions sent",
-     "calls": 40,
-     "resolvedOnCall": 0.05,
-     "resolvedOrBooked": 0.95,
-     "upsetTurnedAround": 0.8,
      "endedPositive": 0.333
     },
     {
@@ -2490,11 +2490,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 61,
-     "resolvedOnCall": 0.131,
-     "resolvedOrBooked": 0.852,
-     "upsetTurnedAround": 0.737,
-     "endedPositive": 0.183
+     "calls": 62,
+     "resolvedOnCall": 0.129,
+     "resolvedOrBooked": 0.855,
+     "upsetTurnedAround": 0.75,
+     "endedPositive": 0.197
     },
     {
      "solution": "Troubleshot on the call",
@@ -3682,12 +3682,12 @@
   },
   {
    "issue": "Pre-sale & product questions",
-   "calls": 68,
+   "calls": 69,
    "tickets": 45,
    "products": [
     [
      "Traditional sauna",
-     35
+     36
     ],
     [
      "Ice bath & chiller",
@@ -3695,7 +3695,7 @@
     ],
     [
      "Infrared sauna",
-     23
+     24
     ]
    ],
    "models": [
@@ -3734,11 +3734,11 @@
      13
     ],
     [
-     "Timber & seals",
-     4
+     "Lights",
+     5
     ],
     [
-     "Lights",
+     "Timber & seals",
      4
     ],
     [
@@ -3751,10 +3751,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.206,
-    "F": 0.647,
+    "R": 0.217,
+    "F": 0.638,
     "H": 0.029,
-    "U": 0.118
+    "U": 0.116
    },
    "upsetCallers": 13,
    "whyCallersLeftUpset": [
@@ -3800,11 +3800,11 @@
     },
     {
      "solution": "Callback or follow-up promised",
-     "calls": 24,
-     "resolvedOnCall": 0.167,
-     "resolvedOrBooked": 0.917,
+     "calls": 25,
+     "resolvedOnCall": 0.2,
+     "resolvedOrBooked": 0.92,
      "upsetTurnedAround": 0.5,
-     "endedPositive": 0.292
+     "endedPositive": 0.32
     },
     {
      "solution": "Explained how it works",

@@ -1,23 +1,23 @@
 {
- "generated": "2026-11-13 10:44",
+ "generated": "2026-11-14 10:31",
  "about": "Revel after-sales issues with what fixed them, from Aircall service calls and HubSpot Desk tickets. Rates are shares of calls. resolvedOnCall: fixed or answered on the call; resolvedOrBooked: that or a next step booked; endedPositive: the customer sounded positive at the end; upsetTurnedAround: of callers who opened upset, the share who ended no longer upset. Solutions are ranked by endedPositive.",
  "issues": [
   {
    "issue": "Delivery booking & logistics",
-   "calls": 1108,
+   "calls": 1110,
    "tickets": 502,
    "products": [
     [
      "Traditional sauna",
-     287
+     288
     ],
     [
      "Ice bath & chiller",
-     234
+     235
     ],
     [
      "Infrared sauna",
-     152
+     153
     ]
    ],
    "models": [
@@ -35,7 +35,7 @@
     ],
     [
      "Nordic Wave",
-     19
+     20
     ],
     [
      "Glacier",
@@ -53,11 +53,11 @@
     ],
     [
      "Chiller unit",
-     62
+     63
     ],
     [
      "Door & glass",
-     58
+     59
     ],
     [
      "Lights",
@@ -65,7 +65,7 @@
     ],
     [
      "Timber & seals",
-     28
+     29
     ],
     [
      "Hoses & fittings",
@@ -174,14 +174,6 @@
      "endedPositive": 0.406
     },
     {
-     "solution": "Explained how it works",
-     "calls": 129,
-     "resolvedOnCall": 0.155,
-     "resolvedOrBooked": 0.791,
-     "upsetTurnedAround": 0.9,
-     "endedPositive": 0.402
-    },
-    {
      "solution": "Passed to a colleague",
      "calls": 96,
      "resolvedOnCall": 0.073,
@@ -190,12 +182,20 @@
      "endedPositive": 0.402
     },
     {
+     "solution": "Explained how it works",
+     "calls": 130,
+     "resolvedOnCall": 0.154,
+     "resolvedOrBooked": 0.792,
+     "upsetTurnedAround": 0.9,
+     "endedPositive": 0.398
+    },
+    {
      "solution": "Callback or follow-up promised",
-     "calls": 298,
-     "resolvedOnCall": 0.121,
+     "calls": 299,
+     "resolvedOnCall": 0.12,
      "resolvedOrBooked": 0.819,
      "upsetTurnedAround": 0.871,
-     "endedPositive": 0.356
+     "endedPositive": 0.355
     },
     {
      "solution": "Delivery rebooked or chased",
@@ -568,7 +568,7 @@
   },
   {
    "issue": "Payments, invoices & finance",
-   "calls": 308,
+   "calls": 309,
    "tickets": 165,
    "products": [
     [
@@ -577,7 +577,7 @@
     ],
     [
      "Ice bath & chiller",
-     62
+     63
     ],
     [
      "Infrared sauna",
@@ -617,7 +617,7 @@
     ],
     [
      "Chiller unit",
-     14
+     15
     ],
     [
      "Sauna stones",
@@ -637,8 +637,8 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.208,
-    "F": 0.614,
+    "R": 0.21,
+    "F": 0.612,
     "H": 0.032,
     "U": 0.146
    },
@@ -703,11 +703,11 @@
     },
     {
      "solution": "Passed to a colleague",
-     "calls": 22,
-     "resolvedOnCall": 0.136,
-     "resolvedOrBooked": 0.455,
+     "calls": 23,
+     "resolvedOnCall": 0.174,
+     "resolvedOrBooked": 0.478,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.455
+     "endedPositive": 0.478
     },
     {
      "solution": "Refund, credit or return",
@@ -814,7 +814,7 @@
   },
   {
    "issue": "Faulty unit / warranty (general)",
-   "calls": 314,
+   "calls": 315,
    "tickets": 139,
    "products": [
     [
@@ -884,9 +884,9 @@
    ],
    "callOutcomes": {
     "R": 0.124,
-    "F": 0.627,
-    "H": 0.096,
-    "U": 0.153
+    "F": 0.629,
+    "H": 0.095,
+    "U": 0.152
    },
    "upsetCallers": 95,
    "whyCallersLeftUpset": [
@@ -1013,11 +1013,11 @@
     },
     {
      "solution": "Warranty claim raised",
-     "calls": 55,
-     "resolvedOnCall": 0.109,
-     "resolvedOrBooked": 0.818,
+     "calls": 56,
+     "resolvedOnCall": 0.107,
+     "resolvedOrBooked": 0.821,
      "upsetTurnedAround": 0.684,
-     "endedPositive": 0.273
+     "endedPositive": 0.286
     },
     {
      "solution": "Technician or electrician",
@@ -2561,7 +2561,7 @@
   },
   {
    "issue": "Controls, app & Wi-Fi",
-   "calls": 104,
+   "calls": 105,
    "tickets": 162,
    "products": [
     [
@@ -2606,7 +2606,7 @@
    "components": [
     [
      "App, Wi-Fi & remote",
-     128
+     129
     ],
     [
      "Control panel / controller",
@@ -2630,10 +2630,10 @@
     ]
    ],
    "callOutcomes": {
-    "R": 0.212,
-    "F": 0.596,
+    "R": 0.219,
+    "F": 0.59,
     "H": 0.038,
-    "U": 0.154
+    "U": 0.152
    },
    "upsetCallers": 18,
    "whyCallersLeftUpset": [
@@ -2688,19 +2688,19 @@
     },
     {
      "solution": "Troubleshot on the call",
-     "calls": 28,
-     "resolvedOnCall": 0.357,
-     "resolvedOrBooked": 0.786,
+     "calls": 29,
+     "resolvedOnCall": 0.379,
+     "resolvedOrBooked": 0.793,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.393
+     "endedPositive": 0.414
     },
     {
      "solution": "Explained how it works",
-     "calls": 19,
-     "resolvedOnCall": 0.316,
-     "resolvedOrBooked": 0.789,
+     "calls": 20,
+     "resolvedOnCall": 0.35,
+     "resolvedOrBooked": 0.8,
      "upsetTurnedAround": 1.0,
-     "endedPositive": 0.368
+     "endedPositive": 0.4
     },
     {
      "solution": "Info or instructions sent",
@@ -2736,12 +2736,12 @@
     }
    ],
    "exampleFixes": [
+    "Yep. You might need to turn the panel off then. So just press the home button in the top left hand corner, and then just hold on the power button for five seconds and the... Oh, it's... I think you need to hold for five…",
     "yeah. Of course. No. We'll definitely make sure it's wrapped up for you well before then. I would love to help you, but I guess, obviously, it's a bit tricky with yourself not at the chiller to sort of run through any…",
     "Yeah. No. That's fine. I would suggest running it and just leaving it until it starts beeping, and then hold down that s button to get that error code. And, yeah, just keep it running till you get all that information…",
     "…There's no reason why it shouldn't work. Bluetooth should be all sweet. But, yeah, you can obviously still turn it off and on from that panel. And then, yeah, with the screen, you just gotta hold it for, four to five…",
     "…sort of sensor. So if you're not using the chiller to heat, you'll probably never come across that. But that's normally what that is is that as you're if you're heating, the output of that is is cold. So it will,…",
-    "…And then pretty much you'll have everything for that screen had on your phone, and you'll be able to just turn it on and off remotely, change the temperature, all of that jazz. Yeah. Awesome. What was your name?…",
-    "yeah. It was just the manual one. Yep. Yep. Let me have a look. Yeah. I'm pretty sure it's meant to it's meant to time out. It's like a safety feature. Oh, no. You"
+    "…And then pretty much you'll have everything for that screen had on your phone, and you'll be able to just turn it on and off remotely, change the temperature, all of that jazz. Yeah. Awesome. What was your name?…"
    ],
    "howCustomersDescribeIt": [
     "Sleek and initiative touch screen display. That's the fourth one, is it?",
